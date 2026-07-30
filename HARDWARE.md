@@ -265,6 +265,43 @@ safety case. Either trust the PCM (and verify it) or fit an NTC so the thermal
 fuse requirement is satisfied by JEITA monitoring. **Fit the NTC.** It costs one
 part, it is what the JEITA feature is for, and it removes the argument.
 
+### Battery pack — DW01P + 8205A, and it has no thermistor
+
+Identified by inspection: **DW01P** protection IC, **8205A** dual N-MOSFET,
+two resistors marked **101 (100 Ω)** and **201 (200 Ω)**, one capacitor, and
+**no NTC**. That matches the standard DW01P application circuit — the 100 Ω plus
+the capacitor form the RC filter on the IC's VDD, and the 200 Ω is the current-
+sense series resistor.
+
+**[DW01P figures below are typical for the part family and were not read from a
+datasheet — get the DW01P datasheet to confirm.]**
+
+| DW01P parameter | Typical | Consequence for this design |
+|---|---|---|
+| Over-discharge detect | **~2.4 V** | far below our functional floor — see below |
+| Over-charge detect | **4.25 V ±0.05** | worst case trips at **4.20 V** — see below |
+| Operating current | **~3 µA** | matches the 3 µA assumed in §7. Good |
+| Over-current detect | 150 mV / R_DS(on) ≈ 3 A | 6× our 500 mA charge. No interaction |
+
+**1. TH1 is now fitted, not DNP.** §3.4 requires a thermal protection path, and
+the pack provides none. Mount the NTC **thermally coupled to the cell** — a
+board-mounted thermistor measures board temperature, which is a poor proxy and
+partly defeats the JEITA logic. A discrete NTC on short leads taped to the cell
+body is better than a nice SMD part on the PCB.
+
+**2. The PCM will not protect your measurement.** Over-discharge trips at ~2.4 V,
+but the buck stops at V_SYSMIN = 2.7 V and the FDC1004 is already out of spec
+below 3.0 V (rail sags from ~3.4 V). **Firmware must own the low-voltage cutoff**
+via the nPM1300 and the fuel gauge. Treat the DW01P purely as a last-ditch safety
+net that should never fire in normal service.
+
+**3. Consider dropping VTERM to 4.15 V.** The DW01P's over-charge threshold is
+4.25 V ±0.05, so a worst-case part trips at **4.20 V** — exactly our termination
+voltage. That risks the PCM cutting the pack off right at end-of-charge, which
+looks like a charging fault. Setting the nPM1300's termination to 4.15 V costs a
+few percent of capacity, and given that self-discharge is 92 % of the energy
+budget (§7), that capacity is worth far less than the reliability.
+
 ### Absolute maximum ratings worth pinning to the wall
 
 | Pin group | Max |
