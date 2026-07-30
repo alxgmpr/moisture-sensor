@@ -18,7 +18,7 @@ USB-C VBUS ───────────────────────
                                         ├──► nPM1300 VBUS ──► VSYS ──► BUCK2 / VOUT2 3.3 V ─┬─► nRF54L15
 Solar ──► 5 V pre-reg ──► D5 (Schottky) ┘         │                                         ├─► I2C pullups (always on)
                                                   │                                         └─► LOADSW1 ──► FDC1004
-                                                  └──► VBAT ──► 103450 Li-ion 2000 mAh
+                                                  └──► VBAT ──► Adafruit 258 Li-ion 1200 mAh
 ```
 
 USB-C VBUS feeds nPM1300 VBUS directly. The solar branch carries the only diode —
@@ -70,7 +70,7 @@ net**. VDD is fed straight from the 3.3 V rail with no ferrite in the supply pat
 | Des | Value | Description | FP | Net / pin |
 |---|---|---|---|---|
 | U1 | nRF54L15-QFAA | SoC, QFN48 6×6 mm, 0.4 mm pitch | QFN-48 | — |
-| L1 | 4.7 µH | Inductor, 120 mA, ±20%, 650 mΩ | 0603 | DCC (46) → DECD (45) |
+| L1 | 4.7 µH | **LQM18PN4R7MFRL**, 120 mA, ±20%, DCR 0.55 Ω max | 0603 | DCC (46) → DECD (45) |
 | C1 | 2.2 µF | X6T, ±20%, 2.5 V | 0201 | DECD (45) → GND |
 | FB1 | 120 Ω @ 100 MHz | Ferrite bead, 200 mA, 500 mΩ max | 0201 | DECD (45) → DECA (43) |
 | C2 | 2.2 µF | X6T, ±20%, 2.5 V | 0201 | DECA → GND |
@@ -80,8 +80,8 @@ net**. VDD is fed straight from the 3.3 V rail with no ferrite in the supply pat
 | C4, C7, C8, C10 | 100 nF | X7R, ±10% | 0201 | one per VDD pin (10, 22, 36, 47, 48) |
 | R1 | 1 kΩ | ±1%, 0.05 W | 0201 | RESET (30) → SWD header |
 | C13 | 3.9 pF | C0G, ±0.25 pF, 50 V | 0201 | RESET (30) → GND |
-| X1 | 32.768 kHz | **C_L = 9 pF, ±20 ppm, drive ≤ 0.5 µW** | 2012 2-pin | XL1 (1) / XL2 (2) |
-| X2 | 32 MHz | **C_L = 8 pF, ±40 ppm, drive ≤ 100 µW** | 2016 4-pad | XC1 (34) / XC2 (35) |
+| X1 | 32.768 kHz | **CM8V-T1A, C_L = 7 pF, ±20 ppm, drive ≤ 0.5 µW** | 2012 2-pin | XL1 (1) / XL2 (2) |
+| X2 | 32 MHz | **FA-128, C_L = 8 pF, ±40 ppm total, drive ≤ 100 µW** | 2016 4-pad | XC1 (34) / XC2 (35) |
 
 **Things that are easy to get wrong here**, all of which this document got wrong
 before the reference layout was checked:
@@ -102,7 +102,7 @@ XC1/XC2 or XL1/XL2, because both oscillators have internal trimmable banks:
 - **HFXO:** internal caps **4.0 pF to 17.0 pF in 0.25 pF steps**
   (`XOSC32M.CONFIG.INTCAP`). X2's C_L = 8 pF is inside that range.
 - **LFXO:** internal caps **3 pF to 18 pF in 0.65 pF steps** (`XOSC32KI.INTCAP`).
-  X1's C_L = 9 pF is inside that range.
+  X1's C_L = 7 pF is inside that range.
 
 You specify the crystal's C_L in part selection and match it in firmware via the
 INTCAP registers. The register value is **not** the capacitance directly — it is
@@ -632,25 +632,26 @@ SWD header: SWDIO, SWDCLK, RESET, 3V3, GND. RESET keeps the R1/C5 filter from §
 
 ### Result
 
-**Cell is a 503450, ~1000 mAh, 5 mm thick.** The 10 mm 103450 does not fit the
-Hammond 1551WK height budget — see LAYOUT.md §9.
+**Cell is an Adafruit 258 — 1200 mAh, 34 × 62 × 5.0 mm.** The 10 mm 103450 does
+not fit the Hammond 1551WK height budget; see LAYOUT.md §9 and BOM.md for the
+full fit table.
 
-| | 503450 (fitted) | 103450 (for comparison) |
+| | Adafruit 258 (fitted) | 103450 (for comparison) |
 |---|---|---|
-| Nominal capacity | 1000 mAh | 2000 mAh |
-| Total annual charge draw | ≈ 283 mAh/yr | ≈ 523 mAh/yr |
-| Usable capacity | ≈ 950 mAh | ≈ 1900 mAh |
-| **Projected runtime** | **≈ 3.4 years** | ≈ 3.6 years |
+| Nominal capacity | 1200 mAh | 2000 mAh |
+| Total annual charge draw | ≈ 331 mAh/yr | ≈ 523 mAh/yr |
+| Usable capacity | ≈ 1140 mAh | ≈ 1900 mAh |
+| **Projected runtime** | **≈ 3.45 years** | ≈ 3.6 years |
 
-### Breakdown, at 1000 mAh
+### Breakdown, at 1200 mAh
 
 | Item | Current | mAh/yr | % | Scales with capacity? |
 |---|---|---|---|---|
-| Cell self-discharge | — | 240 | 85% | **yes** |
-| Cell PCM quiescent | ~3 µA | 26 | 9.2% | no |
-| nPM1300 + nRF54L15 System OFF | ~1.5 µA | 13 | 4.6% | no |
+| Cell self-discharge | — | 288 | 87% | **yes** |
+| Cell PCM quiescent | ~3 µA | 26 | 7.9% | no |
+| nPM1300 + nRF54L15 System OFF | ~1.5 µA | 13 | 3.9% | no |
 | SHT45 idle (always powered) | 80 nA | 0.7 | 0.2% | no |
-| Hourly wake cycles | — | 3 | 1.1% | no |
+| Hourly wake cycles | — | 3 | 0.9% | no |
 
 ### Why halving the cell costs only 7%
 
@@ -718,7 +719,7 @@ If you want more than 3.6 years, the only lever that matters is the cell.
 4. **Wake cycle 300 ms at 3 mA average**, plus PMIC I²C configuration. A composite
    estimate, not measured. At 0.6% of budget, being wrong by 5× changes nothing.
 5. **8760 wakes/yr** (hourly).
-6. **Usable capacity 95% of nameplate**, so 950 mAh on the 503450. At these tiny
+6. **Usable capacity 95% of nameplate**, so 1140 mAh on the Adafruit 258. At these tiny
    currents you will get close to nameplate.
 7. **20–25 °C ambient.** Indoor, and this matters more than it did before — see
    the I_QBAT temperature curve.

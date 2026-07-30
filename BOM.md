@@ -110,11 +110,18 @@ exactly on two of them.
 
 **The two current figures are not the same measurement.** TDK publishes both a
 saturation current (120 mA, defined where inductance has dropped 50 %) and a
-temperature-rise current (350 mA). Murata's reference spec publishes only a
-rated current defined by a 40 °C temperature rise, and **states no saturation
-current at all** — so the Murata's headroom against Nordic's 120 mA is very
-likely far better, but it is not confirmed by this document. Get the DC-bias
-curve from Murata's full datasheet or SimSurfing before committing to volume.
+temperature-rise current (350 mA). Murata publishes **no saturation current at
+all** — confirmed against both the reference spec and Murata's own product page,
+which lists exactly one current parameter: *Rated Current (Temperature Rise) /
+Max. 620 mA*. That page also states **DC Resistance (max.) 0.55 Ω** directly,
+confirming the 0.44 Ω ±25 % calculation, and the part as **shielded (ferrite
+core)** — worth having next to the RF section.
+
+Murata plots an L-vs-current curve for this part with an **X axis running to
+1400 mA** against a 4.7 µH Y axis, which implies useful inductance well past
+Nordic's 120 mA. That is inference from the axis range, not a measured value —
+pull the exact DC-bias curve from
+[SimSurfing](https://ds.murata.com/simsurfing/index.html) before volume.
 
 Two smaller notes: this document is stamped **"Reference Only"** and headed
 *reference specification*, so the delivery spec may differ; and DCR is not worth
@@ -187,6 +194,47 @@ pads on a roughly 1.45 × 1.15 mm envelope; KiCad's generic
 centres, giving a 2.3 mm outer span. That is a bigger mismatch than the one that
 forced a vendor footprint for X1 — expect to build an Epson-specific footprint.
 
+### Cell — Adafruit 258, 1200 mAh
+
+DK `1528-1838-ND`, $9.95. Li-ion pouch, 3.7 V, **34.0 × 62.0 × 5.0 mm**, with PCM.
+
+The 1551WK leaves **11.70 mm** between the board top face and the lid. A cell
+adhered to the lid at thickness T leaves 11.70 − T of component clearance, and
+the tallest part on the board is J2/J3 at 4.25 mm. Box interior is
+74.92 × 34.92 mm, so the cell needs its short side ≤ 34.92 and long side ≤ 74.92.
+
+Everything in the Adafruit range that fits, with runtime from
+`0.95·C / (0.24·C + 42.8)`:
+
+| P/N | mAh | mm | Clearance left | Runtime |
+|---|---|---|---|---|
+| **258** | **1200** | 34.0 × 62.0 × 5.0 | 6.70 mm | **3.45 yr** |
+| 1578 | 500 | 29.0 × 36.0 × 4.8 | 6.90 mm | 2.92 yr |
+| 4236 | 420 | 35.0 × 24.0 × 5.2 | 6.50 mm | 2.78 yr |
+| 4237 | 350 | 32.5 × 25.4 × 5.0 | 6.70 mm | 2.62 yr |
+| 2750 | 350 | 36.0 × 20.0 × 5.6 | 6.10 mm | 2.62 yr |
+| 1317 | 150 | 19.8 × 26.0 × 3.8 | 7.90 mm | 1.81 yr |
+| 1570 | 100 | 11.5 × 31.0 × 3.8 | 7.90 mm | 1.42 yr |
+
+Ruled out: **2011** (2000 mAh) and **328** (2500 mAh) are 36 mm and 50 mm across,
+over the 34.92 mm interior. **3898** is 8.2 mm thick, which leaves 3.5 mm and
+fouls the connectors. The 18650s and the 4.4/6.6/10 Ah packs are far too big.
+
+258 beats the 503450 this design was sized around — same 5.0 mm thickness and
+34 mm width, but 1200 mAh instead of 1000, and it is a stocked catalogue part.
+
+**Two things to settle before ordering.**
+
+1. **The width margin is 0.92 mm total.** DigiKey lists 34.0 mm but the datasheet
+   filename is `503562`, i.e. a **35 mm nominal** cell. A 35 mm cell does not fit a
+   34.92 mm interior, and pouch cells swell with age. Measure one before
+   committing, or drop to the 1578 (29 mm across, 500 mAh, comfortable).
+2. **Adafruit cells terminate in JST PH.** J2 is now JST GH. Either re-crimp the
+   cell leads, make a PH-to-GH adapter, or move J2 back to PH — but PH is 8 mm
+   tall and only fits the ~13 mm end band the cell does not cover. A custom cable
+   was implied anyway: J2 is 3-pin (VBAT / NTC / GND) and Adafruit cells are
+   2-wire, with TH1 on the board providing the NTC path.
+
 ### Other open selections
 
 | Ref | Requirement | Candidate |
@@ -196,7 +244,7 @@ forced a vendor footprint for X1 — expect to build an Epson-specific footprint
 | D5 | Schottky, low V_f, SOD-323, ~200 mA | **Panjit RB751V-40_R1_00001** — selected |
 | J1 | USB-C receptacle, 16P USB2.0 | **HRO TYPE-C-31-M-12** (footprint already set) |
 | Solar pre-reg | 5.0 V out, V_IN ≥ 18 V, low I_Q | TPS62122 (buck) or TPS7A1650 (LDO) — **not selected** |
-| Cell | **503450**, ~1000 mAh, 5 × 34 × 50 mm, protected | not selected — see HARDWARE.md §7 |
+| Cell | ≤ 6.5 mm thick, ≤ 34.92 × 74.92 mm | **Adafruit 258**, 1200 mAh, 34 × 62 × 5.0 mm — selected |
 | Enclosure | **Hammond 1551WKBK**, IP68 PC, 80 × 40 × 22 mm | + 4× nylon #2 screws for the antenna-end holes |
 
 **The solar pre-regulator is not on the board yet.** Reserve roughly **8 × 8 mm**
