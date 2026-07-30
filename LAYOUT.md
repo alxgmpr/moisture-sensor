@@ -499,6 +499,12 @@ L10.
   what is drawn.
 - Confirm 0.38 mm against the fab's impedance calculator for their actual
   pressed stackup.
+- **X2 land pattern.** Epson's recommended FA-128 footprint is four pads on a
+  roughly 1.45 × 1.15 mm envelope; KiCad's generic `Crystal_SMD_2016-4Pin` uses
+  0.9 × 0.8 mm pads on ±0.7 / ±0.55 centres, a 2.3 mm outer span. Build an
+  Epson-specific footprint, as was needed for X1.
+- **Confirm C0 for the FA-128 with Epson.** The datasheet does not publish it,
+  and it is half of what Figure 17 checks.
 - Electrode geometry: simulate or prototype for 10–30 pF dry with a swing inside
   ±15 pF.
 - Window-pane the paste apertures on `QFN48_6X6_NOR` and `QFN32_5X5_NOR`. Both

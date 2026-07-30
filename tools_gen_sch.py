@@ -386,7 +386,7 @@ B_USB.note(_y - min(p[4] for p in pins_of(USBD)))
 B_USB.cy = snap(106.0)
 B_USB.add("Device", "C_Small", "C20", "1uF/10V X5R", {"1": "VBUS_IN", "2": "GND"})
 # Solar -> 5 V pre-regulator (TBD) -> D5 -> VBUS. Pin 1 = K, pin 2 = A.
-B_USB.add("Device", "D_Schottky_Small", "D5", "OR-ing Schottky",
+B_USB.add("Device", "D_Schottky_Small", "D5", "RB751V-40 Schottky",
           {"1": "VBUS_IN", "2": "SOLAR_5V"})
 B_USB.add("Connector_Generic", "Conn_01x02", "J3", "Solar panel",
           {"1": "SOLAR_PANEL", "2": "GND"})
@@ -523,7 +523,7 @@ B_SWD.add("Connector_Generic", "Conn_02x05_Odd_Even", "J4", "SWD 10p 1.27mm",
 # No discrete load caps: both oscillators use the nRF54L15 internal trim banks.
 B_XTAL.add("Device", "Crystal_Small", "X1", "CM8V-T1A 32.768kHz CL=7pF 20ppm",
            {"1": "XL1", "2": "XL2"})
-B_XTAL.add("Device", "Crystal_GND24_Small", "X2", "32MHz CL=8pF 40ppm",
+B_XTAL.add("Device", "Crystal_GND24_Small", "X2", "FA-128 32MHz CL=8pF",
            {"1": "XC1", "3": "XC2", "2": "GND"})
 
 # ---- RF ----------------------------------------------------------------------

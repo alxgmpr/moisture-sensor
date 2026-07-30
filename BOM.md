@@ -123,13 +123,77 @@ difference is microwatts, and HARDWARE.md §7 puts the whole wake cycle at 0.6 %
 of the budget. The reason to prefer the Murata is **margin against the spec**,
 not efficiency.
 
+### D5 — Panjit RB751V-40
+
+DK `3757-RB751V-40_R1_00001CT-ND`, $0.14.
+
+| | Requirement | RB751V-40 |
+|---|---|---|
+| Forward drop | ~0.3 V so VBUS lands mid-window (HARDWARE.md §4) | 370 mV @ 1 mA |
+| Current | ~200 mA | 300 mA |
+| Reverse | ≫ 5.5 V, clear of the 22 V VBUS abs max | **40 V** |
+| Leakage | low | 500 nA @ 30 V |
+| Package | SOD-323 | SOD-323 |
+
+Runner-up **BAT201M3 RRG** has a genuinely lower drop (290 mV @ 10 mA) and 1 A
+rating, but only 20 V reverse — thin against the 22 V VBUS ceiling — and 50 µA
+leakage, 100× the Panjit. Take it if the drop matters more than the margin.
+
+**Two near-identical part numbers to avoid.** `RB751V-40WS` (Taiwan Semi) and
+`RB751V-40X` (Panjit) both quote the same 370 mV @ 1 mA but are rated **30 mA**,
+not 300 mA. And BAS70WS / BAT42WS / BAT43WS all quote **1 V** forward drop, which
+defeats the point of a Schottky here.
+
+Forward-voltage figures across a distributor table are quoted at different test
+currents (1 mA to 1 A) and are not directly comparable. The ranking above holds
+at the low currents indoor solar produces; pull the V_f vs I_f curve if the drop
+turns out to matter at the real operating point.
+
+### X2 — Epson FA-128, 32 MHz, C_L 8 pF
+
+Ordering form per the datasheet: **`FA-128 32.000000MHz 8.0 +12.0-12.0`**, and
+specify the frequency-vs-temperature characteristic separately.
+
+**2016 was never a requirement.** That came from Nordic's reference BOM. The
+datasheet characterises two package sizes (§11.9.1) and mandates neither:
+
+| Nordic's characterisation parts | C_L | C0 | R_S |
+|---|---|---|---|
+| 2.0 × 1.6 mm (`ISTBY_X32M_X2`) | 8 pF | 0.74 pF | 35 Ω |
+| 1.2 × 1.0 mm (`ISTBY_X32M_X3`) | 8 pF | 0.42 pF | 100 Ω |
+
+The 1.2 × 1.0 part passes at **100 Ω** because its C0 is only 0.42 pF. C0 and ESR
+trade against each other on the Figure 17 curve; package size is just a proxy.
+
+FA-128 against the requirements:
+
+| nRF54L15 requires | Spec | FA-128 |
+|---|---|---|
+| Total tolerance | **±40 ppm** | ±12 initial + ±12 temp (−20…+75 °C) + ±1 aging = **25 ppm** |
+| | | or ±12 + ±17 (−30…+85 °C) + ±1 = 30 ppm |
+| Load capacitance | 6–9 pF | specifiable, 6 pF to ∞ |
+| Drive level | ≤ 100 µW | 200 µW max, 10 µW recommended |
+| ESR vs C0 | Figure 17 curve | **60 Ω max** at 26–54 MHz |
+
+At C_L = 8 pF the curve allows ~100 Ω for C0 ≈ 0.74 pF, so 60 Ω passes with
+margin. **Caveat: the FA-128 datasheet does not publish C0.** Nordic's 2.0 × 1.6
+characterisation figures (C0 0.74 pF, R_S 35 Ω) match this part's geometry and
+ESR class closely enough that it is very likely the same family, but confirm C0
+with Epson before committing.
+
+**Check the land pattern before fab.** Epson's recommended footprint is four
+pads on a roughly 1.45 × 1.15 mm envelope; KiCad's generic
+`Crystal_SMD_2016-4Pin_2.0x1.6mm` uses 0.9 × 0.8 mm pads on ±0.7 / ±0.55 mm
+centres, giving a 2.3 mm outer span. That is a bigger mismatch than the one that
+forced a vendor footprint for X1 — expect to build an Epson-specific footprint.
+
 ### Other open selections
 
 | Ref | Requirement | Candidate |
 |---|---|---|
 | L1 | 4.7 µH, 120 mA, ±20 %, DCR ≤ 650 mΩ, 0603 | **Murata LQM18PN4R7MFRL** — selected |
 | L10 | 2.2 µH, I_sat > 350 mA, I_max > 200 mA, DCR ≤ 400 mΩ | **Murata DFE201610P-2R2M** (footprint already set) |
-| D5 | Schottky, low V_f, SOD-323, ~200 mA | Nexperia PMEG2010AEH |
+| D5 | Schottky, low V_f, SOD-323, ~200 mA | **Panjit RB751V-40_R1_00001** — selected |
 | J1 | USB-C receptacle, 16P USB2.0 | **HRO TYPE-C-31-M-12** (footprint already set) |
 | Solar pre-reg | 5.0 V out, V_IN ≥ 18 V, low I_Q | TPS62122 (buck) or TPS7A1650 (LDO) — **not selected** |
 | Cell | **503450**, ~1000 mAh, 5 × 34 × 50 mm, protected | not selected — see HARDWARE.md §7 |
@@ -169,7 +233,7 @@ TP5 and D5's anode on it.
 | C27 | 100nF X7R | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
 | D3 | GREEN | `LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder` |
 | D4 | RED | `LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder` |
-| D5 | OR-ing Schottky | `D_SOD-323_HandSoldering` |
+| D5 | RB751V-40 Schottky | `D_SOD-323_HandSoldering` |
 | FB1 | FB 120R@100MHz | `L_0402_1005Metric_Pad0.77x0.64mm_HandSolder` |
 | J1 | USB-C receptacle | `USB_C_Receptacle_HRO_TYPE-C-31-M-12` |
 | J2 | Battery 503450 + NTC | `JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal` |
@@ -201,7 +265,7 @@ TP5 and D5's anode on it.
 | U3 | FDC1004 | `MSOP-10_3x3mm_P0.5mm` |
 | U4 | SHT45-AD1F | `Sensirion_DFN-4_1.5x1.5mm_P0.8mm_SHT4x_NoCentralPad` |
 | X1 | CM8V-T1A 32.768kHz CL=7pF 20ppm | `XTAL_CM8V-T1A_2012` |
-| X2 | 32MHz CL=8pF 40ppm | `Crystal_SMD_2016-4Pin_2.0x1.6mm` |
+| X2 | FA-128 32MHz CL=8pF | `Crystal_SMD_2016-4Pin_2.0x1.6mm` |
 
 ---
 
