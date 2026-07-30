@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 """Generate the moisture-sensor-carrier board outline, zoning and antenna.
 
+!!! SUPERSEDED FOR GEOMETRY - DO NOT RUN AGAINST THE CURRENT BOARD !!!
+The .kicad_pcb has been hand-edited since this last ran: the jut-out corners
+carry manual fillets (gr_arc on Edge.Cuts) that this script does not emit.
+Re-running WILL destroy them, because main() strips every drawing and redraws
+from scratch.
+
+Keep it for reference - the constants document every dimension and the reasoning
+behind them, and the self-checks record what has to stay true. If the outline
+ever needs regenerating, port the fillets in here FIRST, then run it.
+
 FAB NOTE: order JLC04161H-7628D specifically. It is the only JLCPCB 4-layer
 7628 stackup with a single 0.21040 mm prepreg between the top layer and L2;
 the others put 0.43-0.65 mm there, which would take the 0.38 mm RF trace from
