@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """Generate the moisture-sensor-carrier board outline, zoning and antenna.
 
+FAB NOTE: order JLC04161H-7628D specifically. It is the only JLCPCB 4-layer
+7628 stackup with a single 0.21040 mm prepreg between the top layer and L2;
+the others put 0.43-0.65 mm there, which would take the 0.38 mm RF trace from
+50 ohms to roughly 75. See LAYOUT.md section 1.
+
 Companion to tools_gen_sch.py. Edit this and re-run; do not hand-edit the
 .kicad_pcb. Like the schematic generator it self-checks and aborts rather than
 emitting a broken file.

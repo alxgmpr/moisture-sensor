@@ -18,12 +18,35 @@ would be ~2.9 mm wide, which settles it.
 | Layer | Material | Thickness | ε_r | Role |
 |---|---|---|---|---|
 | F.Cu | copper | 0.035 mm | — | RF, signal, sense electrodes |
-| dielectric 1 | prepreg 7628 | **0.2104 mm** | 4.4 | RF reference gap |
+| dielectric 1 | prepreg 7628×1 | **0.21040 mm** | 4.4 | RF reference gap |
 | In1.Cu | copper | 0.0152 mm | — | **GND** (zoned — see §4) |
-| dielectric 2 | core | 1.065 mm | 4.6 | |
+| dielectric 2 | core | **1.265 mm** | 4.6 | |
 | In2.Cu | copper | 0.0152 mm | — | power / **guard pour** |
-| dielectric 3 | prepreg 7628 | 0.2104 mm | 4.4 | |
+| dielectric 3 | prepreg 7628×1 | 0.21040 mm | 4.4 | |
 | B.Cu | copper | 0.035 mm | — | signal / guard |
+
+### You must order JLC04161H-7628**D** specifically
+
+Checked against JLCPCB's published controlled-impedance stackup list. They offer
+**six** 4-layer 7628 variants, and only one has a single 7628 prepreg between the
+top layer and L2:
+
+| JLC stackup | Top → L2 dielectric | Usable here? |
+|---|---|---|
+| **JLC04161H-7628D** | **0.21040 mm** (7628×1) | **yes — this is the one** |
+| JLC04161H-7628E | 0.218 + 0.21040 = 0.428 mm | no |
+| JLC04161H-7628B | 0.218 + 0.218 + 0.1164 = 0.552 mm | no |
+| JLC04161H-7628C | 0.218 + 0.218 + 0.21040 = 0.646 mm | no |
+| JLC04161H-7628F | 0.218 + 0.218 + 0.21040 = 0.646 mm | no |
+
+This is not a nitpick. At h = 0.428 mm a 0.38 mm trace is roughly **75 Ω**, not
+50. Taking whatever 4-layer stackup the order form defaults to would silently
+wreck the RF path. Specify 7628D at order time and confirm it on the
+acknowledgement.
+
+The core came back **1.265 mm**, not the 1.065 mm assumed here previously. That
+only helps: it moves the In2.Cu-guard-to-In1.Cu-ground capacitance in §5 from
+3.82 × 10⁻⁸ down to **3.22 × 10⁻⁸ F/m²**.
 
 The thin 0.21 mm top dielectric is what makes a sane-width 50 Ω microstrip
 possible, and it is why the RF trace must reference **In1.Cu**, not B.Cu.
@@ -258,7 +281,7 @@ Parallel-plate estimate, `C/A = ε₀ε_r/d`:
 | Guard placement | d | C per area | Area to hit 400 pF |
 |---|---|---|---|
 | F.Cu guard over In1.Cu ground | 0.2104 mm | 1.85 × 10⁻⁷ F/m² | **21.6 cm²** |
-| In2.Cu guard over In1.Cu ground | 1.065 mm | 3.82 × 10⁻⁸ F/m² | 105 cm² |
+| In2.Cu guard over In1.Cu ground | 1.265 mm | 3.22 × 10⁻⁸ F/m² | 124 cm² |
 
 A probe 2 cm wide by 10 cm long is 20 cm² of guard — **right at the limit** if
 there is ground plane under it. Delete the ground from Zone C and the guard's
@@ -497,8 +520,23 @@ L10.
   Hammond's STEP model before fab. The drawing's `62.00 × 22.00` and `R4.42` are
   ambiguous at the resolution published; `55.00 × 25.00` is unambiguous and is
   what is drawn.
-- Confirm 0.38 mm against the fab's impedance calculator for their actual
-  pressed stackup.
+- Confirm 0.38 mm against JLCPCB's own impedance calculator for the **7628D**
+  pressed stackup. The nominal dielectric is confirmed at 0.21040 mm, but the
+  pressed result varies with copper distribution — order with impedance control
+  and let them adjust the width if it matters to you.
+
+### Confirmed against TI's FDC1004EVM (SV601093B)
+
+TI's own evaluation board builds the sense front end exactly the way §5
+specifies, which is worth recording as independent confirmation rather than a
+change:
+
+- the sense electrode is a **solid filled area on the top layer**
+- the **guard is a solid plane directly beneath it on the opposite layer**
+- guard copper also **rings the electrode on its own layer** across a narrow gap
+
+That is the Zone C construction as drawn — F.Cu electrodes, SHLD guard pouring
+around them at 0.2 mm, guard on In2.Cu and B.Cu beneath.
 - **X2 land pattern.** Epson's recommended FA-128 footprint is four pads on a
   roughly 1.45 × 1.15 mm envelope; KiCad's generic `Crystal_SMD_2016-4Pin` uses
   0.9 × 0.8 mm pads on ±0.7 / ±0.55 centres, a 2.3 mm outer span. Build an
