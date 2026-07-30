@@ -1,0 +1,103 @@
+# Design rules - Indoor Capacitive Soil Moisture Sensor
+# Stackup: JLC04161H-7628 equivalent, 4 layer, 1.6 mm
+#   F.Cu  0.035 | prepreg 7628 0.2104 er=4.4 | In1.Cu (GND) | core 1.065
+#   | In2.Cu (PWR/SHLD) | prepreg 7628 0.2104 | B.Cu 0.035
+# See LAYOUT.md for the reasoning behind every number here.
+
+(version 1)
+
+# ---------------------------------------------------------------- RF path --
+# 50 ohm microstrip on F.Cu referenced to the In1.Cu ground plane.
+# W = 0.38 mm for h = 0.2104 mm, er ~ 4.2 at 2.4 GHz. Confirm against the
+# fab's own impedance calculator before ordering with impedance control.
+(rule "RF 50R trace width"
+	(constraint track_width (min 0.34mm) (opt 0.38mm) (max 0.42mm))
+	(condition "A.NetClass == 'RF'"))
+
+# The RF path must not be crowded. Anything closer than 0.5 mm couples into it
+# or perturbs the impedance.
+(rule "RF clearance to other nets"
+	(constraint clearance (min 0.5mm))
+	(condition "A.NetClass == 'RF' && B.NetClass != 'RF'"))
+
+# A via in the RF path adds inductance and a stub, and breaks the reference.
+# The whole ANT -> matching -> antenna run belongs on F.Cu.
+(rule "No vias in the RF path"
+	(constraint disallow via)
+	(condition "A.NetClass == 'RF'"))
+
+# ------------------------------------------------- capacitive front end ----
+# The switching nodes are the main aggressors: nPM1300 SW2 at 3.6 MHz in PWM
+# and the nRF54L15 DCC node. Keep them well away from anything the FDC1004
+# measures.
+(rule "Sense away from switching nodes"
+	(constraint clearance (min 3mm))
+	(condition "A.NetClass == 'SENSE' && B.NetClass == 'SWITCH'"))
+
+(rule "Shield away from switching nodes"
+	(constraint clearance (min 2mm))
+	(condition "A.NetClass == 'SHIELD' && B.NetClass == 'SWITCH'"))
+
+(rule "Sense away from RF"
+	(constraint clearance (min 2mm))
+	(condition "A.NetClass == 'SENSE' && B.NetClass == 'RF'"))
+
+# Ground adjacent to a sense net is measured capacitance. It burns CAPDAC
+# range and couples noise. The guard pour, not ground, is what surrounds sense.
+(rule "Sense away from ground"
+	(constraint clearance (min 1mm))
+	(condition "A.NetClass == 'SENSE' && B.NetClass == 'Power'"))
+
+# Guard is meant to hug the sense trace - tight coupling is the point.
+(rule "Sense to shield spacing"
+	(constraint clearance (min 0.2mm))
+	(condition "A.NetClass == 'SENSE' && B.NetClass == 'SHIELD'"))
+
+# -------------------------------------------------------------- power ------
+(rule "Power track width"
+	(constraint track_width (min 0.4mm))
+	(condition "A.NetClass == 'Power'"))
+
+# 500 mA charge path plus system load. 0.8 mm on 1 oz outer copper is roughly
+# a 10 C rise at 1 A - comfortable margin.
+(rule "Charge path width"
+	(constraint track_width (min 0.8mm))
+	(condition "A.Net == '/VBAT' || A.Net == '/VBUS_IN' || A.Net == '/VSYS'"))
+
+# The buck switching node should be short and fat, never long and thin.
+(rule "Switch node width"
+	(constraint track_width (min 0.5mm))
+	(condition "A.NetClass == 'SWITCH'"))
+
+# ------------------------------------------------------------ keepouts -----
+# Draw these as rule areas on the matching user layers. Nothing conductive may
+# enter the antenna keepout on ANY layer, including ground pour.
+(rule "Antenna keepout is copper free"
+	(constraint disallow track via zone pad)
+	(condition "A.insideArea('AntennaKeepout')"))
+
+# Sensirion SHT4x datasheet 5.3: soldering the central die pad or placing an
+# exposed copper pad beneath it heat-sinks the internal heater and it stops
+# meeting spec. No copper under the sensor except the four pin pads.
+(rule "No copper under SHT45"
+	(constraint disallow track via zone)
+	(condition "A.insideArea('NoCopperSHT45')"))
+
+# ------------------------------------------------------------ fabrication --
+# JLCPCB 4 layer standard process floor. Tighten only if you pay for it.
+(rule "Fab minimum track"
+	(constraint track_width (min 0.127mm))
+	(condition "A.Type == 'Track'"))
+
+(rule "Fab minimum clearance"
+	(constraint clearance (min 0.127mm)))
+
+(rule "Fab minimum annular ring"
+	(constraint annular_width (min 0.13mm)))
+
+(rule "Fab minimum drill"
+	(constraint hole_size (min 0.2mm)))
+
+# Copper to board edge. 0.3 mm keeps the router away from live copper.
+(rule "Edge clearance"
+	(constraint edge_clearance (min 0.3mm)))
