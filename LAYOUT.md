@@ -406,53 +406,36 @@ carry the 500 mA charge current plus system load.
 
 ## 8. Component-specific keepouts
 
-### SHT45 thermal isolation — a routed island
+### SHT45 on a jut-out, outside the enclosure
 
-Sensirion's *Humidity & Temperature Design Guide* §3 is explicit that the
-dominant error path is **conduction through the PCB**, and that the fix is
-"trough milling or etching slits" around the sensor (Figure 8b, Figure 11b).
-§3.3: *"the sensor needs to be decoupled from the thermal mass of the device and
-shielded from any heated air flowing through it... implemented as isolated as
-possible and as exposed to the environment as possible."*
+The sensor leaves the box entirely on a tab through the long side wall, so it
+reads outside air rather than the inside of a sealed enclosure. This replaces
+the earlier routed thermal island, which isolated the sensor from the *board*
+but left it breathing the box.
 
-U4 therefore sits on a **round peninsula** — an annular 1.0 mm routed slot on
-Edge.Cuts, 2.2 mm island radius, with a 60° opening leaving a **2.7 mm neck** as
-the only conduction path. Not a closed ring: the traces have to reach the pads,
-and Sensirion's own figures show slits with a neck rather than a full circle.
+| | |
+|---|---|
+| Tab | x 34.0 → **42.0**, y 18.1 → 23.1 (**5.0 mm** wide) |
+| Wall passage | x 34.46 → 37.00 (0.46 mm gap + 2.54 mm wall) |
+| U4 | (39.8, 20.6) — **1.58 mm proud** of the wall outer face |
+| Board overall | **42.0 × 155.0 mm** |
 
-Circular rather than rectangular deliberately — a round slot has no
-stress-raising inside corners, and the island edge is a smooth arc instead of
-four sharp ones. The slot's outer radius also sits **2.2 mm from the board
-edge**; an earlier rectangular version left only 0.6 mm there, which is a
-fragile sliver of FR4 right where the box wall is. `tools_gen_pcb.py` asserts a
-2.0 mm minimum.
+Board is 34.0 wide centred in a 34.92 mm interior, so there is 0.46 mm of gap
+each side and the wall runs 34.46 → 37.00. `tools_gen_pcb.py` asserts U4 starts
+beyond 37.00 — otherwise the sensor sits *in* the wall rather than outside it.
 
-**This moved U4.** It was at (30.0, 34.5), which is inside the cell footprint —
-and the cell is the largest thermal mass on the assembly and warms while
-charging at 500 mA. It is now at (28.6, 20.6), on the island, **5.8 mm from U1
-and 33.1 mm from U2**. `tools_gen_pcb.py` asserts U4 is inside the island and
-that the island does not overlap the cell.
+**Enclosure modification required.** A milled slot in the long side wall,
+**5.0 mm wide × board thickness**, centred at y = 20.6 from the board's top
+edge, at **4.00–5.60 mm above the box floor** (the board sits on the 4.00 mm
+posts). Hammond do factory milling. This is a second opening on top of the probe
+slot, and it is not sealed — pot it or accept the loss of IP rating there.
 
-C27 stays on the mainland so the island carries as little copper and mass as
-possible. Keep the four traces across the neck **thin** — Figure 8a and 8c
-contrast thin against thick metal connections directly.
+The tab keeps a `SHT45_Jut` rule area that bans pour, so it carries only the
+four traces and no ground fill. The die keepout from datasheet §5.3 stays as it
+was. The tab is clear of the cell, and the ground pour stops at x = 33.7 so no
+plane copper reaches it.
 
-**Two rule areas, because there are two different constraints:**
-
-| Area | Covers | Disallows | Source |
-|---|---|---|---|
-| `NoCopperSHT45` | 0.84 × 1.70 mm strip under the die, between the pad columns | tracks, vias, pour | datasheet §5.3 |
-| `SHT45_ThermalIsland` | the whole ⌀4.4 mm island | **pour only** | design guide §3 |
-
-Sizing the die keepout to the whole courtyard — which is what it was — would ban
-the traces that have to reach the pads. And letting the ground pour flood the
-island both defeats the isolation and leaves an isolated copper island that DRC
-flags.
-
-Still outstanding: the sensor needs to be **exposed to ambient**, which in a
-sealed IP68 box means a PTFE membrane vent in the lid directly above the island.
-
-**SHT45 — no copper underneath.** Datasheet §5.3: *"Soldering of the central die
+**SHT45 — no copper underneath.****SHT45 — no copper underneath.** Datasheet §5.3: *"Soldering of the central die
 pad, as well as an exposed copper pad underneath it, is not recommended... due to
 it acting as a heat sink which prevents the heater from functioning according to
 its specifications,"* and *"there shall be no copper under the sensor other than

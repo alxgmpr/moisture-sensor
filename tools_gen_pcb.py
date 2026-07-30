@@ -102,16 +102,25 @@ SOLAR_RESERVE = (24.0, 49.0, 32.0, 57.0)
 # A C-shaped routed slot leaves U4 on a peninsula joined to the board by one
 # narrow neck. Not a full circle - the traces have to get there somehow, and
 # Sensirion's own figures show slits with a neck rather than a closed ring.
-# Circular, not rectangular: a round slot has no stress-raising inside corners,
-# and the island's own edge is a smooth arc rather than four sharp ones.
-SHT_SLOT_W = 1.0                             # routed slot width, JLCPCB floor
-SHT_C = (28.6, 20.6)                         # island centre
-SHT_R = 2.2                                  # island radius
-SHT_GAP_DEG = 60.0                           # angular opening = the neck
-# Neck chord across the slot mid-radius, the only conduction path out.
-SHT_NECK = 2 * (SHT_R + SHT_SLOT_W / 2) * math.sin(math.radians(SHT_GAP_DEG / 2))
-SHT_ISLAND = (SHT_C[0] - SHT_R, SHT_C[1] - SHT_R,
-              SHT_C[0] + SHT_R, SHT_C[1] + SHT_R)
+# -- SHT45 jut-out ---------------------------------------------------------------
+# The sensor now leaves the enclosure entirely on a tab through the long side
+# wall, so it reads outside air instead of the inside of a sealed box.
+#
+# Board is 34.0 wide, centred in a 34.92 mm interior, so there is 0.46 mm of gap
+# each side; the wall runs 34.46 -> 37.00 (external half-width 20.0 from a board
+# centre at x = 17.0). The tab therefore has to reach past 37.00 before the
+# sensor sees free air.
+#
+# Requires a milled slot in the side wall: JUT_W wide x board thickness tall,
+# centred on JUT_CY, at 4.00-5.60 mm above the box floor (board sits on the
+# 4.00 mm posts). Enclosure modification, accepted.
+WALL_INNER = 34.46
+WALL_OUTER = 37.00
+JUT_X1 = 42.0                                # tab tip
+JUT_CY = 20.6                                # tab centreline
+JUT_W = 5.0                                  # tab width, = the slot width
+JUT_Y0, JUT_Y1 = JUT_CY - JUT_W / 2.0, JUT_CY + JUT_W / 2.0
+JUT = (BOX_W, JUT_Y0, JUT_X1, JUT_Y1)
 
 # -- cell -----------------------------------------------------------------------
 # Adafruit 1578, 500 mAh, 29 x 36 x 4.8 mm, adhered to the inside of the lid.
@@ -186,12 +195,10 @@ PLACEMENT = {
 
     # -- debug and ambient sensor
     "J4":  (11.0, 35.5, 0),          # Tag-Connect, zero height
-    # U4 sits on a thermally isolated peninsula (SHT_ISLAND), clear of the
-    # cell - the largest thermal mass on the assembly, and it warms while
-    # charging. C27 stays on the mainland so the island carries as little
-    # copper and mass as possible.
-    "U4":  (28.6, 20.6, 0),
-    "C27": (24.0, 20.6, 0),
+    # U4 rides the jut-out, outside the enclosure wall. C27 stays inboard so
+    # the tab carries as little copper and thermal mass as possible.
+    "U4":  (39.8, JUT_CY, 0),
+    "C27": (31.5, JUT_CY, 0),
     "R22": (24.5, 33.5, 0),          # I2C pull-ups on always-on +3V3
     "R23": (24.5, 35.0, 0),
 
@@ -385,7 +392,11 @@ def draw_outline(board):
     seg(board, (R, 0), (W - R, 0), pcbnew.Edge_Cuts)
     arc(board, (W - R, 0), corner_mid(W - R, R, R, W - R, 0, W, R), (W, R),
         pcbnew.Edge_Cuts)
-    seg(board, (W, R), (W, L - R), pcbnew.Edge_Cuts)
+    seg(board, (W, R), (W, JUT_Y0), pcbnew.Edge_Cuts)
+    seg(board, (W, JUT_Y0), (JUT_X1, JUT_Y0), pcbnew.Edge_Cuts)
+    seg(board, (JUT_X1, JUT_Y0), (JUT_X1, JUT_Y1), pcbnew.Edge_Cuts)
+    seg(board, (JUT_X1, JUT_Y1), (W, JUT_Y1), pcbnew.Edge_Cuts)
+    seg(board, (W, JUT_Y1), (W, L - R), pcbnew.Edge_Cuts)
     arc(board, (W, L - R), corner_mid(W - R, L - R, R, W, L - R, W - R, L),
         (W - R, L), pcbnew.Edge_Cuts)
 
@@ -683,6 +694,10 @@ def inside_board(box, ref=None):
     """Every corner of box must sit inside the outline with edge clearance."""
     x0, y0, x1, y1 = box
     m = 0.0 if ref in EDGE_PARTS else 0.3
+    # The SHT45 jut-out is outside the box section by design.
+    if (x0 >= JUT[0] - m and x1 <= JUT[2] - m
+            and y0 >= JUT[1] + m and y1 <= JUT[3] - m):
+        return True
     if y1 <= ZONE_B_BOT:                       # box section
         return (x0 >= -m - (2.0 if ref in EDGE_PARTS else 0.0)
                 and x1 <= BOX_W - m and y0 >= m and y1 <= BOX_L)
@@ -802,36 +817,13 @@ def main():
         for i in range(4):
             seg(board, die[i], die[(i + 1) % 4], pcbnew.User_3, DOC_W)
 
-        isl = [(SHT_C[0] + SHT_R * math.cos(math.radians(a)),
-                SHT_C[1] + SHT_R * math.sin(math.radians(a)))
-               for a in range(0, 360, 15)]
-        rule_area(board, "SHT45_ThermalIsland", isl, cu,
+        tab = [(JUT[0], JUT[1]), (JUT[2], JUT[1]), (JUT[2], JUT[3]), (JUT[0], JUT[3])]
+        rule_area(board, "SHT45_Jut", tab, cu,
                   tracks=False, vias=True, pads=False, fills=True, footprints=False)
-        for i in range(len(isl)):
-            seg(board, isl[i], isl[(i + 1) % len(isl)], pcbnew.User_3, DOC_W)
+        for i in range(len(tab)):
+            seg(board, tab[i], tab[(i + 1) % len(tab)], pcbnew.User_3, DOC_W)
 
     # Solar pre-regulator reserve, documentation only.
-    # Annular slot: two concentric arcs closed by short radial ends, with a
-    # SHT_GAP_DEG opening on the -X side where the four traces cross.
-    cxc, cyc = SHT_C
-    r_in, r_out = SHT_R, SHT_R + SHT_SLOT_W
-    half = SHT_GAP_DEG / 2.0
-    a_start, a_end = 180.0 + half, 180.0 - half + 360.0     # 300 deg of ring
-
-    def polar(r, deg):
-        t = math.radians(deg)
-        return (cxc + r * math.cos(t), cyc + r * math.sin(t))
-
-    steps = 3                                               # 100 deg per arc
-    for r in (r_in, r_out):
-        for k in range(steps):
-            a0 = a_start + (a_end - a_start) * k / steps
-            a1 = a_start + (a_end - a_start) * (k + 1) / steps
-            arc(board, polar(r, a0), polar(r, (a0 + a1) / 2), polar(r, a1),
-                pcbnew.Edge_Cuts)
-    for ang in (a_start, a_end):
-        seg(board, polar(r_in, ang), polar(r_out, ang), pcbnew.Edge_Cuts)
-
     cx0, cy0, cx1, cy1 = CELL_RECT
     for a_, b_ in (((cx0, cy0), (cx1, cy0)), ((cx1, cy0), (cx1, cy1)),
                    ((cx1, cy1), (cx0, cy1)), ((cx0, cy1), (cx0, cy0))):
@@ -1008,31 +1000,68 @@ def main():
               f"{ref} is {h} mm tall but only {CLEAR_UNDER_CELL:.2f} mm is clear "
               f"under the cell, and it sits inside the cell footprint")
 
-    # SHT45 has to be on its island, and the island has to be clear of the cell.
+    # The sensor has to clear the enclosure wall, or it is reading the inside of
+    # a sealed box rather than ambient.
     if "U4" in boxes:
         u4 = boxes["U4"]
-        worst = max(math.hypot(x - SHT_C[0], y - SHT_C[1])
-                    for x in (u4[0], u4[2]) for y in (u4[1], u4[3]))
-        check(worst <= SHT_R,
-              f"U4 corner is {worst:.2f} mm from the island centre, outside "
-              f"the {SHT_R} mm island")
-    # The slot must not leave a flimsy sliver of board against the outline.
-    edge_margin = 2.0
-    ox = SHT_C[0] + SHT_R + SHT_SLOT_W
-    check(BOX_W - ox >= edge_margin,
-          f"SHT slot leaves only {BOX_W - ox:.2f} mm of board to the right "
-          f"edge, under the {edge_margin} mm minimum")
-    check(SHT_C[1] - SHT_R - SHT_SLOT_W >= ZONE_A_BOT + 1.0,
-          "SHT slot encroaches on the antenna keepout boundary")
-    check(not overlaps(SHT_ISLAND, CELL_RECT),
-          "the SHT45 island is under the cell, which is the biggest thermal "
-          "mass on the assembly")
-    for ref in ("U1", "U2"):
-        if ref in boxes:
-            a_, b_ = SHT_ISLAND, boxes[ref]
-            d = math.hypot(max(0, max(a_[0]-b_[2], b_[0]-a_[2])),
-                           max(0, max(a_[1]-b_[3], b_[1]-a_[3])))
-            _notes.append(f"SHT45 island is {d:.1f} mm from {ref}")
+        check(u4[0] >= JUT[0] and u4[2] <= JUT[2]
+              and u4[1] >= JUT[1] and u4[3] <= JUT[3],
+              f"U4 courtyard {[round(v, 2) for v in u4]} is not on the jut-out")
+        check(u4[0] > WALL_OUTER,
+              f"U4 starts at x={u4[0]:.2f}, inboard of the wall outer face at "
+              f"{WALL_OUTER} - it would sit in the wall, not outside it")
+        _notes.append(f"SHT45 sits {u4[0] - WALL_OUTER:.2f} mm proud of the wall "
+                      f"outer face; the tab needs a {JUT_W:.1f} mm wide slot "
+                      f"centred at y={JUT_CY}, 4.00-5.60 mm above the box floor")
+    check(not overlaps(JUT, CELL_RECT), "the jut-out is under the cell")
+
+    # LAYOUT.md §6 / the DRU: keep the measurement away from the switchers.
+    # Component-level proxy for the track rule, which cannot fire before routing.
+    for sense in ("U3", "TP1", "TP2"):
+        for switcher in ("L10", "C24", "U2"):
+            if sense in boxes and switcher in boxes:
+                a, b = boxes[sense], boxes[switcher]
+                d = math.hypot(max(0, max(a[0] - b[2], b[0] - a[2])),
+                               max(0, max(a[1] - b[3], b[1] - a[3])))
+                check(d >= 3.0,
+                      f"{sense} is {d:.1f} mm from {switcher}, under the 3 mm "
+                      f"SENSE-to-SWITCH rule")
+
+    # ---- 3D coverage ---------------------------------------------------------
+    # Reported, not fatal: a missing model does not affect the netlist or the
+    # copper, but it does mean the enclosure fit cannot be checked in 3D.
+    ki3d = "/Applications/KiCad/KiCad.app/Contents/SharedSupport/3dmodels"
+    no_ref, broken = [], []
+    for ref, fp in sorted(fps.items()):
+        models = list(fp.Models())
+        if not models:
+            if ref not in NO_MODEL_EXPECTED:
+                no_ref.append(ref)
+            continue
+        for m in models:
+            p = str(m.m_Filename)
+            for var in ("KICAD10_3DMODEL_DIR", "KICAD9_3DMODEL_DIR",
+                        "KICAD8_3DMODEL_DIR"):
+                p = p.replace("${%s}" % var, ki3d)
+            p = p.replace("${KIPRJMOD}", PROJ)
+            if not any(os.path.exists(os.path.splitext(p)[0] + e)
+                       for e in (os.path.splitext(p)[1], ".step", ".stp", ".wrl")):
+                broken.append((ref, str(m.m_Filename)))
+    if no_ref:
+        _notes.append(f"3D: no model referenced for {', '.join(no_ref)}")
+    for ref, p in broken:
+        _notes.append(f"3D: {ref} references a file that is not on disk - "
+                      f"{os.path.basename(p)}")
+
+    # ---- cell shadow ---------------------------------------------------------
+    # The cell hangs from the lid. Anything taller than the gap under it has to
+    # sit outside its footprint.
+    for ref, h in COMPONENT_HEIGHTS.items():
+        if ref not in boxes or h <= CLEAR_UNDER_CELL:
+            continue
+        check(not overlaps(boxes[ref], CELL_RECT),
+              f"{ref} is {h} mm tall but only {CLEAR_UNDER_CELL:.2f} mm is clear "
+              f"under the cell, and it sits inside the cell footprint")
 
     check(SOIL_LINE > ZONE_B_BOT, "soil line is inside the enclosure")
     antenna_to_soil = SOIL_LINE - 3.0
