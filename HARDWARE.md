@@ -263,7 +263,42 @@ over 4.0-5.5 V.
 Panel --> 5.0 V pre-regulator --> D5 (Schottky) --> VBUS
 ```
 
-Pre-regulator requirements **[specific part selection in progress]**:
+### How the panel actually becomes 5 V
+
+A bare panel cannot feed VBUS directly. VBUS operates over **4.0–5.5 V** with OVP
+at 5.5 V — a 1.5 V window — while a panel's terminal voltage swings with both
+illumination and load. It needs active regulation.
+
+**Panel voltage is set by cell count; panel current by area and light.** Indoors,
+current collapses (1–10 W/m² vs 1000 outdoors) but voltage holds up reasonably
+until you load it. So the panel should be **many small cells in series** — a high
+V_OC, low-current part — which keeps its loaded terminal voltage above the
+regulator's dropout across a much wider range of light than a few large cells at
+the same power.
+
+Target: **V_OC roughly 6–12 V**, regulated down to 5.0 V, then through D5's
+~0.3 V drop so VBUS sees ~4.7 V, mid-window. Absolute ceiling is 22 V (VBUS abs
+max) so a regulator failure cannot destroy the PMIC.
+
+**Buck vs LDO — the tradeoff that matters here.** A panel is a current-limited
+source, which inverts the usual intuition:
+
+- An **LDO** passes whatever current the panel produces, at reduced voltage. Loss
+  is (V_panel − 5) × I. With a 6 V panel that is ~17%. Dead simple, no
+  startup behaviour to debug, tiny.
+- A **buck** converts the excess *voltage* into extra *current*, so it harvests
+  meaningfully more from the same panel. Indoors current is the scarce quantity,
+  which argues for the buck — but switchers have startup current requirements and
+  can motorboat on a weak source, exactly the condition you are in at dawn.
+
+Candidates **[not yet verified — pick one and confirm against its datasheet]**:
+
+| Part | Type | V_IN | I_Q | Note |
+|---|---|---|---|---|
+| TPS62122 | buck | 2–17 V | ~11 µA | Best harvest; verify start-up on a weak source |
+| TPS7A1650 | LDO | up to 60 V | ~5 µA | Simplest, lossy, very wide V_IN |
+
+Pre-regulator requirements:
 
 - V_OUT 5.0 V fixed. After D5's ~0.3 V drop VBUS sees ~4.7 V, mid-window.
 - V_IN rating >= 1.5x the panel's V_OC at the coldest expected condition.
