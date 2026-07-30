@@ -99,13 +99,18 @@ before the reference layout was checked:
 **No discrete load caps on either crystal.** Nordic's reference BOM lists none on
 XC1/XC2 or XL1/XL2, because both oscillators have internal trimmable banks:
 
-- **HFXO:** internal caps **4 pF to 17 pF in 0.25 pF steps**. X2's C_L = 8 pF is
-  inside that range.
-- **LFXO:** internal caps to a maximum of **18 pF in 0.5 pF steps**. X1's
-  C_L = 9 pF is inside that range.
+- **HFXO:** internal caps **4.0 pF to 17.0 pF in 0.25 pF steps**
+  (`XOSC32M.CONFIG.INTCAP`). X2's C_L = 8 pF is inside that range.
+- **LFXO:** internal caps **3 pF to 18 pF in 0.65 pF steps** (`XOSC32KI.INTCAP`).
+  X1's C_L = 9 pF is inside that range.
 
 You specify the crystal's C_L in part selection and match it in firmware via the
-INTCAP trim registers. The matching happens in software, not in copper. Budget a
+INTCAP registers. The register value is **not** the capacitance directly — it is
+computed from the desired C_L and per-device factory trim values in `FICR->
+XOSC32MTRIM` / `XOSC32KTRIM`. Note the programmed value is the capacitance seen
+across the crystal terminals **including pin capacitance but excluding PCB
+stray**, so keep the XC1/XC2 and XL1/XL2 traces short and account for stray
+separately. The matching happens in software, not in copper. Budget a
 trim step at bring-up: measure the 32 MHz carrier and adjust INTCAP until the
 frequency error is centred.
 
@@ -540,26 +545,37 @@ cold-boots every hour.]**
 
 ## 6. Proposed pin assignment
 
-Starting point. **[Confirm every one against the nRF54L15 pin-mux / peripheral
-port table — on nRF54L, peripheral instances bind to particular GPIO ports, so
-these are not freely interchangeable.]**
+Verified against the nRF54L15 datasheet v1.0, QFN48 (QFAA) pin assignment
+table (§10.1.4) and the port capability rules (§8.8.3, Table 40).
 
-| Signal | nRF pin | Port | To |
+| Signal | nRF pin | Port | Why this pin |
 |---|---|---|---|
-| I²C SCL | 37 | P1.09 | nPM1300 SCL + FDC1004 SCL |
-| I²C SDA | 38 | P1.10 | nPM1300 SDA + FDC1004 SDA |
-| PMIC interrupt | 11 | P2.00 | nPM1300 GPIO (host IRQ) |
+| I²C **SCL** | 39 | P1.11/AIN4 | **must be a dedicated clock pin** (Table 77) |
+| I²C **SDA** | 38 | P1.10 | adjacent to the clock pin, same port |
+| PMIC interrupt | 23 | P0.00 | must be wake-capable — see below |
+| SWO (trace) | 18 | P2.07 | dedicated trace pin |
 | SWDIO / SWDCLK / RESET | 25 / 26 / 30 | — | SWD header |
 
-Both the PMIC and the FDC1004 sit on one I²C bus. Different addresses, no
-conflict. Note the bus pullups are on the *switched* FDC_VDD rail per §5 — which
-means the PMIC is only reachable while LOADSW1 is on. **If that is not acceptable,
-split into two buses or move the pullups to 3V3 and pre-drive SDA/SCL low before
-gating.** Decide this before layout; it is a real constraint created by the
-elegant pullup trick.
+**Three rules from the datasheet that constrain this, all of which the earlier
+guess violated:**
 
-The battery-sense pin, FDC power-gate GPIO, STAT inputs, and CE inhibit from the
-previous revision are all gone — absorbed into the PMIC.
+1. **TWIM/TWIS SCL must be on a dedicated clock pin.** Table 77 lists SCL as
+   "Clock pin required: Yes". On QFAA the clock pins are **P0.03, P0.04, P1.03,
+   P1.04, P1.08, P1.11, P1.12, P2.01, P2.06**. P1.09 — the earlier choice — is
+   not one of them.
+2. **Peripherals cannot mix pins from different ports** (§8.8.3). SDA and SCL
+   must both be on P1.
+3. **P2 cannot wake the system.** Table 40: P2 has no wake capability, no
+   SENSE/DETECT, and no GPIOTE. PMIC_INT on P2.00 — the earlier choice — could
+   never wake the MCU from System OFF. It is now on P0.00, in the low-power
+   domain, which has all three.
+
+SDA sits physically adjacent to SCL (pins 38 and 39) because the datasheet
+requires the data signal to "use pins close to the clock pin" so the internal
+path delays match, and asks for short traces of identical length on the PCB.
+
+P1.03 was avoided as a clock pin because it is NFC2 and **NFC is enabled from
+reset** — using it as GPIO means disabling NFC in the PADCONFIG register first.
 
 SWD header: SWDIO, SWDCLK, RESET, 3V3, GND. RESET keeps the R1/C5 filter from §2.
 

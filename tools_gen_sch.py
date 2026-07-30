@@ -351,14 +351,14 @@ nrf_x, nrf_y, NRFD = place("nordic", "NRF54L15-QFAA-R", "U1", "nRF54L15-QFAA",
 for n, net in {
     "1": "XL1", "2": "XL2", "3": None, "4": None, "5": None,
     "6": None, "7": None, "8": None, "9": None,
-    "10": "+3V3", "11": "PMIC_INT", "12": None, "13": None,
+    "10": "+3V3", "11": None, "12": None, "13": None,
     "14": None, "15": None, "16": None, "17": None,
     "18": "P2.07_SWO", "19": None, "20": None, "21": None,
-    "22": "+3V3", "23": None, "24": None, "25": "SWDIO",
+    "22": "+3V3", "23": "PMIC_INT", "24": None, "25": "SWDIO",
     "26": "SWDCLK", "27": None, "28": None, "29": None,
     "30": "NRESET", "31": "ANT", "32": "GND", "33": "DECA", "34": "XC1",
-    "35": "XC2", "36": "+3V3", "37": "SCL", "38": "SDA",
-    "39": None, "40": None, "41": None,
+    "35": "XC2", "36": "+3V3", "37": None, "38": "SDA",
+    "39": "SCL", "40": None, "41": None,
     "42": None, "43": "DECA", "44": "GND", "45": "DECD",
     "46": "DCC", "47": "+3V3", "48": "+3V3", "49": "GND",
 }.items():
@@ -392,8 +392,8 @@ B_BATT.add("Connector_Generic", "Conn_01x03", "J2", "Battery 103450 + NTC",
            {"1": "VBAT", "2": "NTC", "3": "GND"})
 # TH1 duplicates the pack NTC - fit ONLY if the pack has none, otherwise the two
 # sit in parallel and the JEITA trip points move.
-B_BATT.add("Device", "Thermistor_NTC", "TH1", "10k B3435 DNP if pack has NTC",
-           {"1": "NTC", "2": "GND"}, dnp=True)
+B_BATT.add("Device", "Thermistor_NTC", "TH1", "10k B3435 - couple to cell",
+           {"1": "NTC", "2": "GND"})
 # LEDs sink into the PMIC drivers, fed from VSYS. Pin 1 = K, pin 2 = A.
 B_BATT.add("Device", "R_Small", "R25", "1k", {"1": "VSYS", "2": "LED0_A"})
 B_BATT.add("Device", "LED_Small", "D3", "GREEN", {"1": "LED0_K", "2": "LED0_A"})
