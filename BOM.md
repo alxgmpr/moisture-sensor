@@ -42,22 +42,31 @@ Candidate families, **ordering codes not confirmed**:
 No discrete load caps — both oscillators use internal trim banks. See
 HARDWARE.md §2.
 
-### Connector heights — J2, J3 and J4 no longer fit
+---
 
-The Hammond 1551WK leaves **6.70 mm** of component height under the cell
+## Connector heights — resolved
+
+The Hammond 1551WK leaves **6.70 mm** of clear component height under the cell
 (LAYOUT.md §9). JST PH is 8 mm mounting height per JST's own PH datasheet, and
-the 2×5 1.27 mm SWD header is comparable. Both need replacing or relocating
-before placement can proceed.
+the 2×5 1.27 mm SWD header is comparable, so all three were changed:
 
-| Ref | Current | Height | Candidate replacement | Height |
+| Ref | Was | Height | Now | Height |
 |---|---|---|---|---|
-| J2 | `JST_PH_B3B-PH-K_1x03_P2.00mm_Vertical` | 8 mm | `JST_GH_BM03B-GHS-TBT_1x03-1MP_P1.25mm_Vertical` | ≈4.7 mm |
-| J3 | `JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical` | 8 mm | `JST_GH_BM02B-GHS-TBT_1x02-1MP_P1.25mm_Vertical` | ≈4.7 mm |
-| J4 | `PinHeader_2x05_P1.27mm_Vertical_SMD` | ≈6 mm | bare pads or Tag-Connect TC2050 | 0 |
+| J2 | JST PH `B3B-PH-K` | 8 mm | JST GH `BM03B-GHS-TBT` | ≈4.7 mm |
+| J3 | JST PH `B2B-PH-K` | 8 mm | JST GH `BM02B-GHS-TBT` | ≈4.7 mm |
+| J4 | `PinHeader_2x05_P1.27mm_Vertical_SMD` | ≈6 mm | Tag-Connect `TC2050-IDC-NL` | 0 |
 
 JST GH is rated 1 A, comfortably over the 500 mA charge current. Molex PicoBlade
-(≈4.0 mm, also 1 A) is the alternative. Both footprint families are in the stock
-KiCad libraries.
+(≈4.0 mm, also 1 A) is the alternative if GH's 1.25 mm crimps prove fiddly.
+
+Tag-Connect uses the standard 10-pin Cortex debug pinout, which is what J4 was
+already wired to, so no net changes. It needs a **TC2050-IDC-NL cable plus a
+retaining clip** — no connector is fitted to the board at all, which is where the
+height saving comes from. The `-NL` footprint also carries three unnumbered
+alignment pads.
+
+Both GH footprints have two `MP` mounting-post pads with no net. That is normal;
+they are mechanical.
 
 ### Other open selections
 
@@ -108,15 +117,17 @@ TP5 and D5's anode on it.
 | D5 | OR-ing Schottky | `D_SOD-323_HandSoldering` |
 | FB1 | FB 120R@100MHz | `L_0402_1005Metric_Pad0.77x0.64mm_HandSolder` |
 | J1 | USB-C receptacle | `USB_C_Receptacle_HRO_TYPE-C-31-M-12` |
-| J2 | Battery 103450 + NTC | `JST_PH_B3B-PH-K_1x03_P2.00mm_Vertical` |
-| J3 | Solar panel | `JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical` |
-| J4 | SWD 10p 1.27mm | `PinHeader_2x05_P1.27mm_Vertical_SMD` |
+| J2 | Battery 503450 + NTC | `JST_GH_BM03B-GHS-TBT_1x03-1MP_P1.25mm_Vertical` |
+| J3 | Solar panel | `JST_GH_BM02B-GHS-TBT_1x02-1MP_P1.25mm_Vertical` |
+| J4 | SWD 10p 1.27mm | `Tag-Connect_TC2050-IDC-NL_2x05_P1.27mm_Vertical` |
 | J5 | Antenna feed | `TestPoint_Pad_D1.0mm` |
 | L1 | 4.7uH 120mA 0603 | `L_0603_1608Metric_Pad1.05x0.95mm_HandSolder` |
 | L2 | 2.7nH LQP03HQ2N7B02 | `L_0201_0603Metric` |
 | L3 | 3.5nH LQP03HQ3N5B02 | `L_0201_0603Metric` |
 | L4 | 3.5nH LQP03HQ3N5B02 | `L_0201_0603Metric` |
 | L10 | 2.2uH Isat>350mA DCR<400m | `L_Murata_DFE201610P` |
+| NT1 | GND_PA to GND (under U1, F.Cu) | `NetTie-2_SMD_Pad0.5mm` |
+| NT2 | GND_C9 to GND (B.Cu only) | `NetTie-2_SMD_Pad0.5mm` |
 | R1 | 1k 1% | `R_0402_1005Metric_Pad0.72x0.64mm_HandSolder` |
 | R20 | 470k 1% VSET2=3.3V | `R_0402_1005Metric_Pad0.72x0.64mm_HandSolder` |
 | R21 | 0R disables BUCK1 | `R_0402_1005Metric_Pad0.72x0.64mm_HandSolder` |
@@ -153,5 +164,11 @@ copper keepout is yours to draw. See LAYOUT.md §8.
 **D3/D4** — fed from VSYS through R25/R26 and sunk by the nPM1300's LED drivers,
 so they only draw when firmware turns them on.
 
-**J4** — 2×5 1.27 mm SMD. Pin 1 VTref, 2 SWDIO, 3 GND, 4 SWDCLK, 5 GND,
-6 SWO, 7/8 NC, 9 GND, 10 nRESET.
+**J4** — Tag-Connect TC2050-IDC-NL, standard 10-pin Cortex pinout: pin 1 VTref,
+2 SWDIO, 3 GND, 4 SWDCLK, 5 GND, 6 SWO, 7/8 NC, 9 GND, 10 nRESET. Nothing is
+soldered to the board; you need the cable and a retaining clip.
+
+**NT1 / NT2** — net ties, not real parts (`in_bom no`). They exist so the DRC can
+enforce Nordic's two RF grounding rules, which are otherwise invisible in a
+netlist. **NT1 must be placed under the U1 centre pad on F.Cu; NT2 must be on
+B.Cu.** See LAYOUT.md §2.

@@ -26,6 +26,31 @@
 	(constraint disallow via)
 	(condition "A.NetClass == 'RF'"))
 
+# Nordic's two RF grounding rules, which are invisible in a netlist and so are
+# split into their own nets and rejoined by net ties NT1 and NT2. See
+# HARDWARE.md section 2 and LAYOUT.md section 2.
+#
+# 1. C6 grounds ONLY at pin 32 (VSS_PA) on the top layer, and pin 32 reaches the
+#    centre pad only underneath the package. A via anywhere on GND_PA defeats
+#    that, so no vias, and nothing on any layer but F.Cu.
+(rule "C6 ground takes no vias"
+	(constraint disallow via)
+	(condition "A.NetName == '/GND_PA'"))
+
+(rule "C6 ground stays on the top layer"
+	(constraint disallow track)
+	(condition "A.NetName == '/GND_PA' && !A.existsOnLayer('F.Cu')"))
+
+# 2. C9 grounds only on the bottom ground layer. A short stub from its pad to a
+#    via is unavoidable; touching an inner plane is not.
+(rule "C9 ground never touches an inner plane"
+	(constraint disallow track)
+	(condition "A.NetName == '/GND_C9' && (A.existsOnLayer('In1.Cu') || A.existsOnLayer('In2.Cu'))"))
+
+# The remaining half of each rule is placement, not routing, and is asserted in
+# tools_gen_pcb.py instead: NT1 goes under the U1 centre pad on F.Cu, NT2 goes
+# on B.Cu.
+
 # ------------------------------------------------- capacitive front end ----
 # The switching nodes are the main aggressors: nPM1300 SW2 at 3.6 MHz in PWM
 # and the nRF54L15 DCC node. Keep them well away from anything the FDC1004

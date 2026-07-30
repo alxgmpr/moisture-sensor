@@ -72,15 +72,34 @@ matters to you, order with impedance control and let them adjust the width.
 
 ### The two grounding rules that are easy to violate
 
-From Nordic's reference (repeated here because they are invisible in a netlist):
+From Nordic's reference:
 
 1. **C6's ground connects ONLY to pin 32 (VSS_PA) on the top layer**, and pin 32
    connects to pin 49 (centre pad) *only underneath the package*.
 2. **C9's ground connects only on the bottom ground layer.**
 
-These are the same net electrically, which is why they are plain GND in the
-schematic. If you want the DRC to police them, make them separate nets joined by
-a net-tie footprint before you route.
+These are the same node electrically, so they are invisible in a netlist. They
+are now split into their own nets and rejoined by net ties, so the DRC polices
+them instead of a comment in a markdown file:
+
+| Net | Nodes | Tie | Placement |
+|---|---|---|---|
+| `/GND_PA` | C6.2, U1.32 | **NT1** → GND | under the U1 centre pad, F.Cu |
+| `/GND_C9` | C9.2 | **NT2** → GND | B.Cu |
+
+Both ties are `Device:NetTie_2` / `NetTie:NetTie-2_SMD_Pad0.5mm`. Three DRU rules
+enforce the routing half:
+
+- `C6 ground takes no vias` — a via anywhere on `/GND_PA` defeats rule 1
+- `C6 ground stays on the top layer`
+- `C9 ground never touches an inner plane` — a short stub from C9's pad down to a
+  via is unavoidable; reaching In1.Cu or In2.Cu is not
+
+The placement half — NT1 under U1, NT2 on B.Cu — is asserted in
+`tools_gen_pcb.py`, because DRC has no way to express it.
+
+`/GND_PA` also carries a PWR_FLAG. U1 pin 32 is a power *input*, and splitting it
+off GND left it with only passive pins to drive it.
 
 ---
 
@@ -343,7 +362,7 @@ Defined in the project file; the DRU keys off them.
 | **SENSE** | /SENSE1, /SENSE2 | 0.25 mm | 0.50 mm |
 | **SHIELD** | /SHLD | 0.30 mm | 0.20 mm |
 | **SWITCH** | /SW2, /DCC | 0.50 mm | 0.30 mm |
-| **Power** | GND, /VBAT, /VSYS, /VBUS_IN, /+3V3, /+3V3_MCU, /FDC_VDD, /SOLAR_* | 0.50 mm | 0.25 mm |
+| **Power** | GND, /GND_PA, /GND_C9, /VBAT, /VSYS, /VBUS_IN, /+3V3, /FDC_VDD, /SOLAR_* | 0.50 mm | 0.25 mm |
 | Default | everything else | 0.20 mm | 0.20 mm |
 
 `/VBAT`, `/VBUS_IN` and `/VSYS` additionally require **0.8 mm** minimum — they
@@ -427,12 +446,6 @@ antenna and no amount of matching fixes it.
 
 ## 10. Open items
 
-- **J2, J3 and J4 do not fit the height budget.** JST PH is 8 mm mounting height
-  (JST's own PH datasheet), the 2×5 1.27 mm SWD header is comparable, and only
-  6.70 mm is available under the cell. Either move to a lower-profile connector
-  (JST GH 1.25 mm ≈ 4.7 mm, Molex PicoBlade ≈ 4.0 mm — both 1 A, ample for the
-  500 mA charge) or confine them to the end bands. This blocks component
-  placement.
 - **USB-C breaks IP68.** A port cutout in a watertight box needs a sealed cover,
   or J1 becomes a service-only connector reached by opening the lid.
 - **SHT45 in a sealed box measures the box, not the room.** Temperature still

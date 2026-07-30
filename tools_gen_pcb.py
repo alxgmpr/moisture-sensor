@@ -18,11 +18,14 @@ because the board carries stale nets from an earlier schematic revision.
 
 Run:  python3 tools_gen_pcb.py
 """
+import os
 import sys
 import math
 import pcbnew
 
-PROJ = "/Users/alex/moisture-sensor-carrier/.claude/worktrees/moisture-sensor-pcb-placement-bff371"
+# Derive the project root from this file so the generator writes into whichever
+# checkout it is run from, not a hardcoded one.
+PROJ = os.path.dirname(os.path.abspath(__file__))
 PCB = f"{PROJ}/moisture-sensor-carrier.kicad_pcb"
 FPLIB = f"{PROJ}/lib/footprints.pretty"
 

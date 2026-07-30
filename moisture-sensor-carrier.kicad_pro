@@ -707,6 +707,14 @@
       {
         "netclass": "Power",
         "pattern": "/SOLAR_PANEL"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "/GND_PA"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "/GND_C9"
       }
     ]
   },
