@@ -448,7 +448,7 @@ B_MCU.note(nrf_y - min(p[4] for p in pins_of(NRFD)))
 # and DECA is the same net as DECRF. VDD is fed directly from the rail with no
 # ferrite in the supply path.
 for ref, sym, val, nm in [
-    ("L1",  "L_Small", "4.7uH 120mA 0603",  {"1": "DCC", "2": "DECD"}),
+    ("L1",  "L_Small", "LQM18PN4R7MFRL 4.7uH", {"1": "DCC", "2": "DECD"}),
     ("C1",  "C_Small", "2.2uF/2.5V X6T",    {"1": "DECD", "2": "GND"}),
     ("FB1", "L_Small", "FB 120R@100MHz",    {"1": "DECD", "2": "DECA"}),
     ("C2",  "C_Small", "2.2uF/2.5V X6T",    {"1": "DECA", "2": "GND"}),

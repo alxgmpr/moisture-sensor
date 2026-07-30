@@ -95,11 +95,39 @@ alignment pads.
 Both GH footprints have two `MP` mounting-post pads with no net. That is normal;
 they are mechanical.
 
+### L1 — Murata LQM18PN4R7MFRL
+
+Selected over the TDK MLZ1608M4R7WT000, which met Nordic's numbers but landed
+exactly on two of them.
+
+| | Nordic requires | TDK MLZ1608M4R7W | **Murata LQM18PN4R7M** |
+|---|---|---|---|
+| Inductance | 4.7 µH ±20 % | 4.7 ±20 % | 4.7 ±20 % |
+| **DC resistance** | **≤ 650 mΩ** | 0.5 Ω ±30 % → **650 mΩ** worst case | 0.44 Ω ±25 % → **550 mΩ** worst case |
+| Current | 120 mA | **I_sat 120 mA** at 50 % L drop | 620 mA rated, 40 °C rise |
+| Size | 0603 | 1608 metric | 1.6 × 0.8 × 0.8 mm |
+| SRF | — | — | 40 MHz min |
+
+**The two current figures are not the same measurement.** TDK publishes both a
+saturation current (120 mA, defined where inductance has dropped 50 %) and a
+temperature-rise current (350 mA). Murata's reference spec publishes only a
+rated current defined by a 40 °C temperature rise, and **states no saturation
+current at all** — so the Murata's headroom against Nordic's 120 mA is very
+likely far better, but it is not confirmed by this document. Get the DC-bias
+curve from Murata's full datasheet or SimSurfing before committing to volume.
+
+Two smaller notes: this document is stamped **"Reference Only"** and headed
+*reference specification*, so the delivery spec may differ; and DCR is not worth
+optimising for power here — at the few mA the nRF54L15 DC/DC draws, the 100 mΩ
+difference is microwatts, and HARDWARE.md §7 puts the whole wake cycle at 0.6 %
+of the budget. The reason to prefer the Murata is **margin against the spec**,
+not efficiency.
+
 ### Other open selections
 
 | Ref | Requirement | Candidate |
 |---|---|---|
-| L1 | 4.7 µH, 120 mA, ±20 %, DCR ≤ 650 mΩ, 0603 | Murata LQM18 series |
+| L1 | 4.7 µH, 120 mA, ±20 %, DCR ≤ 650 mΩ, 0603 | **Murata LQM18PN4R7MFRL** — selected |
 | L10 | 2.2 µH, I_sat > 350 mA, I_max > 200 mA, DCR ≤ 400 mΩ | **Murata DFE201610P-2R2M** (footprint already set) |
 | D5 | Schottky, low V_f, SOD-323, ~200 mA | Nexperia PMEG2010AEH |
 | J1 | USB-C receptacle, 16P USB2.0 | **HRO TYPE-C-31-M-12** (footprint already set) |
@@ -148,7 +176,7 @@ TP5 and D5's anode on it.
 | J3 | Solar panel | `JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal` |
 | J4 | SWD 10p 1.27mm | `Tag-Connect_TC2050-IDC-NL_2x05_P1.27mm_Vertical` |
 | J5 | Antenna feed | `TestPoint_Pad_D1.0mm` |
-| L1 | 4.7uH 120mA 0603 | `L_0603_1608Metric_Pad1.05x0.95mm_HandSolder` |
+| L1 | LQM18PN4R7MFRL 4.7uH | `L_0603_1608Metric_Pad1.05x0.95mm_HandSolder` |
 | L2 | 2.7nH LQP03HQ2N7B02 | `L_0201_0603Metric` |
 | L3 | 3.5nH LQP03HQ3N5B02 | `L_0201_0603Metric` |
 | L4 | 3.5nH LQP03HQ3N5B02 | `L_0201_0603Metric` |
