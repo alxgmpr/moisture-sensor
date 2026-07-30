@@ -3,6 +3,11 @@
 #   F.Cu  0.035 | prepreg 7628 0.2104 er=4.4 | In1.Cu (GND) | core 1.065
 #   | In2.Cu (PWR/SHLD) | prepreg 7628 0.2104 | B.Cu 0.035
 # See LAYOUT.md for the reasoning behind every number here.
+#
+# ORDER MATTERS: for a given constraint type the LAST matching rule wins. The
+# exemptions at the bottom of this file have to stay below the broad fabrication
+# minimums, or the minimums override them and the exemption silently does
+# nothing. Verified by injecting geometry that should and should not trip.
 
 (version 1)
 
@@ -129,3 +134,12 @@
 # Copper to board edge. 0.3 mm keeps the router away from live copper.
 (rule "Edge clearance"
 	(constraint edge_clearance (min 0.3mm)))
+
+# NT1 has to bridge the pin-32 land to the centre pad, and the annulus between
+# them is 0.1905 mm. Two pads plus 0.127 mm of clearance on each side needs
+# 0.254 mm, so the tie cannot satisfy the fab minimum against U1's own pads.
+# That is not a defect: on a board without the net split this would simply be
+# one net and one piece of copper. Scoped to NT1 against U1 and nothing else.
+(rule "VSS_PA net tie bridges the QFN annulus"
+	(constraint clearance (min 0mm))
+	(condition "A.memberOfFootprint('NT1') && B.memberOfFootprint('U1')"))

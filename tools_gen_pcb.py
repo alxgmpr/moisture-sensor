@@ -5,22 +5,25 @@ Companion to tools_gen_sch.py. Edit this and re-run; do not hand-edit the
 .kicad_pcb. Like the schematic generator it self-checks and aborts rather than
 emitting a broken file.
 
-This pass draws geometry only:
+It draws:
   - Edge.Cuts outline (Hammond 1551WK box section + probe stake)
   - four Ø2.6 mounting holes on the 1551WK internal post pattern
   - the three zone boundaries (A antenna / B electronics / C probe)
-  - rule areas: AntennaKeepout, ProbeNoGround
+  - rule areas: AntennaKeepout, ProbeNoGround, NoCopperSHT45
   - the PCB inverted-F antenna, placed as a net-tie footprint
   - In1.Cu GND pour bounded to Zone B, guard pours over Zone C
+  - every component from the netlist, placed and netted
 
-Component placement is a separate pass. Existing footprints are removed
-because the board carries stale nets from an earlier schematic revision.
+The board is rebuilt from scratch each run: it imports the netlist exported
+from the schematic, so the two can never drift apart.
 
 Run:  python3 tools_gen_pcb.py
 """
 import os
+import re
 import sys
 import math
+import subprocess
 import pcbnew
 
 # Derive the project root from this file so the generator writes into whichever
@@ -77,6 +80,111 @@ IFA_ORIGIN = (IFA_FEED_X, ZONE_A_BOT)
 EDGE_W = 0.1
 DOC_W = 0.12
 
+KICAD_CLI = "/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli"
+FPLIB_SYS = "/Applications/KiCad/KiCad.app/Contents/SharedSupport/footprints"
+PROJNAME = "moisture-sensor-carrier"
+
+# Solar pre-regulator reserve. Not on the board yet; its output is SOLAR_5V.
+SOLAR_RESERVE = (24.0, 49.0, 32.0, 57.0)
+
+# ------------------------------------------------------------- placement ----
+# (x, y, rotation[, "B"]).  Board-local mm, rotation CCW as displayed.
+#
+# Zoning follows LAYOUT.md §4 and §6: RF at the top of Zone B against the
+# antenna, nPM1300's SW2 loop at the bottom, FDC1004 near the Zone C boundary
+# and as far from both as the board allows.
+#
+# U1 is rotated 90 deg, which puts its original right edge on top. That lands
+# pin 31 (ANT) at the top pointing straight at Zone A, X2 top-left near pins
+# 34/35, X1 below near pins 1/2, and the DECD/DECA/DCC cluster on the left.
+PLACEMENT = {
+    # -- RF matching chain, straight up from U1 pin 31 to the antenna feed.
+    # Series L in a column at x=16.8, shunt C alternating either side.
+    # C6 sits left, nearest U1 pin 32 (VSS_PA); C9 sits right, where its via
+    # down to B.Cu is clear of the chain.
+    # The series parts sit on a 1.6 mm pitch, which is the 0201 courtyard plus
+    # 0.15 mm. The whole chain has to clear U1's courtyard at y=19.37.
+    "L2":  (16.8, 18.5, 90),
+    "C6":  (14.9, 18.5, 0),
+    "L3":  (16.8, 16.9, 90),
+    "C9":  (18.7, 16.9, 0),
+    "L4":  (16.8, 15.3, 90),
+    "C11": (14.9, 15.3, 0),
+    "J5":  (22.6, 13.6, 0),
+
+    # -- MCU and its clocks
+    "U1":  (17.0, 23.0, 90),
+    # NT1 bridges U1 pin 32 to the centre pad in the 0.1905 mm annulus. Pin 32
+    # lands at (16.4, 20.08) after the rotation; its land ends at y=20.460 and
+    # pad 49 starts at y=20.650, so the tie sits at the midpoint.
+    "NT1": (16.4, 20.555, 0),
+    "X2":  (11.0, 20.0, 0),
+    "X1":  (11.0, 29.5, 0),
+
+    # -- MCU support, Nordic ref cfg 1. DCC -> L1 -> DECD -> FB1 -> DECA all
+    # hug U1's left edge, where those pins land after the rotation.
+    "L1":  (10.0, 24.4, 0),
+    "C1":  (10.0, 26.3, 0),
+    "FB1": (10.0, 22.6, 0),
+    "C2":  (6.5, 22.6, 0),
+    "C12": (6.5, 24.0, 0),
+    "C5":  (6.5, 25.4, 0),
+    "C3":  (6.0, 28.2, 0),
+    "C4":  (13.3, 17.4, 0),          # pin 36 VDD, top-left
+    "C7":  (22.2, 22.0, 90),         # pin 22 VDD, right edge
+    "C8":  (20.0, 28.4, 0),          # pin 10 VDD, bottom
+    "C10": (10.0, 27.4, 0),          # pins 47/48 VDD, left
+    "R1":  (23.0, 18.0, 0),          # RESET filter, pin 30
+    "C13": (23.0, 19.6, 0),
+
+    # -- debug and ambient sensor
+    "J4":  (11.0, 35.5, 0),          # Tag-Connect, zero height
+    "U4":  (30.0, 34.5, 0),          # SHT45 - needs a lid vent above it
+    "C27": (30.0, 37.5, 0),
+    "R22": (24.5, 33.5, 0),          # I2C pull-ups on always-on +3V3
+    "R23": (24.5, 35.0, 0),
+
+    # -- USB-C on the left edge. The HRO footprint mates toward +Y, so 270 deg
+    # points the opening at -X. Origin at x=3.5 puts the body face 0.2 mm proud
+    # of the board edge, which keeps the plug overmold off the FR4.
+    "J1":  (3.5, 45.5, 270),
+
+    # -- solar input, right side, next to the 8x8 pre-regulator reserve
+    "J3":  (28.5, 44.5, 0),
+    "D5":  (23.0, 41.5, 90),
+    "TP5": (21.5, 49.5, 0),
+
+    # -- PMIC and the switching loop, bottom of Zone B and away from sense
+    "U2":  (9.5, 56.0, 0),
+    "L10": (4.0, 53.5, 0),           # SW2 -> L10 -> C24, kept tiny
+    "C24": (4.0, 57.0, 0),
+    "C21": (15.0, 51.5, 0),
+    "C22": (15.0, 54.0, 0),
+    "C20": (15.0, 56.5, 0),
+    "C23": (15.0, 59.0, 0),
+    "C25": (12.5, 61.5, 0),
+    "C26": (17.0, 63.0, 0),
+    "R20": (5.5, 60.0, 0),
+    "R21": (8.5, 60.0, 0),
+
+    # -- battery, thermistor, charge LEDs. J2 sits left of the lower-right
+    # mounting screw, which blocks x 26.5-32.5 between y 61.5 and 67.5.
+    "J2":  (20.8, 69.0, 0),
+    "TH1": (21.5, 57.5, 0),
+    "D3":  (30.0, 68.5, 0),
+    "D4":  (30.0, 71.0, 0),
+    "R25": (26.5, 68.5, 0),
+    "R26": (26.5, 71.0, 0),
+
+    # -- sense front end, hard against the Zone C boundary
+    "U3":  (11.0, 68.5, 0),
+    "TP1": (9.0, 72.5, 0),           # SENSE1
+    "TP2": (12.0, 72.5, 0),          # SENSE2
+    "TP3": (15.0, 72.5, 0),          # SHLD
+    "TP4": (19.0, 49.5, 0),          # SHPHLD, at the PMIC
+    "NT2": (19.8, 15.2, 0, "B"),     # C9 ground tie, B.Cu, under C9's via
+}
+
 # --------------------------------------------------------------------- utils --
 def mm(v):
     return pcbnew.FromMM(float(v))
@@ -97,6 +205,7 @@ def lset(*layers):
 
 
 _errors = []
+_notes = []
 
 
 def check(cond, msg):
@@ -275,6 +384,158 @@ def place_antenna(board):
     return fp
 
 
+# ------------------------------------------------------------------ netlist --
+def netlist():
+    """Export and parse the schematic netlist. Components and pad nets both come
+    from here so the board can never drift from the schematic."""
+    out = f"{PROJ}/.netlist.tmp.net"
+    r = subprocess.run([KICAD_CLI, "sch", "export", "netlist", "--output", out,
+                        f"{PROJ}/{PROJNAME}.kicad_sch"],
+                       capture_output=True, text=True)
+    if not os.path.exists(out):
+        raise SystemExit(f"ABORT: netlist export failed\n{r.stderr}")
+    s = open(out).read()
+    os.remove(out)
+    comps = {}
+    for ref, body in re.findall(
+            r'\(comp\s+\(ref "([^"]+)"\)(.*?)\n\t\t\)\n', s, re.S):
+        v = re.search(r'\(value "([^"]*)"', body)
+        f = re.search(r'\(footprint "([^"]+)"', body)
+        if not f:
+            raise SystemExit(f"ABORT: {ref} has no footprint")
+        comps[ref] = (v.group(1) if v else "", f.group(1))
+    pads = {}
+    for name, body in re.findall(
+            r'\(net\s+\(code "\d+"\)\s+\(name "([^"]+)"\)(.*?)\n\t\t\)\n', s, re.S):
+        for ref, pin in re.findall(r'\(ref "([^"]+)"\)\s+\(pin "([^"]+)"\)', body):
+            pads[(ref, pin)] = name
+    return comps, pads
+
+
+def load_fp(board, fpid, ref, value):
+    lib, name = fpid.split(":", 1)
+    path = FPLIB if lib == "footprints" else f"{FPLIB_SYS}/{lib}.pretty"
+    fp = pcbnew.FootprintLoad(path, name)
+    if fp is None:
+        raise SystemExit(f"ABORT: footprint {fpid} not found for {ref}")
+    fp.SetReference(ref)
+    fp.SetValue(value)
+    dedupe_text(fp, ref)
+    return fp
+
+
+def dedupe_text(fp, ref):
+    """Both Nordic QFN footprints carry their pin-1 '*' marker twice, at
+    identical coordinates on identical layers - once in the old unquoted-layer
+    block and once again in the converted one. It prints on top of itself and
+    every DRC run reports a silkscreen overlap. Strip the duplicates here rather
+    than editing the vendor files, so their provenance stays intact."""
+    seen, dupes = set(), []
+    for g in fp.GraphicalItems():
+        if not isinstance(g, pcbnew.PCB_TEXT):
+            continue
+        key = (g.GetLayer(), g.GetText(),
+               round(g.GetPosition().x, 3), round(g.GetPosition().y, 3))
+        if key in seen:
+            dupes.append(g)
+        else:
+            seen.add(key)
+    for g in dupes:
+        fp.Remove(g)
+    if dupes:
+        _notes.append(f"{ref}: removed {len(dupes)} duplicated text item(s) "
+                      f"from the vendor footprint")
+    return fp
+
+
+def place_components(board, comps, pads):
+    placed = {}
+    for ref, (value, fpid) in sorted(comps.items()):
+        if ref not in PLACEMENT:
+            _errors.append(f"{ref} ({fpid}) has no entry in PLACEMENT")
+            continue
+        x, y, rot = PLACEMENT[ref][:3]
+        back = len(PLACEMENT[ref]) > 3 and PLACEMENT[ref][3] == "B"
+        fp = load_fp(board, fpid, ref, value)
+        board.Add(fp)
+        fp.SetPosition(pt(x, y))
+        fp.SetOrientationDegrees(rot)
+        if back:
+            fp.Flip(pt(x, y), False)
+        for pad in fp.Pads():
+            n = pads.get((ref, pad.GetNumber()))
+            if n:
+                pad.SetNet(ensure_net(board, n))
+        # Reference text on the fab layer only; silk is too crowded at this size.
+        fp.Reference().SetLayer(pcbnew.F_Fab if not back else pcbnew.B_Fab)
+        fp.Reference().SetTextSize(pcbnew.VECTOR2I(mm(0.5), mm(0.5)))
+        fp.Reference().SetTextThickness(mm(0.08))
+        # Values duplicate the BOM and are what makes the silk unreadable at
+        # this density. Keep them on Fab, hidden.
+        fp.Value().SetLayer(pcbnew.F_Fab if not back else pcbnew.B_Fab)
+        fp.Value().SetVisible(False)
+        if ref in EDGE_PARTS:
+            # An edge connector's body overhangs, so its silk outline runs off
+            # the board and gets clipped by the router. Move it to Fab.
+            for g in fp.GraphicalItems():
+                if g.GetLayer() == pcbnew.F_SilkS:
+                    g.SetLayer(pcbnew.F_Fab)
+        placed[ref] = fp
+    return placed
+
+
+def courtyard(fp):
+    """Board-local (x0, y0, x1, y1) of a footprint's courtyard, falling back to
+    its pad extent when it has none (net ties)."""
+    xs, ys = [], []
+    for g in fp.GraphicalItems():
+        if g.GetLayer() in (pcbnew.F_CrtYd, pcbnew.B_CrtYd):
+            b = g.GetBoundingBox()
+            xs += [b.GetLeft(), b.GetRight()]
+            ys += [b.GetTop(), b.GetBottom()]
+    if not xs:
+        for p in fp.Pads():
+            b = p.GetBoundingBox()
+            xs += [b.GetLeft(), b.GetRight()]
+            ys += [b.GetTop(), b.GetBottom()]
+    if not xs:
+        return None
+    return (min(xs) / 1e6 - ORIGIN[0], min(ys) / 1e6 - ORIGIN[1],
+            max(xs) / 1e6 - ORIGIN[0], max(ys) / 1e6 - ORIGIN[1])
+
+
+def overlaps(a, b, gap=0.0):
+    return not (a[2] + gap <= b[0] or b[2] + gap <= a[0]
+                or a[3] + gap <= b[1] or b[3] + gap <= a[1])
+
+
+# Connectors that mate through the board edge. Their bodies overhang on purpose,
+# so the courtyard check is relaxed and only their pads have to land on copper.
+EDGE_PARTS = {"J1"}
+
+
+def inside_board(box, ref=None):
+    """Every corner of box must sit inside the outline with edge clearance."""
+    x0, y0, x1, y1 = box
+    m = 0.0 if ref in EDGE_PARTS else 0.3
+    if y1 <= ZONE_B_BOT:                       # box section
+        return (x0 >= -m - (2.0 if ref in EDGE_PARTS else 0.0)
+                and x1 <= BOX_W - m and y0 >= m and y1 <= BOX_L)
+    if y0 >= ZONE_B_BOT:                       # probe
+        return (x0 >= PROBE_X0 + m and x1 <= PROBE_X1 - m and y1 <= TAPER_TOP)
+    return False                               # straddles the shoulder
+
+
+def pad_extent(fp):
+    xs, ys = [], []
+    for p in fp.Pads():
+        b = p.GetBoundingBox()
+        xs += [b.GetLeft(), b.GetRight()]
+        ys += [b.GetTop(), b.GetBottom()]
+    return (min(xs) / 1e6 - ORIGIN[0], min(ys) / 1e6 - ORIGIN[1],
+            max(xs) / 1e6 - ORIGIN[0], max(ys) / 1e6 - ORIGIN[1])
+
+
 def antenna_copper(board):
     """Board-local bounding boxes of the antenna's copper, pad by pad."""
     fp = board.FindFootprintByReference("AE1")
@@ -345,6 +606,28 @@ def main():
 
     place_antenna(board)
 
+    comps, pads = netlist()
+    fps = place_components(board, comps, pads)
+
+    # No copper under the SHT45 except its four pin pads (datasheet §5.3).
+    if "U4" in fps:
+        c = courtyard(fps["U4"])
+        pad = 0.4
+        box = [(c[0] - pad, c[1] - pad), (c[2] + pad, c[1] - pad),
+               (c[2] + pad, c[3] + pad), (c[0] - pad, c[3] + pad)]
+        rule_area(board, "NoCopperSHT45", box, cu,
+                  tracks=True, vias=True, pads=False, fills=True, footprints=False)
+        for i in range(4):
+            seg(board, box[i], box[(i + 1) % 4], pcbnew.User_3, DOC_W)
+
+    # Solar pre-regulator reserve, documentation only.
+    sx0, sy0, sx1, sy1 = SOLAR_RESERVE
+    for a, b in (((sx0, sy0), (sx1, sy0)), ((sx1, sy0), (sx1, sy1)),
+                 ((sx1, sy1), (sx0, sy1)), ((sx0, sy1), (sx0, sy0))):
+        seg(board, a, b, pcbnew.Dwgs_User, DOC_W)
+    text(board, "SOLAR PRE-REG 8x8 RESERVE", (sx0 + 0.3, sy0 + 1.2),
+         pcbnew.Dwgs_User, 0.7)
+
     # Pours. Ground stops dead at the Zone A boundary and never enters Zone C.
     inset = 0.3
     gnd_b = [(inset, ZONE_A_BOT), (BOX_W - inset, ZONE_A_BOT),
@@ -356,6 +639,23 @@ def main():
              (PROBE_X1 - inset, TAPER_TOP - 1.0),
              (PROBE_X0 + inset, TAPER_TOP - 1.0)]
     pour(board, "/SHLD", guard, lset(pcbnew.In2_Cu, pcbnew.B_Cu), "ZoneC_GUARD")
+
+    # Probe electrodes on F.Cu, with the guard filling around them. LAYOUT.md §5
+    # wants guard on both sides of every sense feature at a 0.2 mm gap - that is
+    # a minimum-clearance rule, not a keep-away, so the coupling is deliberate.
+    # SENSE1 and SENSE2 are identical 16 x 30 mm so the ratio cancels drift.
+    ex0, ex1 = PROBE_X0 + 2.0, PROBE_X1 - 2.0
+    for net, y0, y1, nm in (("/SENSE2", SENSE2_Y0, SENSE2_Y1, "SENSE2_electrode"),
+                            ("/SENSE1", SENSE1_Y0, SENSE1_Y1, "SENSE1_electrode")):
+        z = pour(board, net, [(ex0, y0), (ex1, y0), (ex1, y1), (ex0, y1)],
+                 lset(pcbnew.F_Cu), nm)
+        if z:
+            z.SetAssignedPriority(2)
+            z.SetLocalClearance(mm(0.2))
+    zg = pour(board, "/SHLD", guard, lset(pcbnew.F_Cu), "ZoneC_GUARD_F")
+    if zg:
+        zg.SetAssignedPriority(1)
+        zg.SetLocalClearance(mm(0.2))
 
     # ------------------------------------------------------------- self-check
     check(len([d for d in board.GetDrawings()
@@ -384,6 +684,76 @@ def main():
                   f"mounting hole ({cx},{cy}) is within {clear} mm of antenna "
                   f"copper [{x0:.2f},{y0:.2f}]-[{x1:.2f},{y1:.2f}]")
 
+    # ---- placement -----------------------------------------------------------
+    for ref in PLACEMENT:
+        check(ref in comps, f"PLACEMENT has {ref}, which is not in the netlist")
+
+    boxes = {r: courtyard(f) for r, f in fps.items()}
+    boxes = {r: b for r, b in boxes.items() if b}
+    order = sorted(boxes)
+    for i, a in enumerate(order):
+        for b in order[i + 1:]:
+            # NT1 lives under U1's centre pad on purpose; that is the rule, not
+            # a collision.
+            if {a, b} == {"NT1", "U1"}:
+                continue
+            if fps[a].IsFlipped() != fps[b].IsFlipped():
+                continue
+            if overlaps(boxes[a], boxes[b]):
+                _errors.append(f"courtyard overlap: {a} and {b}")
+
+    for r, b in boxes.items():
+        check(inside_board(b, r), f"{r} courtyard {[round(v, 2) for v in b]} "
+                                  f"is outside the outline or too close to an edge")
+        if r in EDGE_PARTS:
+            # The body may overhang; every pad still has to land on the board.
+            pb = pad_extent(fps[r])
+            check(pb[0] >= 0.3 and pb[2] <= BOX_W - 0.3
+                  and pb[1] >= 0.3 and pb[3] <= BOX_L - 0.3,
+                  f"{r} has pads off the board: {[round(v, 2) for v in pb]}")
+        if r != "AE1":
+            check(b[1] >= ZONE_A_BOT,
+                  f"{r} is inside the antenna keepout (Zone A)")
+        for cx, cy in hole_positions():
+            check(not overlaps(b, (cx - HOLE_KEEPOUT_R, cy - HOLE_KEEPOUT_R,
+                                   cx + HOLE_KEEPOUT_R, cy + HOLE_KEEPOUT_R)),
+                  f"{r} fouls the mounting screw at ({cx},{cy})")
+
+    # The two grounding rules that the DRU cannot express (LAYOUT.md §2).
+    if "NT1" in fps and "U1" in fps:
+        check(not fps["NT1"].IsFlipped(), "NT1 must be on F.Cu")
+
+        def padbox(fp, num):
+            for p in fp.Pads():
+                if p.GetNumber() == num:
+                    b = p.GetBoundingBox()
+                    return (b.GetLeft() / 1e6, b.GetTop() / 1e6,
+                            b.GetRight() / 1e6, b.GetBottom() / 1e6)
+            return None
+
+        # The tie is only doing its job if pad 1 actually lands on the pin-32
+        # copper and pad 2 on the centre pad. Anything else and GND_PA reaches
+        # ground somewhere Nordic did not intend.
+        for tie_pad, u1_pad, what in (("1", "32", "the pin-32 land"),
+                                      ("2", "49", "the centre pad")):
+            a, b = padbox(fps["NT1"], tie_pad), padbox(fps["U1"], u1_pad)
+            check(a and b and overlaps(a, b),
+                  f"NT1 pad {tie_pad} does not overlap U1 pad {u1_pad} ({what})")
+    if "NT2" in fps:
+        check(fps["NT2"].IsFlipped(), "NT2 must be on B.Cu")
+
+    # LAYOUT.md §6 / the DRU: keep the measurement away from the switchers.
+    # Component-level proxy for the track rule, which cannot fire before routing.
+    for sense in ("U3", "TP1", "TP2"):
+        for switcher in ("L10", "C24", "U2"):
+            if sense in boxes and switcher in boxes:
+                a, b = boxes[sense], boxes[switcher]
+                d = math.hypot(max(0, max(a[0] - b[2], b[0] - a[2])),
+                               max(0, max(a[1] - b[3], b[1] - a[3])))
+                check(d >= 3.0,
+                      f"{sense} is {d:.1f} mm from {switcher}, under the 3 mm "
+                      f"SENSE-to-SWITCH rule")
+
     check(SOIL_LINE > ZONE_B_BOT, "soil line is inside the enclosure")
     antenna_to_soil = SOIL_LINE - 3.0
     check(antenna_to_soil >= 50.0,
@@ -401,6 +771,10 @@ def main():
         return 1
 
     board.BuildListOfNets()
+    # Fill the pours so the electrodes and planes are real copper the DRC can
+    # see. Routing will invalidate them; re-running this script refills.
+    filler = pcbnew.ZONE_FILLER(board)
+    filler.Fill(board.Zones())
     pcbnew.SaveBoard(PCB, board)
 
     print(f"board       {BOX_W:.1f} x {BOARD_L:.1f} mm")
@@ -412,6 +786,12 @@ def main():
           f"insert depth {BOARD_L - SOIL_LINE:.0f} mm")
     print(f"  holes     {HOLE_PITCH_X} x {HOLE_PITCH_Y} mm, "
           + ", ".join(f"({x:.1f},{y:.1f})" for x, y in hole_positions()))
+    area = sum((b[2] - b[0]) * (b[3] - b[1]) for b in boxes.values())
+    zb = BOX_W * (ZONE_B_BOT - ZONE_A_BOT)
+    for n in _notes:
+        print(f"  note      {n}")
+    print(f"  placed    {len(fps)} components, {area:.0f} mm2 of courtyard "
+          f"in {zb:.0f} mm2 of Zone B ({100 * area / zb:.0f} %)")
     return 0
 
 

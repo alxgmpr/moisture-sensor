@@ -131,7 +131,10 @@ FOOTPRINTS = {
     "J5": TP,
     "TP1": TP, "TP2": TP, "TP3": TP, "TP4": TP, "TP5": TP,
     # RF grounding net ties - see the RF block for what they enforce.
-    "NT1": "NetTie:NetTie-2_SMD_Pad0.5mm",
+    # NT1 is a project footprint: the gap it has to bridge, between U1's pin-32
+    # land and the centre pad, is 0.1905 mm, and a stock 0.5 mm net tie does not
+    # fit in it.
+    "NT1": "footprints:NetTie_VSSPA",
     "NT2": "NetTie:NetTie-2_SMD_Pad0.5mm",
 }
 

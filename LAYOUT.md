@@ -444,6 +444,47 @@ meaningfully past 3.6 years anyway.
 Use **nylon** #2 screws in those two positions; steel there will detune the
 antenna and no amount of matching fixes it.
 
+### Placement
+
+All 56 components placed by `tools_gen_pcb.py`, 528 mm² of courtyard in 2125 mm²
+of Zone B (25 %). The script asserts, and aborts on failure: courtyard overlap,
+edge clearance, mounting-screw clearance, nothing but AE1 in Zone A, the two
+net-tie placement rules, and SENSE-to-SWITCH separation.
+
+| Band | y | Contents |
+|---|---|---|
+| RF | 12.5–19.3 | L2/C6/L3/C9/L4/C11 in a column at x = 16.8, J5 |
+| MCU | 19.4–31 | U1 (rot 90), X2 top-left, X1 below, DECD/DECA/DCC cluster left |
+| Debug / ambient | 33–39 | J4 Tag-Connect, U4 + C27 right, I²C pull-ups |
+| Power in | 40–52 | J1 USB-C left edge, J3 + D5 right, solar reserve |
+| PMIC | 51–62 | U2, SW2 → L10 → C24 loop, bulk caps |
+| Sense / battery | 63–73 | U3 hard against the Zone C boundary, TP1–TP3, J2, LEDs |
+
+**U1 is rotated 90°.** Its original right edge goes to the top, which puts pin 31
+(ANT) pointing straight at Zone A, X2 near pins 34/35, X1 below near pins 1/2,
+and DECD/DECA/DCC on the left. The RF run from pin 31 to the ground boundary is
+about 8.2 mm — λ/8 at 2.4 GHz in FR4 is 8.6 mm, so this is at the limit and
+wants stitching at the full ≤3 mm density.
+
+**J1 overhangs the left board edge.** The HRO footprint mates toward +Y, so it is
+rotated 270° with its origin at x = 3.5, putting the body face 0.2 mm proud of
+the edge. Its courtyard legitimately leaves the board; the script checks its
+*pads* are on copper instead, and moves its silk to F.Fab so the router does not
+clip it.
+
+**Probe electrodes** are filled zones on F.Cu — SENSE1 and SENSE2, each
+16 × 30 mm — with the SHLD guard pouring around them at 0.2 mm and guard on
+In2.Cu and B.Cu beneath. Guard-to-ground overlap is only the 33 mm² where the
+F.Cu guard crosses the Zone B boundary, about 6 pF against the 400 pF shield
+limit.
+
+**LAYOUT.md §6 caveat.** "PMIC and the MCU's DC/DC at the bottom" is only half
+achievable. The nRF's DC/DC is at pin 46 and has to stay tight to U1 at the top;
+pins 31 and 46 are two package edges apart and nothing moves them. What did move
+to the bottom is the nPM1300 SW2 loop, which is the 3.6 MHz aggressor the 3 mm
+SENSE-to-SWITCH rule is written for. U3 ends up 7.6 mm from U2 and 12.2 mm from
+L10.
+
 ## 10. Open items
 
 - **USB-C breaks IP68.** A port cutout in a watertight box needs a sealed cover,
@@ -464,4 +505,21 @@ antenna and no amount of matching fixes it.
   have a single full-area aperture on the thermal land (22.1 mm² and 13.0 mm²)
   and both lands are drawn at D2 *max* rather than nominal.
 - Neither QFN footprint has centre-pad vias. Nordic's reference puts a grid
-  under U1 pad 49; add them at layout.
+  under U1 pad 49; add them when routing. **Watch NT1** — the via grid must not
+  bridge GND_PA to GND anywhere except at the tie.
+- **Routing.** 128 unconnected items and 4 isolated-copper warnings, all of them
+  "nothing is routed yet". The isolated fills are the two sense electrodes and
+  the Zone C guard, which connect once U3's pins are routed into the probe.
+
+### Two things worth knowing about the toolchain
+
+- **DRU rules are last-match-wins.** For a given constraint type the last rule in
+  the file that matches takes precedence, so the exemptions at the bottom of the
+  `.kicad_dru` must stay below the broad fabrication minimums. Put them above and
+  the minimums override them and the exemption silently does nothing — which is
+  how the VSS_PA net-tie exemption failed the first time.
+- **Both Nordic QFN footprints carry their pin-1 `*` marker twice**, at identical
+  coordinates on identical layers, once in the old unquoted-layer block and again
+  in the converted one. It prints on top of itself and DRC reports a silkscreen
+  overlap every run. `tools_gen_pcb.py` strips the duplicates at load time rather
+  than editing the vendor files.
