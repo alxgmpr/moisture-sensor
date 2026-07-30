@@ -115,18 +115,25 @@ FOOTPRINTS = {
     # solar OR-ing
     "D5": "Diode_SMD:D_SOD-323_HandSoldering",
     # clocks. Standard pads on X2 (no hand variant for 2016-4pin exists).
-    "X1": "Crystal:Crystal_SMD_2012-2Pin_2.0x1.2mm_HandSoldering",
+    # Micro Crystal CM8V-T1A. The vendor land pattern (0.8 x 1.5 mm pads on
+    # 1.5 mm centres) is what the datasheet specifies; KiCad's generic 2012
+    # footprints use 0.6 or 1.05 mm pads on different centres.
+    "X1": "footprints:XTAL_CM8V-T1A_2012",
     "X2": "Crystal:Crystal_SMD_2016-4Pin_2.0x1.6mm",
     # connectors
     # Connectors. J2/J3/J4 are height-constrained: the Hammond 1551WK leaves
     # 6.70 mm of clear component height under the cell (LAYOUT.md §9), and JST PH
     # is 8 mm mounting height while a 2x5 1.27 mm header is comparable. JST GH is
-    # ~4.7 mm and rated 1 A, well over the 500 mA charge current; Tag-Connect
-    # costs nothing at all in height and uses the standard 10-pin Cortex pinout
-    # J4 already had.
+    # 4.20 mm (measured from the vendor STEP) and rated 1 A, well over the 500 mA
+    # charge current; Tag-Connect costs nothing at all in height and uses the
+    # standard 10-pin Cortex pinout J4 already had.
     "J1": "Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12",
-    "J2": "Connector_JST:JST_GH_BM03B-GHS-TBT_1x03-1MP_P1.25mm_Vertical",
-    "J3": "Connector_JST:JST_GH_BM02B-GHS-TBT_1x02-1MP_P1.25mm_Vertical",
+    # Side-entry, not top-entry. Both are 4.2 mm tall on an identical board
+    # footprint, so this is not about height: the cell hangs from the lid to
+    # within 6.70 mm of the board, and a vertical header sends the lead
+    # straight up into it. Horizontal exits parallel and routes underneath.
+    "J2": "Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal",
+    "J3": "Connector_JST:JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal",
     "J4": "Connector:Tag-Connect_TC2050-IDC-NL_2x05_P1.27mm_Vertical",
     "J5": TP,
     "TP1": TP, "TP2": TP, "TP3": TP, "TP4": TP, "TP5": TP,
@@ -514,7 +521,7 @@ B_SWD.add("Connector_Generic", "Conn_02x05_Odd_Even", "J4", "SWD 10p 1.27mm",
 
 # ---- clocks ------------------------------------------------------------------
 # No discrete load caps: both oscillators use the nRF54L15 internal trim banks.
-B_XTAL.add("Device", "Crystal_Small", "X1", "32.768kHz CL=9pF 20ppm",
+B_XTAL.add("Device", "Crystal_Small", "X1", "CM8V-T1A 32.768kHz CL=7pF 20ppm",
            {"1": "XL1", "2": "XL2"})
 B_XTAL.add("Device", "Crystal_GND24_Small", "X2", "32MHz CL=8pF 40ppm",
            {"1": "XC1", "3": "XC2", "2": "GND"})

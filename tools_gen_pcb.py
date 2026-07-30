@@ -519,20 +519,54 @@ def overlaps(a, b, gap=0.0):
 # offset or rotation. Verified by extracting the STEP bounding boxes:
 #   QFN48  x,y +/-2.997  z 0..0.892   (package is 6.0 x 6.0 x 0.85 nom)
 #   QFN32  x,y +/-2.502  z 0..0.892   (package is 5.0 x 5.0 x 0.85 nom)
+#
+# The three vendor models added by hand are all Y-up CAD exports - their height
+# runs along Y, not Z - so each carries a -90 deg rotation about X. Confirmed by
+# extracting their bounding boxes:
+#   CM8V-T1A   x 2.000 (length ok)   z 1.200 (the 1.2 mm width)   y = height
+#   SHT45      x 1.502, z 1.502 (the 1.5 x 1.5 body)              y = height
+#   1551WK     x 80.00 (box length)  z 40.00 (box width)          y = height
+# These rotations are a best guess from the bounding boxes and want eyeballing
+# in the 3D viewer before anyone trusts a clearance measured off them.
 MODELS_3D = {
     "U1": ("${KIPRJMOD}/lib/nordic/QFN48_6X6_NOR.step", (0, 0, 0), (0, 0, 0)),
     "U2": ("${KIPRJMOD}/lib/nordic/QFN32_5X5_NOR.step", (0, 0, 0), (0, 0, 0)),
+    "J1": ("${KIPRJMOD}/lib/TYPE-C-31-M-12--3DModel-STEP-56544.STEP",
+           (0, 0, 0), (0, 0, 0)),
+    "U4": ("${KIPRJMOD}/lib/SHT45_AD1F_R2/SHT45-AD1F-R2.step",
+           (0, 0, 0), (-90, 0, 0)),
+    "X1": ("${KIPRJMOD}/lib/CM8V-T1A/CM8V-T1A-32.768KHZ-7PF-20PPM-TA-QC.step",
+           (0, 0, 0), (-90, 0, 0)),
+}
+
+# Mechanical-only footprints: no pads, no netlist entry, 3D model only. Placed
+# so the enclosure fit can be checked in the 3D viewer instead of on paper.
+# The board sits on the 4.00 mm posts, so its top face is 5.60 mm above the box
+# floor; the model is dropped by that much and centred on the box section.
+DECOR = {
+    "MP1": ("Enclosure_1551WK", (BOX_W / 2.0, BOX_L / 2.0), 0,
+            "${KIPRJMOD}/lib/enclosure/1551WKBK.stp", (0, 0, -5.6), (-90, 0, 90)),
 }
 
 # References that legitimately have no 3D model: bare copper, or no part fitted.
 NO_MODEL_EXPECTED = {"AE1", "NT1", "NT2", "J4", "J5",
                      "TP1", "TP2", "TP3", "TP4", "TP5"}
 
+# Mechanical-only footprints are not in the netlist, so the placement checks
+# must skip them.
+DECOR_REFS = {"MP1"}
 
-def attach_model(fp, ref):
-    if ref not in MODELS_3D:
-        return
-    path, off, rot = MODELS_3D[ref]
+
+def attach_model(fp, ref, spec=None):
+    if spec is None:
+        if ref not in MODELS_3D:
+            return
+        spec = MODELS_3D[ref]
+    path, off, rot = spec
+    # Drop whatever the footprint shipped with. For J1 and U4 that is a KiCad
+    # path pointing at a .step this install does not have, and leaving it in
+    # place would stack a broken reference on top of the working one.
+    fp.Models().clear()
     m = pcbnew.FP_3DMODEL()
     m.m_Filename = path
     m.m_Offset = pcbnew.VECTOR3D(*[float(v) for v in off])
@@ -641,6 +675,17 @@ def main():
 
     comps, pads = netlist()
     fps = place_components(board, comps, pads)
+
+    for ref, (fpname, at, rot, path, off, mrot) in DECOR.items():
+        d = pcbnew.FootprintLoad(FPLIB, fpname)
+        if d is None:
+            _errors.append(f"decor footprint {fpname} not found")
+            continue
+        d.SetReference(ref)
+        attach_model(d, ref, (path, off, mrot))
+        board.Add(d)
+        d.SetPosition(pt(*at))
+        d.SetOrientationDegrees(rot)
 
     # No copper under the SHT45 except its four pin pads (datasheet §5.3).
     if "U4" in fps:

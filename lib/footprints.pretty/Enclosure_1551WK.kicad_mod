@@ -1,0 +1,23 @@
+(footprint "Enclosure_1551WK"
+	(version 20240108)
+	(generator "hand")
+	(layer "F.Cu")
+	(descr "Hammond 1551WKBK enclosure, present only so the 3D view can check the fit. No pads, no copper, no BOM entry. The STEP is Hammond's own (files/parts/stp/1551WKBK.zip) and is Y-up, so it carries a rotation. Origin is the centre of the in-enclosure board section.")
+	(tags "enclosure mechanical 3d-only")
+	(attr smd exclude_from_pos_files exclude_from_bom allow_missing_courtyard)
+
+	(property "Reference" "MP1"
+		(at 0 -2 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "3c4d5e6f-0001-4000-8000-000000000001")
+		(effects (font (size 1 1) (thickness 0.15)))
+	)
+	(property "Value" "Hammond_1551WKBK"
+		(at 0 2 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "3c4d5e6f-0002-4000-8000-000000000002")
+		(effects (font (size 1 1) (thickness 0.15)))
+	)
+)

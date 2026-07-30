@@ -19,7 +19,28 @@ them as close to their pins as the larger pads allow.
 
 ### Crystals — the datasheet constrains these harder than expected
 
-| | X1 (LFXO) | X2 (HFXO) |
+**X1 is selected: Micro Crystal CM8V-T1A, 32.768 kHz, C_L 7 pF, ±20 ppm, TA, QC.**
+Verified against the nRF54L15 LFXO table (§11.9.2), every parameter:
+
+| nRF54L15 requires | Spec | CM8V-T1A 7 pF | |
+|---|---|---|---|
+| Load capacitance C_L | 6–9 pF | **7.0 pF** | mid-range, margin both ways |
+| Shunt capacitance C0 | typ 1.0, max 2.0 pF | 1.2 pF typ | ok |
+| Equivalent series resistance R_S | typ 60, max 100 kΩ | 55 typ / 70 max kΩ | ok |
+| Drive level P_D | max 0.5 µW | 0.5 µW max | exactly matched |
+| Frequency tolerance (BLE) | ±500 ppm | ±20 ppm | far tighter than needed |
+| Package | 2012 2-pin | 2.0 × 1.2 × 0.60 mm | ok |
+
+7 pF is a better choice than the 9 pF the reference BOM suggested — 9 sits at the
+hard maximum, 7 sits mid-window with room for PCB stray either side. Ordering
+code pattern: `CM8V-T1A 32.768 kHz 7.0 pF ±20 ppm TA QC`.
+
+Footprint is Micro Crystal's own land pattern (`XTAL_CM8V-T1A_2012`, 0.8 × 1.5 mm
+pads on 1.5 mm centres). KiCad's generic 2012 footprints do not match it — the
+hand-solder variant uses 1.05 mm pads on 1.85 mm centres and the nominal uses
+0.6 mm on 1.4 mm.
+
+| | X1 (LFXO) — SELECTED | X2 (HFXO) |
 |---|---|---|
 | Frequency | 32.768 kHz | 32 MHz |
 | **Load capacitance C_L** | **6–9 pF — 9 pF max** | **6–9 pF, use 8 pF** |
@@ -35,8 +56,7 @@ ESR is not a single number — the datasheet gives it as a curve of maximum
 allowable ESR against C0 for a given C_L (Figure 17, §5.5.1.2). Check the
 candidate's ESR and C0 against that curve rather than looking for a spec line.
 
-Candidate families, **ordering codes not confirmed**:
-- X1: Epson FC-12M series (2.0×1.2 mm), C_L 9 pF, ±20 ppm
+Candidate family for X2, **ordering code not confirmed**:
 - X2: Abracon ABM8W-32.0000MHZ-8-B1U-T3, or NDK NX2016SA-32M
 
 No discrete load caps — both oscillators use internal trim banks. See
@@ -151,7 +171,7 @@ TP5 and D5's anode on it.
 | U2 | nPM1300-QEAA | `QFN32_5X5_NOR` |
 | U3 | FDC1004 | `MSOP-10_3x3mm_P0.5mm` |
 | U4 | SHT45-AD1F | `Sensirion_DFN-4_1.5x1.5mm_P0.8mm_SHT4x_NoCentralPad` |
-| X1 | 32.768kHz CL=9pF 20ppm | `Crystal_SMD_2012-2Pin_2.0x1.2mm_HandSoldering` |
+| X1 | CM8V-T1A 32.768kHz CL=7pF 20ppm | `Crystal_SMD_2012-2Pin_2.0x1.2mm_HandSoldering` |
 | X2 | 32MHz CL=8pF 40ppm | `Crystal_SMD_2016-4Pin_2.0x1.6mm` |
 
 ---
