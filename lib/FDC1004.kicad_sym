@@ -1,0 +1,114 @@
+(kicad_symbol_lib
+	(version 20251024)
+	(generator "kicad_symbol_editor")
+	(generator_version "10.0")
+	(symbol "FDC1004"
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(duplicate_pin_numbers_are_jumpers no)
+		(property "Reference" "U"
+			(at 7.62 7.62 0)
+			(effects (font (size 1.27 1.27)) (justify left bottom))
+		)
+		(property "Value" "FDC1004"
+			(at 7.62 5.08 0)
+			(effects (font (size 1.27 1.27)) (justify left bottom))
+		)
+		(property "Footprint" "Package_SO:MSOP-10_3x3mm_P0.5mm"
+			(at 0 0 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/fdc1004.pdf"
+			(at 0 0 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(property "Description" "4-channel capacitance-to-digital converter with active shield, I2C. Pinout per TI SNOSCY5 Table 4-1."
+			(at 0 0 0)
+			(effects (font (size 1.27 1.27)) (hide yes))
+		)
+		(symbol "FDC1004_1_1"
+			(polyline
+				(pts (xy 7.62 2.54) (xy 33.02 2.54))
+				(stroke (width 0.254) (type solid))
+				(fill (type none))
+			)
+			(polyline
+				(pts (xy 33.02 2.54) (xy 33.02 -17.78))
+				(stroke (width 0.254) (type solid))
+				(fill (type none))
+			)
+			(polyline
+				(pts (xy 33.02 -17.78) (xy 7.62 -17.78))
+				(stroke (width 0.254) (type solid))
+				(fill (type none))
+			)
+			(polyline
+				(pts (xy 7.62 -17.78) (xy 7.62 2.54))
+				(stroke (width 0.254) (type solid))
+				(fill (type none))
+			)
+			(pin passive line
+				(at 0 0 0)
+				(length 7.62)
+				(name "SHLD1" (effects (font (size 1.27 1.27))))
+				(number "1" (effects (font (size 1.27 1.27))))
+			)
+			(pin passive line
+				(at 0 -2.54 0)
+				(length 7.62)
+				(name "CIN1" (effects (font (size 1.27 1.27))))
+				(number "2" (effects (font (size 1.27 1.27))))
+			)
+			(pin passive line
+				(at 0 -5.08 0)
+				(length 7.62)
+				(name "CIN2" (effects (font (size 1.27 1.27))))
+				(number "3" (effects (font (size 1.27 1.27))))
+			)
+			(pin passive line
+				(at 0 -7.62 0)
+				(length 7.62)
+				(name "CIN3" (effects (font (size 1.27 1.27))))
+				(number "4" (effects (font (size 1.27 1.27))))
+			)
+			(pin passive line
+				(at 0 -10.16 0)
+				(length 7.62)
+				(name "CIN4" (effects (font (size 1.27 1.27))))
+				(number "5" (effects (font (size 1.27 1.27))))
+			)
+			(pin passive line
+				(at 0 -12.7 0)
+				(length 7.62)
+				(name "SHLD2" (effects (font (size 1.27 1.27))))
+				(number "6" (effects (font (size 1.27 1.27))))
+			)
+			(pin power_in line
+				(at 40.64 -12.7 180)
+				(length 7.62)
+				(name "GND" (effects (font (size 1.27 1.27))))
+				(number "7" (effects (font (size 1.27 1.27))))
+			)
+			(pin power_in line
+				(at 40.64 0 180)
+				(length 7.62)
+				(name "VDD" (effects (font (size 1.27 1.27))))
+				(number "8" (effects (font (size 1.27 1.27))))
+			)
+			(pin input line
+				(at 40.64 -5.08 180)
+				(length 7.62)
+				(name "SCL" (effects (font (size 1.27 1.27))))
+				(number "9" (effects (font (size 1.27 1.27))))
+			)
+			(pin bidirectional line
+				(at 40.64 -7.62 180)
+				(length 7.62)
+				(name "SDA" (effects (font (size 1.27 1.27))))
+				(number "10" (effects (font (size 1.27 1.27))))
+			)
+		)
+	)
+)

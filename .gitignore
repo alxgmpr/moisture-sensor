@@ -1,0 +1,39 @@
+# KiCad ------------------------------------------------------------------
+# Auto-generated backups and caches
+*-backups/
+_autosave-*
+*.kicad_sch-bak
+*.kicad_pcb-bak
+fp-info-cache
+*.net
+
+# Lock files from a running KiCad instance
+~*.lck
+*.lck
+
+# Local project state (window layout, last-opened, per-user settings)
+*.kicad_prl
+
+# Our own timestamped safety copies
+*.pre-nrf-*.bak
+*.bak
+
+# Fabrication outputs - regenerate rather than commit
+/gerbers/
+/jlcpcb/
+/production/
+*.zip
+*.drl
+*.gbr
+
+# macOS -------------------------------------------------------------------
+.DS_Store
+._*
+
+# Python ------------------------------------------------------------------
+__pycache__/
+*.pyc
+.venv/
+
+# VS Code Local History extension (it is its own git repo)
+.history/
