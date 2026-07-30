@@ -132,7 +132,7 @@ FOOTPRINTS = {
     # footprint, so this is not about height: the cell hangs from the lid to
     # within 6.70 mm of the board, and a vertical header sends the lead
     # straight up into it. Horizontal exits parallel and routes underneath.
-    "J2": "Connector_JST:JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal",
+    "J2": "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical",
     "J3": "Connector_JST:JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal",
     "J4": "Connector:Tag-Connect_TC2050-IDC-NL_2x05_P1.27mm_Vertical",
     "J5": TP,
@@ -465,10 +465,20 @@ for ref, sym, val, nm in [
     B_SUP.add("Device", sym, ref, val, nm)
 
 # ---- battery + charge status -------------------------------------------------
-B_BATT.add("Connector_Generic", "Conn_01x03", "J2", "Battery 503450 + NTC",
-           {"1": "VBAT", "2": "NTC", "3": "GND"})
-# TH1 duplicates the pack NTC - fit ONLY if the pack has none, otherwise the two
-# sit in parallel and the JEITA trip points move.
+# 2-pin JST PH so an Adafruit cell plugs straight in - their whole range ships
+# with a PH plug. That drops the pack-NTC pin, which costs nothing here: the
+# Adafruit cells are 2-wire and have no thermistor (HARDWARE.md section 3), so
+# the NTC path was always going to be TH1.
+#
+# PH is 8 mm tall against 6.90 mm of clearance under the cell, so J2 MUST sit
+# outside the cell footprint. The cell is only 36 mm of the 74 mm board, leaving
+# the y 62-74 band at full 11.70 mm height - that is where J2 goes.
+B_BATT.add("Connector_Generic", "Conn_01x02", "J2", "Battery - Adafruit 1578",
+           {"1": "VBAT", "2": "GND"})
+# The pack has no thermistor, so TH1 is fitted, not DNP. Couple it to the cell
+# body - a board-mounted NTC measures board temperature and partly defeats
+# JEITA. A leaded NTC taped to the cell and soldered to these pads is better
+# than the 0603 land.
 B_BATT.add("Device", "Thermistor_NTC", "TH1", "10k B3435 - couple to cell",
            {"1": "NTC", "2": "GND"})
 # LEDs sink into the PMIC drivers, fed from VSYS. Pin 1 = K, pin 2 = A.

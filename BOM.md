@@ -194,9 +194,15 @@ pads on a roughly 1.45 × 1.15 mm envelope; KiCad's generic
 centres, giving a 2.3 mm outer span. That is a bigger mismatch than the one that
 forced a vendor footprint for X1 — expect to build an Epson-specific footprint.
 
-### Cell — Adafruit 258, 1200 mAh
+### Cell — Adafruit 1578, 500 mAh
 
-DK `1528-1838-ND`, $9.95. Li-ion pouch, 3.7 V, **34.0 × 62.0 × 5.0 mm**, with PCM.
+DK `1528-1841-ND`, $7.95. Li-ion pouch, 3.7 V, **29.0 × 36.0 × 4.8 mm**, with PCM.
+
+Chosen over the larger 258 (1200 mAh) for fit margin. The 258 is 34.0 mm across
+a 34.92 mm interior — 0.9 mm total — and its datasheet part code is `503562`,
+implying a **35 mm nominal** cell that would not fit at all. Pouch cells also
+swell. 1578 is 29 mm across, leaving 6 mm of slack, and costs 0.5 years of
+runtime (2.9 vs 3.45).
 
 The 1551WK leaves **11.70 mm** between the board top face and the lid. A cell
 adhered to the lid at thickness T leaves 11.70 − T of component clearance, and
@@ -208,8 +214,8 @@ Everything in the Adafruit range that fits, with runtime from
 
 | P/N | mAh | mm | Clearance left | Runtime |
 |---|---|---|---|---|
-| **258** | **1200** | 34.0 × 62.0 × 5.0 | 6.70 mm | **3.45 yr** |
-| 1578 | 500 | 29.0 × 36.0 × 4.8 | 6.90 mm | 2.92 yr |
+| 258 | 1200 | 34.0 × 62.0 × 5.0 | 6.70 mm | 3.45 yr — 0.9 mm width margin |
+| **1578** | **500** | 29.0 × 36.0 × 4.8 | **6.90 mm** | **2.92 yr — selected** |
 | 4236 | 420 | 35.0 × 24.0 × 5.2 | 6.50 mm | 2.78 yr |
 | 4237 | 350 | 32.5 × 25.4 × 5.0 | 6.70 mm | 2.62 yr |
 | 2750 | 350 | 36.0 × 20.0 × 5.6 | 6.10 mm | 2.62 yr |
@@ -225,15 +231,16 @@ fouls the connectors. The 18650s and the 4.4/6.6/10 Ah packs are far too big.
 
 **Two things to settle before ordering.**
 
-1. **The width margin is 0.92 mm total.** DigiKey lists 34.0 mm but the datasheet
-   filename is `503562`, i.e. a **35 mm nominal** cell. A 35 mm cell does not fit a
-   34.92 mm interior, and pouch cells swell with age. Measure one before
-   committing, or drop to the 1578 (29 mm across, 500 mAh, comfortable).
-2. **Adafruit cells terminate in JST PH.** J2 is now JST GH. Either re-crimp the
-   cell leads, make a PH-to-GH adapter, or move J2 back to PH — but PH is 8 mm
-   tall and only fits the ~13 mm end band the cell does not cover. A custom cable
-   was implied anyway: J2 is 3-pin (VBAT / NTC / GND) and Adafruit cells are
-   2-wire, with TH1 on the board providing the NTC path.
+**J2 is a 2-pin JST PH so the cell plugs straight in** — Adafruit's whole range
+ships with a PH plug, and re-crimping a battery lead is a job worth avoiding.
+That drops the pack-NTC pin, which costs nothing: Adafruit cells are 2-wire with
+no thermistor, so the NTC path was always TH1.
+
+**PH is 8 mm tall against 6.90 mm of clearance under the cell**, so J2 has to sit
+outside the cell footprint. The cell covers only 36 mm of the 74 mm board, so the
+y 62–74 band keeps its full 11.70 mm — J2 lives there, at y 66.8–72.3.
+`tools_gen_pcb.py` asserts this: any part in `COMPONENT_HEIGHTS` taller than the
+under-cell gap must not overlap `CELL_RECT`.
 
 ### Other open selections
 
@@ -244,7 +251,7 @@ fouls the connectors. The 18650s and the 4.4/6.6/10 Ah packs are far too big.
 | D5 | Schottky, low V_f, SOD-323, ~200 mA | **Panjit RB751V-40_R1_00001** — selected |
 | J1 | USB-C receptacle, 16P USB2.0 | **HRO TYPE-C-31-M-12** (footprint already set) |
 | Solar pre-reg | 5.0 V out, V_IN ≥ 18 V, low I_Q | TPS62122 (buck) or TPS7A1650 (LDO) — **not selected** |
-| Cell | ≤ 6.5 mm thick, ≤ 34.92 × 74.92 mm | **Adafruit 258**, 1200 mAh, 34 × 62 × 5.0 mm — selected |
+| Cell | ≤ 6.5 mm thick, ≤ 34.92 × 74.92 mm | **Adafruit 1578**, 500 mAh, 29 × 36 × 4.8 mm — selected |
 | Enclosure | **Hammond 1551WKBK**, IP68 PC, 80 × 40 × 22 mm | + 4× nylon #2 screws for the antenna-end holes |
 
 **The solar pre-regulator is not on the board yet.** Reserve roughly **8 × 8 mm**
@@ -284,7 +291,7 @@ TP5 and D5's anode on it.
 | D5 | RB751V-40 Schottky | `D_SOD-323_HandSoldering` |
 | FB1 | FB 120R@100MHz | `L_0402_1005Metric_Pad0.77x0.64mm_HandSolder` |
 | J1 | USB-C receptacle | `USB_C_Receptacle_HRO_TYPE-C-31-M-12` |
-| J2 | Battery 503450 + NTC | `JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal` |
+| J2 | Battery - Adafruit 1578 | `JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical` |
 | J3 | Solar panel | `JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal` |
 | J4 | SWD 10p 1.27mm | `Tag-Connect_TC2050-IDC-NL_2x05_P1.27mm_Vertical` |
 | J5 | Antenna feed | `TestPoint_Pad_D1.0mm` |

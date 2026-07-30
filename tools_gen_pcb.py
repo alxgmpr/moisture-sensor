@@ -87,6 +87,27 @@ PROJNAME = "moisture-sensor-carrier"
 # Solar pre-regulator reserve. Not on the board yet; its output is SOLAR_5V.
 SOLAR_RESERVE = (24.0, 49.0, 32.0, 57.0)
 
+# -- cell -----------------------------------------------------------------------
+# Adafruit 1578, 500 mAh, 29 x 36 x 4.8 mm, adhered to the inside of the lid.
+# Board sits on the 4.00 mm posts, so its top face is 5.60 mm above the box
+# floor and the lid is 17.30 mm up: 11.70 mm of headroom. The cell eats 4.8 of
+# that, leaving CLEAR_UNDER_CELL for anything in its shadow.
+#
+# It covers only 36 mm of the 74 mm board, so the y 62-74 band keeps the full
+# 11.70 mm - which is the only place an 8 mm JST PH will fit.
+BOARD_TO_LID = 11.70
+CELL_T = 4.8
+CLEAR_UNDER_CELL = BOARD_TO_LID - CELL_T
+CELL_RECT = (2.5, 26.0, 31.5, 62.0)          # x0, y0, x1, y1
+
+# Body height above the board, mm. Only parts that could foul the cell need an
+# entry; anything absent is assumed short. J2 is the one that actually bites.
+COMPONENT_HEIGHTS = {
+    "J1": 3.2,       # USB-C, HRO TYPE-C-31-M-12
+    "J2": 8.0,       # JST PH, 2-pin vertical - JST quote 8 mm mounting height
+    "J3": 4.25,      # JST GH, side entry
+}
+
 # ------------------------------------------------------------- placement ----
 # (x, y, rotation[, "B"]).  Board-local mm, rotation CCW as displayed.
 #
@@ -711,6 +732,13 @@ def main():
             seg(board, box[i], box[(i + 1) % 4], pcbnew.User_3, DOC_W)
 
     # Solar pre-regulator reserve, documentation only.
+    cx0, cy0, cx1, cy1 = CELL_RECT
+    for a_, b_ in (((cx0, cy0), (cx1, cy0)), ((cx1, cy0), (cx1, cy1)),
+                   ((cx1, cy1), (cx0, cy1)), ((cx0, cy1), (cx0, cy0))):
+        seg(board, a_, b_, pcbnew.Dwgs_User, DOC_W)
+    text(board, f"CELL 29x36x{CELL_T} ON LID - {CLEAR_UNDER_CELL:.2f} mm CLEAR UNDER",
+         (cx0 + 0.5, cy0 + 1.5), pcbnew.Dwgs_User, 0.8)
+
     sx0, sy0, sx1, sy1 = SOLAR_RESERVE
     for a, b in (((sx0, sy0), (sx1, sy0)), ((sx1, sy0), (sx1, sy1)),
                  ((sx1, sy1), (sx0, sy1)), ((sx0, sy1), (sx0, sy0))):
@@ -869,6 +897,16 @@ def main():
     for ref, p in broken:
         _notes.append(f"3D: {ref} references a file that is not on disk - "
                       f"{os.path.basename(p)}")
+
+    # ---- cell shadow ---------------------------------------------------------
+    # The cell hangs from the lid. Anything taller than the gap under it has to
+    # sit outside its footprint.
+    for ref, h in COMPONENT_HEIGHTS.items():
+        if ref not in boxes or h <= CLEAR_UNDER_CELL:
+            continue
+        check(not overlaps(boxes[ref], CELL_RECT),
+              f"{ref} is {h} mm tall but only {CLEAR_UNDER_CELL:.2f} mm is clear "
+              f"under the cell, and it sits inside the cell footprint")
 
     check(SOIL_LINE > ZONE_B_BOT, "soil line is inside the enclosure")
     antenna_to_soil = SOIL_LINE - 3.0

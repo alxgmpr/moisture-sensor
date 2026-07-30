@@ -18,7 +18,7 @@ USB-C VBUS ───────────────────────
                                         ├──► nPM1300 VBUS ──► VSYS ──► BUCK2 / VOUT2 3.3 V ─┬─► nRF54L15
 Solar ──► 5 V pre-reg ──► D5 (Schottky) ┘         │                                         ├─► I2C pullups (always on)
                                                   │                                         └─► LOADSW1 ──► FDC1004
-                                                  └──► VBAT ──► Adafruit 258 Li-ion 1200 mAh
+                                                  └──► VBAT ──► Adafruit 1578 Li-ion 500 mAh
 ```
 
 USB-C VBUS feeds nPM1300 VBUS directly. The solar branch carries the only diode —
@@ -632,26 +632,33 @@ SWD header: SWDIO, SWDCLK, RESET, 3V3, GND. RESET keeps the R1/C5 filter from §
 
 ### Result
 
-**Cell is an Adafruit 258 — 1200 mAh, 34 × 62 × 5.0 mm.** The 10 mm 103450 does
-not fit the Hammond 1551WK height budget; see LAYOUT.md §9 and BOM.md for the
-full fit table.
+**Cell is an Adafruit 1578 — 500 mAh, 29 × 36 × 4.8 mm.** Chosen over the larger
+258 for fit margin: the 258 is 34 mm across a 34.92 mm box interior, and its
+datasheet part code (503562) implies a 35 mm nominal cell that would not go in.
+1578 is 29 mm across, so there is 6 mm of slack instead of 0.9. It also ships
+with the JST PH plug that J2 now accepts directly.
 
-| | Adafruit 258 (fitted) | 103450 (for comparison) |
-|---|---|---|
-| Nominal capacity | 1200 mAh | 2000 mAh |
-| Total annual charge draw | ≈ 331 mAh/yr | ≈ 523 mAh/yr |
-| Usable capacity | ≈ 1140 mAh | ≈ 1900 mAh |
-| **Projected runtime** | **≈ 3.45 years** | ≈ 3.6 years |
+| | Adafruit 1578 (fitted) | 258 | 103450 |
+|---|---|---|---|
+| Nominal capacity | 500 mAh | 1200 mAh | 2000 mAh |
+| Total annual charge draw | ≈ 163 mAh/yr | ≈ 331 | ≈ 523 |
+| Usable capacity | ≈ 475 mAh | ≈ 1140 | ≈ 1900 |
+| **Projected runtime** | **≈ 2.9 years** | ≈ 3.45 | ≈ 3.6 |
 
-### Breakdown, at 1200 mAh
+### Breakdown, at 500 mAh
 
 | Item | Current | mAh/yr | % | Scales with capacity? |
 |---|---|---|---|---|
-| Cell self-discharge | — | 288 | 87% | **yes** |
-| Cell PCM quiescent | ~3 µA | 26 | 7.9% | no |
-| nPM1300 + nRF54L15 System OFF | ~1.5 µA | 13 | 3.9% | no |
-| SHT45 idle (always powered) | 80 nA | 0.7 | 0.2% | no |
-| Hourly wake cycles | — | 3 | 0.9% | no |
+| Cell self-discharge | — | 120 | 74% | **yes** |
+| Cell PCM quiescent | ~3 µA | 26 | **16%** | no |
+| nPM1300 + nRF54L15 System OFF | ~1.5 µA | 13 | 8.0% | no |
+| SHT45 idle (always powered) | 80 nA | 0.7 | 0.4% | no |
+| Hourly wake cycles | — | 3 | 1.8% | no |
+
+**The balance shifts at this capacity.** Self-discharge drops from 92 % of the
+budget on the 2000 mAh cell to 74 % here, and the *fixed* terms become
+significant: the PCM alone is now 16 %, twice the entire nRF+PMIC sleep draw.
+Measuring the pack's quiescent current matters more than it used to.
 
 ### Why halving the cell costs only 7%
 
@@ -719,7 +726,7 @@ If you want more than 3.6 years, the only lever that matters is the cell.
 4. **Wake cycle 300 ms at 3 mA average**, plus PMIC I²C configuration. A composite
    estimate, not measured. At 0.6% of budget, being wrong by 5× changes nothing.
 5. **8760 wakes/yr** (hourly).
-6. **Usable capacity 95% of nameplate**, so 1140 mAh on the Adafruit 258. At these tiny
+6. **Usable capacity 95% of nameplate**, so 475 mAh on the Adafruit 1578. At these tiny
    currents you will get close to nameplate.
 7. **20–25 °C ambient.** Indoor, and this matters more than it did before — see
    the I_QBAT temperature curve.
