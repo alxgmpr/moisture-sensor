@@ -42,6 +42,23 @@ Candidate families, **ordering codes not confirmed**:
 No discrete load caps — both oscillators use internal trim banks. See
 HARDWARE.md §2.
 
+### Connector heights — J2, J3 and J4 no longer fit
+
+The Hammond 1551WK leaves **6.70 mm** of component height under the cell
+(LAYOUT.md §9). JST PH is 8 mm mounting height per JST's own PH datasheet, and
+the 2×5 1.27 mm SWD header is comparable. Both need replacing or relocating
+before placement can proceed.
+
+| Ref | Current | Height | Candidate replacement | Height |
+|---|---|---|---|---|
+| J2 | `JST_PH_B3B-PH-K_1x03_P2.00mm_Vertical` | 8 mm | `JST_GH_BM03B-GHS-TBT_1x03-1MP_P1.25mm_Vertical` | ≈4.7 mm |
+| J3 | `JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical` | 8 mm | `JST_GH_BM02B-GHS-TBT_1x02-1MP_P1.25mm_Vertical` | ≈4.7 mm |
+| J4 | `PinHeader_2x05_P1.27mm_Vertical_SMD` | ≈6 mm | bare pads or Tag-Connect TC2050 | 0 |
+
+JST GH is rated 1 A, comfortably over the 500 mA charge current. Molex PicoBlade
+(≈4.0 mm, also 1 A) is the alternative. Both footprint families are in the stock
+KiCad libraries.
+
 ### Other open selections
 
 | Ref | Requirement | Candidate |
@@ -51,6 +68,8 @@ HARDWARE.md §2.
 | D5 | Schottky, low V_f, SOD-323, ~200 mA | Nexperia PMEG2010AEH |
 | J1 | USB-C receptacle, 16P USB2.0 | **HRO TYPE-C-31-M-12** (footprint already set) |
 | Solar pre-reg | 5.0 V out, V_IN ≥ 18 V, low I_Q | TPS62122 (buck) or TPS7A1650 (LDO) — **not selected** |
+| Cell | **503450**, ~1000 mAh, 5 × 34 × 50 mm, protected | not selected — see HARDWARE.md §7 |
+| Enclosure | **Hammond 1551WKBK**, IP68 PC, 80 × 40 × 22 mm | + 4× nylon #2 screws for the antenna-end holes |
 
 **The solar pre-regulator is not on the board yet.** Reserve roughly **8 × 8 mm**
 near J3 for the regulator plus its input/output caps and, if you pick the buck,

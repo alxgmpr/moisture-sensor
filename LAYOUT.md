@@ -108,9 +108,56 @@ That asymmetry is worth more than the small differences in the table below.
 | Matching values in schematic | **valid** | must be replaced |
 | Detuning near soil/water | high | high — no real advantage |
 
-**Recommendation: PCB inverted-F, copied from Nordic's reference layout.** Zero
-cost, no placement risk, the matching network is already right, and the stake
+**Recommendation: PCB inverted-F.** Zero cost, no placement risk, and the stake
 form factor gives a natural ground-plane edge to work from.
+
+### The reference layout does not contain an antenna
+
+The plan above said "copied from Nordic's reference layout". That is not
+possible, and the reason is worth recording so it is not assumed again.
+
+`nrf54l15-qfaa-reference-layout-0_8.zip` (and the QGAA 1.0 equivalent) contains
+a **15 × 13 mm board with no PCB antenna**. The RF chain runs
+`ANT → L2 → C6 → L3 → C9 → L4 → C11` and terminates at a pad on the board edge —
+a coax or connector launch. It is an MCU support reference, not an antenna
+reference. What it does give, and what is copied:
+
+- matching-network placement relative to pin 31
+- the C6-to-pin-32 and C9-to-bottom-layer grounding topology (§2 above)
+- MCU support component placement
+
+**Consequence for the matching network.** The argument in the table above — that
+Nordic's L2/C6/L3/C9/L4/C11 values are "valid" because they match Nordic's
+antenna — does not hold. There is no Nordic antenna. Treat those values as a
+sensible starting point for a 2.4 GHz IFA, not as a known-good position, and
+budget the VNA session accordingly.
+
+### The IFA as drawn
+
+Designed for this board's ground plane, in `lib/footprints.pretty/IFA_2450MHz.kicad_mod`,
+placed by `tools_gen_pcb.py`. All dimensions are named constants — trim and re-run.
+
+| | |
+|---|---|
+| Ground plane edge | board y = 11.5 mm, full width |
+| Radiating arm | 18.5 × 1.0 mm at y = 2.5–3.5 |
+| Shorting stub | 1.0 mm wide at x = 12.8, y = 2.5 → 11.5 |
+| Feed stub | 0.5 mm wide at x = 16.8, y = 3.5 → 11.5 |
+| Feed-to-short spacing | 4.0 mm — this is the impedance knob |
+| Electrical length, short → open | ≈ 27.5 mm |
+
+λ/4 is 31.2 mm in air and roughly 24–25 mm with FR4 loading on one side, so 27.5 mm
+starts deliberately long: you can trim etched copper, you cannot add it.
+
+The feed sits at x = 16.8 so the 50 Ω line runs straight up from U1 pin 31 after
+the package is rotated 90°. No bend, no via.
+
+**The antenna is a net tie.** An IFA is a shorted stub, so the feed is DC-grounded
+through the shorting stub. The footprint declares `net_tie_pad_groups "1, 2, 3"`
+— pad 1 on `/ANT_FEED`, pads 2 and 3 on `GND` — which is what stops DRC calling
+it a short. Because the arm and stub sit on `GND` rather than the RF net class,
+the DRU keepout exemption has to be written against the footprint reference
+(`!A.memberOfFootprint('AE1')`), not against the net class.
 
 **Switch to a chip antenna only if** the mechanical design cannot give you the
 keepout. The commonly-cited reason — "a chip antenna coexists better with nearby
@@ -321,14 +368,87 @@ above the soil line.
 
 ---
 
-## 9. Open items
+## 9. Board outline and enclosure
 
-- Copy the IFA geometry and the ground-boundary position from Nordic's reference
-  layout for the nRF54L15-QFAA. **[not yet downloaded]**
+Drawn by `tools_gen_pcb.py`. Edit that and re-run; do not hand-edit the
+`.kicad_pcb`. It self-checks and aborts rather than emitting broken geometry.
+
+### Enclosure — Hammond 1551WK
+
+IP68 polycarbonate. From the Hammond 1551WKBK drawing (rev 31.08.2023):
+
+| | |
+|---|---|
+| External | 80 × 40 × 22 mm |
+| Inside | 74.92 × 34.92 × **17.30** mm |
+| Maximum PCB | 74.50 × 34.50 mm |
+| Internal #2 posts | 55.00 × 25.00 mm pattern, 4.00 mm tall |
+
+The 17.30 mm internal height is the constraint that sizes everything else — see
+"height budget" below. Note the whole 1551 family is 20 mm external / 16.00 mm
+internal; only the W variants get to 17.30.
+
+### Board
+
+**34.0 × 155.0 mm.** The in-enclosure section is 74.0 × 34.0, i.e. 0.25 mm inside
+Hammond's stated maximum on every side, with R4.5 corners and four Ø2.6 mounting
+holes at (4.5, 9.5), (29.5, 9.5), (4.5, 64.5), (29.5, 64.5).
+
+| Zone | y | Notes |
+|---|---|---|
+| A antenna | 0 – 11.5 | no copper on any layer except AE1 |
+| B electronics | 11.5 – 74.0 | 34.0 × 62.5 mm, solid In1.Cu |
+| C probe | 74.0 – 155.0 | 20 mm wide, no ground on any layer |
+
+Soil line at y = 115, so the antenna sits **112 mm above it** against the 50 mm
+target in §3. Insert depth 40 mm. SENSE2 (air reference) at y 82–112 and SENSE1
+(soil) at y 119–149 are both 16 × 30 mm — identical geometry is what makes the
+ratiometric measurement in §5 cancel anything.
+
+The probe leaves through a slot in the box end wall. R2.0 fillets at the shoulder
+keep the stress off the inside corners.
+
+### Height budget — the thing that bit
+
+Board on the 4.00 mm posts: 4.00 + 1.6 (PCB) leaves **11.70 mm** to the lid.
+A 5 mm cell taped to the inside of the lid leaves **6.70 mm** of clear component
+height under it, and 11.70 mm in the two ~12 mm end bands the cell does not cover.
+
+This is why the cell is a 503450 (5 mm, ~1000 mAh) and not the 103450 (10 mm,
+2000 mAh). The runtime penalty is small because self-discharge scales with
+capacity: `runtime = 0.95·C / (0.24·C + 42.8)` in mAh/yr, from HARDWARE.md §7,
+which gives 3.63 yr at 2000 mAh and 3.36 yr at 1000 mAh — a 7 % cost for 5 mm.
+The same formula has an asymptote at 3.96 yr, so no cell that fits this box gets
+meaningfully past 3.6 years anyway.
+
+**Mounting screws.** The two antenna-end holes are 6 mm from the radiating arm.
+Use **nylon** #2 screws in those two positions; steel there will detune the
+antenna and no amount of matching fixes it.
+
+## 10. Open items
+
+- **J2, J3 and J4 do not fit the height budget.** JST PH is 8 mm mounting height
+  (JST's own PH datasheet), the 2×5 1.27 mm SWD header is comparable, and only
+  6.70 mm is available under the cell. Either move to a lower-profile connector
+  (JST GH 1.25 mm ≈ 4.7 mm, Molex PicoBlade ≈ 4.0 mm — both 1 A, ample for the
+  500 mA charge) or confine them to the end bands. This blocks component
+  placement.
+- **USB-C breaks IP68.** A port cutout in a watertight box needs a sealed cover,
+  or J1 becomes a service-only connector reached by opening the lid.
+- **SHT45 in a sealed box measures the box, not the room.** Temperature still
+  works; RH does not. Needs a PTFE membrane vent in the lid over U4 — the
+  sensor's own `-AD1F` membrane protects the die but does not help if the
+  enclosure is sealed.
+- Confirm the 1551WK corner-relief geometry and the Ø2.6 hole pattern against
+  Hammond's STEP model before fab. The drawing's `62.00 × 22.00` and `R4.42` are
+  ambiguous at the resolution published; `55.00 × 25.00` is unambiguous and is
+  what is drawn.
 - Confirm 0.38 mm against the fab's impedance calculator for their actual
   pressed stackup.
 - Electrode geometry: simulate or prototype for 10–30 pF dry with a swing inside
   ±15 pF.
-- Decide net-tie vs documentation for the C6 / C9 grounding rules.
-- Mechanical: antenna ≥ 50 mm above the soil line; vented enclosure section for
-  the SHT45; sealed section for the electronics.
+- Window-pane the paste apertures on `QFN48_6X6_NOR` and `QFN32_5X5_NOR`. Both
+  have a single full-area aperture on the thermal land (22.1 mm² and 13.0 mm²)
+  and both lands are drawn at D2 *max* rather than nominal.
+- Neither QFN footprint has centre-pad vias. Nordic's reference puts a grid
+  under U1 pad 49; add them at layout.

@@ -70,11 +70,14 @@
 	(condition "A.NetClass == 'SWITCH'"))
 
 # ------------------------------------------------------------ keepouts -----
-# Draw these as rule areas on the matching user layers. Nothing conductive may
-# enter the antenna keepout on ANY layer, including ground pour.
+# Nothing conductive may enter the antenna keepout on ANY layer, including
+# ground pour. AE1 is the one exception: the IFA lives inside the keepout by
+# definition, and its shorting stub and arm sit on GND rather than the RF net
+# class, so the exemption has to be by footprint rather than by net.
+# The rule area's own flags (no vias, no pours, no other footprints) do the rest.
 (rule "Antenna keepout is copper free"
 	(constraint disallow track via zone pad)
-	(condition "A.insideArea('AntennaKeepout')"))
+	(condition "A.insideArea('AntennaKeepout') && !A.memberOfFootprint('AE1')"))
 
 # Sensirion SHT4x datasheet 5.3: soldering the central die pad or placing an
 # exposed copper pad beneath it heat-sinks the internal heater and it stops

@@ -632,21 +632,54 @@ SWD header: SWDIO, SWDCLK, RESET, 3V3, GND. RESET keeps the R1/C5 filter from §
 
 ### Result
 
-| | |
-|---|---|
-| Total annual charge draw | **≈ 520 mAh/yr** |
-| Usable capacity | ≈ 1900 mAh |
-| **Projected runtime** | **≈ 3.6 years** |
+**Cell is a 503450, ~1000 mAh, 5 mm thick.** The 10 mm 103450 does not fit the
+Hammond 1551WK height budget — see LAYOUT.md §9.
 
-### Breakdown
+| | 503450 (fitted) | 103450 (for comparison) |
+|---|---|---|
+| Nominal capacity | 1000 mAh | 2000 mAh |
+| Total annual charge draw | ≈ 283 mAh/yr | ≈ 523 mAh/yr |
+| Usable capacity | ≈ 950 mAh | ≈ 1900 mAh |
+| **Projected runtime** | **≈ 3.4 years** | ≈ 3.6 years |
 
-| Item | Current | mAh/yr | % |
-|---|---|---|---|
-| Cell self-discharge | — | 480 | 92% |
-| Cell PCM quiescent | ~3 µA | 26 | 5.0% |
-| nPM1300 + nRF54L15 System OFF | ~1.5 µA | 13 | 2.5% |
-| SHT45 idle (always powered) | 80 nA | 0.7 | 0.1% |
-| Hourly wake cycles | — | 3 | 0.6% |
+### Breakdown, at 1000 mAh
+
+| Item | Current | mAh/yr | % | Scales with capacity? |
+|---|---|---|---|---|
+| Cell self-discharge | — | 240 | 85% | **yes** |
+| Cell PCM quiescent | ~3 µA | 26 | 9.2% | no |
+| nPM1300 + nRF54L15 System OFF | ~1.5 µA | 13 | 4.6% | no |
+| SHT45 idle (always powered) | 80 nA | 0.7 | 0.2% | no |
+| Hourly wake cycles | — | 3 | 1.1% | no |
+
+### Why halving the cell costs only 7%
+
+Self-discharge is 2%/month **of whatever capacity is in there**, so it shrinks
+with the cell. Only the 42.8 mAh/yr of fixed terms stay put:
+
+```
+runtime = 0.95·C / (0.24·C + 42.8)      C in mAh, result in years
+```
+
+| C | 2000 | 1200 | 1000 | 800 | 600 | 300 |
+|---|---|---|---|---|---|---|
+| years | 3.63 | 3.45 | 3.36 | 3.24 | 3.05 | 2.48 |
+
+Two things fall out of that expression. **There is a ceiling at 0.95/0.24 =
+3.96 years** — no cell that fits this enclosure gets meaningfully past 3.6, so
+the 103450 was buying almost nothing. And the result is robust to the
+self-discharge figure: at 1%/month the 2000→1000 penalty is 13%, at 3%/month it
+is 5%. Worse self-discharge makes cell size matter *less*.
+
+Li-ion calendar ageing is 3–5 years at indoor storage regardless of cycling, so
+3.4 years already meets the cell's own service life.
+
+**A primary coin cell is not a cell swap.** CR2032 self-discharges at ~1%/*year*
+rather than 2%/month, which on this budget would be ~11 years — but the nPM1300's
+VBAT is a charger output and cannot take a primary cell, and a CR2032 sits at
+2.9–2.5 V for most of its discharge against the FDC1004's 3.0 V minimum (§5),
+which a buck cannot boost. It needs a different power architecture, not a
+different part.
 
 The combined PMIC-plus-sleeping-MCU figure needs a caveat. Table 3 gives
 I_QBAT = 800 nA for one BUCK in Auto at **no load**. Figure 3's efficiency curve
@@ -672,18 +705,21 @@ If you want more than 3.6 years, the only lever that matters is the cell.
 
 ### Assumptions — check these
 
-1. **Self-discharge 2%/month.** Dominates everything and is the number I am least
-   sure of. Quality Li-ion is quoted 1.5–3%/month at 20 °C, rising sharply with
-   temperature and state of charge. At 1%/month runtime goes to ~5.9 years; at
-   3%/month, ~2.6 years. **Get this from your cell's datasheet.**
+1. **Self-discharge 2%/month.** Still 85% of the budget and still the number I am
+   least sure of. Quality Li-ion is quoted 1.5–3%/month at 20 °C, rising sharply
+   with temperature and state of charge. At 1000 mAh the 1–3%/month band spans
+   **5.8 down to 2.4 years**. **Get this from your cell's datasheet** — it is
+   worth more than any layout decision on this board.
 2. **PCM quiescent ~3 µA.** Typical for a small protection module, unverified for
-   your cell. 1–10 µA is a normal range.
+   your cell. 1–10 µA is a normal range. At 1000 mAh this is now 9% of the
+   budget — second only to self-discharge, and bigger than the entire
+   electronics draw. Worth measuring on whatever protected cell you buy.
 3. **nPM1300 + nRF sleep 1.5 µA**, per the caveat above.
 4. **Wake cycle 300 ms at 3 mA average**, plus PMIC I²C configuration. A composite
    estimate, not measured. At 0.6% of budget, being wrong by 5× changes nothing.
 5. **8760 wakes/yr** (hourly).
-6. **Usable capacity 1900 mAh.** At these tiny currents you will get close to
-   nameplate.
+6. **Usable capacity 95% of nameplate**, so 950 mAh on the 503450. At these tiny
+   currents you will get close to nameplate.
 7. **20–25 °C ambient.** Indoor, and this matters more than it did before — see
    the I_QBAT temperature curve.
 8. Assumes the device **never** sees USB and solar contributes zero. Any charging
