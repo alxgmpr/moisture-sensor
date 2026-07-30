@@ -3,8 +3,21 @@
 #   F.Cu  0.035 | prepreg 7628 0.2104 er=4.4 | In1.Cu (GND) | core 1.065
 #   | In2.Cu (PWR/SHLD) | prepreg 7628 0.2104 | B.Cu 0.035
 # See LAYOUT.md for the reasoning behind every number here.
+#
+# ORDER MATTERS: for a given constraint type the LAST matching rule wins. The
+# exemptions at the bottom of this file have to stay below the broad fabrication
+# minimums, or the minimums override them and the exemption silently does
+# nothing. Verified by injecting geometry that should and should not trip.
 
 (version 1)
+
+# Fabrication floor. This has to sit ABOVE every specific width rule: last
+# matching rule wins, and this one matches every track, so leaving it at the
+# bottom silently overrode all of them. Caught by injecting a 0.3 mm track on
+# /GND_PVSS2 and getting no violation.
+(rule "Fab minimum track"
+	(constraint track_width (min 0.127mm))
+	(condition "A.Type == 'Track'"))
 
 # ---------------------------------------------------------------- RF path --
 # 50 ohm microstrip on F.Cu referenced to the In1.Cu ground plane.
@@ -25,6 +38,31 @@
 (rule "No vias in the RF path"
 	(constraint disallow via)
 	(condition "A.NetClass == 'RF'"))
+
+# Nordic's two RF grounding rules, which are invisible in a netlist and so are
+# split into their own nets and rejoined by net ties NT1 and NT2. See
+# HARDWARE.md section 2 and LAYOUT.md section 2.
+#
+# 1. C6 grounds ONLY at pin 32 (VSS_PA) on the top layer, and pin 32 reaches the
+#    centre pad only underneath the package. A via anywhere on GND_PA defeats
+#    that, so no vias, and nothing on any layer but F.Cu.
+(rule "C6 ground takes no vias"
+	(constraint disallow via)
+	(condition "A.NetName == '/GND_PA'"))
+
+(rule "C6 ground stays on the top layer"
+	(constraint disallow track)
+	(condition "A.NetName == '/GND_PA' && !A.existsOnLayer('F.Cu')"))
+
+# 2. C9 grounds only on the bottom ground layer. A short stub from its pad to a
+#    via is unavoidable; touching an inner plane is not.
+(rule "C9 ground never touches an inner plane"
+	(constraint disallow track)
+	(condition "A.NetName == '/GND_C9' && (A.existsOnLayer('In1.Cu') || A.existsOnLayer('In2.Cu'))"))
+
+# The remaining half of each rule is placement, not routing, and is asserted in
+# tools_gen_pcb.py instead: NT1 goes under the U1 centre pad on F.Cu, NT2 goes
+# on B.Cu, NT3 goes at the PVSS2 via beside U2 pin 6.
 
 # ------------------------------------------------- capacitive front end ----
 # The switching nodes are the main aggressors: nPM1300 SW2 at 3.6 MHz in PWM
@@ -69,12 +107,24 @@
 	(constraint track_width (min 0.5mm))
 	(condition "A.NetClass == 'SWITCH'"))
 
+# nPM1300 PVSS2 is the BUCK2 POWER ground, not a general ground pin. Nordic's
+# reference schematic annotates it "Net tie" and "Via to GND-layer": it reaches
+# the plane at one controlled point rather than merging into the top-layer pour.
+# It carries the SW2 return, so it gets the switch node's width. Must sit below
+# "Power track width" - GND_PVSS2 is in the Power class and the later rule wins.
+(rule "BUCK2 power ground is short and fat"
+	(constraint track_width (min 0.5mm))
+	(condition "A.NetName == '/GND_PVSS2'"))
+
 # ------------------------------------------------------------ keepouts -----
-# Draw these as rule areas on the matching user layers. Nothing conductive may
-# enter the antenna keepout on ANY layer, including ground pour.
+# Nothing conductive may enter the antenna keepout on ANY layer, including
+# ground pour. AE1 is the one exception: the IFA lives inside the keepout by
+# definition, and its shorting stub and arm sit on GND rather than the RF net
+# class, so the exemption has to be by footprint rather than by net.
+# The rule area's own flags (no vias, no pours, no other footprints) do the rest.
 (rule "Antenna keepout is copper free"
 	(constraint disallow track via zone pad)
-	(condition "A.insideArea('AntennaKeepout')"))
+	(condition "A.insideArea('AntennaKeepout') && !A.memberOfFootprint('AE1')"))
 
 # Sensirion SHT4x datasheet 5.3: soldering the central die pad or placing an
 # exposed copper pad beneath it heat-sinks the internal heater and it stops
@@ -85,10 +135,6 @@
 
 # ------------------------------------------------------------ fabrication --
 # JLCPCB 4 layer standard process floor. Tighten only if you pay for it.
-(rule "Fab minimum track"
-	(constraint track_width (min 0.127mm))
-	(condition "A.Type == 'Track'"))
-
 (rule "Fab minimum clearance"
 	(constraint clearance (min 0.127mm)))
 
@@ -101,3 +147,12 @@
 # Copper to board edge. 0.3 mm keeps the router away from live copper.
 (rule "Edge clearance"
 	(constraint edge_clearance (min 0.3mm)))
+
+# NT1 has to bridge the pin-32 land to the centre pad, and the annulus between
+# them is 0.1905 mm. Two pads plus 0.127 mm of clearance on each side needs
+# 0.254 mm, so the tie cannot satisfy the fab minimum against U1's own pads.
+# That is not a defect: on a board without the net split this would simply be
+# one net and one piece of copper. Scoped to NT1 against U1 and nothing else.
+(rule "VSS_PA net tie bridges the QFN annulus"
+	(constraint clearance (min 0mm))
+	(condition "A.memberOfFootprint('NT1') && B.memberOfFootprint('U1')"))

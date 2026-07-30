@@ -1,0 +1,37 @@
+(footprint "NetTie_VSSPA"
+	(version 20240108)
+	(generator "hand")
+	(layer "F.Cu")
+	(descr "Net tie sized to bridge the nRF54L15 QFN48 pin-32 land to the centre pad. Nordic requires VSS_PA (pin 32) to reach pin 49 ONLY underneath the package, so the bridge has to live in the 0.1905 mm annulus between the perimeter land (inner edge 2.540 mm from centre) and the thermal land (edge 2.3495 mm from centre). A stock NetTie-2_SMD_Pad0.5mm does not fit there. Origin is the centre of that gap. Pad 1 GND_PA overlaps the pin-32 land, pad 2 GND overlaps the centre pad. Pad width matches pin 32 at 0.2032 mm.")
+	(tags "net-tie RF VSS_PA nRF54L15")
+	(attr smd exclude_from_pos_files exclude_from_bom allow_missing_courtyard)
+
+	(property "Reference" "NT**"
+		(at 1.4 0 0)
+		(layer "F.Fab")
+		(uuid "2b3c4d5e-0001-4000-8000-000000000001")
+		(effects (font (size 0.4 0.4) (thickness 0.06)) (justify left))
+	)
+	(property "Value" "NetTie_VSSPA"
+		(at 1.4 0.5 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "2b3c4d5e-0002-4000-8000-000000000002")
+		(effects (font (size 0.4 0.4) (thickness 0.06)) (justify left))
+	)
+
+	(pad "1" smd rect
+		(at 0 -0.15)
+		(size 0.2032 0.30)
+		(layers "F.Cu")
+		(uuid "2b3c4d5e-0101-4000-8000-000000000101")
+	)
+	(pad "2" smd rect
+		(at 0 0.15)
+		(size 0.2032 0.30)
+		(layers "F.Cu")
+		(uuid "2b3c4d5e-0102-4000-8000-000000000102")
+	)
+
+	(net_tie_pad_groups "1, 2")
+)

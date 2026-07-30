@@ -13,7 +13,11 @@ Run:  python3 tools_gen_sch.py
 import re, uuid
 import re as _re2
 
-PROJ = "/Users/alex/moisture-sensor-carrier"
+# Derive the project root from this file so the generator writes into whichever
+# checkout it is run from. A hardcoded path silently overwrites the main working
+# tree when the script is run inside a git worktree.
+import os
+PROJ = os.path.dirname(os.path.abspath(__file__))
 SS = "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols"
 ROOT_UUID = "29551000-a13a-494c-a3a3-b85b9fc11a3c"
 PROJNAME = "moisture-sensor-carrier"
@@ -111,15 +115,39 @@ FOOTPRINTS = {
     # solar OR-ing
     "D5": "Diode_SMD:D_SOD-323_HandSoldering",
     # clocks. Standard pads on X2 (no hand variant for 2016-4pin exists).
-    "X1": "Crystal:Crystal_SMD_2012-2Pin_2.0x1.2mm_HandSoldering",
-    "X2": "Crystal:Crystal_SMD_2016-4Pin_2.0x1.6mm",
+    # Micro Crystal CM8V-T1A. The vendor land pattern (0.8 x 1.5 mm pads on
+    # 1.5 mm centres) is what the datasheet specifies; KiCad's generic 2012
+    # footprints use 0.6 or 1.05 mm pads on different centres.
+    "X1": "footprints:XTAL_CM8V-T1A_2012",
+    # Epson's own land pattern. KiCad's generic 2016 4-pin uses 0.90 x 0.80 mm
+    # pads on 1.40 x 1.10 centres - a 2.30 mm outer span against Epson's 1.45.
+    "X2": "footprints:XTAL_FA-128_2016_4Pin",
     # connectors
+    # Connectors. J2/J3/J4 are height-constrained: the Hammond 1551WK leaves
+    # 6.70 mm of clear component height under the cell (LAYOUT.md §9), and JST PH
+    # is 8 mm mounting height while a 2x5 1.27 mm header is comparable. JST GH is
+    # 4.20 mm (measured from the vendor STEP) and rated 1 A, well over the 500 mA
+    # charge current; Tag-Connect costs nothing at all in height and uses the
+    # standard 10-pin Cortex pinout J4 already had.
     "J1": "Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12",
-    "J2": "Connector_JST:JST_PH_B3B-PH-K_1x03_P2.00mm_Vertical",
-    "J3": "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical",
-    "J4": "Connector_PinHeader_1.27mm:PinHeader_2x05_P1.27mm_Vertical_SMD",
+    # Side-entry, not top-entry. Both are 4.2 mm tall on an identical board
+    # footprint, so this is not about height: the cell hangs from the lid to
+    # within 6.70 mm of the board, and a vertical header sends the lead
+    # straight up into it. Horizontal exits parallel and routes underneath.
+    "J2": "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical",
+    "J3": "Connector_JST:JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal",
+    "J4": "Connector:Tag-Connect_TC2050-IDC-NL_2x05_P1.27mm_Vertical",
     "J5": TP,
     "TP1": TP, "TP2": TP, "TP3": TP, "TP4": TP, "TP5": TP,
+    # RF grounding net ties - see the RF block for what they enforce.
+    # NT1 is a project footprint: the gap it has to bridge, between U1's pin-32
+    # land and the centre pad, is 0.1905 mm, and a stock 0.5 mm net tie does not
+    # fit in it.
+    "NT1": "footprints:NetTie_VSSPA",
+    "NT2": "NetTie:NetTie-2_SMD_Pad0.5mm",
+    # The stock 0.5 mm net tie does not fit between C24 and U2, so NT3 uses a
+    # compact project one.
+    "NT3": "footprints:NetTie_Small",
 }
 
 # ---------------------------------------------------------------- emit buffers
@@ -363,7 +391,7 @@ B_USB.note(_y - min(p[4] for p in pins_of(USBD)))
 B_USB.cy = snap(106.0)
 B_USB.add("Device", "C_Small", "C20", "1uF/10V X5R", {"1": "VBUS_IN", "2": "GND"})
 # Solar -> 5 V pre-regulator (TBD) -> D5 -> VBUS. Pin 1 = K, pin 2 = A.
-B_USB.add("Device", "D_Schottky_Small", "D5", "OR-ing Schottky",
+B_USB.add("Device", "D_Schottky_Small", "D5", "RB751V-40 Schottky",
           {"1": "VBUS_IN", "2": "SOLAR_5V"})
 B_USB.add("Connector_Generic", "Conn_01x02", "J3", "Solar panel",
           {"1": "SOLAR_PANEL", "2": "GND"})
@@ -373,7 +401,12 @@ npm_x, npm_y, NPMD = place("npm1300", "NPM1300-QEAA-R7", "U2", "nPM1300-QEAA",
                            (196.0, 46.0), "footprints:QFN32_5X5_NOR")
 for n, net in {
     "1": None, "2": "GND", "3": None, "4": "VSYS", "5": "SW2",
-    "6": "GND", "7": None, "8": "PMIC_INT", "9": None,
+    # Pin 6 is PVSS2, the BUCK2 POWER ground - not a general ground pin.
+    # Nordic's reference schematic annotates it "Net tie" and "Via to
+    # GND-layer", i.e. it reaches the plane at one controlled point rather
+    # than merging into the top-layer pour. Split out and tied by NT3.
+    # PVSS1 (pin 2) stays on GND: BUCK1 is disabled, so it carries nothing.
+    "6": "GND_PVSS2", "7": None, "8": "PMIC_INT", "9": None,
     "10": None, "11": None, "12": "+3V3", "13": "SDA",
     "14": "SCL", "15": "SHPHLD", "16": "VSET2", "17": "VSET1", "18": "NTC",
     "19": "VBAT", "20": "VSYS", "21": "VBUS_IN", "22": None,
@@ -389,7 +422,9 @@ for ref, sym, val, nm in [
     ("C21", "C_Small", "10uF/25V X5R", {"1": "VSYS", "2": "GND"}),
     ("C22", "C_Small", "10uF/25V X5R", {"1": "VSYS", "2": "GND"}),
     ("C23", "C_Small", "2.2uF/16V X7R", {"1": "VBAT", "2": "GND"}),
-    ("C24", "C_Small", "10uF/25V X5R", {"1": "+3V3", "2": "GND"}),
+    # C24 returns to PVSS2, not to the plane. That closes the high-di/dt loop
+    # SW2 -> L10 -> C24 -> PVSS2 locally instead of through the ground pour.
+    ("C24", "C_Small", "10uF/25V X5R", {"1": "+3V3", "2": "GND_PVSS2"}),
     ("C25", "C_Small", "100nF X5R", {"1": "+3V3", "2": "GND"}),
     ("L10", "L_Small", "2.2uH Isat>350mA DCR<400m", {"1": "SW2", "2": "+3V3"}),
     ("R20", "R_Small", "470k 1% VSET2=3.3V", {"1": "VSET2", "2": "GND"}),
@@ -408,7 +443,9 @@ for n, net in {
     "18": "P2.07_SWO", "19": None, "20": None, "21": None,
     "22": "+3V3", "23": "PMIC_INT", "24": None, "25": "SWDIO",
     "26": "SWDCLK", "27": None, "28": None, "29": None,
-    "30": "NRESET", "31": "ANT", "32": "GND", "33": "DECA", "34": "XC1",
+    # Pin 32 is VSS_PA and sits on GND_PA, not GND. It reaches the centre pad
+    # only underneath the package - see the RF block.
+    "30": "NRESET", "31": "ANT", "32": "GND_PA", "33": "DECA", "34": "XC1",
     "35": "XC2", "36": "+3V3", "37": None, "38": "SDA",
     "39": "SCL", "40": None, "41": None,
     "42": None, "43": "DECA", "44": "GND", "45": "DECD",
@@ -423,7 +460,7 @@ B_MCU.note(nrf_y - min(p[4] for p in pins_of(NRFD)))
 # and DECA is the same net as DECRF. VDD is fed directly from the rail with no
 # ferrite in the supply path.
 for ref, sym, val, nm in [
-    ("L1",  "L_Small", "4.7uH 120mA 0603",  {"1": "DCC", "2": "DECD"}),
+    ("L1",  "L_Small", "LQM18PN4R7MFRL 4.7uH", {"1": "DCC", "2": "DECD"}),
     ("C1",  "C_Small", "2.2uF/2.5V X6T",    {"1": "DECD", "2": "GND"}),
     ("FB1", "L_Small", "FB 120R@100MHz",    {"1": "DECD", "2": "DECA"}),
     ("C2",  "C_Small", "2.2uF/2.5V X6T",    {"1": "DECA", "2": "GND"}),
@@ -440,10 +477,20 @@ for ref, sym, val, nm in [
     B_SUP.add("Device", sym, ref, val, nm)
 
 # ---- battery + charge status -------------------------------------------------
-B_BATT.add("Connector_Generic", "Conn_01x03", "J2", "Battery 103450 + NTC",
-           {"1": "VBAT", "2": "NTC", "3": "GND"})
-# TH1 duplicates the pack NTC - fit ONLY if the pack has none, otherwise the two
-# sit in parallel and the JEITA trip points move.
+# 2-pin JST PH so an Adafruit cell plugs straight in - their whole range ships
+# with a PH plug. That drops the pack-NTC pin, which costs nothing here: the
+# Adafruit cells are 2-wire and have no thermistor (HARDWARE.md section 3), so
+# the NTC path was always going to be TH1.
+#
+# PH is 8 mm tall against 6.90 mm of clearance under the cell, so J2 MUST sit
+# outside the cell footprint. The cell is only 36 mm of the 74 mm board, leaving
+# the y 62-74 band at full 11.70 mm height - that is where J2 goes.
+B_BATT.add("Connector_Generic", "Conn_01x02", "J2", "Battery - Adafruit 1578",
+           {"1": "VBAT", "2": "GND"})
+# The pack has no thermistor, so TH1 is fitted, not DNP. Couple it to the cell
+# body - a board-mounted NTC measures board temperature and partly defeats
+# JEITA. A leaded NTC taped to the cell and soldered to these pads is better
+# than the 0603 land.
 B_BATT.add("Device", "Thermistor_NTC", "TH1", "10k B3435 - couple to cell",
            {"1": "NTC", "2": "GND"})
 # LEDs sink into the PMIC drivers, fed from VSYS. Pin 1 = K, pin 2 = A.
@@ -496,33 +543,55 @@ B_SWD.add("Connector_Generic", "Conn_02x05_Odd_Even", "J4", "SWD 10p 1.27mm",
 
 # ---- clocks ------------------------------------------------------------------
 # No discrete load caps: both oscillators use the nRF54L15 internal trim banks.
-B_XTAL.add("Device", "Crystal_Small", "X1", "32.768kHz CL=9pF 20ppm",
+B_XTAL.add("Device", "Crystal_Small", "X1", "CM8V-T1A 32.768kHz CL=7pF 20ppm",
            {"1": "XL1", "2": "XL2"})
-B_XTAL.add("Device", "Crystal_GND24_Small", "X2", "32MHz CL=8pF 40ppm",
+B_XTAL.add("Device", "Crystal_GND24_Small", "X2", "FA-128 32MHz CL=8pF",
            {"1": "XC1", "3": "XC2", "2": "GND"})
 
 # ---- RF ----------------------------------------------------------------------
-# GND_PA and GND_C9 are DELIBERATELY separate nets - Nordic requires C6 to ground
-# only at pin 32 (VSS_PA) on the top layer, and C9 to ground only on the bottom
-# ground layer. Do not merge them into GND.
+# GND_PA and GND_C9 are DELIBERATELY separate nets. Nordic requires C6 to ground
+# only at pin 32 (VSS_PA) on the top layer, with pin 32 reaching pin 49 only
+# underneath the package, and C9 to ground only on the bottom ground layer.
+# Electrically these are all the same node; the isolation is a LAYOUT rule, and
+# it is invisible in a netlist. The net ties below make the DRC police it instead
+# of a comment in a markdown file. Do not merge them into GND.
 for ref, sym, val, nm in [
     ("L2",  "L_Small", "2.7nH LQP03HQ2N7B02", {"1": "ANT", "2": "RF_A"}),
-    ("C6",  "C_Small", "1.5pF GJM0335C1E1R5WB01", {"1": "RF_A", "2": "GND"}),
+    ("C6",  "C_Small", "1.5pF GJM0335C1E1R5WB01", {"1": "RF_A", "2": "GND_PA"}),
     ("L3",  "L_Small", "3.5nH LQP03HQ3N5B02", {"1": "RF_A", "2": "RF_B"}),
-    ("C9",  "C_Small", "2.0pF GJM0335C1E2R0WB01", {"1": "RF_B", "2": "GND"}),
+    ("C9",  "C_Small", "2.0pF GJM0335C1E2R0WB01", {"1": "RF_B", "2": "GND_C9"}),
     ("L4",  "L_Small", "3.5nH LQP03HQ3N5B02", {"1": "RF_B", "2": "ANT_FEED"}),
     ("C11", "C_Small", "0.3pF C0G", {"1": "ANT_FEED", "2": "GND"}),
 ]:
     B_RF.add("Device", sym, ref, val, nm)
 B_RF.add("Connector_Generic", "Conn_01x01", "J5", "Antenna feed", {"1": "ANT_FEED"})
 
+# NT1 joins GND_PA to GND. Place it UNDER the U1 centre pad on F.Cu, so the only
+# path from pin 32 to pin 49 is the one Nordic specifies.
+# NT2 joins GND_C9 to GND. Place it on B.Cu, so C9's only route to ground is a
+# via down to the bottom layer.
+B_RF.add("Device", "NetTie_2", "NT1", "GND_PA to GND (under U1, F.Cu)",
+         {"1": "GND_PA", "2": "GND"})
+B_RF.add("Device", "NetTie_2", "NT2", "GND_C9 to GND (B.Cu only)",
+         {"1": "GND_C9", "2": "GND"})
+
+# NT3 joins the BUCK2 power ground to the plane. Place it at the via that
+# drops PVSS2 to the ground layer, right at U2 pin 6 - see LAYOUT.md.
+B_PMIC.add("Device", "NetTie_2", "NT3", "GND_PVSS2 to GND (at the via)",
+           {"1": "GND_PVSS2", "2": "GND"})
+
 # ---- net drivers -------------------------------------------------------------
 # A PWR_FLAG lives in the block that owns its net, rather than in one anonymous
 # pile. Each of these nets is driven only by connector or passive pins, so ERC
 # needs the flag to treat it as powered.
+# GND_PA needs one because U1 pin 32 (VSS_PA) is a power INPUT and splitting it
+# off GND left it with nothing but passive pins to drive it. GND_C9 does not -
+# it carries only C9 pin 2 and the net tie, both passive. GND_PVSS2 needs one
+# for the same reason as GND_PA: U2 pin 6 is a power input.
 for blk, net in [(B_USB, "VBUS_IN"), (B_USB, "SOLAR_5V"), (B_USB, "SOLAR_PANEL"),
                  (B_BATT, "VBAT"), (B_PMIC, "GND"), (B_PMIC, "VSYS"),
-                 (B_SUP, "SWD_RST")]:
+                 (B_SUP, "SWD_RST"), (B_RF, "GND_PA"),
+                 (B_PMIC, "GND_PVSS2")]:
     blk.add("power", "PWR_FLAG", f"#FLG_{net.strip('+')}", "PWR_FLAG", {"1": net})
 B_PMIC.add("Connector", "TestPoint", "TP4", "SHPHLD", {"1": "SHPHLD"})
 B_USB.add("Connector", "TestPoint", "TP5", "SOLAR_5V", {"1": "SOLAR_5V"})

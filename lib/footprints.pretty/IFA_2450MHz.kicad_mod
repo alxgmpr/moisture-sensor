@@ -1,0 +1,52 @@
+(footprint "IFA_2450MHz"
+	(version 20240108)
+	(generator "tools_gen_pcb.py")
+	(layer "F.Cu")
+	(descr "2.4 GHz PCB inverted-F antenna for the moisture-sensor-carrier stake. NOT copied from a Nordic reference - the QFAA reference layout 0.8 contains no PCB antenna, so this is designed for this board's ground plane and is a starting point only. Origin is the FEED point on the ground-plane boundary. Pad 1 feed stub, pad 2 shorting stub, pad 3 radiating arm. The three are a declared net tie because an IFA is a shorted stub and the feed is DC-grounded by design. Trim the arm to tune; tune with the enclosure fitted and a realistic soil load - LAYOUT.md section 3.")
+	(tags "antenna IFA 2.4GHz BLE net-tie")
+	(attr smd exclude_from_pos_files exclude_from_bom)
+
+	(property "Reference" "AE1"
+		(at 8.0 -4.6 0)
+		(layer "F.SilkS")
+		(uuid "1a2b3c4d-0001-4000-8000-000000000001")
+		(effects (font (size 0.8 0.8) (thickness 0.12)))
+	)
+	(property "Value" "IFA_2450MHz"
+		(at 4.75 -10.4 0)
+		(layer "F.Fab")
+		(uuid "1a2b3c4d-0002-4000-8000-000000000002")
+		(effects (font (size 0.8 0.8) (thickness 0.12)))
+	)
+
+	(net_tie_pad_groups "1, 2, 3")
+
+	(fp_line (start -4.5 0) (end 14.0 0)
+		(stroke (width 0.05) (type solid)) (layer "F.Fab")
+		(uuid "1a2b3c4d-0100-4000-8000-000000000100"))
+	(fp_text user "GND PLANE EDGE"
+		(at 4.75 0.85 0)
+		(layer "F.Fab")
+		(uuid "1a2b3c4d-0101-4000-8000-000000000101")
+		(effects (font (size 0.6 0.6) (thickness 0.1)))
+	)
+
+	(pad "1" smd rect
+		(at 0 -4.0)
+		(size 0.5 8.0)
+		(layers "F.Cu" "F.Mask")
+		(uuid "1a2b3c4d-0201-4000-8000-000000000201")
+	)
+	(pad "2" smd rect
+		(at -4.0 -4.5)
+		(size 1.0 9.0)
+		(layers "F.Cu" "F.Mask")
+		(uuid "1a2b3c4d-0202-4000-8000-000000000202")
+	)
+	(pad "3" smd rect
+		(at 4.75 -8.5)
+		(size 18.5 1.0)
+		(layers "F.Cu" "F.Mask")
+		(uuid "1a2b3c4d-0203-4000-8000-000000000203")
+	)
+)

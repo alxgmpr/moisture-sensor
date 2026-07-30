@@ -18,7 +18,7 @@ USB-C VBUS ───────────────────────
                                         ├──► nPM1300 VBUS ──► VSYS ──► BUCK2 / VOUT2 3.3 V ─┬─► nRF54L15
 Solar ──► 5 V pre-reg ──► D5 (Schottky) ┘         │                                         ├─► I2C pullups (always on)
                                                   │                                         └─► LOADSW1 ──► FDC1004
-                                                  └──► VBAT ──► 103450 Li-ion 2000 mAh
+                                                  └──► VBAT ──► Adafruit 1578 Li-ion 500 mAh
 ```
 
 USB-C VBUS feeds nPM1300 VBUS directly. The solar branch carries the only diode —
@@ -70,7 +70,7 @@ net**. VDD is fed straight from the 3.3 V rail with no ferrite in the supply pat
 | Des | Value | Description | FP | Net / pin |
 |---|---|---|---|---|
 | U1 | nRF54L15-QFAA | SoC, QFN48 6×6 mm, 0.4 mm pitch | QFN-48 | — |
-| L1 | 4.7 µH | Inductor, 120 mA, ±20%, 650 mΩ | 0603 | DCC (46) → DECD (45) |
+| L1 | 4.7 µH | **LQM18PN4R7MFRL**, 120 mA, ±20%, DCR 0.55 Ω max | 0603 | DCC (46) → DECD (45) |
 | C1 | 2.2 µF | X6T, ±20%, 2.5 V | 0201 | DECD (45) → GND |
 | FB1 | 120 Ω @ 100 MHz | Ferrite bead, 200 mA, 500 mΩ max | 0201 | DECD (45) → DECA (43) |
 | C2 | 2.2 µF | X6T, ±20%, 2.5 V | 0201 | DECA → GND |
@@ -80,8 +80,8 @@ net**. VDD is fed straight from the 3.3 V rail with no ferrite in the supply pat
 | C4, C7, C8, C10 | 100 nF | X7R, ±10% | 0201 | one per VDD pin (10, 22, 36, 47, 48) |
 | R1 | 1 kΩ | ±1%, 0.05 W | 0201 | RESET (30) → SWD header |
 | C13 | 3.9 pF | C0G, ±0.25 pF, 50 V | 0201 | RESET (30) → GND |
-| X1 | 32.768 kHz | **C_L = 9 pF, ±20 ppm, drive ≤ 0.5 µW** | 2012 2-pin | XL1 (1) / XL2 (2) |
-| X2 | 32 MHz | **C_L = 8 pF, ±40 ppm, drive ≤ 100 µW** | 2016 4-pad | XC1 (34) / XC2 (35) |
+| X1 | 32.768 kHz | **CM8V-T1A, C_L = 7 pF, ±20 ppm, drive ≤ 0.5 µW** | 2012 2-pin | XL1 (1) / XL2 (2) |
+| X2 | 32 MHz | **FA-128, C_L = 8 pF, ±40 ppm total, drive ≤ 100 µW** | 2016 4-pad | XC1 (34) / XC2 (35) |
 
 **Things that are easy to get wrong here**, all of which this document got wrong
 before the reference layout was checked:
@@ -102,7 +102,7 @@ XC1/XC2 or XL1/XL2, because both oscillators have internal trimmable banks:
 - **HFXO:** internal caps **4.0 pF to 17.0 pF in 0.25 pF steps**
   (`XOSC32M.CONFIG.INTCAP`). X2's C_L = 8 pF is inside that range.
 - **LFXO:** internal caps **3 pF to 18 pF in 0.65 pF steps** (`XOSC32KI.INTCAP`).
-  X1's C_L = 9 pF is inside that range.
+  X1's C_L = 7 pF is inside that range.
 
 You specify the crystal's C_L in part selection and match it in firmware via the
 INTCAP registers. The register value is **not** the capacitance directly — it is
@@ -632,21 +632,62 @@ SWD header: SWDIO, SWDCLK, RESET, 3V3, GND. RESET keeps the R1/C5 filter from §
 
 ### Result
 
-| | |
-|---|---|
-| Total annual charge draw | **≈ 520 mAh/yr** |
-| Usable capacity | ≈ 1900 mAh |
-| **Projected runtime** | **≈ 3.6 years** |
+**Cell is an Adafruit 1578 — 500 mAh, 29 × 36 × 4.8 mm.** Chosen over the larger
+258 for fit margin: the 258 is 34 mm across a 34.92 mm box interior, and its
+datasheet part code (503562) implies a 35 mm nominal cell that would not go in.
+1578 is 29 mm across, so there is 6 mm of slack instead of 0.9. It also ships
+with the JST PH plug that J2 now accepts directly.
 
-### Breakdown
-
-| Item | Current | mAh/yr | % |
+| | Adafruit 1578 (fitted) | 258 | 103450 |
 |---|---|---|---|
-| Cell self-discharge | — | 480 | 92% |
-| Cell PCM quiescent | ~3 µA | 26 | 5.0% |
-| nPM1300 + nRF54L15 System OFF | ~1.5 µA | 13 | 2.5% |
-| SHT45 idle (always powered) | 80 nA | 0.7 | 0.1% |
-| Hourly wake cycles | — | 3 | 0.6% |
+| Nominal capacity | 500 mAh | 1200 mAh | 2000 mAh |
+| Total annual charge draw | ≈ 163 mAh/yr | ≈ 331 | ≈ 523 |
+| Usable capacity | ≈ 475 mAh | ≈ 1140 | ≈ 1900 |
+| **Projected runtime** | **≈ 2.9 years** | ≈ 3.45 | ≈ 3.6 |
+
+### Breakdown, at 500 mAh
+
+| Item | Current | mAh/yr | % | Scales with capacity? |
+|---|---|---|---|---|
+| Cell self-discharge | — | 120 | 74% | **yes** |
+| Cell PCM quiescent | ~3 µA | 26 | **16%** | no |
+| nPM1300 + nRF54L15 System OFF | ~1.5 µA | 13 | 8.0% | no |
+| SHT45 idle (always powered) | 80 nA | 0.7 | 0.4% | no |
+| Hourly wake cycles | — | 3 | 1.8% | no |
+
+**The balance shifts at this capacity.** Self-discharge drops from 92 % of the
+budget on the 2000 mAh cell to 74 % here, and the *fixed* terms become
+significant: the PCM alone is now 16 %, twice the entire nRF+PMIC sleep draw.
+Measuring the pack's quiescent current matters more than it used to.
+
+### Why halving the cell costs only 7%
+
+Self-discharge is 2%/month **of whatever capacity is in there**, so it shrinks
+with the cell. Only the 42.8 mAh/yr of fixed terms stay put:
+
+```
+runtime = 0.95·C / (0.24·C + 42.8)      C in mAh, result in years
+```
+
+| C | 2000 | 1200 | 1000 | 800 | 600 | 300 |
+|---|---|---|---|---|---|---|
+| years | 3.63 | 3.45 | 3.36 | 3.24 | 3.05 | 2.48 |
+
+Two things fall out of that expression. **There is a ceiling at 0.95/0.24 =
+3.96 years** — no cell that fits this enclosure gets meaningfully past 3.6, so
+the 103450 was buying almost nothing. And the result is robust to the
+self-discharge figure: at 1%/month the 2000→1000 penalty is 13%, at 3%/month it
+is 5%. Worse self-discharge makes cell size matter *less*.
+
+Li-ion calendar ageing is 3–5 years at indoor storage regardless of cycling, so
+3.4 years already meets the cell's own service life.
+
+**A primary coin cell is not a cell swap.** CR2032 self-discharges at ~1%/*year*
+rather than 2%/month, which on this budget would be ~11 years — but the nPM1300's
+VBAT is a charger output and cannot take a primary cell, and a CR2032 sits at
+2.9–2.5 V for most of its discharge against the FDC1004's 3.0 V minimum (§5),
+which a buck cannot boost. It needs a different power architecture, not a
+different part.
 
 The combined PMIC-plus-sleeping-MCU figure needs a caveat. Table 3 gives
 I_QBAT = 800 nA for one BUCK in Auto at **no load**. Figure 3's efficiency curve
@@ -672,18 +713,21 @@ If you want more than 3.6 years, the only lever that matters is the cell.
 
 ### Assumptions — check these
 
-1. **Self-discharge 2%/month.** Dominates everything and is the number I am least
-   sure of. Quality Li-ion is quoted 1.5–3%/month at 20 °C, rising sharply with
-   temperature and state of charge. At 1%/month runtime goes to ~5.9 years; at
-   3%/month, ~2.6 years. **Get this from your cell's datasheet.**
+1. **Self-discharge 2%/month.** Still 85% of the budget and still the number I am
+   least sure of. Quality Li-ion is quoted 1.5–3%/month at 20 °C, rising sharply
+   with temperature and state of charge. At 1000 mAh the 1–3%/month band spans
+   **5.8 down to 2.4 years**. **Get this from your cell's datasheet** — it is
+   worth more than any layout decision on this board.
 2. **PCM quiescent ~3 µA.** Typical for a small protection module, unverified for
-   your cell. 1–10 µA is a normal range.
+   your cell. 1–10 µA is a normal range. At 1000 mAh this is now 9% of the
+   budget — second only to self-discharge, and bigger than the entire
+   electronics draw. Worth measuring on whatever protected cell you buy.
 3. **nPM1300 + nRF sleep 1.5 µA**, per the caveat above.
 4. **Wake cycle 300 ms at 3 mA average**, plus PMIC I²C configuration. A composite
    estimate, not measured. At 0.6% of budget, being wrong by 5× changes nothing.
 5. **8760 wakes/yr** (hourly).
-6. **Usable capacity 1900 mAh.** At these tiny currents you will get close to
-   nameplate.
+6. **Usable capacity 95% of nameplate**, so 475 mAh on the Adafruit 1578. At these tiny
+   currents you will get close to nameplate.
 7. **20–25 °C ambient.** Indoor, and this matters more than it did before — see
    the I_QBAT temperature curve.
 8. Assumes the device **never** sees USB and solar contributes zero. Any charging
