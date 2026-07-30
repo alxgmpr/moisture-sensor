@@ -351,35 +351,39 @@ nrf_x, nrf_y, NRFD = place("nordic", "NRF54L15-QFAA-R", "U1", "nRF54L15-QFAA",
 for n, net in {
     "1": "XL1", "2": "XL2", "3": None, "4": None, "5": None,
     "6": None, "7": None, "8": None, "9": None,
-    "10": "+3V3_MCU", "11": "PMIC_INT", "12": None, "13": None,
+    "10": "+3V3", "11": "PMIC_INT", "12": None, "13": None,
     "14": None, "15": None, "16": None, "17": None,
     "18": "P2.07_SWO", "19": None, "20": None, "21": None,
-    "22": "+3V3_MCU", "23": None, "24": None, "25": "SWDIO",
+    "22": "+3V3", "23": None, "24": None, "25": "SWDIO",
     "26": "SWDCLK", "27": None, "28": None, "29": None,
-    "30": "NRESET", "31": "ANT", "32": "GND", "33": "DECRF", "34": "XC1",
-    "35": "XC2", "36": "+3V3_MCU", "37": "SCL", "38": "SDA",
+    "30": "NRESET", "31": "ANT", "32": "GND", "33": "DECA", "34": "XC1",
+    "35": "XC2", "36": "+3V3", "37": "SCL", "38": "SDA",
     "39": None, "40": None, "41": None,
     "42": None, "43": "DECA", "44": "GND", "45": "DECD",
-    "46": "DCC", "47": "+3V3_MCU", "48": "+3V3_MCU", "49": "GND",
+    "46": "DCC", "47": "+3V3", "48": "+3V3", "49": "GND",
 }.items():
     wire_pin(nrf_x, nrf_y, NRFD, n, net)
 B_MCU.note(nrf_y - min(p[4] for p in pins_of(NRFD)))
 
 # ---- MCU support -------------------------------------------------------------
+# Topology is Nordic QFAA reference layout 0.8, NOT a generic decoupling
+# scheme. The DC/DC output goes DCC -> L1 -> DECD, then DECD -> FB1 -> DECA,
+# and DECA is the same net as DECRF. VDD is fed directly from the rail with no
+# ferrite in the supply path.
 for ref, sym, val, nm in [
-    ("L1",  "L_Small", "4.7uH 120mA DCC",  {"1": "DCC", "2": "+3V3_MCU"}),
-    ("FB1", "L_Small", "FB 120R@100MHz",   {"1": "+3V3", "2": "+3V3_MCU"}),
-    ("C3",  "C_Small", "10uF/6.3V X6S",    {"1": "+3V3_MCU", "2": "GND"}),
-    ("C4",  "C_Small", "100nF X7R",        {"1": "+3V3_MCU", "2": "GND"}),
-    ("C7",  "C_Small", "100nF X7R",        {"1": "+3V3_MCU", "2": "GND"}),
-    ("C8",  "C_Small", "100nF X7R",        {"1": "+3V3_MCU", "2": "GND"}),
-    ("C10", "C_Small", "100nF X7R",        {"1": "+3V3_MCU", "2": "GND"}),
-    ("C1",  "C_Small", "2.2uF/2.5V X6T",   {"1": "DECA", "2": "GND"}),
-    ("C12", "C_Small", "10nF/6.3V X7R",    {"1": "DECA", "2": "GND"}),
-    ("C2",  "C_Small", "2.2uF/2.5V X6T",   {"1": "DECD", "2": "GND"}),
-    ("C14", "C_Small", "100nF X7R",        {"1": "DECRF", "2": "GND"}),
-    ("R1",  "R_Small", "1k 1%",            {"1": "NRESET", "2": "SWD_RST"}),
-    ("C5",  "C_Small", "2.2nF X7R",        {"1": "NRESET", "2": "GND"}),
+    ("L1",  "L_Small", "4.7uH 120mA 0603",  {"1": "DCC", "2": "DECD"}),
+    ("C1",  "C_Small", "2.2uF/2.5V X6T",    {"1": "DECD", "2": "GND"}),
+    ("FB1", "L_Small", "FB 120R@100MHz",    {"1": "DECD", "2": "DECA"}),
+    ("C2",  "C_Small", "2.2uF/2.5V X6T",    {"1": "DECA", "2": "GND"}),
+    ("C12", "C_Small", "10nF/6.3V X7R",     {"1": "DECA", "2": "GND"}),
+    ("C5",  "C_Small", "2.2nF X7R",         {"1": "DECA", "2": "GND"}),
+    ("C3",  "C_Small", "10uF/6.3V X6S 0402",{"1": "+3V3", "2": "GND"}),
+    ("C4",  "C_Small", "100nF X7R",         {"1": "+3V3", "2": "GND"}),
+    ("C7",  "C_Small", "100nF X7R",         {"1": "+3V3", "2": "GND"}),
+    ("C8",  "C_Small", "100nF X7R",         {"1": "+3V3", "2": "GND"}),
+    ("C10", "C_Small", "100nF X7R",         {"1": "+3V3", "2": "GND"}),
+    ("R1",  "R_Small", "1k 1%",             {"1": "NRESET", "2": "SWD_RST"}),
+    ("C13", "C_Small", "3.9pF C0G",         {"1": "NRESET", "2": "GND"}),
 ]:
     B_SUP.add("Device", sym, ref, val, nm)
 
@@ -434,7 +438,7 @@ for ref, net in [("TP1", "SENSE1"), ("TP2", "SENSE2"), ("TP3", "SHLD")]:
 
 # ---- SWD ---------------------------------------------------------------------
 B_SWD.add("Connector_Generic", "Conn_02x05_Odd_Even", "J4", "SWD 10p 1.27mm",
-          {"1": "+3V3_MCU", "2": "SWDIO", "3": "GND", "4": "SWDCLK", "5": "GND",
+          {"1": "+3V3", "2": "SWDIO", "3": "GND", "4": "SWDCLK", "5": "GND",
            "6": "P2.07_SWO", "7": None, "8": None, "9": "GND",
            "10": "SWD_RST"}, at=(70.0, 346.0))
 
@@ -454,9 +458,8 @@ for ref, sym, val, nm in [
     ("C6",  "C_Small", "1.5pF GJM0335C1E1R5WB01", {"1": "RF_A", "2": "GND"}),
     ("L3",  "L_Small", "3.5nH LQP03HQ3N5B02", {"1": "RF_A", "2": "RF_B"}),
     ("C9",  "C_Small", "2.0pF GJM0335C1E2R0WB01", {"1": "RF_B", "2": "GND"}),
-    ("L4",  "L_Small", "3.5nH LQP03HQ3N5B02", {"1": "RF_B", "2": "RF_C"}),
-    ("C11", "C_Small", "0.3pF C0G", {"1": "RF_C", "2": "GND"}),
-    ("C13", "C_Small", "3.9pF C0G", {"1": "RF_C", "2": "ANT_FEED"}),
+    ("L4",  "L_Small", "3.5nH LQP03HQ3N5B02", {"1": "RF_B", "2": "ANT_FEED"}),
+    ("C11", "C_Small", "0.3pF C0G", {"1": "ANT_FEED", "2": "GND"}),
 ]:
     B_RF.add("Device", sym, ref, val, nm)
 B_RF.add("Connector_Generic", "Conn_01x01", "J5", "Antenna feed", {"1": "ANT_FEED"})
@@ -467,7 +470,7 @@ B_RF.add("Connector_Generic", "Conn_01x01", "J5", "Antenna feed", {"1": "ANT_FEE
 # needs the flag to treat it as powered.
 for blk, net in [(B_USB, "VBUS_IN"), (B_USB, "SOLAR_5V"), (B_USB, "SOLAR_PANEL"),
                  (B_BATT, "VBAT"), (B_PMIC, "GND"), (B_PMIC, "VSYS"),
-                 (B_SUP, "+3V3_MCU")]:
+                 (B_SUP, "SWD_RST")]:
     blk.add("power", "PWR_FLAG", f"#FLG_{net.strip('+')}", "PWR_FLAG", {"1": net})
 B_PMIC.add("Connector", "TestPoint", "TP4", "SHPHLD", {"1": "SHPHLD"})
 B_USB.add("Connector", "TestPoint", "TP5", "SOLAR_5V", {"1": "SOLAR_5V"})

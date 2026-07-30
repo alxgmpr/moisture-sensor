@@ -62,20 +62,37 @@ The cost is ~0.2 mAh/yr.
 From Nordic's **Circuit configuration 1 for QFN48 (QFAA)** — "DCDC: supplied by
 battery or external supply", NFC disabled. Correct config: internal DC/DC on, no NFC.
 
+Topology below is **Nordic's QFAA reference layout 0.8**, not a generic
+decoupling scheme. The DC/DC output does *not* return to VDD — it goes
+`DCC → L1 → DECD`, then `DECD → FB1 → DECA`, and **DECA and DECRF are the same
+net**. VDD is fed straight from the 3.3 V rail with no ferrite in the supply path.
+
 | Des | Value | Description | FP | Net / pin |
 |---|---|---|---|---|
-| U1 | nRF54L15-QFAA | SoC | QFN-48 | — |
-| L1 | 4.7 µH | Inductor, 120 mA, ±20%, 650 mΩ | 0603 | DCC (46) → VDD |
-| C1 | 2.2 µF | X6T, ±20%, 2.5 V | 0201 | DECA (43) |
-| C2 | 2.2 µF | X6T, ±20%, 2.5 V | 0201 | DECD (45) |
-| C12 | 10 nF | X7R, 6.3 V | 0201 | DECA (43) |
+| U1 | nRF54L15-QFAA | SoC, QFN48 6×6 mm, 0.4 mm pitch | QFN-48 | — |
+| L1 | 4.7 µH | Inductor, 120 mA, ±20%, 650 mΩ | 0603 | DCC (46) → DECD (45) |
+| C1 | 2.2 µF | X6T, ±20%, 2.5 V | 0201 | DECD (45) → GND |
+| FB1 | 120 Ω @ 100 MHz | Ferrite bead, 200 mA, 500 mΩ max | 0201 | DECD (45) → DECA (43) |
+| C2 | 2.2 µF | X6T, ±20%, 2.5 V | 0201 | DECA → GND |
+| C12 | 10 nF | X7R, 6.3 V | 0201 | DECA → GND |
+| C5 | 2.2 nF | X7R, ±10%, 10 V | 0201 | DECA → GND |
 | C3 | 10 µF | X6S, ±20%, 6.3 V | 0402 | VDD bulk |
-| C4, C7, C8, C10 | 100 nF | X7R, ±10% | 0201 | one per VDD pin (10, 22, 36, 47/48) |
-| FB1 | 120 Ω @ 100 MHz | Ferrite bead, 200 mA, 500 mΩ max | 0201 | VDD feed |
-| R1 | 1 kΩ | ±1%, 0.05 W | 0201 | RESET (30) series |
-| C5 | 2.2 nF | X7R, ±10%, 10 V | 0201 | RESET (30) to GND |
+| C4, C7, C8, C10 | 100 nF | X7R, ±10% | 0201 | one per VDD pin (10, 22, 36, 47, 48) |
+| R1 | 1 kΩ | ±1%, 0.05 W | 0201 | RESET (30) → SWD header |
+| C13 | 3.9 pF | C0G, ±0.25 pF, 50 V | 0201 | RESET (30) → GND |
 | X1 | 32.768 kHz | **C_L = 9 pF, total tol ±20 ppm** | 2012 | XL1 (1) / XL2 (2) |
 | X2 | 32 MHz | **C_L = 8 pF, total tol ±40 ppm** | 2016 | XC1 (34) / XC2 (35) |
+
+**Things that are easy to get wrong here**, all of which this document got wrong
+before the reference layout was checked:
+
+- **DECRF (33) is not separately decoupled.** It ties to DECA. A 100 nF of its
+  own is not in Nordic's BOM.
+- **FB1 is not in the VDD supply path.** It sits inside the DC/DC filter between
+  DECD and DECA. Putting it in series with VDD is a different circuit.
+- **C13 3.9 pF is the RESET filter, not an RF component.** It appears adjacent to
+  the matching network on Nordic's sheet, which invites exactly that mistake.
+- **C5 2.2 nF is on DECA**, not on RESET.
 
 ### Crystal load capacitance — your explicit question
 
@@ -109,7 +126,10 @@ over-specified for that, but it is the reference BOM part and the cost delta is 
 | C6 | 1.5 pF | GJM0335C1E1R5WB01 |
 | C9 | 2.0 pF | GJM0335C1E2R0WB01 |
 | C11 | 0.3 pF | C0G ±0.1 pF, 50 V, 0201 |
-| C13 | 3.9 pF | C0G ±0.25 pF, 50 V, 0201 |
+
+Chain: `ANT (31) → L2 → [C6↓] → L3 → [C9↓] → L4 → [C11↓] → antenna`. All three
+shunts go to ground; there is no series element after C11. **C13 is not part of
+this network** — see the RESET note above.
 
 **Two grounding rules from Nordic, easy to violate and hard to debug:**
 
