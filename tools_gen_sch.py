@@ -119,7 +119,9 @@ FOOTPRINTS = {
     # 1.5 mm centres) is what the datasheet specifies; KiCad's generic 2012
     # footprints use 0.6 or 1.05 mm pads on different centres.
     "X1": "footprints:XTAL_CM8V-T1A_2012",
-    "X2": "Crystal:Crystal_SMD_2016-4Pin_2.0x1.6mm",
+    # Epson's own land pattern. KiCad's generic 2016 4-pin uses 0.90 x 0.80 mm
+    # pads on 1.40 x 1.10 centres - a 2.30 mm outer span against Epson's 1.45.
+    "X2": "footprints:XTAL_FA-128_2016_4Pin",
     # connectors
     # Connectors. J2/J3/J4 are height-constrained: the Hammond 1551WK leaves
     # 6.70 mm of clear component height under the cell (LAYOUT.md §9), and JST PH

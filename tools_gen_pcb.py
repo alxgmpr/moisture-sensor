@@ -597,10 +597,25 @@ MODELS_3D = {
 # so the enclosure fit can be checked in the 3D viewer instead of on paper.
 # The board sits on the 4.00 mm posts, so its top face is 5.60 mm above the box
 # floor; the model is dropped by that much and centred on the box section.
-# Set False to leave the enclosure out entirely. The footprint also carries no
-# smd/through_hole attribute, so KiCad's 3D viewer files it under "Other" and it
-# can be switched off on its own in Preferences > Display Options.
-SHOW_ENCLOSURE = True
+# Hammond ship the 1551WK as a STEP ASSEMBLY, not a single solid. Split out with
+# OCCT into three files so each half can be shown or hidden on its own:
+#   1551WK_Bottom.step   y   0.00 - 16.91   the box body, PCB posts inside it
+#   1551WK_Lid.step      y  16.00 - 22.00   sits on top
+#   1551WK_Gasket.step   y  16.42 - 17.62   silicone seal, in the seam
+# (the assembly also contains four SC509 cover screws, not exported)
+#
+# Those numbers settle a question worth writing down: the PCB is NOT sandwiched
+# between the halves and is NOT the gasket. It sits on 4.00 mm posts inside the
+# bottom, so its top face is at y = 5.60 - roughly 11 mm below the gasket seam.
+# There is no path from the board out through the seam.
+# The split files are valid STEP with correct geometry and assembly positions
+# (verified by bounding box), but kicad-cli's renderer does not draw them while
+# it does draw Hammond's original combined .stp. Set ENCL_SPLIT False to fall
+# back to the single combined model if the 3D viewer misbehaves for you too.
+ENCL_SPLIT = True
+SHOW_ENCLOSURE_BOTTOM = True
+SHOW_ENCLOSURE_LID = True
+SHOW_ENCLOSURE_GASKET = True
 
 # Hammond's STEP is Y-up and its screw side faces the board, so it needs
 # flipping: +90 about X rather than -90. ENCL_Z then drops it so the box
@@ -609,10 +624,21 @@ SHOW_ENCLOSURE = True
 ENCL_ROT = (90, 0, 90)
 ENCL_Z = 14.7
 
-DECOR = {
-    "MP1": ("Enclosure_1551WK", (BOX_W / 2.0, BOX_L / 2.0), 0,
-            "${KIPRJMOD}/lib/enclosure/1551WKBK.stp", (0, 0, ENCL_Z), ENCL_ROT),
-} if SHOW_ENCLOSURE else {}
+_ENCL_AT = (BOX_W / 2.0, BOX_L / 2.0)
+_ENCL_PARTS = (("MP1", "1551WK_Bottom", SHOW_ENCLOSURE_BOTTOM),
+               ("MP2", "1551WK_Lid", SHOW_ENCLOSURE_LID),
+               ("MP3", "1551WK_Gasket", SHOW_ENCLOSURE_GASKET))
+DECOR = {}
+if ENCL_SPLIT:
+    for _ref, _file, _on in _ENCL_PARTS:
+        if _on:
+            DECOR[_ref] = ("Enclosure_1551WK", _ENCL_AT, 0,
+                           "${KIPRJMOD}/lib/enclosure/%s.stp" % _file,
+                           (0, 0, ENCL_Z), ENCL_ROT)
+elif any(o for _, _, o in _ENCL_PARTS):
+    DECOR["MP1"] = ("Enclosure_1551WK", _ENCL_AT, 0,
+                    "${KIPRJMOD}/lib/enclosure/1551WKBK.stp",
+                    (0, 0, ENCL_Z), ENCL_ROT)
 
 # References that legitimately have no 3D model: bare copper, or no part fitted.
 NO_MODEL_EXPECTED = {"AE1", "NT1", "NT2", "J4", "J5",
@@ -620,7 +646,7 @@ NO_MODEL_EXPECTED = {"AE1", "NT1", "NT2", "J4", "J5",
 
 # Mechanical-only footprints are not in the netlist, so the placement checks
 # must skip them.
-DECOR_REFS = {"MP1"}
+DECOR_REFS = {"MP1", "MP2", "MP3"}
 
 
 def attach_model(fp, ref, spec=None):
