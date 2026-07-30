@@ -72,8 +72,8 @@ the 2×5 1.27 mm SWD header is comparable, so all three were changed:
 
 | Ref | Was | Height | Now | Height |
 |---|---|---|---|---|
-| J2 | JST PH `B3B-PH-K` | 8 mm | JST GH `BM03B-GHS-TBT` | **4.20 mm** |
-| J3 | JST PH `B2B-PH-K` | 8 mm | JST GH `BM02B-GHS-TBT` | **4.20 mm** |
+| J2 | JST PH `B3B-PH-K` | 8 mm | JST GH `SM03B-GHS-TB` **horizontal** | **4.25 mm** |
+| J3 | JST PH `B2B-PH-K` | 8 mm | JST GH `SM02B-GHS-TB` **horizontal** | **4.25 mm** |
 | J4 | `PinHeader_2x05_P1.27mm_Vertical_SMD` | ≈6 mm | Tag-Connect `TC2050-IDC-NL` | 0 |
 
 Heights measured from the vendor STEP models KiCad ships, not from a vendor
@@ -82,8 +82,9 @@ the 500 mA charge current.
 
 **Vertical and horizontal GH are the same height** — 4.20 mm for `BM**B-GHS-TBT`
 against 4.25 mm for the side-entry `SM**B-GHS-TB`, on an identical 4.95 mm board
-footprint. The choice between them is cable exit direction, not height. See
-LAYOUT.md §9.
+footprint. The choice between them is cable exit direction, not height: the cell hangs
+from the lid to within 6.70 mm of the board, and a top-entry header sends the
+lead straight up into it. **Side-entry selected.** See LAYOUT.md §9.
 
 Tag-Connect uses the standard 10-pin Cortex debug pinout, which is what J4 was
 already wired to, so no net changes. It needs a **TC2050-IDC-NL cable plus a
@@ -143,8 +144,8 @@ TP5 and D5's anode on it.
 | D5 | OR-ing Schottky | `D_SOD-323_HandSoldering` |
 | FB1 | FB 120R@100MHz | `L_0402_1005Metric_Pad0.77x0.64mm_HandSolder` |
 | J1 | USB-C receptacle | `USB_C_Receptacle_HRO_TYPE-C-31-M-12` |
-| J2 | Battery 503450 + NTC | `JST_GH_BM03B-GHS-TBT_1x03-1MP_P1.25mm_Vertical` |
-| J3 | Solar panel | `JST_GH_BM02B-GHS-TBT_1x02-1MP_P1.25mm_Vertical` |
+| J2 | Battery 503450 + NTC | `JST_GH_SM03B-GHS-TB_1x03-1MP_P1.25mm_Horizontal` |
+| J3 | Solar panel | `JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal` |
 | J4 | SWD 10p 1.27mm | `Tag-Connect_TC2050-IDC-NL_2x05_P1.27mm_Vertical` |
 | J5 | Antenna feed | `TestPoint_Pad_D1.0mm` |
 | L1 | 4.7uH 120mA 0603 | `L_0603_1608Metric_Pad1.05x0.95mm_HandSolder` |
@@ -152,7 +153,7 @@ TP5 and D5's anode on it.
 | L3 | 3.5nH LQP03HQ3N5B02 | `L_0201_0603Metric` |
 | L4 | 3.5nH LQP03HQ3N5B02 | `L_0201_0603Metric` |
 | L10 | 2.2uH Isat>350mA DCR<400m | `L_Murata_DFE201610P` |
-| NT1 | GND_PA to GND (under U1, F.Cu) | `NetTie-2_SMD_Pad0.5mm` |
+| NT1 | GND_PA to GND (under U1, F.Cu) | `NetTie_VSSPA` |
 | NT2 | GND_C9 to GND (B.Cu only) | `NetTie-2_SMD_Pad0.5mm` |
 | R1 | 1k 1% | `R_0402_1005Metric_Pad0.72x0.64mm_HandSolder` |
 | R20 | 470k 1% VSET2=3.3V | `R_0402_1005Metric_Pad0.72x0.64mm_HandSolder` |
@@ -171,7 +172,7 @@ TP5 and D5's anode on it.
 | U2 | nPM1300-QEAA | `QFN32_5X5_NOR` |
 | U3 | FDC1004 | `MSOP-10_3x3mm_P0.5mm` |
 | U4 | SHT45-AD1F | `Sensirion_DFN-4_1.5x1.5mm_P0.8mm_SHT4x_NoCentralPad` |
-| X1 | CM8V-T1A 32.768kHz CL=7pF 20ppm | `Crystal_SMD_2012-2Pin_2.0x1.2mm_HandSoldering` |
+| X1 | CM8V-T1A 32.768kHz CL=7pF 20ppm | `XTAL_CM8V-T1A_2012` |
 | X2 | 32MHz CL=8pF 40ppm | `Crystal_SMD_2016-4Pin_2.0x1.6mm` |
 
 ---
