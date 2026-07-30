@@ -92,6 +92,20 @@ PROJNAME = "moisture-sensor-carrier"
 # Solar pre-regulator reserve. Not on the board yet; its output is SOLAR_5V.
 SOLAR_RESERVE = (24.0, 49.0, 32.0, 57.0)
 
+# -- SHT45 thermal island --------------------------------------------------------
+# Sensirion's Humidity & Temperature Design Guide section 3: heat reaches the
+# sensor mostly by conduction through the PCB, and the fix is "trough milling or
+# etching slits" around it (Figure 8b, Figure 11b). Section 3.3: "the sensor
+# needs to be decoupled from the thermal mass of the device ... implemented as
+# isolated as possible and as exposed to the environment as possible."
+#
+# A C-shaped routed slot leaves U4 on a peninsula joined to the board by one
+# narrow neck. Not a full circle - the traces have to get there somehow, and
+# Sensirion's own figures show slits with a neck rather than a closed ring.
+SHT_SLOT_W = 1.0                             # routed slot width, JLCPCB floor
+SHT_ISLAND = (27.5, 21.6, 32.4, 24.4)        # x0, y0, x1, y1
+SHT_NECK = SHT_ISLAND[3] - SHT_ISLAND[1]     # 2.8 mm, the only conduction path
+
 # -- cell -----------------------------------------------------------------------
 # Adafruit 1578, 500 mAh, 29 x 36 x 4.8 mm, adhered to the inside of the lid.
 # Board sits on the 4.00 mm posts, so its top face is 5.60 mm above the box
@@ -165,8 +179,12 @@ PLACEMENT = {
 
     # -- debug and ambient sensor
     "J4":  (11.0, 35.5, 0),          # Tag-Connect, zero height
-    "U4":  (30.0, 34.5, 0),          # SHT45 - needs a lid vent above it
-    "C27": (30.0, 37.5, 0),
+    # U4 sits on a thermally isolated peninsula (SHT_ISLAND), clear of the
+    # cell - the largest thermal mass on the assembly, and it warms while
+    # charging. C27 stays on the mainland so the island carries as little
+    # copper and mass as possible.
+    "U4":  (29.5, 23.0, 0),
+    "C27": (25.8, 23.0, 0),
     "R22": (24.5, 33.5, 0),          # I2C pull-ups on always-on +3V3
     "R23": (24.5, 35.0, 0),
 
@@ -725,18 +743,38 @@ def main():
         d.SetPosition(pt(*at))
         d.SetOrientationDegrees(rot)
 
-    # No copper under the SHT45 except its four pin pads (datasheet §5.3).
+    # Two separate constraints around U4, which is why there are two rule areas.
+    #
+    # 1. Datasheet §5.3: "there shall be no copper under the sensor other than at
+    #    the pin pads." That is the strip UNDER THE DIE, between the two pad
+    #    columns - not the whole part. Making it the whole courtyard would ban
+    #    the traces that have to reach the pads.
+    # 2. Design guide §3: remove unnecessary metal around the sensor. That is the
+    #    whole island, and it only bans POUR - tracks still have to get in.
     if "U4" in fps:
-        c = courtyard(fps["U4"])
-        pad = 0.4
-        box = [(c[0] - pad, c[1] - pad), (c[2] + pad, c[1] - pad),
-               (c[2] + pad, c[3] + pad), (c[0] - pad, c[3] + pad)]
-        rule_area(board, "NoCopperSHT45", box, cu,
+        ux, uy = PLACEMENT["U4"][0], PLACEMENT["U4"][1]
+        die = [(ux - 0.42, uy - 0.85), (ux + 0.42, uy - 0.85),
+               (ux + 0.42, uy + 0.85), (ux - 0.42, uy + 0.85)]
+        rule_area(board, "NoCopperSHT45", die, cu,
                   tracks=True, vias=True, pads=False, fills=True, footprints=False)
         for i in range(4):
-            seg(board, box[i], box[(i + 1) % 4], pcbnew.User_3, DOC_W)
+            seg(board, die[i], die[(i + 1) % 4], pcbnew.User_3, DOC_W)
+
+        isl = [(SHT_ISLAND[0], SHT_ISLAND[1]), (SHT_ISLAND[2], SHT_ISLAND[1]),
+               (SHT_ISLAND[2], SHT_ISLAND[3]), (SHT_ISLAND[0], SHT_ISLAND[3])]
+        rule_area(board, "SHT45_ThermalIsland", isl, cu,
+                  tracks=False, vias=True, pads=False, fills=True, footprints=False)
+        for i in range(4):
+            seg(board, isl[i], isl[(i + 1) % 4], pcbnew.User_3, DOC_W)
 
     # Solar pre-regulator reserve, documentation only.
+    ix0, iy0, ix1, iy1 = SHT_ISLAND
+    w = SHT_SLOT_W
+    slot = [(ix0, iy0 - w), (ix1 + w, iy0 - w), (ix1 + w, iy1 + w),
+            (ix0, iy1 + w), (ix0, iy1), (ix1, iy1), (ix1, iy0), (ix0, iy0)]
+    for i in range(len(slot)):
+        seg(board, slot[i], slot[(i + 1) % len(slot)], pcbnew.Edge_Cuts)
+
     cx0, cy0, cx1, cy1 = CELL_RECT
     for a_, b_ in (((cx0, cy0), (cx1, cy0)), ((cx1, cy0), (cx1, cy1)),
                    ((cx1, cy1), (cx0, cy1)), ((cx0, cy1), (cx0, cy0))):
@@ -912,6 +950,23 @@ def main():
         check(not overlaps(boxes[ref], CELL_RECT),
               f"{ref} is {h} mm tall but only {CLEAR_UNDER_CELL:.2f} mm is clear "
               f"under the cell, and it sits inside the cell footprint")
+
+    # SHT45 has to be on its island, and the island has to be clear of the cell.
+    if "U4" in boxes:
+        u4 = boxes["U4"]
+        check(u4[0] >= SHT_ISLAND[0] and u4[2] <= SHT_ISLAND[2]
+              and u4[1] >= SHT_ISLAND[1] and u4[3] <= SHT_ISLAND[3],
+              f"U4 courtyard {[round(v,2) for v in u4]} is not inside the "
+              f"thermal island {SHT_ISLAND}")
+    check(not overlaps(SHT_ISLAND, CELL_RECT),
+          "the SHT45 island is under the cell, which is the biggest thermal "
+          "mass on the assembly")
+    for ref in ("U1", "U2"):
+        if ref in boxes:
+            a_, b_ = SHT_ISLAND, boxes[ref]
+            d = math.hypot(max(0, max(a_[0]-b_[2], b_[0]-a_[2])),
+                           max(0, max(a_[1]-b_[3], b_[1]-a_[3])))
+            _notes.append(f"SHT45 island is {d:.1f} mm from {ref}")
 
     check(SOIL_LINE > ZONE_B_BOT, "soil line is inside the enclosure")
     antenna_to_soil = SOIL_LINE - 3.0

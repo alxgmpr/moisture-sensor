@@ -395,6 +395,45 @@ carry the 500 mA charge current plus system load.
 
 ## 8. Component-specific keepouts
 
+### SHT45 thermal isolation — a routed island
+
+Sensirion's *Humidity & Temperature Design Guide* §3 is explicit that the
+dominant error path is **conduction through the PCB**, and that the fix is
+"trough milling or etching slits" around the sensor (Figure 8b, Figure 11b).
+§3.3: *"the sensor needs to be decoupled from the thermal mass of the device and
+shielded from any heated air flowing through it... implemented as isolated as
+possible and as exposed to the environment as possible."*
+
+U4 therefore sits on a **peninsula** — a C-shaped 1.0 mm routed slot on
+Edge.Cuts, leaving a single **2.8 mm neck** as the only conduction path. Not a
+closed ring: the traces have to reach the pads, and Sensirion's own figures show
+slits with a neck rather than a full circle.
+
+**This moved U4.** It was at (30.0, 34.5), which is inside the cell footprint —
+and the cell is the largest thermal mass on the assembly and warms while
+charging at 500 mA. It is now at (29.5, 23.0), on the island, **6.9 mm from U1
+and 32.1 mm from U2**. `tools_gen_pcb.py` asserts U4 is inside the island and
+that the island does not overlap the cell.
+
+C27 stays on the mainland so the island carries as little copper and mass as
+possible. Keep the four traces across the neck **thin** — Figure 8a and 8c
+contrast thin against thick metal connections directly.
+
+**Two rule areas, because there are two different constraints:**
+
+| Area | Covers | Disallows | Source |
+|---|---|---|---|
+| `NoCopperSHT45` | 0.84 × 1.70 mm strip under the die, between the pad columns | tracks, vias, pour | datasheet §5.3 |
+| `SHT45_ThermalIsland` | the whole 4.9 × 2.8 mm island | **pour only** | design guide §3 |
+
+Sizing the die keepout to the whole courtyard — which is what it was — would ban
+the traces that have to reach the pads. And letting the ground pour flood the
+island both defeats the isolation and leaves an isolated copper island that DRC
+flags.
+
+Still outstanding: the sensor needs to be **exposed to ambient**, which in a
+sealed IP68 box means a PTFE membrane vent in the lid directly above the island.
+
 **SHT45 — no copper underneath.** Datasheet §5.3: *"Soldering of the central die
 pad, as well as an exposed copper pad underneath it, is not recommended... due to
 it acting as a heat sink which prevents the heater from functioning according to
