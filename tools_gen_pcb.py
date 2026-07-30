@@ -543,10 +543,22 @@ MODELS_3D = {
 # so the enclosure fit can be checked in the 3D viewer instead of on paper.
 # The board sits on the 4.00 mm posts, so its top face is 5.60 mm above the box
 # floor; the model is dropped by that much and centred on the box section.
+# Set False to leave the enclosure out entirely. The footprint also carries no
+# smd/through_hole attribute, so KiCad's 3D viewer files it under "Other" and it
+# can be switched off on its own in Preferences > Display Options.
+SHOW_ENCLOSURE = True
+
+# Hammond's STEP is Y-up and its screw side faces the board, so it needs
+# flipping: +90 about X rather than -90. ENCL_Z then drops it so the box
+# interior floor sits 5.60 mm below the board top face (4.00 mm posts + 1.6 mm
+# board). Tune these two if the fit looks wrong in the viewer.
+ENCL_ROT = (90, 0, 90)
+ENCL_Z = 14.7
+
 DECOR = {
     "MP1": ("Enclosure_1551WK", (BOX_W / 2.0, BOX_L / 2.0), 0,
-            "${KIPRJMOD}/lib/enclosure/1551WKBK.stp", (0, 0, -5.6), (-90, 0, 90)),
-}
+            "${KIPRJMOD}/lib/enclosure/1551WKBK.stp", (0, 0, ENCL_Z), ENCL_ROT),
+} if SHOW_ENCLOSURE else {}
 
 # References that legitimately have no 3D model: bare copper, or no part fitted.
 NO_MODEL_EXPECTED = {"AE1", "NT1", "NT2", "J4", "J5",
