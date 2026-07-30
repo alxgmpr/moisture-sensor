@@ -80,8 +80,8 @@ net**. VDD is fed straight from the 3.3 V rail with no ferrite in the supply pat
 | C4, C7, C8, C10 | 100 nF | X7R, ±10% | 0201 | one per VDD pin (10, 22, 36, 47, 48) |
 | R1 | 1 kΩ | ±1%, 0.05 W | 0201 | RESET (30) → SWD header |
 | C13 | 3.9 pF | C0G, ±0.25 pF, 50 V | 0201 | RESET (30) → GND |
-| X1 | 32.768 kHz | **C_L = 9 pF, total tol ±20 ppm** | 2012 | XL1 (1) / XL2 (2) |
-| X2 | 32 MHz | **C_L = 8 pF, total tol ±40 ppm** | 2016 | XC1 (34) / XC2 (35) |
+| X1 | 32.768 kHz | **C_L = 9 pF, ±20 ppm, drive ≤ 0.5 µW** | 2012 2-pin | XL1 (1) / XL2 (2) |
+| X2 | 32 MHz | **C_L = 8 pF, ±40 ppm, drive ≤ 100 µW** | 2016 4-pad | XC1 (34) / XC2 (35) |
 
 **Things that are easy to get wrong here**, all of which this document got wrong
 before the reference layout was checked:
@@ -114,7 +114,17 @@ separately. The matching happens in software, not in copper. Budget a
 trim step at bring-up: measure the 32 MHz carrier and adjust INTCAP until the
 frequency error is centred.
 
-**ppm requirements.** BLE requires ±50 ppm on the active carrier. X2 at ±40 ppm
+**Load capacitance is capped at 9 pF on both oscillators** (§11.9.1/11.9.2:
+C_L 6 pF min, 9 pF max). Most 32.768 kHz crystals ship at 12.5 pF and are simply
+not usable — filter on C_L before anything else. LFXO drive level is also capped
+at **0.5 µW**, which is low. ESR is specified as a curve of max ESR against C0
+for a given C_L (Figure 17), not a single number.
+
+**ppm requirements.** BLE requires ±50 ppm on the active carrier; the datasheet
+states the HFXO requirement as **±40 ppm** for BLE and ±60 ppm for 2.4 GHz
+proprietary. LFXO for BLE is **±500 ppm**, so the ±20 ppm reference part is
+heavily over-specified for our non-connectable advertising — it is just what the
+reference BOM calls for. X2 at ±40 ppm
 *total* (initial + temperature + ageing) leaves 10 ppm margin — tight by design;
 do not substitute a ±50 ppm part. The LFXO's ±20 ppm is far tighter than needed:
 because you advertise **non-connectable only**, there are no connection events, so

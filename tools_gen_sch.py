@@ -71,6 +71,57 @@ def pins_of(defn):
                         float(x), float(y), int(rot)))
     return res
 
+
+# ---------------------------------------------------------------- footprints
+# Hand-solder variants everywhere they exist. The ONE exception is the RF
+# matching network (L2/L3/L4/C6/C9/C11): Nordic's component values are matched
+# to their reference land pattern, and hand-solder pads add enough parasitic
+# capacitance at 2.4 GHz to shift a 0.3 pF cap. Those stay 0201 standard.
+HS_C0402 = "Capacitor_SMD:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder"
+HS_C0603 = "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder"
+HS_R0402 = "Resistor_SMD:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder"
+HS_R0603 = "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
+HS_L0402 = "Inductor_SMD:L_0402_1005Metric_Pad0.77x0.64mm_HandSolder"
+HS_L0603 = "Inductor_SMD:L_0603_1608Metric_Pad1.05x0.95mm_HandSolder"
+RF_C0201 = "Capacitor_SMD:C_0201_0603Metric"
+RF_L0201 = "Inductor_SMD:L_0201_0603Metric"
+TP       = "TestPoint:TestPoint_Pad_D1.0mm"
+
+FOOTPRINTS = {
+    # MCU support (Nordic QFAA ref topology, sizes relaxed to 0402 for assembly)
+    "L1": HS_L0603, "FB1": HS_L0402,
+    "C1": HS_C0402, "C2": HS_C0402, "C12": HS_C0402, "C5": HS_C0402,
+    "C3": HS_C0603, "C4": HS_C0402, "C7": HS_C0402, "C8": HS_C0402,
+    "C10": HS_C0402, "C13": HS_C0402, "R1": HS_R0402,
+    # RF matching - standard 0201 pads, see note above
+    "L2": RF_L0201, "L3": RF_L0201, "L4": RF_L0201,
+    "C6": RF_C0201, "C9": RF_C0201, "C11": RF_C0201,
+    # PMIC
+    "C20": HS_C0603, "C21": HS_C0603, "C22": HS_C0603, "C23": HS_C0603,
+    "C24": HS_C0603, "C25": HS_C0402,
+    "L10": "Inductor_SMD:L_Murata_DFE201610P",
+    "R20": HS_R0402, "R21": HS_R0402,
+    # sense front end
+    "C26": HS_C0402, "C27": HS_C0402, "R22": HS_R0402, "R23": HS_R0402,
+    # battery / charge status
+    "R25": HS_R0402, "R26": HS_R0402,
+    "D3": "LED_SMD:LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder",
+    "D4": "LED_SMD:LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder",
+    "TH1": HS_R0603,
+    # solar OR-ing
+    "D5": "Diode_SMD:D_SOD-323_HandSoldering",
+    # clocks. Standard pads on X2 (no hand variant for 2016-4pin exists).
+    "X1": "Crystal:Crystal_SMD_2012-2Pin_2.0x1.2mm_HandSoldering",
+    "X2": "Crystal:Crystal_SMD_2016-4Pin_2.0x1.6mm",
+    # connectors
+    "J1": "Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12",
+    "J2": "Connector_JST:JST_PH_B3B-PH-K_1x03_P2.00mm_Vertical",
+    "J3": "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical",
+    "J4": "Connector_PinHeader_1.27mm:PinHeader_2x05_P1.27mm_Vertical_SMD",
+    "J5": TP,
+    "TP1": TP, "TP2": TP, "TP3": TP, "TP4": TP, "TP5": TP,
+}
+
 # ---------------------------------------------------------------- emit buffers
 parts, wires, labels, graphics, nocons = [], [], [], [], []
 used_lib = {}
@@ -81,6 +132,7 @@ def esc(t):
     return t.replace('\\', '\\\\').replace('"', '\\"')
 
 def place(lib, name, ref, value, at, footprint="", dnp=False):
+    footprint = footprint or FOOTPRINTS.get(ref, "")
     lib_id = f"{lib}:{name}"
     defn = SRC[lib][name]
     used_lib[lib_id] = defn
@@ -444,8 +496,8 @@ B_SWD.add("Connector_Generic", "Conn_02x05_Odd_Even", "J4", "SWD 10p 1.27mm",
 
 # ---- clocks ------------------------------------------------------------------
 # No discrete load caps: both oscillators use the nRF54L15 internal trim banks.
-B_XTAL.add("Device", "Crystal_GND24_Small", "X1", "32.768kHz CL=9pF 20ppm",
-           {"1": "XL1", "3": "XL2", "2": "GND"})
+B_XTAL.add("Device", "Crystal_Small", "X1", "32.768kHz CL=9pF 20ppm",
+           {"1": "XL1", "2": "XL2"})
 B_XTAL.add("Device", "Crystal_GND24_Small", "X2", "32MHz CL=8pF 40ppm",
            {"1": "XC1", "3": "XC2", "2": "GND"})
 
