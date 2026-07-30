@@ -457,6 +457,7 @@ def place_components(board, comps, pads):
         x, y, rot = PLACEMENT[ref][:3]
         back = len(PLACEMENT[ref]) > 3 and PLACEMENT[ref][3] == "B"
         fp = load_fp(board, fpid, ref, value)
+        attach_model(fp, ref)
         board.Add(fp)
         fp.SetPosition(pt(x, y))
         fp.SetOrientationDegrees(rot)
@@ -507,6 +508,38 @@ def courtyard(fp):
 def overlaps(a, b, gap=0.0):
     return not (a[2] + gap <= b[0] or b[2] + gap <= a[0]
                 or a[3] + gap <= b[1] or b[3] + gap <= a[1])
+
+
+# 3D models the footprint does not carry itself, keyed by reference.
+# (path, (dx, dy, dz) mm, (rx, ry, rz) deg).
+#
+# Nordic ship STEP for both QFN packages but their KiCad-converted footprints
+# reference nothing. Both files are centred on origin with Z running 0 to 0.892
+# up from the board, which is exactly KiCad's convention, so they need no
+# offset or rotation. Verified by extracting the STEP bounding boxes:
+#   QFN48  x,y +/-2.997  z 0..0.892   (package is 6.0 x 6.0 x 0.85 nom)
+#   QFN32  x,y +/-2.502  z 0..0.892   (package is 5.0 x 5.0 x 0.85 nom)
+MODELS_3D = {
+    "U1": ("${KIPRJMOD}/lib/nordic/QFN48_6X6_NOR.step", (0, 0, 0), (0, 0, 0)),
+    "U2": ("${KIPRJMOD}/lib/nordic/QFN32_5X5_NOR.step", (0, 0, 0), (0, 0, 0)),
+}
+
+# References that legitimately have no 3D model: bare copper, or no part fitted.
+NO_MODEL_EXPECTED = {"AE1", "NT1", "NT2", "J4", "J5",
+                     "TP1", "TP2", "TP3", "TP4", "TP5"}
+
+
+def attach_model(fp, ref):
+    if ref not in MODELS_3D:
+        return
+    path, off, rot = MODELS_3D[ref]
+    m = pcbnew.FP_3DMODEL()
+    m.m_Filename = path
+    m.m_Offset = pcbnew.VECTOR3D(*[float(v) for v in off])
+    m.m_Rotation = pcbnew.VECTOR3D(*[float(v) for v in rot])
+    m.m_Scale = pcbnew.VECTOR3D(1.0, 1.0, 1.0)
+    m.m_Show = True
+    fp.Models().push_back(m)
 
 
 # Connectors that mate through the board edge. Their bodies overhang on purpose,
@@ -753,6 +786,32 @@ def main():
                 check(d >= 3.0,
                       f"{sense} is {d:.1f} mm from {switcher}, under the 3 mm "
                       f"SENSE-to-SWITCH rule")
+
+    # ---- 3D coverage ---------------------------------------------------------
+    # Reported, not fatal: a missing model does not affect the netlist or the
+    # copper, but it does mean the enclosure fit cannot be checked in 3D.
+    ki3d = "/Applications/KiCad/KiCad.app/Contents/SharedSupport/3dmodels"
+    no_ref, broken = [], []
+    for ref, fp in sorted(fps.items()):
+        models = list(fp.Models())
+        if not models:
+            if ref not in NO_MODEL_EXPECTED:
+                no_ref.append(ref)
+            continue
+        for m in models:
+            p = str(m.m_Filename)
+            for var in ("KICAD10_3DMODEL_DIR", "KICAD9_3DMODEL_DIR",
+                        "KICAD8_3DMODEL_DIR"):
+                p = p.replace("${%s}" % var, ki3d)
+            p = p.replace("${KIPRJMOD}", PROJ)
+            if not any(os.path.exists(os.path.splitext(p)[0] + e)
+                       for e in (os.path.splitext(p)[1], ".step", ".stp", ".wrl")):
+                broken.append((ref, str(m.m_Filename)))
+    if no_ref:
+        _notes.append(f"3D: no model referenced for {', '.join(no_ref)}")
+    for ref, p in broken:
+        _notes.append(f"3D: {ref} references a file that is not on disk - "
+                      f"{os.path.basename(p)}")
 
     check(SOIL_LINE > ZONE_B_BOT, "soil line is inside the enclosure")
     antenna_to_soil = SOIL_LINE - 3.0
