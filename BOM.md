@@ -52,12 +52,18 @@ the 2×5 1.27 mm SWD header is comparable, so all three were changed:
 
 | Ref | Was | Height | Now | Height |
 |---|---|---|---|---|
-| J2 | JST PH `B3B-PH-K` | 8 mm | JST GH `BM03B-GHS-TBT` | ≈4.7 mm |
-| J3 | JST PH `B2B-PH-K` | 8 mm | JST GH `BM02B-GHS-TBT` | ≈4.7 mm |
+| J2 | JST PH `B3B-PH-K` | 8 mm | JST GH `BM03B-GHS-TBT` | **4.20 mm** |
+| J3 | JST PH `B2B-PH-K` | 8 mm | JST GH `BM02B-GHS-TBT` | **4.20 mm** |
 | J4 | `PinHeader_2x05_P1.27mm_Vertical_SMD` | ≈6 mm | Tag-Connect `TC2050-IDC-NL` | 0 |
 
-JST GH is rated 1 A, comfortably over the 500 mA charge current. Molex PicoBlade
-(≈4.0 mm, also 1 A) is the alternative if GH's 1.25 mm crimps prove fiddly.
+Heights measured from the vendor STEP models KiCad ships, not from a vendor
+blurb. JST GH is rated **1 A** (JST GH series page, AWG #26), comfortably over
+the 500 mA charge current.
+
+**Vertical and horizontal GH are the same height** — 4.20 mm for `BM**B-GHS-TBT`
+against 4.25 mm for the side-entry `SM**B-GHS-TB`, on an identical 4.95 mm board
+footprint. The choice between them is cable exit direction, not height. See
+LAYOUT.md §9.
 
 Tag-Connect uses the standard 10-pin Cortex debug pinout, which is what J4 was
 already wired to, so no net changes. It needs a **TC2050-IDC-NL cable plus a
