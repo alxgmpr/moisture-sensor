@@ -5,4 +5,5 @@
 	(lib (name "nordic") (type "KiCad") (uri "${KIPRJMOD}/lib/nordic/NRF54L15-QFAA-R.kicad_sym") (options "") (descr "Nordic nRF54L15-QFAA vendor symbol"))
 	(lib (name "npm1300") (type "KiCad") (uri "${KIPRJMOD}/lib/nordic/NPM1300-QEAA-R7.kicad_sym") (options "") (descr "Nordic nPM1300-QEAA PMIC vendor symbol"))
 	(lib (name "fdc") (type "KiCad") (uri "${KIPRJMOD}/lib/FDC1004.kicad_sym") (options "") (descr "TI FDC1004 - pinout per SNOSCY5 Table 4-1"))
+	(lib (name "sht4x") (type "KiCad") (uri "${KIPRJMOD}/lib/SHT4x.kicad_sym") (options "") (descr "Sensirion SHT4x - pinout per datasheet v7.1 section 5.4"))
 )

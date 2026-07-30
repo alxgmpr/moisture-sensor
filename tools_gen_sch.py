@@ -55,6 +55,7 @@ SRC = {
     "nordic":            top_level_symbols(f"{PROJ}/lib/nordic/NRF54L15-QFAA-R.kicad_sym"),
     "npm1300":           top_level_symbols(f"{PROJ}/lib/nordic/NPM1300-QEAA-R7.kicad_sym"),
     "fdc":               top_level_symbols(f"{PROJ}/lib/FDC1004.kicad_sym"),
+    "sht4x":             top_level_symbols(f"{PROJ}/lib/SHT4x.kicad_sym"),
 }
 
 def pins_of(defn):
@@ -290,9 +291,9 @@ B_MCU   = Block("MCU - nRF54L15-QFAA",                        COL_C,  20, COL_C_
 B_BATT  = Block("BATTERY + CHARGE STATUS",                    COL_A, 190, COL_A_END)
 B_SENSE = Block("SENSE FRONT END - FDC1004",                  COL_B, 190, COL_B_END)
 B_SUP   = Block("MCU SUPPORT (Nordic ref cfg 1)",             COL_C, 190, COL_C_END)
-B_SWD   = Block("SWD",                                        COL_A, 306, COL_A_END)
-B_XTAL  = Block("CLOCKS",                                     COL_B, 306, COL_B_END)
-B_RF    = Block("RF MATCH + ANTENNA",                         COL_C, 306, COL_C_END)
+B_SWD   = Block("SWD",                                        COL_A, 316, COL_A_END)
+B_XTAL  = Block("CLOCKS",                                     COL_B, 316, COL_B_END)
+B_RF    = Block("RF MATCH + ANTENNA",                         COL_C, 316, COL_C_END)
 
 # ---- USB-C + solar -----------------------------------------------------------
 _x, _y, USBD = place("Connector", "USB_C_Receptacle", "J1", "USB-C receptacle",
@@ -404,7 +405,7 @@ for n, net in {"1": "SHLD", "2": "SENSE1", "3": "SENSE2", "4": None,
                "9": "SCL", "10": "SDA"}.items():
     wire_pin(fd_x, fd_y, FDCD, n, net)
 B_SENSE.note(fd_y - min(p[4] for p in pins_of(FDCD)))
-B_SENSE.cy = snap(252.0)
+B_SENSE.cy = snap(258.0)
 B_SENSE.add("Device", "C_Small", "C26", "1uF/10V X7R", {"1": "FDC_VDD", "2": "GND"})
 # TWI pull-ups sit on the ALWAYS-ON +3V3 rail, NOT on the switched FDC_VDD.
 # Putting them on FDC_VDD deadlocks the board: LOADSW1 is commanded over TWI, so
@@ -415,6 +416,19 @@ B_SENSE.add("Device", "C_Small", "C26", "1uF/10V X7R", {"1": "FDC_VDD", "2": "GN
 # while the part is unpowered does not back-power it.
 B_SENSE.add("Device", "R_Small", "R22", "4.7k to +3V3", {"1": "+3V3", "2": "SDA"})
 B_SENSE.add("Device", "R_Small", "R23", "4.7k to +3V3", {"1": "+3V3", "2": "SCL"})
+# SHT45-AD1F ambient RH/T. Sits on the ALWAYS-ON +3V3, never on the gated
+# FDC_VDD: Table 6 rates every pin at VSS-0.3 .. VDD+0.3 with no independent I/O
+# rating, so an unpowered SHT4x with the bus pull-ups high would violate abs max
+# on every sleep cycle. Idle is 80 nA typ, about 0.7 mAh/yr - cheaper than the
+# level shifting the alternative would need.
+sht_x, sht_y, SHTD = place("sht4x", "SHT4x", "U4", "SHT45-AD1F",
+                           (268.0, 216.0),
+                           "Sensor_Humidity:Sensirion_DFN-4_1.5x1.5mm_P0.8mm_SHT4x_NoCentralPad")
+for n, net in {"1": "SDA", "2": "SCL", "3": "+3V3", "4": "GND"}.items():
+    wire_pin(sht_x, sht_y, SHTD, n, net)
+B_SENSE.note(sht_y - min(p[4] for p in pins_of(SHTD)))
+B_SENSE.add("Device", "C_Small", "C27", "100nF X7R", {"1": "+3V3", "2": "GND"})
+
 for ref, net in [("TP1", "SENSE1"), ("TP2", "SENSE2"), ("TP3", "SHLD")]:
     B_SENSE.add("Connector", "TestPoint", ref, net, {"1": net})
 
@@ -422,7 +436,7 @@ for ref, net in [("TP1", "SENSE1"), ("TP2", "SENSE2"), ("TP3", "SHLD")]:
 B_SWD.add("Connector_Generic", "Conn_02x05_Odd_Even", "J4", "SWD 10p 1.27mm",
           {"1": "+3V3_MCU", "2": "SWDIO", "3": "GND", "4": "SWDCLK", "5": "GND",
            "6": "P2.07_SWO", "7": None, "8": None, "9": "GND",
-           "10": "SWD_RST"}, at=(70.0, 336.0))
+           "10": "SWD_RST"}, at=(70.0, 346.0))
 
 # ---- clocks ------------------------------------------------------------------
 # No discrete load caps: both oscillators use the nRF54L15 internal trim banks.

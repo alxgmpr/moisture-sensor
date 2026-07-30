@@ -430,6 +430,71 @@ before committing to a shared bus.
 
 Supply current and voltage range are now verified — see the electrical table above.
 
+### Ambient RH/T — SHT45-AD1F
+
+Added primarily as a **compensation input**, not a feature. Verified against the
+SHT4x datasheet v7.1.
+
+| Param | Value |
+|---|---|
+| Part | **SHT45-AD1F** — ±1.0 %RH, **±0.1 °C**, PTFE membrane |
+| Supply | 1.08–3.6 V (keeps working after the FDC1004 has dropped out) |
+| I_DD idle | **80 nA** typ, 1.0 µA max @ 25 °C |
+| I_DD measuring | 320 µA typ, 500 µA max |
+| Measurement time | 6.9 ms typ high-repeatability (1.3 ms low) |
+| Power-up | 0.3 ms typ, 1 ms max |
+| I²C address | **0x44** |
+| Package | DFN-4 1.5×1.5×0.5 mm, 0.8 mm pitch |
+| Footprint | `Sensor_Humidity:Sensirion_DFN-4_1.5x1.5mm_P0.8mm_SHT4x_NoCentralPad` |
+
+**Why temperature accuracy is the spec that matters.** Two error terms feed the
+moisture reading:
+
+- FDC1004's own offset drift: 46 fF over 165 °C = **0.28 fF/°C**
+- Water's relative permittivity: falls ~0.4 %/°C, so on a 5–15 pF soil reading
+  that is **20–60 fF/°C** — roughly 100× larger
+
+The soil term dominates completely, so sensor temperature accuracy sets the
+residual:
+
+| T accuracy | Residual moisture error | vs the ±6 fF calibrated floor |
+|---|---|---|
+| ±0.1 °C (SHT45) | 2–6 fF | at or below the floor |
+| ±0.2 °C (SHT40/41) | 4–12 fF | comparable |
+| ±0.48 °C (SHT43) | 10–29 fF | temperature becomes the dominant error |
+
+SHT43 is disqualified on this despite sitting in the same price and power class.
+RH accuracy barely matters by comparison — ±1.8 %RH is only ~±0.05 kPa of VPD
+error at 22 °C — so pay for temperature precision, not humidity precision.
+
+**It must sit on the always-on +3V3 rail, not on gated FDC_VDD.** Table 6 rates
+every pin at **VSS − 0.3 V … VDD + 0.3 V**, with no independent I/O rating. An
+unpowered SHT4x with the bus pull-ups holding SDA/SCL at 3.3 V would violate
+absolute maximum on every sleep cycle. This is the exact opposite of the
+FDC1004 (§5.1 there rates SCL/SDA to 6 V regardless of VDD) — the two parts sit
+on the same bus and have opposite tolerance for being gated. Cost of leaving it
+powered: 80 nA ≈ **0.7 mAh/yr** out of 520.
+
+**Layout constraint, easy to miss.** §5.3: *"Soldering of the central die pad, as
+well as an exposed copper pad underneath it, is not recommended... due to it
+acting as a heat sink which prevents the heater from functioning."* And: *"There
+shall be no copper under the sensor other than at the pin pads."* The KiCad
+`_NoCentralPad` footprint variant already reflects this — do not substitute a
+generic DFN-4 with a thermal pad.
+
+**Membrane vs cover.** The `-xD1F` PTFE membrane is the permanent protection:
+100 µm, >99.99 % filtration at 200 nm, IP67, and the RH response time is
+unaltered. The `-xD1P` "protective cover" is a *removable* polyimide foil that
+exists only to mask the sensor opening during conformal coating and is peeled off
+afterwards — not protection in service. For soil dust and watering splash, take
+the membrane.
+
+**Built-in heater** (20 / 110 / 200 mW, up to 60 mA) can burn off condensation —
+useful in a humid plant environment, but it is a 60 mA load, so short pulses only
+and never on battery-critical wakes.
+
+Decoupling: 100 nF on VDD, per the datasheet's typical application circuit.
+
 ### Battery voltage — the divider is gone
 
 The nPM1300 has a **10-bit ADC that measures battery voltage, battery current,
@@ -497,6 +562,7 @@ SWD header: SWDIO, SWDCLK, RESET, 3V3, GND. RESET keeps the R1/C5 filter from §
 | Cell self-discharge | — | 480 | 92% |
 | Cell PCM quiescent | ~3 µA | 26 | 5.0% |
 | nPM1300 + nRF54L15 System OFF | ~1.5 µA | 13 | 2.5% |
+| SHT45 idle (always powered) | 80 nA | 0.7 | 0.1% |
 | Hourly wake cycles | — | 3 | 0.6% |
 
 The combined PMIC-plus-sleeping-MCU figure needs a caveat. Table 3 gives
@@ -545,8 +611,8 @@ If you want more than 3.6 years, the only lever that matters is the cell.
 ## 8. Open items
 
 - Confirm nRF54L15 peripheral-to-port binding for §6.
-- **Confirm the FDC1004 and nPM1300 fixed I²C addresses do not collide** — the
-  FDC1004 has no address pin, so if they clash the bus must be split.
+- I²C addresses all confirmed distinct: **FDC1004 0x50** (SNOSCY5 §6.5.1),
+  **nPM1300 0x6B**, **SHT45-AD1F 0x44**. One bus, no split needed.
 - Cell datasheet: self-discharge rate, PCM quiescent current, NTC availability.
 - Select the solar pre-regulator and the panel (V_OC, loaded voltage at
   indoor irradiance).
