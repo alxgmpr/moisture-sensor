@@ -715,6 +715,10 @@
       {
         "netclass": "Power",
         "pattern": "/GND_C9"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "/GND_PVSS2"
       }
     ]
   },

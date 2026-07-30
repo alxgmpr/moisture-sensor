@@ -145,6 +145,9 @@ FOOTPRINTS = {
     # fit in it.
     "NT1": "footprints:NetTie_VSSPA",
     "NT2": "NetTie:NetTie-2_SMD_Pad0.5mm",
+    # The stock 0.5 mm net tie does not fit between C24 and U2, so NT3 uses a
+    # compact project one.
+    "NT3": "footprints:NetTie_Small",
 }
 
 # ---------------------------------------------------------------- emit buffers
@@ -398,7 +401,12 @@ npm_x, npm_y, NPMD = place("npm1300", "NPM1300-QEAA-R7", "U2", "nPM1300-QEAA",
                            (196.0, 46.0), "footprints:QFN32_5X5_NOR")
 for n, net in {
     "1": None, "2": "GND", "3": None, "4": "VSYS", "5": "SW2",
-    "6": "GND", "7": None, "8": "PMIC_INT", "9": None,
+    # Pin 6 is PVSS2, the BUCK2 POWER ground - not a general ground pin.
+    # Nordic's reference schematic annotates it "Net tie" and "Via to
+    # GND-layer", i.e. it reaches the plane at one controlled point rather
+    # than merging into the top-layer pour. Split out and tied by NT3.
+    # PVSS1 (pin 2) stays on GND: BUCK1 is disabled, so it carries nothing.
+    "6": "GND_PVSS2", "7": None, "8": "PMIC_INT", "9": None,
     "10": None, "11": None, "12": "+3V3", "13": "SDA",
     "14": "SCL", "15": "SHPHLD", "16": "VSET2", "17": "VSET1", "18": "NTC",
     "19": "VBAT", "20": "VSYS", "21": "VBUS_IN", "22": None,
@@ -414,7 +422,9 @@ for ref, sym, val, nm in [
     ("C21", "C_Small", "10uF/25V X5R", {"1": "VSYS", "2": "GND"}),
     ("C22", "C_Small", "10uF/25V X5R", {"1": "VSYS", "2": "GND"}),
     ("C23", "C_Small", "2.2uF/16V X7R", {"1": "VBAT", "2": "GND"}),
-    ("C24", "C_Small", "10uF/25V X5R", {"1": "+3V3", "2": "GND"}),
+    # C24 returns to PVSS2, not to the plane. That closes the high-di/dt loop
+    # SW2 -> L10 -> C24 -> PVSS2 locally instead of through the ground pour.
+    ("C24", "C_Small", "10uF/25V X5R", {"1": "+3V3", "2": "GND_PVSS2"}),
     ("C25", "C_Small", "100nF X5R", {"1": "+3V3", "2": "GND"}),
     ("L10", "L_Small", "2.2uH Isat>350mA DCR<400m", {"1": "SW2", "2": "+3V3"}),
     ("R20", "R_Small", "470k 1% VSET2=3.3V", {"1": "VSET2", "2": "GND"}),
@@ -565,16 +575,23 @@ B_RF.add("Device", "NetTie_2", "NT1", "GND_PA to GND (under U1, F.Cu)",
 B_RF.add("Device", "NetTie_2", "NT2", "GND_C9 to GND (B.Cu only)",
          {"1": "GND_C9", "2": "GND"})
 
+# NT3 joins the BUCK2 power ground to the plane. Place it at the via that
+# drops PVSS2 to the ground layer, right at U2 pin 6 - see LAYOUT.md.
+B_PMIC.add("Device", "NetTie_2", "NT3", "GND_PVSS2 to GND (at the via)",
+           {"1": "GND_PVSS2", "2": "GND"})
+
 # ---- net drivers -------------------------------------------------------------
 # A PWR_FLAG lives in the block that owns its net, rather than in one anonymous
 # pile. Each of these nets is driven only by connector or passive pins, so ERC
 # needs the flag to treat it as powered.
 # GND_PA needs one because U1 pin 32 (VSS_PA) is a power INPUT and splitting it
 # off GND left it with nothing but passive pins to drive it. GND_C9 does not -
-# it carries only C9 pin 2 and the net tie, both passive.
+# it carries only C9 pin 2 and the net tie, both passive. GND_PVSS2 needs one
+# for the same reason as GND_PA: U2 pin 6 is a power input.
 for blk, net in [(B_USB, "VBUS_IN"), (B_USB, "SOLAR_5V"), (B_USB, "SOLAR_PANEL"),
                  (B_BATT, "VBAT"), (B_PMIC, "GND"), (B_PMIC, "VSYS"),
-                 (B_SUP, "SWD_RST"), (B_RF, "GND_PA")]:
+                 (B_SUP, "SWD_RST"), (B_RF, "GND_PA"),
+                 (B_PMIC, "GND_PVSS2")]:
     blk.add("power", "PWR_FLAG", f"#FLG_{net.strip('+')}", "PWR_FLAG", {"1": net})
 B_PMIC.add("Connector", "TestPoint", "TP4", "SHPHLD", {"1": "SHPHLD"})
 B_USB.add("Connector", "TestPoint", "TP5", "SOLAR_5V", {"1": "SOLAR_5V"})

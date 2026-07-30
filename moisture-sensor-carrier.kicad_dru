@@ -11,6 +11,14 @@
 
 (version 1)
 
+# Fabrication floor. This has to sit ABOVE every specific width rule: last
+# matching rule wins, and this one matches every track, so leaving it at the
+# bottom silently overrode all of them. Caught by injecting a 0.3 mm track on
+# /GND_PVSS2 and getting no violation.
+(rule "Fab minimum track"
+	(constraint track_width (min 0.127mm))
+	(condition "A.Type == 'Track'"))
+
 # ---------------------------------------------------------------- RF path --
 # 50 ohm microstrip on F.Cu referenced to the In1.Cu ground plane.
 # W = 0.38 mm for h = 0.2104 mm, er ~ 4.2 at 2.4 GHz. Confirm against the
@@ -54,7 +62,7 @@
 
 # The remaining half of each rule is placement, not routing, and is asserted in
 # tools_gen_pcb.py instead: NT1 goes under the U1 centre pad on F.Cu, NT2 goes
-# on B.Cu.
+# on B.Cu, NT3 goes at the PVSS2 via beside U2 pin 6.
 
 # ------------------------------------------------- capacitive front end ----
 # The switching nodes are the main aggressors: nPM1300 SW2 at 3.6 MHz in PWM
@@ -99,6 +107,15 @@
 	(constraint track_width (min 0.5mm))
 	(condition "A.NetClass == 'SWITCH'"))
 
+# nPM1300 PVSS2 is the BUCK2 POWER ground, not a general ground pin. Nordic's
+# reference schematic annotates it "Net tie" and "Via to GND-layer": it reaches
+# the plane at one controlled point rather than merging into the top-layer pour.
+# It carries the SW2 return, so it gets the switch node's width. Must sit below
+# "Power track width" - GND_PVSS2 is in the Power class and the later rule wins.
+(rule "BUCK2 power ground is short and fat"
+	(constraint track_width (min 0.5mm))
+	(condition "A.NetName == '/GND_PVSS2'"))
+
 # ------------------------------------------------------------ keepouts -----
 # Nothing conductive may enter the antenna keepout on ANY layer, including
 # ground pour. AE1 is the one exception: the IFA lives inside the keepout by
@@ -118,10 +135,6 @@
 
 # ------------------------------------------------------------ fabrication --
 # JLCPCB 4 layer standard process floor. Tighten only if you pay for it.
-(rule "Fab minimum track"
-	(constraint track_width (min 0.127mm))
-	(condition "A.Type == 'Track'"))
-
 (rule "Fab minimum clearance"
 	(constraint clearance (min 0.127mm)))
 

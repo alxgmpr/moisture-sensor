@@ -234,6 +234,10 @@ PLACEMENT = {
     "TP3": (15.0, 72.5, 0),          # SHLD
     "TP4": (19.0, 49.5, 0),          # SHPHLD, at the PMIC
     "NT2": (19.8, 15.2, 0, "B"),     # C9 ground tie, B.Cu, under C9's via
+    # NT3 sits between U2 pin 6 (PVSS2, at 7.07/56.75) and C24's ground pad,
+    # so the SW2 -> L10 -> C24 -> PVSS2 loop closes here rather than through
+    # the plane. The via to the ground layer goes at this tie.
+    "NT3": (3.5, 59.0, 0),
 }
 
 # --------------------------------------------------------------------- utils --

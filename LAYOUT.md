@@ -109,6 +109,15 @@ them instead of a comment in a markdown file:
 |---|---|---|---|
 | `/GND_PA` | C6.2, U1.32 | **NT1** → GND | under the U1 centre pad, F.Cu |
 | `/GND_C9` | C9.2 | **NT2** → GND | B.Cu |
+| `/GND_PVSS2` | C24.2, U2.6 | **NT3** → GND | at the via to the ground layer |
+
+The third one is the nPM1300's, found in Nordic's own reference schematic
+(datasheet §9.3.2), which annotates PVSS1 **"Net tie"** and **"Via to GND-layer
+on PVSS1"**. Pin 6 is *BUCK2 power ground*, not a general ground pin — it should
+reach the plane at one controlled point rather than merging into the top-layer
+pour. C24 returns to it too, so the high-di/dt loop SW2 → L10 → C24 → PVSS2
+closes locally instead of through the plane. PVSS1 (pin 2) stays on plain GND
+because BUCK1 is disabled and carries nothing.
 
 Both ties are `Device:NetTie_2` / `NetTie:NetTie-2_SMD_Pad0.5mm`. Three DRU rules
 enforce the routing half:
@@ -117,6 +126,8 @@ enforce the routing half:
 - `C6 ground stays on the top layer`
 - `C9 ground never touches an inner plane` — a short stub from C9's pad down to a
   via is unavoidable; reaching In1.Cu or In2.Cu is not
+- `BUCK2 power ground is short and fat` — 0.5 mm minimum on `/GND_PVSS2`, the
+  same as the switch node whose return it carries
 
 The placement half — NT1 under U1, NT2 on B.Cu — is asserted in
 `tools_gen_pcb.py`, because DRC has no way to express it.
@@ -617,6 +628,14 @@ around them at 0.2 mm, guard on In2.Cu and B.Cu beneath.
 
 ### Two things worth knowing about the toolchain
 
+- **DRU rules are last-match-wins, and that had silently broken every width
+  rule.** `Fab minimum track` matches *every* track at 0.127 mm, and it sat at
+  the bottom of the file — so it was overriding `Power track width`,
+  `Charge path width` and `Switch node width`, all of which are stricter. Caught
+  by injecting a 0.3 mm track on a Power-class net and getting no violation at
+  all. The fabrication floor now sits **above** the specific width rules, and
+  `BUCK2 power ground` sits **below** `Power track width` so the stricter of the
+  two wins. Re-verified by injection.
 - **DRU rules are last-match-wins.** For a given constraint type the last rule in
   the file that matches takes precedence, so the exemptions at the bottom of the
   `.kicad_dru` must stay below the broad fabrication minimums. Put them above and
