@@ -404,15 +404,22 @@ dominant error path is **conduction through the PCB**, and that the fix is
 shielded from any heated air flowing through it... implemented as isolated as
 possible and as exposed to the environment as possible."*
 
-U4 therefore sits on a **peninsula** — a C-shaped 1.0 mm routed slot on
-Edge.Cuts, leaving a single **2.8 mm neck** as the only conduction path. Not a
-closed ring: the traces have to reach the pads, and Sensirion's own figures show
-slits with a neck rather than a full circle.
+U4 therefore sits on a **round peninsula** — an annular 1.0 mm routed slot on
+Edge.Cuts, 2.2 mm island radius, with a 60° opening leaving a **2.7 mm neck** as
+the only conduction path. Not a closed ring: the traces have to reach the pads,
+and Sensirion's own figures show slits with a neck rather than a full circle.
+
+Circular rather than rectangular deliberately — a round slot has no
+stress-raising inside corners, and the island edge is a smooth arc instead of
+four sharp ones. The slot's outer radius also sits **2.2 mm from the board
+edge**; an earlier rectangular version left only 0.6 mm there, which is a
+fragile sliver of FR4 right where the box wall is. `tools_gen_pcb.py` asserts a
+2.0 mm minimum.
 
 **This moved U4.** It was at (30.0, 34.5), which is inside the cell footprint —
 and the cell is the largest thermal mass on the assembly and warms while
-charging at 500 mA. It is now at (29.5, 23.0), on the island, **6.9 mm from U1
-and 32.1 mm from U2**. `tools_gen_pcb.py` asserts U4 is inside the island and
+charging at 500 mA. It is now at (28.6, 20.6), on the island, **5.8 mm from U1
+and 33.1 mm from U2**. `tools_gen_pcb.py` asserts U4 is inside the island and
 that the island does not overlap the cell.
 
 C27 stays on the mainland so the island carries as little copper and mass as
@@ -424,7 +431,7 @@ contrast thin against thick metal connections directly.
 | Area | Covers | Disallows | Source |
 |---|---|---|---|
 | `NoCopperSHT45` | 0.84 × 1.70 mm strip under the die, between the pad columns | tracks, vias, pour | datasheet §5.3 |
-| `SHT45_ThermalIsland` | the whole 4.9 × 2.8 mm island | **pour only** | design guide §3 |
+| `SHT45_ThermalIsland` | the whole ⌀4.4 mm island | **pour only** | design guide §3 |
 
 Sizing the die keepout to the whole courtyard — which is what it was — would ban
 the traces that have to reach the pads. And letting the ground pour flood the

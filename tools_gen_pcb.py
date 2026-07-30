@@ -102,9 +102,16 @@ SOLAR_RESERVE = (24.0, 49.0, 32.0, 57.0)
 # A C-shaped routed slot leaves U4 on a peninsula joined to the board by one
 # narrow neck. Not a full circle - the traces have to get there somehow, and
 # Sensirion's own figures show slits with a neck rather than a closed ring.
+# Circular, not rectangular: a round slot has no stress-raising inside corners,
+# and the island's own edge is a smooth arc rather than four sharp ones.
 SHT_SLOT_W = 1.0                             # routed slot width, JLCPCB floor
-SHT_ISLAND = (27.5, 21.6, 32.4, 24.4)        # x0, y0, x1, y1
-SHT_NECK = SHT_ISLAND[3] - SHT_ISLAND[1]     # 2.8 mm, the only conduction path
+SHT_C = (28.6, 20.6)                         # island centre
+SHT_R = 2.2                                  # island radius
+SHT_GAP_DEG = 60.0                           # angular opening = the neck
+# Neck chord across the slot mid-radius, the only conduction path out.
+SHT_NECK = 2 * (SHT_R + SHT_SLOT_W / 2) * math.sin(math.radians(SHT_GAP_DEG / 2))
+SHT_ISLAND = (SHT_C[0] - SHT_R, SHT_C[1] - SHT_R,
+              SHT_C[0] + SHT_R, SHT_C[1] + SHT_R)
 
 # -- cell -----------------------------------------------------------------------
 # Adafruit 1578, 500 mAh, 29 x 36 x 4.8 mm, adhered to the inside of the lid.
@@ -183,8 +190,8 @@ PLACEMENT = {
     # cell - the largest thermal mass on the assembly, and it warms while
     # charging. C27 stays on the mainland so the island carries as little
     # copper and mass as possible.
-    "U4":  (29.5, 23.0, 0),
-    "C27": (25.8, 23.0, 0),
+    "U4":  (28.6, 20.6, 0),
+    "C27": (24.0, 20.6, 0),
     "R22": (24.5, 33.5, 0),          # I2C pull-ups on always-on +3V3
     "R23": (24.5, 35.0, 0),
 
@@ -575,8 +582,11 @@ def overlaps(a, b, gap=0.0):
 MODELS_3D = {
     "U1": ("${KIPRJMOD}/lib/nordic/QFN48_6X6_NOR.step", (0, 0, 0), (0, 0, 0)),
     "U2": ("${KIPRJMOD}/lib/nordic/QFN32_5X5_NOR.step", (0, 0, 0), (0, 0, 0)),
+    # Orientation corrected by hand in the viewer and folded back in here, or
+    # the next generator run would overwrite it. Y-up like the others, plus a
+    # 1 mm shift to seat the body on the board.
     "J1": ("${KIPRJMOD}/lib/TYPE-C-31-M-12--3DModel-STEP-56544.STEP",
-           (0, 0, 0), (0, 0, 0)),
+           (0, -1, 0), (-90, 0, 0)),
     "U4": ("${KIPRJMOD}/lib/SHT45_AD1F_R2/SHT45-AD1F-R2.step",
            (0, 0, 0), (-90, 0, 0)),
     "X1": ("${KIPRJMOD}/lib/CM8V-T1A/CM8V-T1A-32.768KHZ-7PF-20PPM-TA-QC.step",
@@ -760,20 +770,35 @@ def main():
         for i in range(4):
             seg(board, die[i], die[(i + 1) % 4], pcbnew.User_3, DOC_W)
 
-        isl = [(SHT_ISLAND[0], SHT_ISLAND[1]), (SHT_ISLAND[2], SHT_ISLAND[1]),
-               (SHT_ISLAND[2], SHT_ISLAND[3]), (SHT_ISLAND[0], SHT_ISLAND[3])]
+        isl = [(SHT_C[0] + SHT_R * math.cos(math.radians(a)),
+                SHT_C[1] + SHT_R * math.sin(math.radians(a)))
+               for a in range(0, 360, 15)]
         rule_area(board, "SHT45_ThermalIsland", isl, cu,
                   tracks=False, vias=True, pads=False, fills=True, footprints=False)
-        for i in range(4):
-            seg(board, isl[i], isl[(i + 1) % 4], pcbnew.User_3, DOC_W)
+        for i in range(len(isl)):
+            seg(board, isl[i], isl[(i + 1) % len(isl)], pcbnew.User_3, DOC_W)
 
     # Solar pre-regulator reserve, documentation only.
-    ix0, iy0, ix1, iy1 = SHT_ISLAND
-    w = SHT_SLOT_W
-    slot = [(ix0, iy0 - w), (ix1 + w, iy0 - w), (ix1 + w, iy1 + w),
-            (ix0, iy1 + w), (ix0, iy1), (ix1, iy1), (ix1, iy0), (ix0, iy0)]
-    for i in range(len(slot)):
-        seg(board, slot[i], slot[(i + 1) % len(slot)], pcbnew.Edge_Cuts)
+    # Annular slot: two concentric arcs closed by short radial ends, with a
+    # SHT_GAP_DEG opening on the -X side where the four traces cross.
+    cxc, cyc = SHT_C
+    r_in, r_out = SHT_R, SHT_R + SHT_SLOT_W
+    half = SHT_GAP_DEG / 2.0
+    a_start, a_end = 180.0 + half, 180.0 - half + 360.0     # 300 deg of ring
+
+    def polar(r, deg):
+        t = math.radians(deg)
+        return (cxc + r * math.cos(t), cyc + r * math.sin(t))
+
+    steps = 3                                               # 100 deg per arc
+    for r in (r_in, r_out):
+        for k in range(steps):
+            a0 = a_start + (a_end - a_start) * k / steps
+            a1 = a_start + (a_end - a_start) * (k + 1) / steps
+            arc(board, polar(r, a0), polar(r, (a0 + a1) / 2), polar(r, a1),
+                pcbnew.Edge_Cuts)
+    for ang in (a_start, a_end):
+        seg(board, polar(r_in, ang), polar(r_out, ang), pcbnew.Edge_Cuts)
 
     cx0, cy0, cx1, cy1 = CELL_RECT
     for a_, b_ in (((cx0, cy0), (cx1, cy0)), ((cx1, cy0), (cx1, cy1)),
@@ -954,10 +979,19 @@ def main():
     # SHT45 has to be on its island, and the island has to be clear of the cell.
     if "U4" in boxes:
         u4 = boxes["U4"]
-        check(u4[0] >= SHT_ISLAND[0] and u4[2] <= SHT_ISLAND[2]
-              and u4[1] >= SHT_ISLAND[1] and u4[3] <= SHT_ISLAND[3],
-              f"U4 courtyard {[round(v,2) for v in u4]} is not inside the "
-              f"thermal island {SHT_ISLAND}")
+        worst = max(math.hypot(x - SHT_C[0], y - SHT_C[1])
+                    for x in (u4[0], u4[2]) for y in (u4[1], u4[3]))
+        check(worst <= SHT_R,
+              f"U4 corner is {worst:.2f} mm from the island centre, outside "
+              f"the {SHT_R} mm island")
+    # The slot must not leave a flimsy sliver of board against the outline.
+    edge_margin = 2.0
+    ox = SHT_C[0] + SHT_R + SHT_SLOT_W
+    check(BOX_W - ox >= edge_margin,
+          f"SHT slot leaves only {BOX_W - ox:.2f} mm of board to the right "
+          f"edge, under the {edge_margin} mm minimum")
+    check(SHT_C[1] - SHT_R - SHT_SLOT_W >= ZONE_A_BOT + 1.0,
+          "SHT slot encroaches on the antenna keepout boundary")
     check(not overlaps(SHT_ISLAND, CELL_RECT),
           "the SHT45 island is under the cell, which is the biggest thermal "
           "mass on the assembly")
