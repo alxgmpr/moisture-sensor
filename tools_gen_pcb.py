@@ -612,11 +612,13 @@ MODELS_3D = {
 # between the halves and is NOT the gasket. It sits on 4.00 mm posts inside the
 # bottom, so its top face is at y = 5.60 - roughly 11 mm below the gasket seam.
 # There is no path from the board out through the seam.
-# The split files are valid STEP with correct geometry and assembly positions
-# (verified by bounding box), but kicad-cli's renderer does not draw them while
-# it does draw Hammond's original combined .stp. Set ENCL_SPLIT False to fall
-# back to the single combined model if the 3D viewer misbehaves for you too.
-ENCL_SPLIT = True
+# The split files carry correct geometry and assembly positions (verified by
+# bounding box) but kicad-cli's renderer will not draw them, while it happily
+# draws Hammond's combined .stp. Tried: default AP214, AP203, .step and .stp
+# extensions, explicit MM units. All load without error and draw nothing.
+# Defaulting to the combined model so the viewer works; flip to True to try the
+# split parts in the GUI 3D viewer, which is a different code path.
+ENCL_SPLIT = False
 SHOW_ENCLOSURE_BOTTOM = True
 SHOW_ENCLOSURE_LID = True
 SHOW_ENCLOSURE_GASKET = True
