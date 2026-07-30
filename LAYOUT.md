@@ -571,6 +571,20 @@ L10.
   pressed result varies with copper distribution — order with impedance control
   and let them adjust the width if it matters to you.
 
+### Confirmed against Nordic's nPM1300 EK (PCA10152)
+
+Plane-level read of the EK layout, not a coordinate-level copy — it is a large
+multi-function dev board and its PMIC loop geometry is not directly
+transferable. What it confirms:
+
+- **solid, unbroken inner ground plane** under the PMIC, with dense via
+  stitching throughout and a visibly higher via density around the regulator
+- a **separate inner power plane** carved into regions by routed splits
+- SW2 → inductor → 10 µF output cap, the same topology as our SW2 → L10 → C24
+
+That is the Zone B plan in §4 already: solid In1.Cu, stitch generously, In2.Cu
+as the power/guard layer. No change follows from it.
+
 ### Confirmed against TI's FDC1004EVM (SV601093B)
 
 TI's own evaluation board builds the sense front end exactly the way §5
