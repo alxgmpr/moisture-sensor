@@ -168,7 +168,14 @@ GND_EXTRA = [
                                 (93.00, 58.90)]),
 ]
 
-# /+3V3 down to the In2.Cu plane. One entry per pad; the plane does the rest.
+# +3V3 down to the In2.Cu plane. One entry per pad; the plane does the rest.
+#
+# No leading slash on this one, unlike /DECA or /GND_PA below. +3V3 is drawn as
+# a power SYMBOL in the schematic, which makes it a global net named "+3V3";
+# a local label on the root sheet would have made it "/+3V3". net_map() turns a
+# name that does not resolve into a hard abort rather than a skipped route, so
+# this failed closed when the rename landed instead of quietly dropping every
+# supply trace on the board.
 # Necks: 0.19 mm at U1 (0.4 mm pitch) and 0.30 mm at U2 (0.5 mm pitch), which
 # is what the FinePitchFanout rules in the .kicad_dru exist for.
 V3 = [
@@ -182,50 +189,61 @@ V3 = [
     # FinePitchFanout window; it is 1.75 mm from the /ANT run at x = 76.8, so the
     # RF escape keeps its full clearance. Every other bottom-row pin is Default
     # class, where 0.19 mm holds 0.2035 mm and needs no exemption at all.
-    ("/+3V3",       F, 0.19,   ["U1.36",  (74.55, 60.079)]),
-    ("/+3V3",       F, 0.40,   [(74.55, 60.079), (73.30, 60.05)]),
+    ("+3V3",       F, 0.19,   ["U1.36",  (74.55, 60.079)]),
+    ("+3V3",       F, 0.40,   [(74.55, 60.079), (73.30, 60.05)]),
     # 47 and 48 turn SOUTH into the package corner rather than running west,
     # which keeps them off /DCC on pin 46 - it needs 0.3 mm as a SWITCH net and
     # the pins are 0.4 mm apart.
-    ("/+3V3",       F, 0.19,   ["U1.47",  (73.35, 64.80), (73.35, 65.55)]),
-    ("/+3V3",       F, 0.30,   [(73.35, 65.55), (73.80, 65.90)]),
-    ("/+3V3",       F, 0.19,   ["U1.48",  (73.60, 65.45)]),
-    ("/+3V3",       F, 0.30,   [(73.60, 65.45), (73.80, 65.90)]),
-    ("/+3V3",       F, 0.19,   ["U1.10",  (78.40, 66.55)]),
-    ("/+3V3",       F, 0.40,   [(78.40, 66.55), (78.40, 67.30)]),
-    ("/+3V3",       F, 0.19,   ["U1.22",  (80.70, 61.60)]),
-    ("/+3V3",       F, 0.30,   [(80.70, 61.60), (81.20, 62.30)]),
+    ("+3V3",       F, 0.19,   ["U1.47",  (73.35, 64.80), (73.35, 65.55)]),
+    ("+3V3",       F, 0.30,   [(73.35, 65.55), (73.80, 65.90)]),
+    ("+3V3",       F, 0.19,   ["U1.48",  (73.60, 65.45)]),
+    ("+3V3",       F, 0.30,   [(73.60, 65.45), (73.80, 65.90)]),
+    ("+3V3",       F, 0.19,   ["U1.10",  (78.40, 66.55)]),
+    ("+3V3",       F, 0.40,   [(78.40, 66.55), (78.40, 67.30)]),
+    ("+3V3",       F, 0.19,   ["U1.22",  (80.70, 61.60)]),
+    ("+3V3",       F, 0.30,   [(80.70, 61.60), (81.20, 62.30)]),
 
     # -- U2 -----------------------------------------------------------------
     # Pin 12 cannot drop straight south: R20/R21 sit at y 99.68..100.32 and the
     # 0.873 mm gap under the pad row will not take a via plus its clearance. It
     # runs west along y = 99.25 into the space between R20 and R21 instead.
-    ("/+3V3",       F, 0.30,   ["U2.12",  (69.25, 99.25), (67.00, 99.25)]),
-    ("/+3V3",       F, 0.30,   ["U2.28",  (69.75, 92.80)]),
-    ("/+3V3",       F, 0.40,   [(69.75, 92.80), (69.75, 92.50)]),
-    ("/+3V3",       F, 0.30,   ["U2.32",  (67.75, 92.80)]),
-    ("/+3V3",       F, 0.40,   [(67.75, 92.80), (67.30, 92.50)]),
+    ("+3V3",       F, 0.30,   ["U2.12",  (69.25, 99.25), (67.00, 99.25)]),
+    ("+3V3",       F, 0.30,   ["U2.28",  (69.75, 92.80)]),
+    ("+3V3",       F, 0.40,   [(69.75, 92.80), (69.75, 92.50)]),
+    ("+3V3",       F, 0.30,   ["U2.32",  (67.75, 92.80)]),
+    ("+3V3",       F, 0.40,   [(67.75, 92.80), (67.30, 92.50)]),
 
     # -- decoupling and the rest -------------------------------------------
-    ("/+3V3",       F, 0.40,   ["C4.1",   (71.90, 57.40)]),
-    ("/+3V3",       F, 0.40,   ["C7.1",   (82.20, 63.50)]),
-    ("/+3V3",       F, 0.40,   ["C8.1",   (79.43, 69.30)]),
-    ("/+3V3",       F, 0.40,   ["C10.1",  (68.60, 67.40)]),
-    ("/+3V3",       F, 0.60,   ["C3.1",   (63.90, 68.20)]),
-    ("/+3V3",       F, 0.40,   ["C27.1",  (90.00, 60.60)]),
-    ("/+3V3",       F, 0.40,   ["R22.1",  (82.40, 73.50)]),
-    ("/+3V3",       F, 0.40,   ["R23.1",  (82.40, 75.00)]),
-    ("/+3V3",       F, 0.40,   ["J4.1",   (68.46, 77.40), (66.90, 78.00)]),
-    ("/+3V3",       F, 0.40,   ["C25.1",  (71.93, 102.50)]),
+    ("+3V3",       F, 0.40,   ["C4.1",   (71.90, 57.40)]),
+    ("+3V3",       F, 0.40,   ["C7.1",   (82.20, 63.50)]),
+    ("+3V3",       F, 0.40,   ["C8.1",   (79.43, 69.30)]),
+    ("+3V3",       F, 0.40,   ["C10.1",  (68.60, 67.40)]),
+    ("+3V3",       F, 0.60,   ["C3.1",   (63.90, 68.20)]),
+    ("+3V3",       F, 0.40,   ["C27.1",  (90.00, 60.60)]),
+    ("+3V3",       F, 0.40,   ["R22.1",  (82.40, 73.50)]),
+    ("+3V3",       F, 0.40,   ["R23.1",  (82.40, 75.00)]),
+    ("+3V3",       F, 0.40,   ["J4.1",   (68.46, 77.40), (66.90, 78.00)]),
+    ("+3V3",       F, 0.40,   ["C25.1",  (71.93, 102.50)]),
 
     # BUCK2 output. L10 -> C24 is the second half of the SW2 loop and stays a
     # direct fat trace; the plane is tapped at C24, the output cap, not at the
     # inductor. Out of the jut-out, U4 pin 3 leaves NORTH before turning west,
     # for the same NoCopperSHT45 reason as pin 4.
-    ("/+3V3",       F, 0.60,   ["L10.2",  (64.725, 94.30), (63.60, 95.40),
-                                (63.60, 96.20), "C24.1"]),
-    ("/+3V3",       F, 0.60,   ["C24.1",  (61.80, 97.00)]),
-    ("/+3V3",       F, 0.40,   [(100.75, 61.00), (101.20, 61.00), (101.20, 62.30),
+    #
+    # Rewritten when L10 was turned round (tools_place_fixups.py). This route
+    # used to start at "L10.2" and then head for the literal (64.725, 94.30),
+    # which was L10.2's x BEFORE the rotation - so after it, the trace left the
+    # output pad and ran straight onto the pad that is now /SW2. DRC called it
+    # what it was: "Items shorting two nets (/SW2 and +3V3)". Naming a pad and
+    # then hardcoding where that pad used to be is the trap; every waypoint
+    # below is now either a pad name or a point that does not move with a part.
+    #
+    # It was also off-grid: (64.725,94.30)->(63.60,95.40) is 44.4 deg and
+    # (63.60,96.20)->C24.1 is 60.0 deg. Straight down then one true 45 into the
+    # pad - the 0.137 mm offset is exactly the x difference between the pads.
+    ("+3V3",       F, 0.60,   ["L10.2",  (63.275, 96.8625), "C24.1"]),
+    ("+3V3",       F, 0.60,   ["C24.1",  (61.80, 97.00)]),
+    ("+3V3",       F, 0.40,   [(100.75, 61.00), (101.20, 61.00), (101.20, 62.30),
                                 (92.60, 62.30)]),
 ]
 
@@ -364,29 +382,68 @@ MCU_VIAS = [
     (65.80, 97.75, "/PMIC_INT",  0.60, 0.30),
 ]
 
-ROUTES = RF + GND_PA + GND_C9 + GND_RF + GND_EXTRA + V3 + MCU
+# --------------------------------------------------------------------------
+# The BUCK2 switch node. This is the first half of the loop whose second half
+# is the L10 -> C24 run in V3, and it is the highest-dv/dt net on the board, so
+# it gets the shortest path that 45-degree routing allows and the SWITCH class
+# width of 0.5 mm (0.6 here, matching the output side).
+#
+# L10 was turned round so pad 1 faces U2 - see tools_place_fixups.py. That took
+# the run from 4.69 mm to 3.62 mm; without the rotation this trace would have
+# had to travel the length of the inductor body to reach its own pad.
+#
+#     U2.5   (67.074, 96.250)
+#     L10.1  (64.725, 93.500)      dx -2.349, dy -2.750
+#
+# One 45 covers the diagonal, then a short vertical closes the remaining
+# 0.401 mm. Keeping the diagonal first puts the corner away from U2's pad row.
+# The escape leaves pin 5 due WEST, not diagonally, and it necks first.
+#
+# U2's left pads all span x 66.6933..67.4553, 0.254 mm tall on 0.5 mm pitch:
+#
+#     pad 4  VSYS        y 95.6230..95.8770
+#     pad 5  /SW2        y 96.1230..96.3770
+#     pad 6  /GND_PVSS2  y 96.6230..96.8770
+#
+# A diagonal off pin 5 runs straight up the side of pin 4 - the first attempt
+# did exactly that and DRC returned "Items shorting two nets (VSYS and /SW2)".
+# Due west, a 0.30 mm track centred on y = 96.25 holds 0.223 mm to both
+# neighbours, against the 0.15 mm the FinePitchFanout window allows.
+#
+# The flare to 0.60 mm waits until x = 66.00, which is 0.393 mm clear of the
+# pad row; flaring at 66.30 left only 0.073 mm to pin 6 and bridged solder
+# mask. Necking costs about 0.7 mm of length against the straight-line 3.62 mm,
+# which is the price of a 0.5 mm pitch package and is why every other U1 and
+# U2 escape in this file is written the same way.
+SW2 = [
+    ("/SW2",        F, 0.30,   ["U2.5", (66.00, 96.25)]),
+    ("/SW2",        F, 0.60,   [(66.00, 96.25), (64.725, 94.975), "L10.1"]),
+]
+
+
+ROUTES = RF + GND_PA + GND_C9 + GND_RF + GND_EXTRA + V3 + SW2 + MCU
 
 # Vias to the In2.Cu +3V3 plane, one per escape above.
 V3_VIAS = [
-    (73.30,  60.05, "/+3V3", 0.60, 0.30),   # U1.36
-    (73.80,  65.90, "/+3V3", 0.60, 0.30),   # U1.47 + U1.48
-    (78.40,  67.30, "/+3V3", 0.60, 0.30),   # U1.10
-    (81.20,  62.30, "/+3V3", 0.60, 0.30),   # U1.22
-    (67.00,  99.25, "/+3V3", 0.60, 0.30),   # U2.12
-    (69.75,  92.50, "/+3V3", 0.60, 0.30),   # U2.28
-    (67.30,  92.50, "/+3V3", 0.60, 0.30),   # U2.32
-    (71.90,  57.40, "/+3V3", 0.60, 0.30),   # C4
-    (82.20,  63.50, "/+3V3", 0.60, 0.30),   # C7
-    (79.43,  69.30, "/+3V3", 0.60, 0.30),   # C8
-    (68.60,  67.40, "/+3V3", 0.60, 0.30),   # C10
-    (63.90,  68.20, "/+3V3", 0.80, 0.40),   # C3, the VDD bulk cap
-    (90.00,  60.60, "/+3V3", 0.60, 0.30),   # C27, SHT45 decoupling
-    (82.40,  73.50, "/+3V3", 0.60, 0.30),   # R22 - clear of the B.Cu debug bus
-    (82.40,  75.00, "/+3V3", 0.60, 0.30),   # R23
-    (66.90,  78.00, "/+3V3", 0.60, 0.30),   # J4, clear of the B.Cu bus at x = 68.2
-    (71.93, 102.50, "/+3V3", 0.60, 0.30),   # C25
-    (61.80,  97.00, "/+3V3", 0.80, 0.40),   # C24, the BUCK2 output cap
-    (92.60,  62.30, "/+3V3", 0.60, 0.30),   # U4, out of the jut-out
+    (73.30,  60.05, "+3V3", 0.60, 0.30),   # U1.36
+    (73.80,  65.90, "+3V3", 0.60, 0.30),   # U1.47 + U1.48
+    (78.40,  67.30, "+3V3", 0.60, 0.30),   # U1.10
+    (81.20,  62.30, "+3V3", 0.60, 0.30),   # U1.22
+    (67.00,  99.25, "+3V3", 0.60, 0.30),   # U2.12
+    (69.75,  92.50, "+3V3", 0.60, 0.30),   # U2.28
+    (67.30,  92.50, "+3V3", 0.60, 0.30),   # U2.32
+    (71.90,  57.40, "+3V3", 0.60, 0.30),   # C4
+    (82.20,  63.50, "+3V3", 0.60, 0.30),   # C7
+    (79.43,  69.30, "+3V3", 0.60, 0.30),   # C8
+    (68.60,  67.40, "+3V3", 0.60, 0.30),   # C10
+    (63.90,  68.20, "+3V3", 0.80, 0.40),   # C3, the VDD bulk cap
+    (90.00,  60.60, "+3V3", 0.60, 0.30),   # C27, SHT45 decoupling
+    (82.40,  73.50, "+3V3", 0.60, 0.30),   # R22 - clear of the B.Cu debug bus
+    (82.40,  75.00, "+3V3", 0.60, 0.30),   # R23
+    (66.90,  78.00, "+3V3", 0.60, 0.30),   # J4, clear of the B.Cu bus at x = 68.2
+    (71.93, 102.50, "+3V3", 0.60, 0.30),   # C25
+    (61.80,  97.00, "+3V3", 0.80, 0.40),   # C24, the BUCK2 output cap
+    (92.60,  62.30, "+3V3", 0.60, 0.30),   # U4, out of the jut-out
 ]
 
 # GND vias that are not a pad escape.
@@ -451,7 +508,7 @@ STITCH = CENTRE_PAD + [
     ( 79.00,  92.50), ( 81.50,  92.50), ( 91.50,  92.50), ( 61.50,  95.00),
     ( 79.00,  95.00), ( 81.50,  95.00), ( 84.00,  95.00), ( 89.00,  95.00),
     ( 91.50,  95.00), ( 79.00,  97.50), ( 84.00,  97.50), ( 89.00,  97.50),
-    ( 91.50,  97.50), ( 61.50, 100.00), ( 71.50, 100.00), ( 79.00, 100.00),
+    ( 91.50,  97.50), ( 61.50, 100.00), ( 70.90, 100.00), ( 79.00, 100.00),
     ( 81.50, 100.00), ( 84.00, 100.00), ( 61.50, 102.50), ( 64.00, 102.50),
     ( 66.50, 102.50), ( 69.00, 102.50), ( 79.00, 102.50), ( 81.50, 102.50),
     ( 84.00, 102.50),
