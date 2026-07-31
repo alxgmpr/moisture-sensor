@@ -114,12 +114,37 @@ This also resolved the drawing figures that "did not reconcile": `R4.42` is the
 boss radius and `62.00 × 22.00` is the flat edge span left *between* the reliefs.
 Hammond's "Maximum PCB 74.50 × 34.50" assumes the corners are scalloped.
 
-**Fixed.** All four corners now carry a concave relief arc of **R4.669** centred
-on the boss — a 0.25 mm margin — meeting the board edge 5.749 mm in from each
+**Fixed — at R5.0, not the R4.669 first tried.** All four corners carry a concave
+relief arc centred on the boss, meeting the board edge **6.091 mm** in from each
 corner. At the probe end the relief runs straight into the R2.0 shoulder fillet
-with no straight segment between them. Verified by sampling 3222 points along
-the whole Edge.Cuts outline against the four boss circles: **0 points inside,
-closest approach 4.6693 mm, margin +0.2500 mm.**
+with no straight segment between them.
+
+**The first attempt at R4.669 did not fit, and it is worth recording why.** It was
+solved against the boss circle alone. The real cavity corner is not just that
+arc: an **R1.0 blend** joins each wall to the boss, and it intrudes slightly
+further than the boss circle does. Measured against the *actual* cavity boundary,
+R4.669 gave **−0.028 mm** — interference, not the intended +0.25 mm clearance.
+Solving against the measured boundary instead gives R ≥ 4.986, so R5.0 is used.
+
+| | cut-back | clearance to the real cavity |
+|---|---|---|
+| R4.669 (boss circle only) | 5.749 mm | **−0.0278 mm** — interferes |
+| **R5.0 (measured boundary)** | **6.091 mm** | **+0.2624 mm** |
+| R5.5 | 6.606 mm | +0.5348 mm (saturates — limited by the 0.545 mm side gap) |
+
+Hammond's own numbers agree with the corrected figure and not the first one: their
+`62.00 × 22.00` flat span on a 74.50 × 34.50 PCB implies a **6.25 mm** cut-back.
+Ours is 6.091 mm on a 74.0 × 34.0 board, which scales to 6.34 mm. The old 5.749 mm
+scaled to 5.999 mm and undershot it.
+
+Verified by sampling the whole Edge.Cuts outline against the measured cavity at
+both the board's bottom and top faces: **0 points outside, 0.2624 mm tightest at
+the bottom face** (the worst case — the bosses taper with draft, so the top face
+is looser at 0.3066 mm).
+
+`ZoneB_GND` also needed its outline rebuilt: as a plain rectangle its fill came
+within 0.2984 mm of the new arcs against the 0.3 mm edge rule. It now follows the
+corners at R5.35.
 
 The antenna-end reliefs were only possible because the PCB inverted-F is gone
 (LAYOUT.md §3). At the probe end they forced the LED cluster to move: D3/D4 and
