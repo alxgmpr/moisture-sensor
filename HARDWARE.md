@@ -25,7 +25,7 @@ USB-C VBUS feeds nPM1300 VBUS directly. The solar branch carries the only diode 
 D5 blocks solar from back-feeding VBUS, and USB cannot back-feed the panel. One
 diode, on the branch that can afford the drop.
 
-**The whole solar branch is DNP on most builds** (§4). USB is the only populated
+**The solar branch is fitted on every board** (§4). USB is still the primary
 input unless a unit is specifically built with the external window panel.
 
 **The 3.3 V rail must come from BUCK2, not BUCK1.** This is not a preference. The
@@ -347,9 +347,10 @@ distinction drives §4.
 
 Solar is an **option, not the default build**. The panel is external, sits in a
 window on a lead, and plugs into a barrel jack on that lead. Most boards ship
-with the whole path unpopulated — `SOLAR_DNP = True` in `tools_gen_sch.py` marks
-J3, D5, U5, C30 and C31 DNP. The footprints stay on the board, so a unit can be
-retrofitted without a respin.
+fitted on every board. `SOLAR_DNP` is `False` in `tools_gen_sch.py`; J3, D5, U5,
+C30 and C31 are all populated. The parts are three passives and an LDO in space
+that was already reserved for them, and a populated board is upgraded by plugging
+a panel in rather than by reworking one.
 
 ```
 Voltaic P126 (6 V, 2 W, ETFE)          on a windowsill
@@ -429,7 +430,7 @@ have run to ~16 mm in a 17.30 mm interior, into the lid seal.
 
 So J3 stays the 4.25 mm JST GH it already is, already placed and routed, and the
 barrel jack lives on the pigtail. The board does not change at all, and a
-connector that is DNP on most units does not consume 10.7 × 4.7 mm of a 34 mm
+connector that is optional on most units does not consume 10.7 × 4.7 mm of a 34 mm
 wide board.
 
 ### Pre-regulator — the buck now qualifies, and still loses
@@ -873,10 +874,9 @@ If you want more than 3.6 years, the only lever that matters is the cell.
 - I²C addresses all confirmed distinct: **FDC1004 0x50** (SNOSCY5 §6.5.1),
   **nPM1300 0x6B**, **SHT45-AD1F 0x44**. One bus, no split needed.
 - Cell datasheet: self-discharge rate, PCM quiescent current, NTC availability.
-- Solar panel and pre-regulator selected — see §4. **U5, C30 and C31 are not
-  placed on the PCB yet**; the ~8 × 8 mm reserve near J3 is still empty. J3 and
-  D5 are already placed and routed and do not move — keeping the barrel jack off
-  the board is what avoided a re-place.
+- Solar panel and pre-regulator selected and placed — see §4. U5, C30 and C31
+  sit in the reserve below J3; J3 and D5 did not move, which is what keeping the
+  barrel jack off the board bought. The solar nets are not routed yet.
 - Confirm the Voltaic P126's V_OC temperature coefficient. −0.30 %/°C is the
   generic crystalline-silicon figure and is **[assumed]**; the datasheet does not
   publish one. It sets the 13.9 V input-rating requirement in §4, which the

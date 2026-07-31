@@ -91,17 +91,20 @@ silicon win on power per area, price and durability. At 136 × 112 mm it is
 larger than the whole enclosure, which is fine: a box in a plant pot is under
 the foliage, the worst place in the room for a panel.
 
-**Solar is an option, not the default build.** `SOLAR_DNP = True` in
-`tools_gen_sch.py` marks J3, D5, U5, C30 and C31 DNP; footprints stay so a unit
-can be retrofitted without a respin. Flip that one flag for a solar build.
+**Solar is fitted on every board.** It was briefly DNP-by-default, but the parts
+are three passives and an LDO in space that was already reserved, and a populated
+board is upgraded by plugging a panel in rather than by reworking. `SOLAR_DNP`
+is `False` in `tools_gen_sch.py` and nothing in the schematic carries a DNP flag.
 
 **The barrel jack is on the panel pigtail, not the board** — a CUI PJ-102AH is
 11.0 mm tall against 6.90 mm clear under the cell at J3, so it would have forced
 the whole solar block into the y 62–74 end band. J3 stays the 4.25 mm JST GH.
 
-**Still to do: U5, C30 and C31 exist in the schematic but are not placed on the
-PCB.** The ~8 × 8 mm reserve near J3 is still empty and they fit it. That is the
-only outstanding solar work.
+**Placed.** U5, C30 and C31 now sit in the reserve below J3 — U5 at board
+(24.37–30.63, 50.75–54.25), C31 and C30 in a row above it at y 48.27–49.73. The
+block is 7.3 × 6.0 mm inside the ~8 × 8 mm reserve, 0.57 mm clear of J3 at the
+tightest and 2.85 mm off the board edge. **Not routed** — the solar nets are part
+of the general routing still outstanding.
 
 **Firmware, and it is the opposite of the USB path:** U5 is a 100 mA part, so do
 **not** raise the VBUS input current limit when running from solar. The 100 mA

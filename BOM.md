@@ -281,15 +281,15 @@ under-cell gap must not overlap `CELL_RECT`.
 | Cell | ≤ 6.5 mm thick, ≤ 34.92 × 74.92 mm | **Adafruit 1578**, 500 mAh, 29 × 36 × 4.8 mm — selected |
 | Enclosure | **Hammond 1551WKBK**, IP68 PC, 80 × 40 × 22 mm | + 4× nylon #2 screws for the antenna-end holes |
 
-Nothing on this board is open now. **U5, C30 and C31 are in the schematic but
-not placed on the PCB** — the ~8 × 8 mm reserve near J3 is still empty. No
-inductor is needed; the LDO wins (below), so the reserve only has to hold an
-HVSSOP-8 and two 0603s.
+**Nothing on this board is open now, and everything is placed.** U5, C30 and C31
+sit in the reserve below J3. No inductor is needed — the LDO wins (below) — so
+the block is just an HVSSOP-8 and two 0603s, 7.3 × 6.0 mm inside the ~8 × 8 mm
+that was set aside.
 
-### The solar path is DNP by default
+### The solar path is fitted on every board
 
 The panel is external and lives in a window. Most boards ship without it, so
-**J3, D5, U5, C30 and C31 are all marked DNP**. `SOLAR_DNP` at the top of the
+**J3, D5, U5, C30 and C31 are all populated.** `SOLAR_DNP` at the top of the
 solar block in `tools_gen_sch.py` is the single switch; set it to `False` and
 re-run for a solar-equipped build. The footprints stay on the board either way,
 so a unit can be retrofitted without a respin.
@@ -452,15 +452,15 @@ have to clear the two minimums. They do, by 15× and 2× respectively.
 | C25 | 100nF X5R | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
 | C26 | 1uF/10V X7R | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
 | C27 | 100nF X7R | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
-| C30 | 4.7uF/50V X5R — **DNP** | `C_0603_1608Metric_Pad1.08x0.95mm_HandSolder` |
-| C31 | 10uF/25V X5R — **DNP** | `C_0603_1608Metric_Pad1.08x0.95mm_HandSolder` |
+| C30 | 4.7uF/50V X5R | `C_0603_1608Metric_Pad1.08x0.95mm_HandSolder` |
+| C31 | 10uF/25V X5R | `C_0603_1608Metric_Pad1.08x0.95mm_HandSolder` |
 | D3 | GREEN | `LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder` |
 | D4 | RED | `LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder` |
-| D5 | RB751V-40 Schottky — **DNP** | `D_SOD-323_HandSoldering` |
+| D5 | RB751V-40 Schottky | `D_SOD-323_HandSoldering` |
 | FB1 | FB 120R@100MHz | `L_0402_1005Metric_Pad0.77x0.64mm_HandSolder` |
 | J1 | USB-C receptacle | `USB_C_Receptacle_HRO_TYPE-C-31-M-12` |
 | J2 | Battery - Adafruit 1578 | `JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical` |
-| J3 | Solar panel — **DNP** | `JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal` |
+| J3 | Solar panel | `JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal` |
 | J4 | SWD 10p 1.27mm | `Tag-Connect_TC2050-IDC-NL_2x05_P1.27mm_Vertical` |
 | L1 | LQM18PN4R7MFRL 4.7uH | `L_0603_1608Metric_Pad1.05x0.95mm_HandSolder` |
 | L2 | 2.7nH LQP03HQ2N7B02 | `L_0201_0603Metric` |
@@ -486,7 +486,7 @@ have to clear the two minimums. They do, by 15× and 2× respectively.
 | U2 | nPM1300-QEAA | `QFN32_5X5_NOR` |
 | U3 | FDC1004 | `MSOP-10_3x3mm_P0.5mm` |
 | U4 | SHT45-AD1F | `Sensirion_DFN-4_1.5x1.5mm_P0.8mm_SHT4x_NoCentralPad` |
-| U5 | TPS7A1650 5V LDO — **DNP** | `HVSSOP-8-1EP_3x3mm_P0.65mm_EP1.57x1.89mm` |
+| U5 | TPS7A1650 5V LDO | `HVSSOP-8-1EP_3x3mm_P0.65mm_EP1.57x1.89mm` |
 | X1 | CM8V-T1A 32.768kHz CL=7pF 20ppm | `XTAL_CM8V-T1A_2012` |
 | X2 | FA-128 32MHz CL=8pF | `Crystal_SMD_2016-4Pin_2.0x1.6mm` |
 
@@ -506,9 +506,10 @@ copper keepout is yours to draw. See LAYOUT.md §8.
 **D3/D4** — fed from VSYS through R25/R26 and sunk by the nPM1300's LED drivers,
 so they only draw when firmware turns them on.
 
-**U5 / C30 / C31** — in the schematic, **not yet placed on the PCB**. The
-~8 × 8 mm reserve near J3 is still empty. J3 and D5 keep their existing places
-and routing. `SOLAR_5V` now has a real driver (U5 pin 1 is a power output), so
+**U5 / C30 / C31** — placed in the reserve below J3: U5 at board
+(24.37–30.63, 50.75–54.25), C31 and C30 in a row above it at y 48.27–49.73.
+0.57 mm clear of J3 at the tightest and 2.85 mm off the board edge. J3 and D5
+did not move. Not yet routed. `SOLAR_5V` now has a real driver (U5 pin 1 is a power output), so
 the PWR_FLAG that used to hold that net up in ERC has been removed — two power
 outputs on one net is an ERC conflict.
 

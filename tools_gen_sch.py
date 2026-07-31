@@ -389,11 +389,12 @@ B_XTAL  = Block("CLOCKS",                                     COL_B, 316, COL_B_
 B_RF    = Block("RF MATCH + ANTENNA",                         COL_C, 316, COL_C_END)
 
 # ---- USB-C + solar -----------------------------------------------------------
-# The solar path is an option, not the default build. The panel is external and
-# lives in a window; most boards ship without it. Flip this to False for a
-# solar-equipped build - it is the only thing that has to change, and the
-# footprints stay on the board either way so a unit can be retrofitted.
-SOLAR_DNP = True
+# Solar is fitted on every board. It was briefly DNP-by-default on the theory
+# that most units ship without a panel, but the parts are three cheap passives
+# and an LDO in the space that was already reserved for them, and a board that
+# ships populated can be upgraded by plugging a panel in rather than by
+# reworking. J3, D5, U5, C30 and C31 are all populated.
+SOLAR_DNP = False
 
 _x, _y, USBD = place("Connector", "USB_C_Receptacle", "J1", "USB-C receptacle",
                      (34.0, 52.0), "")
