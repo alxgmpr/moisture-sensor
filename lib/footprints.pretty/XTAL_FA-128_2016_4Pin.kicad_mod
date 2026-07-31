@@ -52,4 +52,15 @@
 	(pad "4" smd rect (at -0.475 -0.575) (size 0.5 0.85)
 		(layers "F.Cu" "F.Mask" "F.Paste")
 		(uuid "4d5e6f70-0204-4000-8000-000000000204"))
+	(model "${KIPRJMOD}/lib/FA-128 32.0000MF10Z-AJ0.STEP"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
 )

@@ -79,12 +79,8 @@
   (fp_line (start 2.385 3.4163) (end -2.385 3.4163) (layer "F.CrtYd") (width 0.1524))
   (fp_line (start -2.385 3.4163) (end -2.385 3.0099) (layer "F.CrtYd") (width 0.1524))
   (fp_line (start -2.385 3.0099) (end -3.0099 3.0099) (layer "F.CrtYd") (width 0.1524))
-  (fp_text user "*" (at -3.5433 -2 unlocked) (layer "F.SilkS")
-    (effects (font (size 1 1) (thickness 0.15)))
-  )
-  (fp_text user "*" (at -2.0447 -2 unlocked) (layer "F.Fab")
-    (effects (font (size 1 1) (thickness 0.15)))
-  )
+  
+  
   (fp_line (start -2.5019 -1.2319) (end -1.2319 -2.5019) (layer "F.Fab") (width 0.0254))
   (fp_line (start 1.5976 -2.5019) (end 1.9024 -2.5019) (layer "F.Fab") (width 0.0254))
   (fp_line (start 1.9024 -2.5019) (end 1.9024 -2.5019) (layer "F.Fab") (width 0.0254))
