@@ -10,6 +10,17 @@ guard have no copper path to U3 until the rest of the routing lands. The one
 
 ---
 
+## Diagrams
+
+`doc/enclosure-fit.png`, `doc/enclosure-corner.png` and `doc/enclosure-section.png`
+show how the board sits in the box. Regenerate with
+`.venv-cq/bin/python tools_encl_draw.py` — the cavity in them is the real
+measured cross-section from Hammond's STEP at the height the board actually sits,
+not a reconstruction from radii, which is what made the corner-relief error
+visible in the first place.
+
+---
+
 ## Read this first
 
 **Do not run `tools_gen_pcb.py` against the current board.** The `.kicad_pcb` has
@@ -29,13 +40,14 @@ re-run; do not hand-edit the `.kicad_sch`.
 
 | Zone | y | |
 |---|---|---|
-| A antenna | 0 – 11.5 | copper-free on all layers but AE1 |
+| A antenna | 0 – 11.5 | **ordinary board now** — J5 U.FL + ground pour |
 | B electronics | 11.5 – 74.0 | 34.0 mm wide, in the enclosure, solid In1.Cu |
 | — SHT45 jut-out | 18.1 – 23.1 | x 34 → 42, through the side wall |
 | C probe | 74.0 – 155.0 | 20 mm wide, no ground on any layer |
 
-58 footprints placed (56 schematic components plus AE1 and MP1, which have no
-symbols). J5 has been removed — see BOM.md.
+58 footprints placed (57 schematic components plus MP1, which has no symbol).
+AE1, the PCB inverted-F, is gone — J5 is now a U.FL receptacle feeding an
+external adhesive antenna. See LAYOUT.md §3.
 
 ---
 
@@ -48,9 +60,10 @@ re-adds only tracks, vias and zone fill, and never touches graphics, footprints
 or zone outlines. **Resolve net codes before mutating the board** — see the
 comment in `net_map()`.
 
-1. ~~RF~~ — **done.** U1 pin 31 → L2 → C6 → L3 → C9 → L4 → C11 → AE1 feed, all on
-   F.Cu, no vias on any RF net, 0.36 mm (JLCPCB's own calculator — §3). Pin 31 to
-   the ground-plane edge is 8.579 mm against λ/8 = 8.6 mm. `/GND_PA` is F.Cu-only
+1. ~~RF~~ — **done.** U1 pin 31 → L2 → C6 → L3 → C9 → L4 → C11 → J5 (U.FL), all
+   on F.Cu, no vias on any RF net, 0.36 mm (JLCPCB's own calculator — §3). Pin 31
+   to the U.FL signal pad is **6.554 mm** against λ/8 = 8.6 mm — 76 % of the
+   limit, where the PCB antenna sat at 99.8 %. `/GND_PA` is F.Cu-only
    with no vias and `/GND_C9` reaches B.Cu only, so Nordic's two grounding rules
    hold. **No stitching vias** — that rule was CPWG-specific and does not apply
    here; see LAYOUT.md §2.
@@ -87,7 +100,7 @@ That is what the old "confirm the total thickness" question was detecting: 7628D
 was never going to be 1.6 mm. All three give identical impedance because the top
 dielectric is the same, so plain 7628 is strictly better — right thickness, and
 it is also the cheapest and quickest option. B/C/E/F remain out: they put
-0.43–0.65 mm under the top layer, which takes the 0.38 mm trace to roughly 75 Ω.
+0.43–0.65 mm under the top layer, which takes the trace to roughly 75 Ω.
 
 **The RF trace is now 0.36 mm, not 0.38.** JLCPCB's own impedance calculator was
 run on the exact stackup (4 layer, 1.6 mm, 1 oz / 0.5 oz, 50 Ω single-ended,
