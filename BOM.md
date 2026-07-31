@@ -377,3 +377,18 @@ is done by soldering a coax pigtail directly to the feed trace, shield to the
 adjacent ground pour, and removing it afterwards; that needs no footprint. J5
 also sat 5.8 mm off the feed line, which would have hung a λ/12 stub on the
 match.
+
+### J5 — Hirose U.FL-R-SMT-1(10), antenna connector
+
+Replaces the PCB inverted-F. See LAYOUT.md §3 for why. Verified against the
+Hirose U.FL catalogue drawing: **50 Ω, DC–8 GHz**, V.S.W.R. ≤1.3 to 3 GHz,
+mated height 1.9–2.4 mm nominal (2.5 mm max), **30 mating cycles**, 15.7 mg,
+7.7 mm² mounting area. Footprint `Connector_Coaxial:U.FL_Hirose_U.FL-R-SMT-1_Vertical`.
+
+Mated height is nothing against the 6.70 mm of clearance under the cell, and J5
+sits in the y 0–11.5 band that the cell does not cover anyway.
+
+**Buy an adhesive antenna with a U.FL plug on 1.13 mm or 1.32 mm coax** — Hirose
+specify V.S.W.R. per plug/cable in their catalogue, and the U.FL-LP-068HF
+(φ1.13) is the better of the two at 2.4 GHz (1.4 max vs 1.5 max at 3–6 GHz).
+U.FL is rated for 30 mating cycles, so treat it as mate-once.

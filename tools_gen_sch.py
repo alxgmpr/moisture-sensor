@@ -137,6 +137,12 @@ FOOTPRINTS = {
     "J2": "Connector_JST:JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical",
     "J3": "Connector_JST:JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal",
     "J4": "Connector:Tag-Connect_TC2050-IDC-NL_2x05_P1.27mm_Vertical",
+    # U.FL receptacle for the antenna. Hirose U.FL-R-SMT-1(10): 50 ohm,
+    # DC-8 GHz, VSWR <=1.3 to 3 GHz, mated height 1.9-2.4 mm, 30 mating
+    # cycles. Verified against the Hirose catalogue drawing; KiCad's land
+    # pattern matches the recommended pattern (4.00 mm GND span, SIG at
+    # 1.9 mm) to within the stated +-0.05 mm.
+    "J5": "Connector_Coaxial:U.FL_Hirose_U.FL-R-SMT-1_Vertical",
     "TP1": TP, "TP2": TP, "TP3": TP, "TP4": TP, "TP5": TP,
     # RF grounding net ties - see the RF block for what they enforce.
     # NT1 is a project footprint: the gap it has to bridge, between U1's pin-32
@@ -563,12 +569,13 @@ for ref, sym, val, nm in [
     ("C11", "C_Small", "0.3pF C0G", {"1": "ANT_FEED", "2": "GND"}),
 ]:
     B_RF.add("Device", sym, ref, val, nm)
-# No test point on the antenna feed. A 1.0 mm pad on a 2.4 GHz feed is roughly
-# 0.1-0.2 pF of shunt capacitance - the same order as C11 at 0.3 pF - so it
-# perturbs the impedance you would be measuring with it. Tuning a PCB IFA is done
-# by soldering a coax pigtail directly to the feed trace, shield to the adjacent
-# ground pour, and removing it afterwards; that needs no footprint. J5 also sat
-# 5.8 mm off the feed line, which would have hung a lambda/12 stub on the match.
+# The antenna is an external adhesive part on a U.FL pigtail, not PCB copper.
+# That makes Nordic's matching values correct rather than a starting point: the
+# QFAA reference layout has no PCB antenna either - its chain runs
+# ANT -> L2 -> C6 -> L3 -> C9 -> L4 -> C11 and terminates at a board-edge pad for
+# a coax or connector launch, which is exactly what this is. See LAYOUT.md.
+B_RF.add("Connector", "Conn_Coaxial", "J5", "U.FL-R-SMT-1(10) antenna",
+         {"1": "ANT_FEED", "2": "GND"})
 
 # NT1 joins GND_PA to GND. Place it UNDER the U1 centre pad on F.Cu, so the only
 # path from pin 32 to pin 49 is the one Nordic specifies.

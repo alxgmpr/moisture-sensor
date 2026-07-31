@@ -102,51 +102,33 @@ the question above: plain 7628 is **1.59 mm and flagged *Standard***, 7628D is
 Still worth doing: **order with impedance control** so they re-solve on the real
 pressed stackup, and confirm the stackup name on the acknowledgement.
 
-### 4. The board does not fit the enclosure — corner reliefs are missing
+### 4. ~~The board does not fit the enclosure~~ — fixed
 
-**Measured from Hammond's STEP with cadquery** (`tools_encl_check.py`;
-`1551WK_Bottom.stp` and `1551WKBK.stp` agree exactly). The 1551WK cavity is not a
-rounded rectangle. It has **four corner bosses that run the full cavity height**:
+Measured from Hammond's STEP with cadquery (`tools_encl_check.py`). The 1551WK
+cavity is not a rounded rectangle: it has four corner bosses running the full
+cavity height, **R4.4193 mm at the board's bottom face**, centred at
+**(±35.75, ±15.75)** from the box centre. The board's old R4.5 corners were
+entirely inside them — 4.32 mm of interference at all four corners.
 
-| | |
-|---|---|
-| Cavity at board height (Y = 6.25) | 75.090 × 35.090 mm, walls at X ±37.545, Z ±17.545 |
-| Corner boss radius | **4.4193 mm** at the board's bottom face (4.7136 at the floor, 4.2666 at the top — draft) |
-| Boss centres | **(±35.75, ±15.75)** from the box centre |
-| Posts | (±27.50, ±12.50) — a **55.00 × 25.00** pattern, **4.00 mm** tall (Y 2.20 → 6.20) |
+This also resolved the drawing figures that "did not reconcile": `R4.42` is the
+boss radius and `62.00 × 22.00` is the flat edge span left *between* the reliefs.
+Hammond's "Maximum PCB 74.50 × 34.50" assumes the corners are scalloped.
 
-The post pattern and post height confirm LAYOUT.md §9 exactly, and the board's
-four mounting holes land on them. **The outline does not.** The board's R4.5
-corners are centred at (±32.5, ±12.5), only 4.596 mm from the boss centres, so
-the *entire* corner arc sits inside the boss — **4.32 mm of interference at all
-four corners**. Every one of 901 sampled points on the corner arc is inside.
-The board cannot be inserted.
+**Fixed.** All four corners now carry a concave relief arc of **R4.669** centred
+on the boss — a 0.25 mm margin — meeting the board edge 5.749 mm in from each
+corner. At the probe end the relief runs straight into the R2.0 shoulder fillet
+with no straight segment between them. Verified by sampling 3222 points along
+the whole Edge.Cuts outline against the four boss circles: **0 points inside,
+closest approach 4.6693 mm, margin +0.2500 mm.**
 
-This also explains the drawing figures that "did not reconcile": `R4.42` is the
-boss radius (4.4193 measured) and `62.00 × 22.00` is the flat edge span left
-*between* the reliefs. Hammond's "Maximum PCB 74.50 × 34.50" assumes the corners
-are scalloped.
+The antenna-end reliefs were only possible because the PCB inverted-F is gone
+(LAYOUT.md §3). At the probe end they forced the LED cluster to move: D3/D4 and
+R25/R26 shifted from y 108.5/111 up to y 99.5/102, clear of both the relief and
+the bottom-right mounting hole.
 
-**The fix is a concave relief arc at each corner**, centred on the boss:
-
-| Margin | Relief radius | Meets the board edge |
-|---|---|---|
-| 0.20 mm | R 4.619 | 5.697 mm in from each corner, both directions |
-| **0.25 mm** | **R 4.669** | **5.749 mm in from each corner** |
-| 0.30 mm | R 4.719 | 5.801 mm in from each corner |
-
-In board coordinates the boss centres are **(1.25, 1.25), (32.75, 1.25),
-(1.25, 72.75), (32.75, 72.75)**.
-
-**This touches the antenna, which is why it is not already done.** AE1's
-radiating arm runs board x 12.3 → 30.8 at y 2.5–3.5. At a 0.25 mm margin the
-relief cuts the board edge back to x ≈ 28.25 at y = 2.5, so **roughly 2.1–2.5 mm
-of the arm tip comes off**, taking the electrical length from ≈27.5 mm to
-≈25.4 mm. LAYOUT.md §3 says 27.5 mm "starts deliberately long: you can trim
-etched copper, you cannot add it", and puts λ/4 with FR4 loading at 24–25 mm — so
-25.4 mm may well be fine, or even closer to right. But it is an antenna change
-and it is your call. The mounting holes are unaffected (2.90 mm clear of the
-relief).
+Post pattern and post height are confirmed exactly as documented — (±27.50,
+±12.50), a 55.00 × 25.00 pattern, 4.00 mm tall — and the mounting holes land on
+them.
 
 ### 5. Two enclosure openings, neither sealed
 

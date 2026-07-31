@@ -125,24 +125,10 @@
 	(condition "A.NetName == '/GND_PVSS2'"))
 
 # ------------------------------------------------------------ keepouts -----
-# Nothing conductive may enter the antenna keepout on ANY layer, including
-# ground pour. AE1 is the one exception: the IFA lives inside the keepout by
-# definition, and its shorting stub and arm sit on GND rather than the RF net
-# class, so the exemption has to be by footprint rather than by net.
-# The rule area's own flags (no vias, no pours, no other footprints) do the rest.
-(rule "Antenna keepout is copper free"
-	(constraint disallow track via zone pad)
-	# AE1's feed pad and its shorting stub both END exactly ON the keepout boundary
-	# (the ground-plane edge at board y = 11.5), so neither the feed trace nor the
-	# stub's ground via can reach its pad without entering the area. The antenna has
-	# to cross its own keepout to be connected at all.
-	#
-	# Rather than exempting a whole net class, two 0.5 mm-deep AntennaCrossing
-	# windows are drawn on the board at exactly the two crossing points - one at the
-	# feed (x 76.4-77.2), one at the stub (x 72.2-73.4). Everywhere else in Zone A
-	# the keepout stays absolute, and the ground POUR is excluded everywhere,
-	# including inside the windows, which is the part that protects the near field.
-	(condition "A.insideArea('AntennaKeepout') && !A.memberOfFootprint('AE1') && !A.insideArea('AntennaCrossing')"))
+# The antenna keepout is GONE. The PCB inverted-F was replaced by a U.FL
+# receptacle (J5) feeding an external adhesive antenna, so Zone A is now ordinary
+# board: ZoneB_GND floods it and there is nothing left to keep copper away from.
+# The AntennaKeepout and AntennaCrossing rule areas were deleted with it.
 
 # Sensirion SHT4x datasheet 5.3: soldering the central die pad or placing an
 # exposed copper pad beneath it heat-sinks the internal heater and it stops
@@ -170,15 +156,6 @@
 # Copper to board edge. 0.3 mm keeps the router away from live copper.
 (rule "Edge clearance"
 	(constraint edge_clearance (min 0.3mm)))
-
-# NT1 has to bridge the pin-32 land to the centre pad, and the annulus between
-# them is 0.1905 mm. Two pads plus 0.127 mm of clearance on each side needs
-# 0.254 mm, so the tie cannot satisfy the fab minimum against U1's own pads.
-# That is not a defect: on a board without the net split this would simply be
-# one net and one piece of copper. Scoped to NT1 against U1 and nothing else.
-(rule "VSS_PA net tie bridges the QFN annulus"
-	(constraint clearance (min 0mm))
-	(condition "A.memberOfFootprint('NT1') && B.memberOfFootprint('U1')"))
 
 # Once the clearance floor stopped masking them, the RF and sense rules turned
 # out to be unsatisfiable against fixed package geometry - a part's own two
@@ -241,3 +218,17 @@
 (rule "FDC1004 adjacent pins are package geometry"
 	(constraint clearance (min 0mm))
 	(condition "A.Type == 'Pad' && B.Type == 'Pad' && A.memberOfFootprint('U3') && B.memberOfFootprint('U3')"))
+
+# ---------------------------------------------------------------------------
+# THIS MUST STAY LAST IN THE FILE. Last matching rule wins, and the QFN escape
+# clearance rule above sets 0.15 mm for everything inside the QFNEscape area -
+# which includes NT1's own pads, turning the net tie's whole reason for existing
+# into a violation.
+# NT1 has to bridge the pin-32 land to the centre pad, and the annulus between
+# them is 0.1905 mm. Two pads plus 0.127 mm of clearance on each side needs
+# 0.254 mm, so the tie cannot satisfy the fab minimum against U1's own pads.
+# That is not a defect: on a board without the net split this would simply be
+# one net and one piece of copper. Scoped to NT1 against U1 and nothing else.
+(rule "VSS_PA net tie bridges the QFN annulus"
+	(constraint clearance (min 0mm))
+	(condition "A.memberOfFootprint('NT1') && B.memberOfFootprint('U1')"))

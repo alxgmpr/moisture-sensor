@@ -210,116 +210,57 @@ off GND left it with only passive pins to drive it.
 
 ---
 
-## 3. Antenna: PCB inverted-F vs chip
+## 3. Antenna: U.FL connector + external adhesive antenna
 
-### The argument that actually decides it
+**The PCB inverted-F is gone.** AE1 has been replaced by **J5, a Hirose
+U.FL-R-SMT-1(10) receptacle**, feeding an adhesive antenna mounted inside the
+enclosure on a U.FL pigtail. Two things drove it, and the second one is the
+bigger deal.
 
-**The matching network already in the schematic is Nordic's, and it is matched to
-Nordic's reference antenna.** L2 2.7 nH, C6 1.5 pF, L3 3.5 nH, C9 2.0 pF,
-L4 3.5 nH, C11 0.3 pF, C13 3.9 pF are only meaningful with that geometry.
+**It was the only way the board fits the box.** The 1551WK has four internal
+corner bosses that need PCB corner reliefs (§9), and at the antenna end those
+reliefs cut straight through the IFA's radiating arm.
 
-- Take **Nordic's reference PCB antenna** → those values are a valid starting
-  point and you tune from a known-good position.
-- Take a **chip antenna** → discard all of them, start from the chip vendor's
-  reference network, and retune from scratch.
+**It makes Nordic's matching network correct rather than a guess.** This section
+used to carry a long caveat: the QFAA reference layout contains *no PCB antenna*,
+so L2/C6/L3/C9/L4/C11 were "a sensible starting point for a 2.4 GHz IFA, not a
+known-good position". What the reference *does* contain is the chain
+`ANT → L2 → C6 → L3 → C9 → L4 → C11` terminating at a board-edge pad **for a coax
+or connector launch**. That is exactly what a U.FL is. The values are now being
+used in the configuration Nordic characterised them in, and the caveat is
+withdrawn.
 
-That asymmetry is worth more than the small differences in the table below.
+### J5 — Hirose U.FL-R-SMT-1(10)
 
-| | PCB inverted-F | Chip antenna |
-|---|---|---|
-| BOM cost | **zero** | ~$0.30 + a placement |
-| Keepout needed | ~15 × 7 mm | ~10 × 5 mm |
-| Typical efficiency, good ground | 50–70 % | 40–60 % |
-| Part-to-part spread | excellent (etch-defined) | placement tolerance matters |
-| Matching values in schematic | **valid** | must be replaced |
-| Detuning near soil/water | high | high — no real advantage |
-
-**Recommendation: PCB inverted-F.** Zero cost, no placement risk, and the stake
-form factor gives a natural ground-plane edge to work from.
-
-### The reference layout does not contain an antenna
-
-The plan above said "copied from Nordic's reference layout". That is not
-possible, and the reason is worth recording so it is not assumed again.
-
-`nrf54l15-qfaa-reference-layout-0_8.zip` (and the QGAA 1.0 equivalent) contains
-a **15 × 13 mm board with no PCB antenna**. The RF chain runs
-`ANT → L2 → C6 → L3 → C9 → L4 → C11` and terminates at a pad on the board edge —
-a coax or connector launch. It is an MCU support reference, not an antenna
-reference. What it does give, and what is copied:
-
-- matching-network placement relative to pin 31
-- the C6-to-pin-32 and C9-to-bottom-layer grounding topology (§2 above)
-- MCU support component placement
-
-**Consequence for the matching network.** The argument in the table above — that
-Nordic's L2/C6/L3/C9/L4/C11 values are "valid" because they match Nordic's
-antenna — does not hold. There is no Nordic antenna. Treat those values as a
-sensible starting point for a 2.4 GHz IFA, not as a known-good position, and
-budget the VNA session accordingly.
-
-### The IFA as drawn
-
-Designed for this board's ground plane, in `lib/footprints.pretty/IFA_2450MHz.kicad_mod`,
-placed by `tools_gen_pcb.py`. All dimensions are named constants — trim and re-run.
+Verified against the Hirose U.FL catalogue drawing:
 
 | | |
 |---|---|
-| Ground plane edge | board y = 11.5 mm, full width |
-| Radiating arm | 18.5 × 1.0 mm at y = 2.5–3.5 |
-| Shorting stub | 1.0 mm wide at x = 12.8, y = 2.5 → 11.5 |
-| Feed stub | 0.5 mm wide at x = 16.8, y = 3.5 → 11.5 |
-| Feed-to-short spacing | 4.0 mm — this is the impedance knob |
-| Electrical length, short → open | ≈ 27.5 mm |
+| Impedance / bandwidth | **50 Ω, DC–8 GHz** |
+| V.S.W.R. | ≤1.3 to 3 GHz, ≤1.4–1.5 to 6 GHz (plug dependent) |
+| Mated height | 1.9–2.4 mm nominal, 2.0–2.5 mm max |
+| Durability | **30 mating cycles** — mate once in service |
+| Land pattern | 4.00 mm GND span, SIG at 1.9 mm, GND pads 2.2 × 1.0 mm |
+| Note on the drawing | **"No conductive traces in this area"** between the pads |
 
-λ/4 is 31.2 mm in air and roughly 24–25 mm with FR4 loading on one side, so 27.5 mm
-starts deliberately long: you can trim etched copper, you cannot add it.
+KiCad's `Connector_Coaxial:U.FL_Hirose_U.FL-R-SMT-1_Vertical` matches: its GND
+pads are 1.05 mm rather than 1.00 mm tall, but on ±1.475 mm centres, which gives
+Hirose's specified 4.00 mm outer span. Inside the ±0.05 mm tolerance either way.
 
-The feed sits at x = 16.8 so the 50 Ω line runs straight up from U1 pin 31 after
-the package is rotated 90°. No bend, no via.
+Placed at board **(16.8, 12.0)**, rotated 90° so the signal pad faces the
+matching network. **The RF run from U1 pin 31 to the signal pad is 6.554 mm**,
+against λ/8 = 8.6 mm — 76 % of the limit, where the PCB antenna sat at 99.8 %.
 
-**The antenna is a net tie.** An IFA is a shorted stub, so the feed is DC-grounded
-through the shorting stub. The footprint declares `net_tie_pad_groups "1, 2, 3"`
-— pad 1 on `/ANT_FEED`, pads 2 and 3 on `GND` — which is what stops DRC calling
-it a short. Because the arm and stub sit on `GND` rather than the RF net class,
-the DRU keepout exemption has to be written against the footprint reference
-(`!A.memberOfFootprint('AE1')`), not against the net class.
+### What this changed elsewhere
 
-**Switch to a chip antenna only if** the mechanical design cannot give you the
-keepout. The commonly-cited reason — "a chip antenna coexists better with nearby
-dielectric" — does not hold up here; both detune badly near wet soil, and the
-mitigation is distance, not part choice.
-
-### Soil proximity is the dominant effect, and it is mechanical
-
-Wet soil has ε_r of roughly 20–30 with real conductivity. Anything in the
-antenna's near field is going to load it. This is not fixable in the matching
-network, only in the mechanical design:
-
-- Put the antenna at the **top of the stake**, as far above the soil line as the
-  enclosure allows. λ = 125 mm in air, so **aim for ≥ 50 mm of separation**
-  (~0.4 λ) between the antenna and the soil surface.
-- Nothing conductive above or beside the antenna: no battery, no copper pour, no
-  screws, no metal-loaded plastic.
-
-**Tune with the enclosure fitted and a realistic soil load in place.** A network
-tuned on the bench in free space will be wrong once the board is in a pot. Budget
-a VNA session with a pot of damp soil as part of bring-up.
-
-Link budget is forgiving here — the BLE proxy is indoors and already deployed —
-so losing several dB of efficiency to soil loading is survivable. Do not
-over-engineer this at the expense of the measurement path.
-
-### Keepout
-
-Draw a rule area on **User.1 (AntennaKeepout)** covering the antenna and its
-clearance. The DRU forbids tracks, vias, zones and pads inside it.
-
-- The keepout must be **copper-free on all four layers**, ground pour included.
-  A ground plane under an IFA shorts out its near field and destroys efficiency.
-- Extend it to the board edge; do not ring the antenna with a ground guard.
-
----
+- **Zone A is now ordinary board.** ZoneB_GND floods it. The `AntennaKeepout` and
+  `AntennaCrossing` rule areas and the DRU rule that policed them are deleted.
+- **Soil proximity stops being a PCB problem.** It becomes a question of where you
+  stick the antenna in the box — still aim for as much separation from the soil
+  line as the enclosure allows, but no copper geometry depends on it.
+- **The VNA session becomes a check, not a tuning exercise.** Still worth doing
+  with the enclosure closed and a realistic soil load, because the adhesive
+  antenna and its position inside a plastic box are now the unknowns.
 
 ## 4. Ground plane strategy — the board is zoned, not uniformly poured
 
@@ -551,7 +492,7 @@ holes at (4.5, 9.5), (29.5, 9.5), (4.5, 64.5), (29.5, 64.5).
 
 | Zone | y | Notes |
 |---|---|---|
-| A antenna | 0 – 11.5 | no copper on any layer except AE1 |
+| A antenna | 0 – 11.5 | **now ordinary board** — J5 U.FL + ground pour |
 | B electronics | 11.5 – 74.0 | 34.0 × 62.5 mm, solid In1.Cu |
 | C probe | 74.0 – 155.0 | 20 mm wide, no ground on any layer |
 

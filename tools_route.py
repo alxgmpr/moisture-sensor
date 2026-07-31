@@ -70,7 +70,7 @@ RF = [
     ("/RF_B",       F, 0.36,   [(78.38, 56.90),  (78.38, 56.10),
                                 (76.80, 56.10)]),                    # C9.1 shunt into the node
 
-    ("/ANT_FEED",   F, 0.36,   [(76.80, 54.98),  (76.80, 51.60)]),   # L4.2 -> AE1 feed pad
+    ("/ANT_FEED",   F, 0.36,   [(76.80, 54.98),  (76.80, 53.70)]),   # L4.2 -> J5 U.FL signal pad
     ("/ANT_FEED",   F, 0.36,   [(74.58, 55.30),  (74.58, 54.50),
                                 (76.80, 54.50)]),                    # C11.1 shunt into the node
 ]
@@ -101,12 +101,11 @@ GND_C9 = [
     ("/GND_C9",     B, 0.40,   [(79.60, 56.30),  (80.30, 55.20)]),
 ]
 
-# C11's ground is plain GND and goes straight down to the In1.Cu plane.
-# AE1's shorting stub likewise: its pad ends exactly on the plane edge, so it
-# drops through the AntennaCrossing window at x 72.2-73.4.
+# C11's ground goes straight down to the In1.Cu plane. J5's two ground pads sit
+# on the Zone A ground pour, which now floods the whole area, so they need no
+# routing - just stitching vias to tie the pour through to the inner plane.
 GND_RF = [
     ("GND",         F, 0.40,   [(75.22, 55.30),  (75.22, 56.20)]),
-    ("GND",         F, 0.60,   [(72.80, 51.35),  (72.80, 51.95)]),
 ]
 
 # NO stitching vias along the RF run, and this is deliberate.
@@ -132,7 +131,8 @@ VIAS = [
     # x,     y,      net,        size, drill
     (79.60, 56.30, "/GND_C9",    0.60, 0.30),   # C9 ground down to B.Cu / NT2
     (75.22, 56.20, "GND",        0.60, 0.30),   # C11 ground into the plane
-    (72.80, 51.95, "GND",        0.80, 0.40),   # AE1 shorting stub into the plane
+    (74.60, 52.00, "GND",        0.60, 0.30),   # J5 ground pads -> In1.Cu plane
+    (79.00, 52.00, "GND",        0.60, 0.30),
 ]
 
 ROUTES = RF + GND_PA + GND_C9 + GND_RF
