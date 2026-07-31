@@ -96,38 +96,53 @@ Solving `Z₀ = 120π / (√ε_eff · [W/h + 1.393 + 0.667·ln(W/h + 1.444)])`:
 | 4.4 (datasheet, ~1 MHz) | 1.92 | 0.404 mm | 0.365 mm |
 | **4.2 (realistic at 2.4 GHz)** | **2.00** | **0.421 mm** | **0.382 mm** |
 
-**Use W = 0.38 mm.** The DRU allows 0.34–0.42 mm so you have room to accept
-whatever the fab's own calculator returns.
+The table above is a bare-microstrip Hammerstad solve, and it is **not** what the
+board uses. See below.
 
-### Checked against JLCPCB's parameters — 0.38 mm stands
+### W = 0.36 mm, from JLCPCB's own calculator
 
-The table above is a bare-microstrip Hammerstad solve. JLCPCB's calculator models
-three things it does not, so it was worth re-running with their published numbers
-(§1) rather than assuming they cancel:
+This is the number to trust, because it is the fab's solver on the exact stackup
+being ordered rather than anything derived here. Run at
+<https://jlcpcb.com/pcb-impedance-calculator> with 4 layers, 1.6 mm, 1 oz outer,
+0.5 oz inner, 50 Ω **Single Ended (Non coplanar)**, signal layer **L1**, top ref
+none, bottom ref **L2**:
 
-| At W = 0.38 mm, h = 0.21040 mm, t = 0.035 mm | Z₀ |
-|---|---|
-| ε_r 4.2 (the assumption above), bare | 49.9 Ω |
-| **ε_r 4.4 (JLCPCB's published 7628 value), bare** | **48.8 Ω** |
-| ε_r 4.4, plus solder mask (0.6 mil, ε_r 3.8) | 48.2 Ω |
-| ε_r 4.4, using the etch-tapered mean width (0.371 mm) | 49.5 Ω |
+| Stackup | Top → L2 dielectric | Trace width for 50 Ω | Finished thickness |
+|---|---|---|---|
+| **JLC04161H-7628** | 7628 RC 49% 8.6 mil → **0.2104 mm** | **14.12 mil = 0.3586 mm** | **1.59 mm**, *Standard* |
+| JLC04161H-7628D | identical, 0.2104 mm | 14.12 mil = 0.3586 mm | 1.79 mm, *Special* |
+| JLC04161H-3313A | 3313 ×2 → 0.1070 + 0.0994 = 0.2064 mm | 13.57 mil = 0.3447 mm | 1.58 mm, *Special* |
 
-The two corrections push opposite ways and largely cancel: mask lowers Z₀ by
-~0.6 Ω, the etch taper raises it by ~0.7 Ω. **0.38 mm lands at roughly 48.5–49.5 Ω
-on JLCPCB's own material.** That is Γ = 0.012, VSWR 1.03 — about 0.01 dB of
-mismatch loss, which is nothing next to an antenna whose matching network is an
-unproven starting point (§3).
+**The board now uses 0.36 mm.** The DRU's `opt` is 0.36 with the 0.34–0.42 mm
+window kept, so there is still room to accept whatever the fab returns after
+pressing.
 
-So the ε_r 4.2 choice was defensible but not actually necessary: at JLCPCB's
-own 4.4 the exact 50 Ω width is 0.364 mm, and the difference between that and
-0.38 mm is 1.2 Ω. Both sit inside the DRU's 0.34–0.42 mm window. **Do not respin
-the trace for this.**
+Three things fall out of this, and none of them were visible from the hand calc:
 
-**Confirm with the fab before ordering.** Prepreg thickness varies with copper
-distribution and the pressed result is not exactly nominal. If impedance actually
-matters to you, order with impedance control and let them adjust the width — they
-will solve it on the real pressed stackup with their own solver, which is a better
-answer than any of the numbers above.
+**The calculator independently confirms §1.** It labels plain `JLC04161H-7628`
+**Standard** at a finished 1.59 mm and every other 4-layer variant *Special* —
+7628D comes back at **1.79 mm**, which is the thickness discrepancy that had been
+sitting open in NEXT-STEPS.md. 7628 and 7628D return the *same* trace width, since
+the top dielectric is identical; the only difference is board thickness and cost.
+
+**0.38 mm was not 50 Ω.** Our Hammerstad model at JLCPCB's published ε_r 4.4
+returns 50.39 Ω at their 0.3586 mm width — agreement to 0.4 Ω, which validates the
+model — and the same model puts the old 0.38 mm at **48.8 Ω** (Γ = 0.012,
+VSWR 1.024, return loss 38.5 dB). That is a small error and would not have broken
+anything, but there is no reason to carry it when the fab's own answer is free.
+The earlier ε_r 4.2 "realistic at 2.4 GHz" adjustment was what pushed the width up
+to 0.38; JLCPCB solve at 4.4 flat.
+
+**A 3313 stackup is marginally better and was not considered.** The calculator's
+first suggestion is `JLC04161H-3313A`, which reaches 0.2064 mm using two thin
+3313 prepregs. It is not being taken — 7628 is the *Standard* option, §1's whole
+argument is built on it, and the difference is 0.004 mm of dielectric — but it is
+worth knowing that "single 7628 prepreg" was a sufficient condition for a thin top
+dielectric, never a necessary one.
+
+**Still order with impedance control.** Pressed prepreg thickness varies with
+copper distribution, and the ±10% on finished thickness above is real. Impedance
+control lets them re-solve on the actual pressed stackup.
 
 ### RF routing rules (enforced in the DRU)
 

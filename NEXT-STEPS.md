@@ -79,11 +79,17 @@ dielectric is the same, so plain 7628 is strictly better — right thickness, an
 it is also the cheapest and quickest option. B/C/E/F remain out: they put
 0.43–0.65 mm under the top layer, which takes the 0.38 mm trace to roughly 75 Ω.
 
-The 0.38 mm width was re-checked against JLCPCB's own material parameters
-(7628 ε_r 4.4, mask ε_r 3.8 at 0.6 mil, etch taper of 0.7 mil) and lands at
-**48.5–49.5 Ω**, VSWR 1.03. No change needed. See LAYOUT.md §2.
+**The RF trace is now 0.36 mm, not 0.38.** JLCPCB's own impedance calculator was
+run on the exact stackup (4 layer, 1.6 mm, 1 oz / 0.5 oz, 50 Ω single-ended,
+signal L1, bottom ref L2) and returns **14.12 mil = 0.3586 mm**. The old 0.38 mm
+came from a hand calculation at ε_r 4.2; at JLCPCB's published 4.4 it is 48.8 Ω,
+VSWR 1.024. Small, but there is no reason to carry it. Board and DRU updated.
 
-Still worth doing: **order with impedance control** so they solve it on the real
+The calculator also reports finished thickness per stackup, which is what settled
+the question above: plain 7628 is **1.59 mm and flagged *Standard***, 7628D is
+**1.79 mm and *Special***. See LAYOUT.md §2.
+
+Still worth doing: **order with impedance control** so they re-solve on the real
 pressed stackup, and confirm the stackup name on the acknowledgement.
 
 ### 4. Two enclosure openings, neither sealed

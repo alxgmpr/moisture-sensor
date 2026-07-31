@@ -26,10 +26,10 @@
 
 # ---------------------------------------------------------------- RF path --
 # 50 ohm microstrip on F.Cu referenced to the In1.Cu ground plane.
-# W = 0.38 mm for h = 0.2104 mm, er ~ 4.2 at 2.4 GHz. Confirm against the
-# fab's own impedance calculator before ordering with impedance control.
+# W = 0.36 mm. This is JLCPCB's own impedance calculator output - 14.12 mil for
+# 50 ohm single-ended on L1 over L2 in JLC04161H-7628 - not a hand calculation.
 (rule "RF 50R trace width"
-	(constraint track_width (min 0.34mm) (opt 0.38mm) (max 0.42mm))
+	(constraint track_width (min 0.34mm) (opt 0.36mm) (max 0.42mm))
 	(condition "A.NetClass == 'RF'"))
 
 # The RF path must not be crowded. Anything closer than 0.5 mm couples into it

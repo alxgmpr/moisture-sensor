@@ -49,25 +49,29 @@ F, B, IN1, IN2 = "F.Cu", "B.Cu", "In1.Cu", "In2.Cu"
 # U1.31 to the ground-plane edge at y = 51.5 is 8.579 mm, against lambda/8 =
 # 8.6 mm at 2.4 GHz in FR4. No vias anywhere on the RF nets.
 #
-# The trace leaves pin 31 at pad width and flares to 0.38 mm past the pad row:
-# a 0.38 mm trace on 0.4 mm pitch would sit 0.108 mm from pins 30 and 32, under
-# the fab floor. See the QFNEscape rules in the .kicad_dru.
+# The trace leaves pin 31 at pad width and flares to 0.36 mm past the pad row:
+# a wide trace on 0.4 mm pitch would sit ~0.11 mm from pins 30 and 32, under the
+# fab floor. See the QFNEscape rules in the .kicad_dru.
+#
+# 0.36 mm is JLCPCB's OWN solver output - 14.12 mil for 50 ohm single-ended on
+# L1 referenced to L2 in the JLC04161H-7628 stackup, read off their impedance
+# calculator, not derived here. See LAYOUT.md section 2.
 # --------------------------------------------------------------------------
 RF = [
     # net,          layer, width,  points
     ("/ANT",        F, 0.2032, [(76.80, 60.079), (76.80, 59.30)]),   # neck out of the pad row
-    ("/ANT",        F, 0.38,   [(76.80, 59.30),  (76.80, 58.82)]),   # flare, into L2.1
+    ("/ANT",        F, 0.36,   [(76.80, 59.30),  (76.80, 58.82)]),   # flare, into L2.1
 
-    ("/RF_A",       F, 0.38,   [(76.80, 58.18),  (76.80, 57.22)]),   # L2.2 -> L3.1
-    ("/RF_A",       F, 0.38,   [(74.58, 58.50),  (74.58, 57.70),
+    ("/RF_A",       F, 0.36,   [(76.80, 58.18),  (76.80, 57.22)]),   # L2.2 -> L3.1
+    ("/RF_A",       F, 0.36,   [(74.58, 58.50),  (74.58, 57.70),
                                 (76.80, 57.70)]),                    # C6.1 shunt into the node
 
-    ("/RF_B",       F, 0.38,   [(76.80, 56.58),  (76.80, 55.62)]),   # L3.2 -> L4.1
-    ("/RF_B",       F, 0.38,   [(78.38, 56.90),  (78.38, 56.10),
+    ("/RF_B",       F, 0.36,   [(76.80, 56.58),  (76.80, 55.62)]),   # L3.2 -> L4.1
+    ("/RF_B",       F, 0.36,   [(78.38, 56.90),  (78.38, 56.10),
                                 (76.80, 56.10)]),                    # C9.1 shunt into the node
 
-    ("/ANT_FEED",   F, 0.38,   [(76.80, 54.98),  (76.80, 51.60)]),   # L4.2 -> AE1 feed pad
-    ("/ANT_FEED",   F, 0.38,   [(74.58, 55.30),  (74.58, 54.50),
+    ("/ANT_FEED",   F, 0.36,   [(76.80, 54.98),  (76.80, 51.60)]),   # L4.2 -> AE1 feed pad
+    ("/ANT_FEED",   F, 0.36,   [(74.58, 55.30),  (74.58, 54.50),
                                 (76.80, 54.50)]),                    # C11.1 shunt into the node
 ]
 
@@ -144,11 +148,23 @@ def pt(xy):
     return pcbnew.VECTOR2I(mm(xy[0]), mm(xy[1]))
 
 
-def netcode(board, name):
-    ni = board.FindNet(name)
-    if ni is None:
-        raise SystemExit(f"net not found on the board: {name!r}")
-    return ni.GetNetCode()
+def net_map(board):
+    """Resolve every net name we route to its net code, BEFORE anything else.
+
+    Two KiCad 10 quirks make this the only reliable order. Nets are stored by
+    NAME in the .kicad_pcb with no net-code table, so the board object is the
+    only source; and calling board.Remove() on the existing tracks invalidates
+    the NETINFO wrappers, so FindNet() afterwards hands back an unusable
+    SwigPyObject. Resolve first, mutate second.
+    """
+    names = {n for n, _, _, _ in ROUTES} | {n for _, _, n, _, _ in VIAS}
+    out = {}
+    for name in sorted(names):
+        ni = board.FindNet(name)
+        if ni is None or not hasattr(ni, "GetNetCode"):
+            raise SystemExit(f"net lookup failed for {name!r} (got {type(ni).__name__})")
+        out[name] = ni.GetNetCode()
+    return out
 
 
 def clear_copper(board):
@@ -159,23 +175,23 @@ def clear_copper(board):
     return len(doomed)
 
 
-def add_track(board, net, layer, width, a, b):
+def add_track(board, code, layer, width, a, b):
     t = pcbnew.PCB_TRACK(board)
     t.SetStart(pt(a))
     t.SetEnd(pt(b))
     t.SetWidth(mm(width))
     t.SetLayer(board.GetLayerID(layer))
-    t.SetNetCode(netcode(board, net))
+    t.SetNetCode(code)
     board.Add(t)
 
 
-def add_via(board, x, y, net, size, drill, top=F, bottom=B):
+def add_via(board, x, y, code, size, drill, top=F, bottom=B):
     v = pcbnew.PCB_VIA(board)
     v.SetPosition(pt((x, y)))
     v.SetWidth(mm(size))
     v.SetDrill(mm(drill))
     v.SetLayerPair(board.GetLayerID(top), board.GetLayerID(bottom))
-    v.SetNetCode(netcode(board, net))
+    v.SetNetCode(code)
     board.Add(v)
 
 
@@ -183,16 +199,17 @@ def main():
     check = "--check" in sys.argv
     board = pcbnew.LoadBoard(BOARD)
 
+    codes = net_map(board)          # must happen before clear_copper()
     removed = clear_copper(board)
 
     segs = 0
     for net, layer, width, pts in ROUTES:
         for a, b in zip(pts, pts[1:]):
-            add_track(board, net, layer, width, a, b)
+            add_track(board, codes[net], layer, width, a, b)
             segs += 1
 
     for x, y, net, size, drill in VIAS:
-        add_via(board, x, y, net, size, drill)
+        add_via(board, x, y, codes[net], size, drill)
 
     filler = pcbnew.ZONE_FILLER(board)
     if not filler.Fill(board.Zones()):

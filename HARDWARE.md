@@ -283,15 +283,20 @@ two resistors marked **101 (100 Ω)** and **201 (200 Ω)**, one capacitor, and
 the capacitor form the RC filter on the IC's VDD, and the 200 Ω is the current-
 sense series resistor.
 
-**[DW01P figures below are typical for the part family and were not read from a
-datasheet — get the DW01P datasheet to confirm.]**
+**Verified** against Fortune Semiconductor `DW01-P-DS-10_EN` Rev 1.0, Electrical
+Characteristics, Ta = 25 °C. Every figure previously marked "typical for the part
+family" is confirmed, and two of them matter more than expected:
 
-| DW01P parameter | Typical | Consequence for this design |
-|---|---|---|
-| Over-discharge detect | **~2.4 V** | far below our functional floor — see below |
-| Over-charge detect | **4.25 V ±0.05** | worst case trips at **4.20 V** — see below |
-| Operating current | **~3 µA** | matches the 3 µA assumed in §7. Good |
-| Over-current detect | 150 mV / R_DS(on) ≈ 3 A | 6× our 500 mA charge. No interaction |
+| DW01P parameter | Symbol | Min | Typ | Max | Consequence for this design |
+|---|---|---|---|---|---|
+| Supply current (V_CC = 3.9 V) | I_CC | — | **3.0** | **6.0 µA** | §7 budgets the typ. **The max is 2×** — see below |
+| Over-charge detect | V_OCP | **4.20** | 4.25 | 4.30 V | **the min is exactly our 4.2 V termination** — see below |
+| Over-charge release | V_OCR | 4.00 | 4.05 | 4.10 V | |
+| Over-discharge detect | V_ODP | 2.30 | 2.40 | 2.50 V | far below our functional floor |
+| Over-discharge release | V_ODR | 2.90 | 3.00 | 3.10 V | |
+| Over-current detect | V_OIP | 120 | 150 | 180 mV | ÷ R_DS(on) ≈ 3 A, 6× our 500 mA charge. No interaction |
+| Short-circuit detect | V_SIP | 1.00 | 1.35 | 1.70 V | |
+| Power-down current | I_PD | — | — | 0.1 µA | only below V_ODP; does not help in normal service |
 
 **1. TH1 is now fitted, not DNP.** §3.4 requires a thermal protection path, and
 the pack provides none. Mount the NTC **thermally coupled to the cell** — a
@@ -305,12 +310,21 @@ below 3.0 V (rail sags from ~3.4 V). **Firmware must own the low-voltage cutoff*
 via the nPM1300 and the fuel gauge. Treat the DW01P purely as a last-ditch safety
 net that should never fire in normal service.
 
-**3. Consider dropping VTERM to 4.15 V.** The DW01P's over-charge threshold is
-4.25 V ±0.05, so a worst-case part trips at **4.20 V** — exactly our termination
-voltage. That risks the PCM cutting the pack off right at end-of-charge, which
-looks like a charging fault. Setting the nPM1300's termination to 4.15 V costs a
-few percent of capacity, and given that self-discharge is 92 % of the energy
+**3. Drop VTERM to 4.15 V — this is now confirmed, not a precaution.** The
+datasheet gives V_OCP as **4.20 V minimum**, 4.25 typ, 4.30 max. A worst-case part
+therefore trips at exactly **4.20 V**, which is our termination voltage — not near
+it, on it. The PCM would cut the pack off right at end-of-charge and it would
+present as a charging fault. Setting the nPM1300's termination to 4.15 V costs a
+few percent of capacity, and given that self-discharge dominates the energy
 budget (§7), that capacity is worth far less than the reliability.
+
+**4. The PCM's own draw has twice the spread §7 assumed.** I_CC is 3.0 µA typ but
+**6.0 µA max**, and the datasheet gives no distribution. §7 budgets the typ at
+26 mAh/yr; at the max it is 52.6 mAh/yr, which takes the fixed (non-capacity-
+scaling) terms from 42.8 to 69.4 mAh/yr and the projected runtime on the 500 mAh
+cell from **2.92 down to 2.51 years** — a 14 % swing decided entirely by which
+part you happen to get. This is measurable in about ten minutes with a µA meter
+on the pack terminals, and it is worth doing before trusting any runtime number.
 
 ### Absolute maximum ratings worth pinning to the wall
 
@@ -718,10 +732,13 @@ If you want more than 3.6 years, the only lever that matters is the cell.
    with temperature and state of charge. At 1000 mAh the 1–3%/month band spans
    **5.8 down to 2.4 years**. **Get this from your cell's datasheet** — it is
    worth more than any layout decision on this board.
-2. **PCM quiescent ~3 µA.** Typical for a small protection module, unverified for
-   your cell. 1–10 µA is a normal range. At 1000 mAh this is now 9% of the
-   budget — second only to self-discharge, and bigger than the entire
-   electronics draw. Worth measuring on whatever protected cell you buy.
+2. **PCM quiescent 3.0 µA typ, 6.0 µA max — now read from the DW01P datasheet**
+   (§3), not assumed. The 26 mAh/yr in the table above is the typ. At the max it
+   is **52.6 mAh/yr**, the fixed terms go from 42.8 to 69.4 mAh/yr, and runtime
+   drops from 2.92 to **2.51 years**. Second only to self-discharge and bigger
+   than the entire electronics draw either way. The datasheet publishes no
+   distribution between typ and max, so this is not something to model — put a
+   µA meter on the pack terminals and measure the cell you actually bought.
 3. **nPM1300 + nRF sleep 1.5 µA**, per the caveat above.
 4. **Wake cycle 300 ms at 3 mA average**, plus PMIC I²C configuration. A composite
    estimate, not measured. At 0.6% of budget, being wrong by 5× changes nothing.

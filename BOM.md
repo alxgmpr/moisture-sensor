@@ -158,8 +158,17 @@ turns out to matter at the real operating point.
 
 ### X2 — Epson FA-128, 32 MHz, C_L 8 pF
 
-Ordering form per the datasheet: **`FA-128 32.000000MHz 8.0 +12.0-12.0`**, and
-specify the frequency-vs-temperature characteristic separately.
+Ordering form per the datasheet: **`FA-128 32.000000MHz 8.0 +10.0-10.0`**, and
+specify the frequency-vs-temperature characteristic and operating temperature
+range separately.
+
+**Corrected from `+12.0-12.0`.** Field ④ of Epson's ordering code is
+*frequency tolerance at +25 °C*, and the datasheet's standard value for that is
+**±10 × 10⁻⁶**, not ±12. The ±12 figure is the *frequency-versus-temperature*
+characteristic over −20…+75 °C, which is field ⑤ and a separate specification.
+The old code asked for a non-standard +25 °C tolerance and would have invited a
+"contact us" quote for no benefit. Using the standard ±10 also improves the
+budget below rather than costing anything.
 
 **2016 was never a requirement.** That came from Nordic's reference BOM. The
 datasheet characterises two package sizes (§11.9.1) and mandates neither:
@@ -176,23 +185,38 @@ FA-128 against the requirements:
 
 | nRF54L15 requires | Spec | FA-128 |
 |---|---|---|
-| Total tolerance | **±40 ppm** | ±12 initial + ±12 temp (−20…+75 °C) + ±1 aging = **25 ppm** |
-| | | or ±12 + ±17 (−30…+85 °C) + ±1 = 30 ppm |
+| Total tolerance | **±40 ppm** | **±10** initial + ±12 temp (−20…+75 °C) + ±1 aging = **23 ppm** |
+| | | or ±10 + ±17 (−30…+85 °C) + ±1 = 28 ppm |
 | Load capacitance | 6–9 pF | specifiable, 6 pF to ∞ |
 | Drive level | ≤ 100 µW | 200 µW max, 10 µW recommended |
 | ESR vs C0 | Figure 17 curve | **60 Ω max** at 26–54 MHz |
 
 At C_L = 8 pF the curve allows ~100 Ω for C0 ≈ 0.74 pF, so 60 Ω passes with
-margin. **Caveat: the FA-128 datasheet does not publish C0.** Nordic's 2.0 × 1.6
-characterisation figures (C0 0.74 pF, R_S 35 Ω) match this part's geometry and
-ESR class closely enough that it is very likely the same family, but confirm C0
-with Epson before committing.
+margin.
 
-**Check the land pattern before fab.** Epson's recommended footprint is four
-pads on a roughly 1.45 × 1.15 mm envelope; KiCad's generic
-`Crystal_SMD_2016-4Pin_2.0x1.6mm` uses 0.9 × 0.8 mm pads on ±0.7 / ±0.55 mm
-centres, giving a 2.3 mm outer span. That is a bigger mismatch than the one that
-forced a vendor footprint for X1 — expect to build an Epson-specific footprint.
+**C0 is confirmed absent from the datasheet — this one stays open.** Re-read
+`FA-128_en.pdf` end to end. The Specifications table gives f_nom, T_stg, T_use,
+DL, f_tol, f_tem, C_L, R1 and f_age, and there is **no C0 row anywhere**, so this
+is not an oversight in the earlier reading. Nordic's 2.0 × 1.6 characterisation
+figures (C0 0.74 pF, R_S 35 Ω) match this part's geometry and ESR class closely
+enough that it is very likely the same family, but it remains the one FA-128
+parameter that has to come from Epson directly. It is half of what the Figure 17
+ESR curve checks, so it is worth an email before committing to volume.
+
+Also confirmed from the datasheet while checking: **ESR R1 = 60 Ω max** for
+26 MHz ≤ f_nom ≤ 54 MHz, **drive level 200 µW max with 10 µW recommended**, and
+**pads #2 and #4 are connected to the cover and must go to ground.**
+
+**Land pattern — done.** `footprints:XTAL_FA-128_2016_4Pin` is built and placed,
+and it matches Epson's recommended footprint exactly: **0.50 × 0.85 mm pads on
+0.95 mm (X) × 1.15 mm (Y) centres**, a 1.45 × 2.00 mm outer envelope. The
+datasheet's own footprint drawing gives 1.45, 0.95, 1.15 and 0.85, which is the
+same pattern. KiCad's generic `Crystal_SMD_2016-4Pin_2.0x1.6mm` uses 0.9 × 0.8 mm
+pads on ±0.7 / ±0.55 mm centres for a 2.30 mm outer span in X — 0.85 mm wider
+than Epson specify, a bigger mismatch than the one that forced a vendor footprint
+for X1. The 3D model (`lib/FA-128 32.0000MF10Z-AJ0.STEP`) is attached to both the
+`.kicad_mod` and the placed instance; its orientation has not been checked in the
+3D viewer yet.
 
 ### Cell — Adafruit 1578, 500 mAh
 
