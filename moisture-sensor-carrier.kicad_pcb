@@ -6350,11 +6350,11 @@
 	(footprint "Inductor_SMD:L_Murata_DFE201610P"
 		(layer "F.Cu")
 		(uuid "6dcd889a-8ae9-4924-a54a-efab54328351")
-		(at 64 93.5)
+		(at 64 93.5 180)
 		(descr "Inductor, Murata, DFE201610P, 2.0x1.6x1.0mm, (https://www.murata.com/~/media/webrenewal/products/inductor/chip/tokoproducts/wirewoundmetalalloychiptype/m_dfe201610p.ashx)")
 		(tags "power chip flatwire")
 		(property "Reference" "L10"
-			(at 0 -1.75 0)
+			(at 0 -1.75 180)
 			(layer "F.Fab")
 			(uuid "5854edd9-8f48-4f87-8183-5c2eb83b138a")
 			(effects
@@ -6365,7 +6365,7 @@
 			)
 		)
 		(property "Value" "2.2uH Isat>350mA DCR<400m"
-			(at 0 1.75 0)
+			(at 0 1.75 180)
 			(layer "F.Fab")
 			(uuid "93ea8d36-6bfb-426d-82ce-32b046a6123a")
 			(effects
@@ -6376,7 +6376,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 0 0 0)
+			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "fb589557-9c2b-4388-8b58-08e483273e79")
@@ -6387,7 +6387,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 0 0 0)
+			(at 0 0 180)
 			(layer "F.Fab")
 			(hide yes)
 			(uuid "56b4c3fa-e769-47cd-a3fa-265555faaa66")
@@ -6398,7 +6398,7 @@
 			)
 		)
 		(property "KiLib_Generator" "inductor/SMD"
-			(at 0 0 0)
+			(at 0 0 180)
 			(layer "F.SilkS")
 			(hide yes)
 			(uuid "3eff48a9-730b-4504-bd70-ab4c31cff504")
@@ -6422,16 +6422,6 @@
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
-			(start -1.11 -1.06)
-			(end 1.11 -1.06)
-			(stroke
-				(width 0.12)
-				(type solid)
-			)
-			(layer "F.SilkS")
-			(uuid "bf682e9d-4b71-4a2c-908c-6c44c3ad4ce5")
-		)
-		(fp_line
 			(start 1.11 1.06)
 			(end -1.11 1.06)
 			(stroke
@@ -6440,6 +6430,16 @@
 			)
 			(layer "F.SilkS")
 			(uuid "c8c88a1b-60b3-40c1-8534-478997631109")
+		)
+		(fp_line
+			(start -1.11 -1.06)
+			(end 1.11 -1.06)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "F.SilkS")
+			(uuid "bf682e9d-4b71-4a2c-908c-6c44c3ad4ce5")
 		)
 		(fp_rect
 			(start -1.25 -1.05)
@@ -6464,7 +6464,7 @@
 			(uuid "99dd159d-f254-46c0-b5f7-6d46fb2a11a9")
 		)
 		(fp_text user "${REFERENCE}"
-			(at 0 0 0)
+			(at 0 0 180)
 			(layer "F.Fab")
 			(uuid "bacae0e5-f8e2-437a-9cd9-38b52a441123")
 			(effects
@@ -6475,7 +6475,7 @@
 			)
 		)
 		(pad "1" smd roundrect
-			(at -0.725 0)
+			(at -0.725 0 180)
 			(size 0.55 1.6)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)
@@ -6484,7 +6484,7 @@
 			(uuid "00169e42-c315-4d81-a56f-64177e89c37d")
 		)
 		(pad "2" smd roundrect
-			(at 0.725 0)
+			(at 0.725 0 180)
 			(size 0.55 1.6)
 			(layers "F.Cu" "F.Mask" "F.Paste")
 			(roundrect_rratio 0.25)

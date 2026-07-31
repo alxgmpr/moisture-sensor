@@ -81,6 +81,28 @@ FIXUPS = [
     # making the board routable at all. Worth re-checking on the VNA at bring-up
     # along with everything else in the matching network.
     ("C6", (76.10, 57.50), 270.0),
+
+    # L10 turned end for end, for the same reason L1 was and found the same way
+    # - by measuring rather than by looking. See docs/audit-2026-07-31.md.
+    #
+    # /SW2 joins U2 pin 5 to L10 pad 1, and pad 1 was the pad FURTHER from U2:
+    #
+    #     U2.5   (7.074, 56.250)   board coordinates
+    #     L10.1  (3.275, 53.500)   <- SW2 side, far end
+    #     L10.2  (4.725, 53.500)   <- VOUT2 side, near end
+    #
+    # so the highest-dv/dt net on the board ran the length of the inductor body
+    # to get to its own pad: 4.69 mm, against 3.62 mm with the part turned
+    # round. The BUCK2 loop U2.5 -> L10 -> C24 -> U2.6 measures 5.50 mm2 and
+    # 14.43 mm of perimeter as placed.
+    #
+    # Turning it also costs nothing on the output side. /+3V3 leaves the far pad
+    # at x = 3.275 and C24 pad 1 is at x = 3.138, so that run gets shorter too
+    # (3.84 -> 3.50 mm). Both halves of the loop improve; there is no trade here.
+    #
+    # /SW2 has no copper at all yet, so this is free to do now and would have
+    # meant ripping up the switch node later.
+    ("L10", None, 180.0),
 ]
 
 
