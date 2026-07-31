@@ -129,8 +129,8 @@ Hammond's "Maximum PCB 74.50 × 34.50" assumes the corners are scalloped.
 
 **Fixed — at R5.0, not the R4.669 first tried.** All four corners carry a concave
 relief arc centred on the boss, meeting the board edge **6.091 mm** in from each
-corner. At the probe end the relief runs straight into the R2.0 shoulder fillet
-with no straight segment between them.
+corner. At the probe end there is a **0.409 mm flat at y = 74** between the
+relief and the shoulder fillet, and the fillet is **R0.5** — see below.
 
 **The first attempt at R4.669 did not fit, and it is worth recording why.** It was
 solved against the boss circle alone. The real cavity corner is not just that
@@ -154,6 +154,12 @@ Verified by sampling the whole Edge.Cuts outline against the measured cavity at
 both the board's bottom and top faces: **0 points outside, 0.2624 mm tightest at
 the bottom face** (the worst case — the bosses taper with draft, so the top face
 is looser at 0.3066 mm).
+
+**The shoulder fillet had to shrink from R2.0 to R0.5.** The relief reaches
+x = 6.091 at y = 74 and the probe edge is at x = 7.0, so there is 0.909 mm per
+side for the fillet plus any flat. R2.0 and R1.0 are both impossible. R0.5 leaves
+a 0.409 mm flat. Recovering R2.0 would need the probe narrowed to ~16.8 mm, which
+leaves the 16 mm electrodes 0.4 mm of guard — not viable. See LAYOUT.md §9.
 
 `ZoneB_GND` also needed its outline rebuilt: as a plain rectangle its fill came
 within 0.2984 mm of the new arcs against the 0.3 mm edge rule. It now follows the

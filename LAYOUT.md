@@ -501,8 +501,21 @@ target in §3. Insert depth 40 mm. SENSE2 (air reference) at y 82–112 and SENS
 (soil) at y 119–149 are both 16 × 30 mm — identical geometry is what makes the
 ratiometric measurement in §5 cancel anything.
 
-The probe leaves through a slot in the box end wall. R2.0 fillets at the shoulder
-keep the stress off the inside corners.
+The probe leaves through a slot in the box end wall.
+
+**Shoulder fillets are R0.5, not the R2.0 originally drawn.** The corner reliefs
+(§9 below and NEXT-STEPS.md §4) reach board x = 6.091 at y = 74, and the probe
+edge is at x = 7.0 — leaving **0.909 mm** per side for everything at the shoulder.
+R2.0 needs 2.0 mm of that and R1.0 needs 1.0 mm, so both are geometrically
+impossible once the enclosure's corner bosses are cleared. R0.5 leaves a
+**0.409 mm flat** at y = 74 between the relief and the fillet.
+
+This is a real reduction in stress relief on an 81 mm cantilever that gets pushed
+into soil, and it is the price of the board fitting the box at all. The only way
+to get R2.0 back is to narrow the probe to about **16.8 mm**, which leaves the
+16 mm electrodes only 0.4 mm of guard either side — not viable. If the shoulder
+turns out to crack in service, narrowing the electrodes is the lever, not the
+fillet.
 
 ### Height budget — the thing that bit
 
