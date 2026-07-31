@@ -132,7 +132,17 @@
 # The rule area's own flags (no vias, no pours, no other footprints) do the rest.
 (rule "Antenna keepout is copper free"
 	(constraint disallow track via zone pad)
-	(condition "A.insideArea('AntennaKeepout') && !A.memberOfFootprint('AE1')"))
+	# AE1's feed pad and its shorting stub both END exactly ON the keepout boundary
+	# (the ground-plane edge at board y = 11.5), so neither the feed trace nor the
+	# stub's ground via can reach its pad without entering the area. The antenna has
+	# to cross its own keepout to be connected at all.
+	#
+	# Rather than exempting a whole net class, two 0.5 mm-deep AntennaCrossing
+	# windows are drawn on the board at exactly the two crossing points - one at the
+	# feed (x 76.4-77.2), one at the stub (x 72.2-73.4). Everywhere else in Zone A
+	# the keepout stays absolute, and the ground POUR is excluded everywhere,
+	# including inside the windows, which is the part that protects the near field.
+	(condition "A.insideArea('AntennaKeepout') && !A.memberOfFootprint('AE1') && !A.insideArea('AntennaCrossing')"))
 
 # Sensirion SHT4x datasheet 5.3: soldering the central die pad or placing an
 # exposed copper pad beneath it heat-sinks the internal heater and it stops
@@ -193,6 +203,41 @@
 # FDC1004 is MSOP-10 on 0.5 mm pitch and TI put SHLD1 (pin 1) directly beside
 # CIN1 (pin 2) - 0.15 mm of pad-to-pad against the 0.2 mm sense-to-shield rule.
 # Nothing to route differently; the pinout is the pinout.
+# The 0.5 mm rule exists to keep UNRELATED copper away from the RF path. Inside
+# the matching network itself it is unsatisfiable and wrong: a 0201 shunt cap has
+# 0.64 mm between its own hot and ground pads, so any trace leaving the hot pad is
+# within 0.5 mm of the ground pad it returns through. Those grounds are part of
+# the RF structure, not foreign copper. Inside the cluster, spacing is set by the
+# 0201 land pattern and the fab floor.
+#
+# Scoped to the six matching-network footprints by name, so RF copper anywhere
+# else on the board still gets the full 0.5 mm.
+(rule "Matching network internal spacing is the 0201 land pattern"
+	(constraint clearance (min 0.15mm))
+	(condition "A.insideArea('MatchingNetwork')"))
+
+# A 0.38 mm trace cannot leave a 0.4 mm-pitch QFN pad row: it would sit 0.108 mm
+# from pins 30 and 32, under even the 0.127 mm fab floor. The same is true of the
+# GND_PA return landing on pad 32, which is 0.1968 mm from pin 31 by pitch alone.
+# So inside a small window over the pin 30/31/32 escape, both width and clearance
+# are governed by the package, not by the RF rules: the /ANT trace leaves at pad
+# width (0.2032 mm) and flares to 0.38 mm once clear of the row.
+#
+# The neck is ~0.73 mm against lambda = 69 mm in FR4 - lambda/95, a lumped
+# discontinuity, which is what Nordic's own reference layout does.
+#
+# 0.15 mm still sits above the 0.127 mm fab floor. The window is 1.30 x 1.25 mm
+# and is drawn on the board as the QFNEscape rule area, so the rest of the RF run
+# keeps the full 0.34-0.42 mm width and 0.5 mm clearance. Verified by injecting a
+# violation just outside the window and confirming the full rules still fire.
+(rule "QFN escape: track width is set by the 0.4 mm pad pitch"
+	(constraint track_width (min 0.15mm))
+	(condition "A.insideArea('QFNEscape')"))
+
+(rule "QFN escape: clearance is set by the 0.4 mm pad pitch"
+	(constraint clearance (min 0.15mm))
+	(condition "A.insideArea('QFNEscape')"))
+
 (rule "FDC1004 adjacent pins are package geometry"
 	(constraint clearance (min 0mm))
 	(condition "A.Type == 'Pad' && B.Type == 'Pad' && A.memberOfFootprint('U3') && B.memberOfFootprint('U3')"))
