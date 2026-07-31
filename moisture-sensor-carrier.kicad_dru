@@ -19,6 +19,11 @@
 	(constraint track_width (min 0.127mm))
 	(condition "A.Type == 'Track'"))
 
+# Clearance floor, hoisted for the same reason as the track floor above: it
+# matches every pair, so every stricter rule below this line must come after it.
+(rule "Fab minimum clearance"
+	(constraint clearance (min 0.127mm)))
+
 # ---------------------------------------------------------------- RF path --
 # 50 ohm microstrip on F.Cu referenced to the In1.Cu ground plane.
 # W = 0.38 mm for h = 0.2104 mm, er ~ 4.2 at 2.4 GHz. Confirm against the
@@ -100,7 +105,10 @@
 # a 10 C rise at 1 A - comfortable margin.
 (rule "Charge path width"
 	(constraint track_width (min 0.8mm))
-	(condition "A.Net == '/VBAT' || A.Net == '/VBUS_IN' || A.Net == '/VSYS'"))
+	# A.Net is NOT a valid property - it parses but evaluates false forever, so
+	# this rule was dead. Every other rule in this file uses A.NetName. Caught by
+	# injecting a 0.5 mm /VBAT track: 0 violations with A.Net, 2 with A.NetName.
+	(condition "A.NetName == '/VBAT' || A.NetName == '/VBUS_IN' || A.NetName == '/VSYS'"))
 
 # The buck switching node should be short and fat, never long and thin.
 (rule "Switch node width"
@@ -135,9 +143,14 @@
 
 # ------------------------------------------------------------ fabrication --
 # JLCPCB 4 layer standard process floor. Tighten only if you pay for it.
-(rule "Fab minimum clearance"
-	(constraint clearance (min 0.127mm)))
-
+#
+# "Fab minimum clearance" is deliberately NOT here. It matches every pair of
+# items, so sitting at the bottom it silently overrode every specific clearance
+# rule in this file - the RF 0.5 mm rule, all four sense/shield rules. Exactly
+# the trap that had already been found and fixed in the track_width family; the
+# clearance family still had it. It now sits above the specific rules, next to
+# "Fab minimum track". Caught by injecting a 0.38 mm /ANT track off U1 pin 31
+# and getting 'Fab minimum clearance 0.127' instead of 'RF clearance 0.5'.
 (rule "Fab minimum annular ring"
 	(constraint annular_width (min 0.13mm)))
 
@@ -156,3 +169,30 @@
 (rule "VSS_PA net tie bridges the QFN annulus"
 	(constraint clearance (min 0mm))
 	(condition "A.memberOfFootprint('NT1') && B.memberOfFootprint('U1')"))
+
+# Once the clearance floor stopped masking them, the RF and sense rules turned
+# out to be unsatisfiable against fixed package geometry - a part's own two
+# terminals are the vendor land pattern, not a routing decision.
+#
+#   C6 / C9 / C11   0201 shunt caps, 0.18 mm between their own pads
+#   U1 pin 31       0.4 mm QFN pitch: 0.1968 mm to pins 30 and 32,
+#                   0.1905 mm across the annulus to the centre pad
+#
+# Scoped to pad-to-pad inside one footprint, and named part by part so a custom
+# footprint elsewhere on this board stays policed. Routing is unaffected: an RF
+# *track* near any other net still gets the full 0.5 mm.
+#
+# NOTE: a condition string must be on ONE line. A multi-line condition does not
+# just fail that rule - KiCad discards the whole .kicad_dru and silently falls
+# back to netclass clearances only. Caught because every violation in the report
+# was attributed to "netclass 'Power'" and not one custom rule name appeared.
+(rule "RF pad pairs inside one footprint are package geometry"
+	(constraint clearance (min 0mm))
+	(condition "A.Type == 'Pad' && B.Type == 'Pad' && ((A.memberOfFootprint('C6') && B.memberOfFootprint('C6')) || (A.memberOfFootprint('C9') && B.memberOfFootprint('C9')) || (A.memberOfFootprint('C11') && B.memberOfFootprint('C11')) || (A.memberOfFootprint('U1') && B.memberOfFootprint('U1')))"))
+
+# FDC1004 is MSOP-10 on 0.5 mm pitch and TI put SHLD1 (pin 1) directly beside
+# CIN1 (pin 2) - 0.15 mm of pad-to-pad against the 0.2 mm sense-to-shield rule.
+# Nothing to route differently; the pinout is the pinout.
+(rule "FDC1004 adjacent pins are package geometry"
+	(constraint clearance (min 0mm))
+	(condition "A.Type == 'Pad' && B.Type == 'Pad' && A.memberOfFootprint('U3') && B.memberOfFootprint('U3')"))
