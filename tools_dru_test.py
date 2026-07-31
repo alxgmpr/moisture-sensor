@@ -47,6 +47,14 @@ ANT,RFA,GNDPA,GND,NRESET   = "/ANT","/RF_A","/GND_PA","GND","/NRESET"
 SENSE1,SHLD,SW2,VBAT,PVSS2 = "/SENSE1","/SHLD","/SW2","/VBAT","/GND_PVSS2"
 GNDC9,XC1,XC2              = "/GND_C9","/XC1","/XC2"
 Y=90.0   # empty In2.Cu band in Zone B
+# name, items, rule that MUST fire, [rule that must NOT fire]
+#
+# The fourth field is not decoration. A relaxing rule that matches more than it
+# should does not announce itself - it silently lowers a limit somewhere else
+# on the board. That is exactly how the fine-pitch fanout clearance rule
+# behaved before the Type guards went in: insideArea() is true for a ZONE that
+# merely OVERLAPS the area, so the rule caught ZoneB_GND_F and through it every
+# track and via on the board.
 CASES=[
  # name, items, rule that MUST appear
  ("rf_clear",   [seg(84,Y,90,Y,0.38,"In2.Cu",ANT),     seg(84,Y+0.64,90,Y+0.64,0.2,"In2.Cu",NRESET)], "RF clearance to other nets"),
@@ -65,15 +73,42 @@ CASES=[
  ("gndpa_layer",[seg(84,Y,90,Y,0.4,"B.Cu",GNDPA)],                                                     "C6 ground stays on the top layer"),
  ("gndc9_inner",[seg(84,Y,90,Y,0.4,"In1.Cu",GNDC9)],                                                   "C9 ground never touches an inner plane"),
  ("fab_floor",  [seg(84,Y,90,Y,0.2,"In2.Cu",XC1),      seg(84,Y+0.30,90,Y+0.30,0.2,"In2.Cu",XC2)],     "Fab minimum clearance"),
+
+ # The fine-pitch fanout pair, injected inside the U1-top FinePitchFanout area
+ # (74.50..79.50, 65.30..67.00 on F.Cu). The width case is also a negative test
+ # for "Power track width": GND is Power class, so a 0.13 mm GND track would
+ # trip the 0.4 mm rule if the fanout rule were not the last width rule to
+ # match. It must come back as the fanout rule, not as "Power track width".
+ ("fanout_width", [seg(74.6,66.80,75.4,66.80,0.13,"F.Cu",GND)],
+                  "Fine-pitch fanout: track width is set by the pad pitch"),
+ ("fanout_clear", [seg(74.6,66.55,75.4,66.55,0.13,"F.Cu",XC1),
+                   seg(74.6,66.69,75.4,66.69,0.13,"F.Cu",XC2)],
+                  "Fine-pitch fanout: clearance is set by the pad pitch"),
+
+ # ...and the containment test. Same 0.14 mm gap, in Zone A on B.Cu, which is
+ # nowhere near a FinePitchFanout window. It must come back as the 0.127 mm fab
+ # floor. If it comes back as the fanout rule, the exemption has escaped its
+ # windows again.
+ ("fanout_scope", [seg(84.0,45.0,90.0,45.0,0.13,"B.Cu",XC1),
+                   seg(84.0,45.14,90.0,45.14,0.13,"B.Cu",XC2)],
+                  "Fab minimum clearance",
+                  "Fine-pitch fanout: clearance is set by the pad pitch"),
 ]
 fails=0
-for name, items, want in CASES:
+for case in CASES:
+    name, items, want = case[0], case[1], case[2]
+    forbid = case[3] if len(case) > 3 else None
     rpt=run(name, items)
     hit = want in rpt
-    print(f"  {'PASS' if hit else 'FAIL'}  {name:14s} expect fire: {want!r}")
-    if not hit:
+    leaked = forbid is not None and forbid in rpt
+    ok = hit and not leaked
+    note = f"expect fire: {want!r}" + (f", never {forbid!r}" if forbid else "")
+    print(f"  {'PASS' if ok else 'FAIL'}  {name:14s} {note}")
+    if not ok:
         fails+=1
         got=sorted(set(re.findall(r"Rule: ([^;]+);", rpt)))
-        print(f"        rules that fired instead: {got}")
+        if leaked:
+            print(f"        {forbid!r} fired but must not")
+        print(f"        rules that fired: {got}")
 print(f"\n{len(CASES)-fails}/{len(CASES)} fire-tests passed")
 sys.exit(1 if fails else 0)

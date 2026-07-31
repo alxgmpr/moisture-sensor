@@ -215,6 +215,46 @@
 	(constraint clearance (min 0.15mm))
 	(condition "A.insideArea('QFNEscape')"))
 
+# The same argument as the QFN escape above, generalised from the pin 30/31/32
+# window to every fine-pitch land pattern that something actually has to escape
+# from. A track leaving one of these pads cannot be as wide as its net class
+# asks for and cannot hold that class's clearance to the pad next door, because
+# the neighbour spacing is the vendor land pattern:
+#
+#   U1  QFN48 0.4 mm pitch, 0.203 mm pads -> 0.2985 mm pad centre to neighbour
+#   U2  QFN32 0.5 mm pitch, 0.254 mm pads -> 0.373 mm
+#   U3  MSOP-10 0.5 mm pitch              -> 0.15 mm between adjacent pads
+#   U5  HVSSOP-8 0.65 mm pitch            -> 0.15 mm between adjacent pads
+#   J1  USB-C                             -> 0.25 mm, VBUS pad to the SBU beside it
+#
+# Worked example, and why nothing narrower is available: U1 pin 47 is /+3V3
+# (Power, 0.25 mm) and sits next to pin 46 /DCC (SWITCH, 0.3 mm). Escaping west
+# at width w leaves 0.298 - w/2 to pin 46, so satisfying 0.3 mm needs w < 0,
+# and satisfying it is not possible at any width. The pins are 0.4 mm apart
+# because the package says so.
+#
+# Drawn as the FinePitchFanout rule areas in tools_add_zones.py, which
+# deliberately EXCLUDE U1's bottom pad row - that is where the RF escape lives,
+# it already has its own QFNEscape window, and /ANT must keep the full 0.5 mm
+# clearance and 0.34 mm minimum width. Everything else on that row escapes at
+# 0.19 mm, which holds 0.2035 mm to its neighbours and needs no exemption.
+(rule "Fine-pitch fanout: track width is set by the pad pitch"
+	(constraint track_width (min 0.15mm))
+	(condition "A.insideArea('FinePitchFanout')"))
+
+# The Type guards are load-bearing, and leaving them off is a trap worth
+# naming: insideArea() is true for a ZONE whenever the zone OVERLAPS the area,
+# not only where the two actually intersect. ZoneB_GND_F spans the whole
+# electronics band and therefore crosses six of the seven FinePitchFanout
+# windows, so without the guards this rule matched the ground pour against
+# every track and via ON THE BOARD and dropped the pour's clearance to 0.15 mm
+# everywhere. It showed up as 97 clearance violations attributed to this rule
+# at coordinates nowhere near a QFN. The pour keeps its full 0.25 mm; only
+# tracks and vias get the package-geometry exemption.
+(rule "Fine-pitch fanout: clearance is set by the pad pitch"
+	(constraint clearance (min 0.15mm))
+	(condition "A.insideArea('FinePitchFanout') && A.Type != 'Zone' && B.Type != 'Zone'"))
+
 (rule "FDC1004 adjacent pins are package geometry"
 	(constraint clearance (min 0mm))
 	(condition "A.Type == 'Pad' && B.Type == 'Pad' && A.memberOfFootprint('U3') && B.memberOfFootprint('U3')"))

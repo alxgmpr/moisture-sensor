@@ -1,0 +1,167 @@
+#!/usr/bin/env python3
+"""
+Adds the copper pours and rule areas that routing needs, and nothing else.
+
+Re-runnable: every zone below is keyed by name, so a run deletes the previous
+copy before re-adding it. It never touches graphics, footprints, tracks or the
+zones it did not create - so the hand-drawn outline and ZoneB_GND survive.
+
+    $PY tools_add_zones.py            # edit the board
+    $PY tools_add_zones.py --check    # write to /tmp instead
+
+WHY EACH ZONE EXISTS
+--------------------
+ZoneB_GND_F      F.Cu ground pour over the electronics band. Zone B previously
+                 had ground on In1.Cu only, so all 51 F.Cu ground pads needed a
+                 via each. The pour collects them and the stitching vias tie it
+                 to In1.Cu. Kept OUT of the RF corridor - see RFPourKeepout.
+
+ZoneB_3V3        In2.Cu +3V3 plane. LAYOUT.md section 1 already assigns In2.Cu
+                 the role "power / guard pour"; the guard half exists in Zone C,
+                 this is the power half. 21 pads on /+3V3 reach it with one via
+                 each instead of a routed spine.
+
+RFPourKeepout    No F.Cu pour beside the microstrip. LAYOUT.md section 2 derives
+                 W = 0.36 mm from the MICROSTRIP equation, which assumes no
+                 coplanar ground. Ground on F.Cu 0.5 mm away would pull the
+                 impedance down; this holds it >= 1.1 mm off the x = 76.8 run.
+                 Bans pour only - vias and tracks are unaffected.
+
+SenseNoGround    In1.Cu ground stops above U3. Ground under a sense trace IS
+                 measured capacitance (LAYOUT.md section 5), so the plane is
+                 carved away over the U3 -> Zone C escape. Stops at x = 73.5 so
+                 U3's own ground pin, on the far side of the package, still has
+                 plane to via into.
+
+SenseEscape_GUARD / _F
+                 Guard, not ground, fills what the carve left. Same net and
+                 priority as the Zone C guard zones, which they abut and merge
+                 with, extended up to y = 105.8 to cover U3 and the testpoints.
+"""
+
+import os
+import sys
+
+import pcbnew
+
+BOARD = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                     "moisture-sensor-carrier.kicad_pcb")
+
+# name, net (None = rule area), layers, priority, rect (x1,y1,x2,y2), keepout flags
+ZONES = [
+    # ---- copper pours -----------------------------------------------------
+    # Priorities: the SenseEscape pair abuts ZoneC_GUARD_F (1) and ZoneC_GUARD
+    # (0) on the same net, and KiCad requires intersecting zones to differ in
+    # priority even when the net matches. Nothing on F.Cu below y = 112.4 is
+    # priority 2, so 3 cannot steal area from the SENSE electrodes.
+    ("ZoneB_GND_F",  "GND",    ["F.Cu"],            0, (60.40,  53.00, 93.60, 104.00), None),
+    ("ZoneB_3V3",    "/+3V3",  ["In2.Cu"],          0, (60.40,  53.00, 93.60, 104.50), None),
+    ("SenseEscape_GUARD_F", "/SHLD", ["F.Cu"],      3, (67.00, 105.80, 77.00, 112.40), None),
+    ("SenseEscape_GUARD",   "/SHLD", ["B.Cu", "In2.Cu"], 1,
+                                                      (67.00, 105.80, 77.00, 112.40), None),
+
+    # ---- rule areas (pour only; tracks and vias stay legal) ----------------
+    ("RFPourKeepout", None,    ["F.Cu"],            0, (73.90,  52.60, 80.80,  60.75), "pour"),
+    ("SenseNoGround", None,    ["In1.Cu"],          0, (66.00, 105.80, 73.50, 114.60), "pour"),
+
+    # ---- fine-pitch fanout windows ----------------------------------------
+    # Where the vendor land pattern, not a routing decision, sets how wide a
+    # track can be and how close it may sit. Two .kicad_dru rules key off this
+    # name; see the comment block there. Deliberately EXCLUDES U1's bottom pad
+    # row (y < 60.3), which is where the RF escape lives - that row has its own
+    # QFNEscape window and everything else on it escapes at 0.19 mm, which
+    # holds 0.2035 mm to its neighbours and needs no exemption.
+    ("FinePitchFanout", None,  ["F.Cu"],            0, (74.20,  59.60, 75.05,  60.50), "none"),  # U1 pin 36 only
+    ("FinePitchFanout", None,  ["F.Cu"],            0, (72.90,  60.30, 74.50,  65.70), "none"),  # U1 left
+    ("FinePitchFanout", None,  ["F.Cu"],            0, (74.50,  65.30, 79.50,  67.00), "none"),  # U1 top
+    ("FinePitchFanout", None,  ["F.Cu"],            0, (79.50,  60.30, 81.10,  65.70), "none"),  # U1 right
+    ("FinePitchFanout", None,  ["F.Cu"],            0, (66.10,  92.00, 72.90,  99.40), "none"),  # U2
+    ("FinePitchFanout", None,  ["F.Cu"],            0, (71.90, 106.90, 75.00, 110.10), "none"),  # U3, digital side
+    ("FinePitchFanout", None,  ["F.Cu"],            0, (83.80,  90.80, 91.20,  94.20), "none"),  # U5
+    ("FinePitchFanout", None,  ["F.Cu"],            0, (66.70,  81.80, 68.50,  89.20), "none"),  # J1
+]
+
+
+def mm(v):
+    return pcbnew.FromMM(v)
+
+
+def build(board, name, net, layers, prio, rect, keepout):
+    z = pcbnew.ZONE(board)
+    z.SetZoneName(name)
+
+    ls = pcbnew.LSET()
+    for ln in layers:
+        lid = board.GetLayerID(ln)
+        if lid < 0:
+            raise SystemExit(f"{name}: unknown layer {ln!r}")
+        ls.addLayer(lid)
+    z.SetLayerSet(ls)
+
+    if net is not None:
+        ni = board.FindNet(net)
+        if ni is None or not hasattr(ni, "GetNetCode"):
+            raise SystemExit(f"{name}: net lookup failed for {net!r}")
+        z.SetNetCode(ni.GetNetCode())
+
+    z.SetAssignedPriority(prio)
+    z.SetMinThickness(mm(0.2))
+    z.SetLocalClearance(mm(0.25))
+    # Solid, not thermal relief. Thermal spokes cannot resolve two-per-pad on
+    # J1's 0.6 mm USB-C row or on the QFN ground pins - the neighbouring pads
+    # block them, which DRC reports as starved_thermal - and a spoke in series
+    # with a QFN ground pin is inductance this board does not want. Solid also
+    # matches "solid unbroken ground" in LAYOUT.md section 4. The cost is
+    # hand-soldering difficulty on GND pads.
+    z.SetPadConnection(pcbnew.ZONE_CONNECTION_FULL)
+    # Drop unconnected islands rather than leave floating copper to explain.
+    z.SetIslandRemovalMode(pcbnew.ISLAND_REMOVAL_MODE_ALWAYS)
+
+    if keepout:
+        # "none" is a rule area that forbids nothing - it exists only so the
+        # .kicad_dru can name the region with insideArea().
+        z.SetIsRuleArea(True)
+        z.SetDoNotAllowZoneFills(keepout == "pour")
+        z.SetDoNotAllowTracks(False)
+        z.SetDoNotAllowVias(False)
+        z.SetDoNotAllowPads(False)
+        z.SetDoNotAllowFootprints(False)
+
+    x1, y1, x2, y2 = rect
+    ol = z.Outline()
+    ol.NewOutline()
+    for x, y in ((x1, y1), (x2, y1), (x2, y2), (x1, y2)):
+        ol.Append(mm(x), mm(y))
+
+    board.Add(z)
+    return z
+
+
+def main():
+    check = "--check" in sys.argv
+    board = pcbnew.LoadBoard(BOARD)
+
+    wanted = {n for n, *_ in ZONES}
+    doomed = [z for z in board.Zones() if z.GetZoneName() in wanted]
+    for z in doomed:
+        board.Remove(z)
+
+    for spec in ZONES:
+        build(board, *spec)
+
+    filler = pcbnew.ZONE_FILLER(board)
+    if not filler.Fill(board.Zones()):
+        raise SystemExit("zone fill failed")
+
+    out = "/tmp/zoned.kicad_pcb" if check else BOARD
+    pcbnew.SaveBoard(out, board)
+    print(f"replaced {len(doomed)} existing, added {len(ZONES)} zones")
+    for z in board.Zones():
+        if z.GetZoneName() in wanted:
+            print(f"  {z.GetZoneName():22s} net={z.GetNetname()!r:8s} "
+                  f"rule={z.GetIsRuleArea()} prio={z.GetAssignedPriority()}")
+    print(f"wrote {out}")
+
+
+if __name__ == "__main__":
+    main()

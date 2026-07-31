@@ -135,7 +135,132 @@ VIAS = [
     (79.00, 52.00, "GND",        0.60, 0.30),
 ]
 
-ROUTES = RF + GND_PA + GND_C9 + GND_RF
+# --------------------------------------------------------------------------
+# Everything below is routed against PAD REFERENCES, not literal coordinates:
+# a waypoint written "U1.36" resolves to that pad's centre at run time. The RF
+# section above stays literal because it is verified and measured, and because
+# its neck geometry is deliberate to a hundredth of a millimetre.
+#
+# Anything that reaches a plane does so with a via and no more track than it
+# takes to get out of the pad row:
+#
+#   GND    -> ZoneB_GND_F on F.Cu collects the pads; STITCH ties it to In1.Cu
+#   /+3V3  -> ZoneB_3V3 on In2.Cu, one via per pad
+#
+# so the tables here carry the nets that are genuinely point to point.
+# --------------------------------------------------------------------------
+
+# GND pads that the F.Cu pour cannot reach: U3's, because the plane and the
+# pour are both carved back over the sense escape; U4's, because the SHT45
+# jut-out bans pour and vias entirely; and J5's right-hand ground pad, whose
+# stitching via only grazes it.
+GND_EXTRA = [
+    ("GND",         F, 0.30,   ["U3.7",   (74.60, 109.00)]),          # -> via, In1.Cu
+    ("GND",         F, 0.40,   ["J5.2b",  (79.00, 52.00)]),           # -> existing stitch via
+    # Out of the jut-out. NoCopperSHT45 is the 0.87 mm gap BETWEEN U4's two pad
+    # columns - the SHT4x datasheet 5.3 die keepout - and U4's pads sit 0.03 mm
+    # from its edge, so a track leaving from the pad CENTRE puts its end cap and
+    # that cap's clearance halo inside the keepout. Both x = 100.5 pads
+    # therefore start at their OUTER edge, x = 100.75, and run east before
+    # turning. No via anywhere in the tab: SHT45_Jut bans them.
+    ("GND",         F, 0.40,   [(100.75, 60.20), (101.20, 60.20), (101.20, 58.90),
+                                (93.00, 58.90)]),
+]
+
+# /+3V3 down to the In2.Cu plane. One entry per pad; the plane does the rest.
+# Necks: 0.19 mm at U1 (0.4 mm pitch) and 0.30 mm at U2 (0.5 mm pitch), which
+# is what the FinePitchFanout rules in the .kicad_dru exist for.
+V3 = [
+    # -- U1, the four QFN escapes ------------------------------------------
+    # Pin 36 is the end of the bottom pad row and escapes WEST into the package
+    # corner. It still needs a neck, and the reason is the track END CAP, not
+    # the track body: a 0.4 mm track leaving pad 36 puts a 0.2 mm radius disc on
+    # the pad centre, which is 0.0985 mm from pin 35 - and satisfying the 0.25 mm
+    # Power clearance would need the width under 0.097 mm, below the fab floor.
+    # So 0.19 mm off the pad, then flare. This is the ONLY bottom-row pin with a
+    # FinePitchFanout window; it is 1.75 mm from the /ANT run at x = 76.8, so the
+    # RF escape keeps its full clearance. Every other bottom-row pin is Default
+    # class, where 0.19 mm holds 0.2035 mm and needs no exemption at all.
+    ("/+3V3",       F, 0.19,   ["U1.36",  (74.55, 60.079)]),
+    ("/+3V3",       F, 0.40,   [(74.55, 60.079), (73.30, 60.05)]),
+    ("/+3V3",       F, 0.19,   ["U1.47",  (73.35, 64.80)]),
+    ("/+3V3",       F, 0.40,   [(73.35, 64.80), (72.90, 65.00), (72.60, 65.00)]),
+    ("/+3V3",       F, 0.19,   ["U1.48",  (73.35, 65.20)]),
+    ("/+3V3",       F, 0.40,   [(73.35, 65.20), (72.90, 65.00)]),
+    ("/+3V3",       F, 0.19,   ["U1.10",  (78.40, 66.55)]),
+    ("/+3V3",       F, 0.40,   [(78.40, 66.55), (78.40, 67.30)]),
+    ("/+3V3",       F, 0.19,   ["U1.22",  (80.70, 61.60)]),
+    ("/+3V3",       F, 0.40,   [(80.70, 61.60), (81.20, 61.60)]),
+
+    # -- U2 -----------------------------------------------------------------
+    # Pin 12 cannot drop straight south: R20/R21 sit at y 99.68..100.32 and the
+    # 0.873 mm gap under the pad row will not take a via plus its clearance. It
+    # runs west along y = 99.25 into the space between R20 and R21 instead.
+    ("/+3V3",       F, 0.30,   ["U2.12",  (69.25, 99.25), (67.00, 99.25)]),
+    ("/+3V3",       F, 0.30,   ["U2.28",  (69.75, 92.80)]),
+    ("/+3V3",       F, 0.40,   [(69.75, 92.80), (69.75, 92.50)]),
+    ("/+3V3",       F, 0.30,   ["U2.32",  (67.75, 92.80)]),
+    ("/+3V3",       F, 0.40,   [(67.75, 92.80), (67.30, 92.50)]),
+
+    # -- decoupling and the rest -------------------------------------------
+    ("/+3V3",       F, 0.40,   ["C4.1",   (71.90, 57.40)]),
+    ("/+3V3",       F, 0.40,   ["C7.1",   (82.20, 63.50)]),
+    ("/+3V3",       F, 0.40,   ["C8.1",   (79.43, 69.30)]),
+    ("/+3V3",       F, 0.40,   ["C10.1",  (68.60, 67.40)]),
+    ("/+3V3",       F, 0.60,   ["C3.1",   (63.90, 68.20)]),
+    ("/+3V3",       F, 0.40,   ["C27.1",  (90.00, 60.60)]),
+    ("/+3V3",       F, 0.40,   ["R22.1",  (83.00, 73.50)]),
+    ("/+3V3",       F, 0.40,   ["R23.1",  (83.00, 75.00)]),
+    ("/+3V3",       F, 0.40,   ["J4.1",   (68.46, 77.30)]),
+    ("/+3V3",       F, 0.40,   ["C25.1",  (71.93, 102.50)]),
+
+    # BUCK2 output. L10 -> C24 is the second half of the SW2 loop and stays a
+    # direct fat trace; the plane is tapped at C24, the output cap, not at the
+    # inductor. Out of the jut-out, U4 pin 3 leaves NORTH before turning west,
+    # for the same NoCopperSHT45 reason as pin 4.
+    ("/+3V3",       F, 0.60,   ["L10.2",  (64.725, 94.30), (63.60, 95.40),
+                                (63.60, 96.20), "C24.1"]),
+    ("/+3V3",       F, 0.60,   ["C24.1",  (61.80, 97.00)]),
+    ("/+3V3",       F, 0.40,   [(100.75, 61.00), (101.20, 61.00), (101.20, 62.30),
+                                (92.60, 62.30)]),
+]
+
+ROUTES = RF + GND_PA + GND_C9 + GND_RF + GND_EXTRA + V3
+
+# Vias to the In2.Cu +3V3 plane, one per escape above.
+V3_VIAS = [
+    (73.30,  60.05, "/+3V3", 0.60, 0.30),   # U1.36
+    (72.60,  65.00, "/+3V3", 0.60, 0.30),   # U1.47 + U1.48
+    (78.40,  67.30, "/+3V3", 0.60, 0.30),   # U1.10
+    (81.20,  61.60, "/+3V3", 0.60, 0.30),   # U1.22
+    (67.00,  99.25, "/+3V3", 0.60, 0.30),   # U2.12
+    (69.75,  92.50, "/+3V3", 0.60, 0.30),   # U2.28
+    (67.30,  92.50, "/+3V3", 0.60, 0.30),   # U2.32
+    (71.90,  57.40, "/+3V3", 0.60, 0.30),   # C4
+    (82.20,  63.50, "/+3V3", 0.60, 0.30),   # C7
+    (79.43,  69.30, "/+3V3", 0.60, 0.30),   # C8
+    (68.60,  67.40, "/+3V3", 0.60, 0.30),   # C10
+    (63.90,  68.20, "/+3V3", 0.80, 0.40),   # C3, the VDD bulk cap
+    (90.00,  60.60, "/+3V3", 0.60, 0.30),   # C27, SHT45 decoupling
+    (83.00,  73.50, "/+3V3", 0.60, 0.30),   # R22
+    (83.00,  75.00, "/+3V3", 0.60, 0.30),   # R23
+    (68.46,  77.30, "/+3V3", 0.60, 0.30),   # J4, SWD header
+    (71.93, 102.50, "/+3V3", 0.60, 0.30),   # C25
+    (61.80,  97.00, "/+3V3", 0.80, 0.40),   # C24, the BUCK2 output cap
+    (92.60,  62.30, "/+3V3", 0.60, 0.30),   # U4, out of the jut-out
+]
+
+# GND vias that are not a pad escape.
+GND_VIAS = [
+    (74.60, 109.00, "GND", 0.60, 0.30),     # U3 ground, past the SenseNoGround carve
+    (93.00,  58.90, "GND", 0.60, 0.30),     # U4 ground, out of the jut-out
+]
+
+# Stitching. ZoneB_GND_F on F.Cu collects the ground pads; these tie it through
+# to the In1.Cu plane. Kept clear of the RF corridor - see the note above.
+STITCH = []
+
+ALL_VIAS = VIAS + V3_VIAS + GND_VIAS + [(x, y, "GND", 0.60, 0.30) for x, y in STITCH]
 
 
 # --------------------------------------------------------------------------
@@ -148,6 +273,44 @@ def pt(xy):
     return pcbnew.VECTOR2I(mm(xy[0]), mm(xy[1]))
 
 
+def pad_map(board):
+    """Resolve every "REF.PAD" waypoint to a coordinate, before any mutation.
+
+    J5 has two pads both called "2", so its ground pads are addressed as
+    "J5.2a" (left, x = 75.325) and "J5.2b" (right, x = 78.275).
+    """
+    out = {}
+    for fp in board.GetFootprints():
+        ref = fp.GetReference()
+        seen = {}
+        for pad in fp.Pads():
+            name = pad.GetPadName()
+            p = pad.GetPosition()
+            xy = (pcbnew.ToMM(p.x), pcbnew.ToMM(p.y))
+            key = f"{ref}.{name}"
+            if key in out:
+                # Duplicate pad number: keep both, ordered left to right.
+                seen.setdefault(name, [out.pop(key)]).append(xy)
+            else:
+                out[key] = xy
+        for name, xys in seen.items():
+            for i, xy in enumerate(sorted(xys)):
+                out[f"{ref}.{name}{chr(ord('a') + i)}"] = xy
+    return out
+
+
+def resolve(pts, pads):
+    out = []
+    for p in pts:
+        if isinstance(p, str):
+            if p not in pads:
+                raise SystemExit(f"unknown pad reference {p!r}")
+            out.append(pads[p])
+        else:
+            out.append(p)
+    return out
+
+
 def net_map(board):
     """Resolve every net name we route to its net code, BEFORE anything else.
 
@@ -157,7 +320,7 @@ def net_map(board):
     the NETINFO wrappers, so FindNet() afterwards hands back an unusable
     SwigPyObject. Resolve first, mutate second.
     """
-    names = {n for n, _, _, _ in ROUTES} | {n for _, _, n, _, _ in VIAS}
+    names = {n for n, _, _, _ in ROUTES} | {n for _, _, n, _, _ in ALL_VIAS}
     out = {}
     for name in sorted(names):
         ni = board.FindNet(name)
@@ -200,15 +363,17 @@ def main():
     board = pcbnew.LoadBoard(BOARD)
 
     codes = net_map(board)          # must happen before clear_copper()
+    pads = pad_map(board)           # ditto - Remove() invalidates the wrappers
+    routes = [(n, l, w, resolve(p, pads)) for n, l, w, p in ROUTES]
     removed = clear_copper(board)
 
     segs = 0
-    for net, layer, width, pts in ROUTES:
+    for net, layer, width, pts in routes:
         for a, b in zip(pts, pts[1:]):
             add_track(board, codes[net], layer, width, a, b)
             segs += 1
 
-    for x, y, net, size, drill in VIAS:
+    for x, y, net, size, drill in ALL_VIAS:
         add_via(board, x, y, codes[net], size, drill)
 
     filler = pcbnew.ZONE_FILLER(board)
@@ -218,7 +383,7 @@ def main():
     out = "/tmp/routed.kicad_pcb" if check else BOARD
     pcbnew.SaveBoard(out, board)
     print(f"removed {removed} existing copper items")
-    print(f"added   {segs} segments, {len(VIAS)} vias")
+    print(f"added   {segs} segments, {len(ALL_VIAS)} vias")
     print(f"wrote   {out}")
 
 
