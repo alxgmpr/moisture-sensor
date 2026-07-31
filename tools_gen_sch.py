@@ -10,6 +10,7 @@ be tidied in Eeschema afterwards.
 
 Run:  python3 tools_gen_sch.py
 """
+import math
 import re, uuid
 import re as _re2
 
@@ -188,7 +189,7 @@ FOOTPRINTS = {
 }
 
 # ---------------------------------------------------------------- emit buffers
-parts, wires, labels, graphics, nocons = [], [], [], [], []
+parts, wires, labels, graphics, nocons, junctions = [], [], [], [], [], []
 used_lib = {}
 conn = []          # (pin_pt, end_pt, netname) for the collision self-check
 pwr_n = [0]
@@ -196,8 +197,21 @@ pwr_n = [0]
 def esc(t):
     return t.replace('\\', '\\\\').replace('"', '\\"')
 
-def place(lib, name, ref, value, at, footprint="", dnp=False):
+def place(lib, name, ref, value, at, footprint="", dnp=False, rot=0, mpn=""):
+    """Place a symbol.
+
+    `value` is the ELECTRICAL value and nothing else - "1.5pF", "4.7uH". The
+    part number goes in `mpn`, a hidden property, because Value is the field
+    that gets drawn next to the symbol: "1.5pF GJM0335C1E1R5WB01" is 25
+    characters of text hung off a 5 mm capacitor, and in a chain drawn on a
+    12.7 mm pitch it lands on top of the neighbouring part. It also makes the
+    MPN available to the BOM as a field instead of something to string-split.
+    """
     footprint = footprint or FOOTPRINTS.get(ref, "")
+    mpn_prop = ("" if not mpn else
+                f'\n\t\t(property "MPN" "{esc(mpn)}"\n'
+                f'\t\t\t(at {snap(at[0])} {snap(at[1])} 0)\n'
+                f'\t\t\t(effects (font (size 1.27 1.27)) (hide yes))\n\t\t)')
     lib_id = f"{lib}:{name}"
     defn = SRC[lib][name]
     used_lib[lib_id] = defn
@@ -211,7 +225,7 @@ def place(lib, name, ref, value, at, footprint="", dnp=False):
         ref_at, val_at = (x, round(y - 5.08, 4)), (x, round(y + 5.08, 4))
     parts.append(f'''\t(symbol
 \t\t(lib_id "{lib_id}")
-\t\t(at {x} {y} 0)
+\t\t(at {x} {y} {rot})
 \t\t(unit 1)
 \t\t(exclude_from_sim no)
 \t\t(in_bom yes)
@@ -230,7 +244,7 @@ def place(lib, name, ref, value, at, footprint="", dnp=False):
 \t\t(property "Footprint" "{esc(footprint)}"
 \t\t\t(at {x} {y} 0)
 \t\t\t(effects (font (size 1.27 1.27)) (hide yes))
-\t\t)
+\t\t){mpn_prop}
 {pin_uuids}
 \t\t(instances
 \t\t\t(project "{PROJNAME}"
@@ -249,7 +263,23 @@ def _pin(defn, number):
             return p
     raise KeyError(f"pin {number} not found")
 
-def _endpoint(x, y, p, length):
+def _pin_at(x, y, p, srot):
+    """Absolute anchor of pin `p` on a symbol placed at (x, y) rotated `srot`.
+
+    Symbol coordinates are Y-up; the sheet is Y-down. Rotate in symbol space
+    first, then flip. A capacitor at srot=0 stands upright with pin 1 on top;
+    at srot=90 it lies flat with pin 1 on the left, which is what a series
+    element in a signal chain has to do.
+    """
+    _, _, _, px, py, prot = p
+    a = math.radians(srot)
+    ca, sa = math.cos(a), math.sin(a)
+    rx = px * ca - py * sa
+    ry = px * sa + py * ca
+    return (round(x + rx, 4), round(y - ry, 4)), int((prot + srot) % 360)
+
+
+def _endpoint(x, y, p, length, srot=0):
     """Pin anchor and the far end of its stub.
 
     KiCad pin rotation is the direction the pin extends from its anchor toward
@@ -257,25 +287,24 @@ def _endpoint(x, y, p, length):
       0 -> body right, wire leaves -X      180 -> body left, wire leaves +X
       90 -> body up (-Y), wire leaves +Y   270 -> body down, wire leaves -Y
     """
-    _, _, _, px, py, rot = p
-    ax, ay = x + px, y - py
-    if rot == 0:     return (ax, ay), (ax - length, ay), "right", 0
-    if rot == 180:   return (ax, ay), (ax + length, ay), "left", 180
-    if rot == 90:    return (ax, ay), (ax, ay + length), "right", 0
-    return (ax, ay), (ax, ay - length), "left", 180
+    (ax, ay), rot = _pin_at(x, y, p, srot)
+    if rot == 0:     return (ax, ay), (round(ax - length, 4), ay), "right", 0
+    if rot == 180:   return (ax, ay), (round(ax + length, 4), ay), "left", 180
+    if rot == 90:    return (ax, ay), (ax, round(ay + length, 4)), "right", 0
+    return (ax, ay), (ax, round(ay - length, 4)), "left", 180
 
 def _wire(a, b):
     wires.append(f'\t(wire (pts (xy {a[0]} {a[1]}) (xy {b[0]} {b[1]}))\n'
                  f'\t\t(stroke (width 0) (type default))\n\t\t(uuid "{U()}")\n\t)')
 
-def stub(x, y, defn, number, net, length=5.08):
+def stub(x, y, defn, number, net, length=5.08, srot=0):
     """Wire stub off `number` carrying a plain (local) net label.
 
     Single sheet, so local labels are sufficient - global labels would only add
     hierarchy machinery this design does not use.
     """
     p = _pin(defn, number)
-    a, b, just, rot = _endpoint(x, y, p, length)
+    a, b, just, rot = _endpoint(x, y, p, length, srot)
     _wire(a, b)
     labels.append(
         f'\t(label "{esc(net)}"\n\t\t(at {b[0]} {b[1]} {rot})\n'
@@ -283,6 +312,90 @@ def stub(x, y, defn, number, net, length=5.08):
         f'\t\t(effects (font (size 1.27 1.27)) (justify {just} bottom))\n'
         f'\t\t(uuid "{U()}")\n\t)')
     conn.append((a, b, net))
+
+def junction(pt):
+    junctions.append(f'\t(junction (at {pt[0]} {pt[1]}) (diameter 0)\n'
+                     f'\t\t(color 0 0 0 0)\n\t\t(uuid "{U()}")\n\t)')
+
+
+def terminal(pt, net, side="left"):
+    """Name a free wire end -- a rail symbol if it is a rail, else a label.
+
+    A chain has to start and end somewhere. The net it comes from lives on
+    another block's IC pin, so the end carries the name across.
+    """
+    if net in RAIL_SYMBOL:
+        lib, sym = RAIL_SYMBOL[net]
+        place_power(sym, pt, lib)
+    else:
+        rot, just = (180, "left") if side == "right" else (0, "right")
+        labels.append(
+            f'\t(label "{esc(net)}"\n\t\t(at {pt[0]} {pt[1]} {rot})\n'
+            f'\t\t(fields_autoplaced yes)\n'
+            f'\t\t(effects (font (size 1.27 1.27)) (justify {just} bottom))\n'
+            f'\t\t(uuid "{U()}")\n\t)')
+
+
+def chain(blk, origin, net_in, items, pitch=17.78, drop=7.62):
+    """Draw a series signal chain left to right, shunt legs hanging down.
+
+    This is what a reference schematic looks like and what a label-per-pin
+    schematic cannot show: the ORDER of a chain, and which node each shunt
+    element sits on. The RF match is the case that matters -- Nordic draws
+    ANT -> L2 -> L3 -> L4 with C6, C9 and C11 hanging off the nodes between
+    them, and that ordering is the whole design. Spelling it as six parts each
+    carrying two net labels is the same netlist and tells the reader nothing.
+
+    items: ("series", ref, sym, value, net_after, mpn)
+           ("shunt",  ref, sym, value, net_below, mpn)
+    The MPN is optional and lands in a hidden property, not in Value.
+    A shunt attaches to the node the chain is currently sitting on.
+    """
+    node_x, y = snap(origin[0]), snap(origin[1])
+    net = net_in
+    terminal((round(node_x - 5.08, 4), y), net, "left")
+    _wire((round(node_x - 5.08, 4), y), (node_x, y))
+
+    for item in items:
+        kind, ref, sym, val, arg = item[:5]
+        mpn = item[5] if len(item) > 5 else ""
+        if kind == "series":
+            cx = snap(node_x + pitch / 2)
+            place("Device", sym, ref, val, (cx, y), rot=90, mpn=mpn)
+            d = SRC["Device"][sym]
+            (p1, _), (p2, _) = (_pin_at(cx, y, _pin(d, "1"), 90),
+                                _pin_at(cx, y, _pin(d, "2"), 90))
+            nxt = round(node_x + pitch, 4)
+            _wire((node_x, y), p1)
+            _wire(p2, (nxt, y))
+            conn.append((p1, (node_x, y), net))
+            conn.append((p2, (nxt, y), arg))
+            node_x, net = nxt, arg
+            # Name the node the element just created. Without this KiCad
+            # auto-names it Net-(C6-Pad1), which is the same net electrically
+            # but drops it out of every netclass pattern and DRU rule keyed on
+            # RF_A / RF_B - silently, because an auto-named net is not an error.
+            #
+            # A rail gets its symbol here, not a label: BUCK2's output node IS
+            # +3V3, and naming it with text would have been the one place on
+            # the sheet where the 3V3 rail did not look like a rail.
+            terminal((node_x, y), net, "left")
+        else:
+            cy = round(y + drop + 2.54, 4)
+            place("Device", sym, ref, val, (node_x, cy), rot=0, mpn=mpn)
+            d = SRC["Device"][sym]
+            (p1, _) = _pin_at(node_x, cy, _pin(d, "1"), 0)
+            _wire((node_x, y), p1)
+            junction((node_x, y))
+            conn.append((p1, (node_x, y), net))
+            wire_pin(node_x, cy, d, "2", arg)
+            blk.note(cy + 12)
+        blk.maxx = max(blk.maxx, node_x + 16)
+    # No terminal on the right: the last series element already labelled the
+    # node it created, and a second name on the same point is just clutter.
+    blk.note(y)
+    return node_x, y
+
 
 def place_power(sym, at, lib="power"):
     """Place a power symbol (a rail, GND, or PWR_FLAG). Its pin sits at the origin."""
@@ -318,7 +431,7 @@ def place_power(sym, at, lib="power"):
 \t\t)
 \t)''')
 
-def rail(x, y, defn, number, net, length=5.08):
+def rail(x, y, defn, number, net, length=5.08, srot=0):
     """Stub to a real power symbol rather than a text label.
 
     Used for every net in RAIL_SYMBOL. The symbol carries the net name itself,
@@ -326,18 +439,18 @@ def rail(x, y, defn, number, net, length=5.08):
     """
     lib, sym = RAIL_SYMBOL[net]
     p = _pin(defn, number)
-    a, b, _, _ = _endpoint(x, y, p, length)
+    a, b, _, _ = _endpoint(x, y, p, length, srot)
     _wire(a, b)
     place_power(sym, b, lib)
     conn.append((a, b, net))
 
-def nc(x, y, defn, number):
+def nc(x, y, defn, number, srot=0):
     """No-connect flag directly on an intentionally unused pin."""
     p = _pin(defn, number)
-    a, _, _, _ = _endpoint(x, y, p, 0)
+    a, _, _, _ = _endpoint(x, y, p, 0, srot)
     nocons.append(f'\t(no_connect (at {a[0]} {a[1]}) (uuid "{U()}"))')
 
-def wire_pin(x, y, defn, number, net):
+def wire_pin(x, y, defn, number, net, srot=0):
     """Dispatch: None -> no-connect, a rail -> power symbol, else net label.
 
     Signals still use labels: a label is the right tool for a point-to-point
@@ -345,11 +458,11 @@ def wire_pin(x, y, defn, number, net):
     everywhere it appears and should look like one.
     """
     if net is None:
-        nc(x, y, defn, number)
+        nc(x, y, defn, number, srot)
     elif net in RAIL_SYMBOL:
-        rail(x, y, defn, number, net)
+        rail(x, y, defn, number, net, srot=srot)
     else:
-        stub(x, y, defn, number, net)
+        stub(x, y, defn, number, net, srot=srot)
 
 # ------------------------------------------------------------------- blocks
 class Block:
@@ -430,16 +543,16 @@ class Block:
         """
         self.cy = snap(self.maxy + gap)
 
-    def add(self, lib, sym, ref, val, netmap, fp="", dnp=False, at=None):
+    def add(self, lib, sym, ref, val, netmap, fp="", dnp=False, at=None, rot=0):
         pos = at or self.next_pos()
-        x, y, d = place(lib, sym, ref, val, pos, fp, dnp)
+        x, y, d = place(lib, sym, ref, val, pos, fp, dnp, rot)
         self.note(y)
         seen = set()
-        for num, nm, typ, px, py, rot in pins_of(d):
+        for num, nm, typ, px, py, prot in pins_of(d):
             if num not in netmap or (px, py) in seen:
                 continue
             seen.add((px, py))
-            wire_pin(x, y, d, num, netmap[num])
+            wire_pin(x, y, d, num, netmap[num], rot)
         return x, y, d
 
     def finalize(self):
@@ -598,15 +711,29 @@ for n, net in {
 B_PMIC.note_symbol(npm_x, npm_y, NPMD)
 
 B_PMIC.grid_below()
+
+# BUCK2, drawn as the loop it is: SW2 -> L10 -> VOUT2(+3V3), with C24 returning
+# to PVSS2 rather than to the plane. That return is the whole point - it closes
+# the high-di/dt path locally instead of through the ground pour - and it is
+# invisible when C24 is one more capacitor in a grid with a "GND_PVSS2" label
+# on its lower pin.
+#
+# The audit measured this loop at 5.50 mm2 on the board, with L10 turned around
+# so the switch node runs 4.69 mm instead of 3.62 mm. See docs/audit-2026-07-31.md.
+chain(B_PMIC, B_PMIC.at(126, 34), "SW2", [
+    # No MPN field: L10 is still specified by constraint rather than selected,
+    # so the saturation current stays in Value where a reader sees it. Putting
+    # "Isat>350mA DCR<400m" in MPN would hand the BOM a part number that does
+    # not exist. See BOM.md.
+    ("series", "L10", "L_Small", "2.2uH Isat>350mA", "+3V3"),
+    ("shunt",  "C24", "C_Small", "10uF/25V X5R",              "GND_PVSS2"),
+])
+
 for ref, sym, val, nm in [
     ("C21", "C_Small", "10uF/25V X5R", {"1": "VSYS", "2": "GND"}),
     ("C22", "C_Small", "10uF/25V X5R", {"1": "VSYS", "2": "GND"}),
     ("C23", "C_Small", "2.2uF/16V X7R", {"1": "VBAT", "2": "GND"}),
-    # C24 returns to PVSS2, not to the plane. That closes the high-di/dt loop
-    # SW2 -> L10 -> C24 -> PVSS2 locally instead of through the ground pour.
-    ("C24", "C_Small", "10uF/25V X5R", {"1": "+3V3", "2": "GND_PVSS2"}),
     ("C25", "C_Small", "100nF X5R", {"1": "+3V3", "2": "GND"}),
-    ("L10", "L_Small", "2.2uH Isat>350mA DCR<400m", {"1": "SW2", "2": "+3V3"}),
     ("R20", "R_Small", "470k 1% VSET2=3.3V", {"1": "VSET2", "2": "GND"}),
     ("R21", "R_Small", "0R disables BUCK1", {"1": "VSET1", "2": "GND"}),
 ]:
@@ -639,18 +766,31 @@ B_MCU.note_symbol(nrf_x, nrf_y, NRFD)
 # scheme. The DC/DC output goes DCC -> L1 -> DECD, then DECD -> FB1 -> DECA,
 # and DECA is the same net as DECRF. VDD is fed directly from the rail with no
 # ferrite in the supply path.
+# The DC/DC chain, drawn in the order the current flows:
+#   DCC -> L1 -> DECD -> FB1 -> DECA(=DECRF)
+# with C1 on DECD and C2/C12/C5 on DECA. This is the part of the sheet that
+# most needed drawing rather than labelling: DECA and DECRF being the same net
+# is unusual enough that it reads as a mistake, and three capacitors sitting in
+# a grid each carrying a "DECA" label gives a reader no way to see that they
+# are the DECA bank. Nordic's own reference draws it exactly this way.
+#
+# TDK MLZ1608M4R7WT000 for L1, not the Murata LQM18PN4R7M. The Murata publishes
+# no saturation current at all - only a 620 mA temperature-rise rating - and
+# saturation is the parameter that matters in a buck. The TDK publishes both
+# (Isat 120 mA at 50 % L drop, Itemp 350 mA typ). See BOM.md.
+chain(B_SUP, B_SUP.at(34, 30), "DCC", [
+    ("series", "L1",  "L_Small", "4.7uH",          "DECD", "MLZ1608M4R7WT000"),
+    ("shunt",  "C1",  "C_Small", "2.2uF/2.5V X6T", "GND"),
+    ("series", "FB1", "L_Small", "FB 120R@100MHz", "DECA"),
+    ("shunt",  "C2",  "C_Small", "2.2uF/2.5V X6T", "GND"),
+    ("shunt",  "C12", "C_Small", "10nF/6.3V X7R",  "GND"),
+    ("shunt",  "C5",  "C_Small", "2.2nF X7R",      "GND"),
+])
+B_SUP.grid_below()
+
+# The VDD bypass bank and the reset network. These are genuinely parallel parts
+# on one rail, so a row is the honest drawing - there is no order to show.
 for ref, sym, val, nm in [
-    # TDK MLZ1608M4R7WT000, not the Murata LQM18PN4R7M. The Murata publishes no
-    # saturation current at all - only a 620 mA temperature-rise rating - and
-    # saturation is the parameter that matters in a buck. The TDK publishes both
-    # (Isat 120 mA at 50 % L drop, Itemp 350 mA typ), so there is nothing left
-    # open. See BOM.md.
-    ("L1",  "L_Small", "MLZ1608M4R7WT000 4.7uH", {"1": "DCC", "2": "DECD"}),
-    ("C1",  "C_Small", "2.2uF/2.5V X6T",    {"1": "DECD", "2": "GND"}),
-    ("FB1", "L_Small", "FB 120R@100MHz",    {"1": "DECD", "2": "DECA"}),
-    ("C2",  "C_Small", "2.2uF/2.5V X6T",    {"1": "DECA", "2": "GND"}),
-    ("C12", "C_Small", "10nF/6.3V X7R",     {"1": "DECA", "2": "GND"}),
-    ("C5",  "C_Small", "2.2nF X7R",         {"1": "DECA", "2": "GND"}),
     ("C3",  "C_Small", "10uF/6.3V X6S 0402",{"1": "+3V3", "2": "GND"}),
     ("C4",  "C_Small", "100nF X7R",         {"1": "+3V3", "2": "GND"}),
     ("C7",  "C_Small", "100nF X7R",         {"1": "+3V3", "2": "GND"}),
@@ -740,15 +880,19 @@ B_XTAL.add("Device", "Crystal_GND24_Small", "X2", "FA-128 32MHz CL=8pF",
 # Electrically these are all the same node; the isolation is a LAYOUT rule, and
 # it is invisible in a netlist. The net ties below make the DRC police it instead
 # of a comment in a markdown file. Do not merge them into GND.
-for ref, sym, val, nm in [
-    ("L2",  "L_Small", "2.7nH LQP03HQ2N7B02", {"1": "ANT", "2": "RF_A"}),
-    ("C6",  "C_Small", "1.5pF GJM0335C1E1R5WB01", {"1": "RF_A", "2": "GND_PA"}),
-    ("L3",  "L_Small", "3.5nH LQP03HQ3N5B02", {"1": "RF_A", "2": "RF_B"}),
-    ("C9",  "C_Small", "2.0pF GJM0335C1E2R0WB01", {"1": "RF_B", "2": "GND_C9"}),
-    ("L4",  "L_Small", "3.5nH LQP03HQ3N5B02", {"1": "RF_B", "2": "ANT_FEED"}),
-    ("C11", "C_Small", "0.3pF C0G", {"1": "ANT_FEED", "2": "GND"}),
-]:
-    B_RF.add("Device", sym, ref, val, nm)
+# Drawn as the chain it is, not as six parts each carrying two labels. Compare
+# Nordic's reference sheet: ANT -> L2 -> L3 -> L4 -> ANT_FEED along one line,
+# with C6, C9 and C11 hanging off the nodes between them. The ORDER of a
+# matching network is the design; a netlist has it but a reader cannot see it.
+chain(B_RF, B_RF.at(34, 30), "ANT", [
+    ("series", "L2",  "L_Small", "2.7nH", "RF_A",     "LQP03HQ2N7B02"),
+    ("shunt",  "C6",  "C_Small", "1.5pF", "GND_PA",   "GJM0335C1E1R5WB01"),
+    ("series", "L3",  "L_Small", "3.5nH", "RF_B",     "LQP03HQ3N5B02"),
+    ("shunt",  "C9",  "C_Small", "2.0pF", "GND_C9",   "GJM0335C1E2R0WB01"),
+    ("series", "L4",  "L_Small", "3.5nH", "ANT_FEED", "LQP03HQ3N5B02"),
+    ("shunt",  "C11", "C_Small", "0.3pF C0G", "GND"),
+])
+B_RF.grid_below()
 # The antenna is an external adhesive part on a U.FL pigtail, not PCB copper.
 # That makes Nordic's matching values correct rather than a starting point: the
 # QFAA reference layout has no PCB antenna either - its chain runs
@@ -881,6 +1025,7 @@ doc = f'''(kicad_sch
 {chr(10).join(graphics)}
 {chr(10).join(wires)}
 {chr(10).join(nocons)}
+{chr(10).join(junctions)}
 {chr(10).join(labels)}
 {chr(10).join(parts)}
 \t(sheet_instances
