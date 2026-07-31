@@ -17,7 +17,7 @@ would be ~2.9 mm wide, which settles it.
 
 | Layer | Material | Thickness | ε_r | Role |
 |---|---|---|---|---|
-| F.Cu | copper | 0.035 mm | — | RF, signal, sense electrodes |
+| F.Cu | copper | 0.035 mm | — | RF, signal, sense electrodes, **ground pour outside the RF corridor** |
 | dielectric 1 | prepreg 7628×1 | **0.21040 mm** | 4.4 | RF reference gap |
 | In1.Cu | copper | 0.0152 mm | — | **GND** (zoned — see §4) |
 | dielectric 2 | core | **1.065 mm** | 4.6 | |
@@ -608,10 +608,13 @@ L10.
 
 ## 10. Open items
 
-- **USB-C breaks IP68.** A port cutout in a watertight box needs a sealed cover,
-  or J1 becomes a service-only connector reached by opening the lid. The same
-  applies to J3, which is now populated on every board, so the wall needs a
-  second sealed pass-through or the IP rating is lost there too.
+- ~~**USB-C breaks IP68.**~~ — **closed. The IP68 rating is given up
+  deliberately and the target is IP54.** J1 is service-only, reached by opening
+  the lid, so it adds no wall opening at all. The three that do exist - probe
+  slot, SHT45 jut-out slot, solar lead - are sealed with a flexible RTV
+  silicone bead. Any milling voids Hammond's rating regardless of what goes in
+  the slot afterwards, and the probe shoulder is already at R0.5 and cannot
+  take a rigid potting compound. See NEXT-STEPS.md §5.
 - ~~The solar reserve is still empty~~ — **filled.** U5, C30 and C31 are placed
   in the ~8 × 8 mm block below J3 in the Power-in band; J3 and D5 did not move.
   All of it is populated on every build. Still to route.
@@ -619,18 +622,17 @@ L10.
   is 11.0 mm tall against the 6.90 mm clear under the cell at J3's position, so
   it would have had to move to the y 62–74 band next to J2. It lives on the
   panel pigtail instead. See HARDWARE.md §4.
-- **SHT45 in a sealed box measures the box, not the room.** Temperature still
-  works; RH does not. Needs a PTFE membrane vent in the lid over U4 — the
-  sensor's own `-AD1F` membrane protects the die but does not help if the
-  enclosure is sealed.
+- ~~**SHT45 in a sealed box measures the box, not the room.**~~ — **stale, and
+  now closed.** U4 left the box entirely when it moved onto the jut-out (§8),
+  so it reads outside air directly. No lid vent is needed; the `-AD1F`
+  membrane is the only protection required.
 - Confirm the 1551WK corner-relief geometry and the Ø2.6 hole pattern against
   Hammond's STEP model before fab. The drawing's `62.00 × 22.00` and `R4.42` are
   ambiguous at the resolution published; `55.00 × 25.00` is unambiguous and is
   what is drawn.
-- Confirm 0.38 mm against JLCPCB's own impedance calculator for the **7628D**
-  pressed stackup. The nominal dielectric is confirmed at 0.21040 mm, but the
-  pressed result varies with copper distribution — order with impedance control
-  and let them adjust the width if it matters to you.
+- ~~Confirm 0.38 mm against JLCPCB's own impedance calculator~~ — **done, and
+  the answer was 0.36 mm on plain 7628, not 7628D.** See §2. Still order with
+  impedance control so they re-solve on the real pressed stackup.
 
 ### Confirmed against Nordic's nPM1300 EK (PCA10152)
 
@@ -669,12 +671,14 @@ around them at 0.2 mm, guard on In2.Cu and B.Cu beneath.
 - ~~Window-pane the QFN paste apertures~~ — **done.** Lands moved to D2 nominal
   (4.6 mm and 3.5 mm, from the vendor package drawings) with 3×3 aperture arrays
   at 66 % coverage. See NEXT-STEPS.md.
-- Neither QFN footprint has centre-pad vias. Nordic's reference puts a grid
-  under U1 pad 49; add them when routing. **Watch NT1** — the via grid must not
-  bridge GND_PA to GND anywhere except at the tie.
-- **Routing.** 128 unconnected items and 4 isolated-copper warnings, all of them
-  "nothing is routed yet". The isolated fills are the two sense electrodes and
-  the Zone C guard, which connect once U3's pins are routed into the probe.
+- ~~Neither QFN footprint has centre-pad vias~~ — **done.** U1 pad 49 has
+  Nordic's 4x4 grid at 1.2 mm pitch, U2 pad 33 a 3x3 at the same pitch. The
+  nearest via sits 0.345 mm from NT1's `/GND_PA` pad and DRC reports no short,
+  so the tie is still the only bridge. **Order with vias tented.**
+- **Routing.** 44 unconnected items and 6 isolated-copper warnings. The
+  isolated fills are the sense electrodes and the Zone C guard, which connect
+  once U3's sense pins are routed into the probe. See NEXT-STEPS.md section 1
+  for what is done and what is left.
 
 ### Two things worth knowing about the toolchain
 
