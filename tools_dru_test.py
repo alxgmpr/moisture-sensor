@@ -46,7 +46,8 @@ def run(name, items):
 ANT,RFA,GNDPA,GND,NRESET   = "/ANT","/RF_A","/GND_PA","GND","/NRESET"
 SENSE1,SHLD,SW2,VBAT,PVSS2 = "/SENSE1","/SHLD","/SW2","/VBAT","/GND_PVSS2"
 GNDC9,XC1,XC2              = "/GND_C9","/XC1","/XC2"
-Y=90.0   # empty In2.Cu band in Zone B
+Y=90.0   # In2.Cu band in Zone B - now inside ZoneB_3V3, still empty of tracks
+ZA=45.0  # Zone A: no pour on In2.Cu or B.Cu, no rule areas
 # name, items, rule that MUST fire, [rule that must NOT fire]
 #
 # The fourth field is not decoration. A relaxing rule that matches more than it
@@ -69,8 +70,14 @@ CASES=[
  ("chg_width",  [seg(84,Y,90,Y,0.50,"In2.Cu",VBAT)],                                                   "Charge path width"),
  ("sw_width",   [seg(84,Y,90,Y,0.30,"In2.Cu",SW2)],                                                    "Switch node width"),
  ("pvss2_width",[seg(84,Y,90,Y,0.30,"In2.Cu",PVSS2)],                                                  "BUCK2 power ground is short and fat"),
- ("gndpa_via",  [via(96.0,62.0,GNDPA,size=0.6,drill=0.3), seg(95.2,62.0,96.0,62.0,0.4,"F.Cu",GNDPA)],   "C6 ground takes no vias"),
- ("gndpa_layer",[seg(84,Y,90,Y,0.4,"B.Cu",GNDPA)],                                                     "C6 ground stays on the top layer"),
+ # Both of these moved. They used to sit at (96, 62) and on B.Cu at y = 90.
+ # The first is inside the SHT45_Jut keepout: KiCad reports one
+ # items_not_allowed per item, so the keepout won and masked the rule under
+ # test - the case passed for years and then silently stopped meaning
+ # anything. The second is now under the B.Cu debug bus. ZA is Zone A, which
+ # has no copper on In2.Cu or B.Cu and no rule areas.
+ ("gndpa_via",  [via(88.0,ZA,GNDPA,size=0.6,drill=0.3), seg(87.2,ZA,88.0,ZA,0.4,"F.Cu",GNDPA)],        "C6 ground takes no vias"),
+ ("gndpa_layer",[seg(84,ZA,90,ZA,0.4,"In2.Cu",GNDPA)],                                                 "C6 ground stays on the top layer"),
  ("gndc9_inner",[seg(84,Y,90,Y,0.4,"In1.Cu",GNDC9)],                                                   "C9 ground never touches an inner plane"),
  ("fab_floor",  [seg(84,Y,90,Y,0.2,"In2.Cu",XC1),      seg(84,Y+0.30,90,Y+0.30,0.2,"In2.Cu",XC2)],     "Fab minimum clearance"),
 

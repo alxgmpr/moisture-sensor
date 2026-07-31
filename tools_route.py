@@ -395,9 +395,67 @@ GND_VIAS = [
     (93.00,  58.90, "GND", 0.60, 0.30),     # U4 ground, out of the jut-out
 ]
 
+# ---------------------------------------------------------------------------
+# Centre-pad via arrays under U1 pad 49 and U2 pad 33. Neither vendor footprint
+# has them; Nordic's QFAA reference layout (sheet 3, In1) uses a 4x4 grid under
+# the QFN48 centre pad, which is what U1 gets here.
+#
+#   U1  4x4 at 1.2 mm pitch, offsets +/-0.6 and +/-1.8 from (77.000, 63.000).
+#       The pad is 4.6 mm, so the outermost via annulus stops 0.2 mm inside the
+#       pad edge.
+#   U2  3x3 at 1.2 mm pitch about (69.500, 96.000). The pad is 3.5 mm; 4x4 at
+#       1.0 mm would put the outer annulus past the pad edge.
+#
+# 0.3 mm drill on 1.2 mm pitch leaves 0.9 mm hole to hole against the 0.5 mm
+# minimum. ORDER THE BOARD WITH VIAS TENTED - the paste apertures are already
+# window-paned to 66 % coverage (NEXT-STEPS.md), and untented vias under a
+# thermal pad wick solder out of the joint.
+#
+# NT1 is the thing to watch. Its GND pad sits at (76.400, 60.705), overlapping
+# pad 49's top edge, and its /GND_PA pad at (76.400, 60.405) is 0.345 mm from
+# the nearest via in the array. The array is GND throughout and touches
+# /GND_PA nowhere, so the tie stays the only bridge between them.
+def _grid(cx, cy, offs):
+    return [(round(cx + dx, 3), round(cy + dy, 3)) for dy in offs for dx in offs]
+
+CENTRE_PAD = (_grid(77.000, 63.000, (-1.8, -0.6, 0.6, 1.8))     # U1 pad 49
+              + _grid(69.500, 96.000, (-1.2, 0.0, 1.2)))         # U2 pad 33
+
 # Stitching. ZoneB_GND_F on F.Cu collects the ground pads; these tie it through
-# to the In1.Cu plane. Kept clear of the RF corridor - see the note above.
-STITCH = []
+# to the In1.Cu plane. Generated on a 2.5 mm grid and then filtered against
+# every pad, body and route on the board - see tools_stitch_gen.py, which
+# prints this list.
+STITCH = CENTRE_PAD + [
+    # 109 stitching vias, 2.5 mm grid
+    ( 61.50,  55.00), ( 64.00,  55.00), ( 66.50,  55.00), ( 69.00,  55.00),
+    ( 71.50,  55.00), ( 81.50,  55.00), ( 84.00,  55.00), ( 86.50,  55.00),
+    ( 89.00,  55.00), ( 91.50,  55.00), ( 61.50,  57.50), ( 64.00,  57.50),
+    ( 66.50,  57.50), ( 89.00,  57.50), ( 91.50,  57.50), ( 61.50,  60.00),
+    ( 64.00,  60.00), ( 66.50,  60.00), ( 89.00,  60.00), ( 61.50,  62.50),
+    ( 64.00,  62.50), ( 89.00,  62.50), ( 91.50,  62.50), ( 61.50,  65.00),
+    ( 64.00,  65.00), ( 81.50,  65.00), ( 89.00,  65.00), ( 91.50,  65.00),
+    ( 61.50,  67.50), ( 76.50,  67.50), ( 89.00,  67.50), ( 91.50,  67.50),
+    ( 61.50,  70.00), ( 64.00,  70.00), ( 66.50,  70.00), ( 74.00,  70.00),
+    ( 76.50,  70.00), ( 81.50,  70.00), ( 89.00,  70.00), ( 91.50,  70.00),
+    ( 61.50,  72.50), ( 64.00,  72.50), ( 66.50,  72.50), ( 69.00,  72.50),
+    ( 71.50,  72.50), ( 74.00,  72.50), ( 76.50,  72.50), ( 79.00,  72.50),
+    ( 81.50,  72.50), ( 89.00,  72.50), ( 91.50,  72.50), ( 61.50,  75.00),
+    ( 64.00,  75.00), ( 79.00,  75.00), ( 89.00,  75.00), ( 91.50,  75.00),
+    ( 61.50,  77.50), ( 64.00,  77.50), ( 79.00,  77.50), ( 81.50,  77.50),
+    ( 89.00,  77.50), ( 91.50,  77.50), ( 89.00,  80.00), ( 91.50,  80.00),
+    ( 71.50,  82.50), ( 74.00,  82.50), ( 76.50,  82.50), ( 79.00,  82.50),
+    ( 71.50,  85.00), ( 74.00,  85.00), ( 76.50,  85.00), ( 79.00,  85.00),
+    ( 81.50,  85.00), ( 84.00,  85.00), ( 71.50,  87.50), ( 74.00,  87.50),
+    ( 76.50,  87.50), ( 79.00,  87.50), ( 81.50,  87.50), ( 84.00,  87.50),
+    ( 71.50,  90.00), ( 74.00,  90.00), ( 76.50,  90.00), ( 61.50,  92.50),
+    ( 79.00,  92.50), ( 81.50,  92.50), ( 91.50,  92.50), ( 61.50,  95.00),
+    ( 79.00,  95.00), ( 81.50,  95.00), ( 84.00,  95.00), ( 89.00,  95.00),
+    ( 91.50,  95.00), ( 79.00,  97.50), ( 84.00,  97.50), ( 89.00,  97.50),
+    ( 91.50,  97.50), ( 61.50, 100.00), ( 71.50, 100.00), ( 79.00, 100.00),
+    ( 81.50, 100.00), ( 84.00, 100.00), ( 61.50, 102.50), ( 64.00, 102.50),
+    ( 66.50, 102.50), ( 69.00, 102.50), ( 79.00, 102.50), ( 81.50, 102.50),
+    ( 84.00, 102.50),
+]
 
 ALL_VIAS = VIAS + V3_VIAS + GND_VIAS + MCU_VIAS + [(x, y, "GND", 0.60, 0.30) for x, y in STITCH]
 
