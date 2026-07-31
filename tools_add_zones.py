@@ -93,6 +93,12 @@ ZONES = [
     # what it was drawn for, and the GND escape started failing the 0.4 mm
     # Power width rule instead.
     ("FinePitchFanout", None,  ["F.Cu"],            0, (69.60, 105.20, 72.50, 107.30), "none"),  # U3, digital side
+    # U3, sense side. CIN1 and CIN2 are adjacent pins on a 0.5 mm pitch, so the
+    # two channels leave the package 0.5 mm apart and no amount of routing
+    # changes that - the "Sense channel to sense channel" rule asks for 0.6 mm
+    # and cannot be met at the pad. The window covers the escape only, as far
+    # as y = 112.20 where the two nets diverge; past it the full 0.6 mm holds.
+    ("FinePitchFanout", None,  ["F.Cu"],            0, (69.60, 109.70, 72.50, 112.20), "none"),  # U3, sense side
     ("FinePitchFanout", None,  ["F.Cu"],            0, (83.80,  90.80, 91.20,  94.20), "none"),  # U5
     ("FinePitchFanout", None,  ["F.Cu"],            0, (66.70,  81.80, 68.50,  89.20), "none"),  # J1
 ]

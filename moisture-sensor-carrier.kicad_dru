@@ -107,6 +107,12 @@
 # feeds straight into the reported number. As routed, SENSE1 sits at x = 68.15
 # and SENSE2's electrode starts at 69.00, with driven guard in between; 0.6 mm
 # keeps that arrangement and fails anything tighter.
+#
+# It cannot hold at the package. CIN1 and CIN2 are adjacent pins on a 0.5 mm
+# pitch, so the two channels leave U3 0.5 mm apart no matter how they are
+# routed. The FinePitchFanout window over U3's sense side relaxes this to
+# 0.15 mm for the escape only - the fanout rules sit below this one and
+# last-match-wins - and the full 0.6 mm applies everywhere past y = 112.20.
 (rule "Sense channel to sense channel"
 	(constraint clearance (min 0.6mm))
 	(condition "A.NetClass == 'SENSE' && B.NetClass == 'SENSE' && A.NetName != B.NetName"))
