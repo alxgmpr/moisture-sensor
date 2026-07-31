@@ -20,33 +20,58 @@ would be ~2.9 mm wide, which settles it.
 | F.Cu | copper | 0.035 mm | — | RF, signal, sense electrodes |
 | dielectric 1 | prepreg 7628×1 | **0.21040 mm** | 4.4 | RF reference gap |
 | In1.Cu | copper | 0.0152 mm | — | **GND** (zoned — see §4) |
-| dielectric 2 | core | **1.265 mm** | 4.6 | |
+| dielectric 2 | core | **1.065 mm** | 4.6 | |
 | In2.Cu | copper | 0.0152 mm | — | power / **guard pour** |
 | dielectric 3 | prepreg 7628×1 | 0.21040 mm | 4.4 | |
 | B.Cu | copper | 0.035 mm | — | signal / guard |
 
-### You must order JLC04161H-7628**D** specifically
+### Order JLC04161H-7628 — plain, no suffix
 
-Checked against JLCPCB's published controlled-impedance stackup list. They offer
-**six** 4-layer 7628 variants, and only one has a single 7628 prepreg between the
-top layer and L2:
+**Corrected.** This section previously said 7628**D** was the only 4-layer 7628
+variant with a single 7628 prepreg between the top layer and L2, and that the
+core was 1.265 mm. Re-read against JLCPCB's own published stackup list
+(*Controlled Impedance PCB Layer Stackup*, filtered to 1.6 mm / 1 oz outer /
+0.5 oz inner) — **three** of the eighteen 4-layer entries have that single
+0.21040 mm prepreg, not one:
 
-| JLC stackup | Top → L2 dielectric | Usable here? |
-|---|---|---|
-| **JLC04161H-7628D** | **0.21040 mm** (7628×1) | **yes — this is the one** |
-| JLC04161H-7628E | 0.218 + 0.21040 = 0.428 mm | no |
-| JLC04161H-7628B | 0.218 + 0.218 + 0.1164 = 0.552 mm | no |
-| JLC04161H-7628C | 0.218 + 0.218 + 0.21040 = 0.646 mm | no |
-| JLC04161H-7628F | 0.218 + 0.218 + 0.21040 = 0.646 mm | no |
+| JLC stackup | Top → L2 | Core | Layers sum | |
+|---|---|---|---|---|
+| "No requirement Stackup" (the default) | **0.21040 mm** | 1.065 mm | **1.586 mm** | JLC calls this lowest cost, quickest turnaround |
+| **JLC04161H-7628** | **0.21040 mm** | 1.065 mm | **1.586 mm** | **order this** |
+| JLC04161H-7628D | **0.21040 mm** | **1.265 mm** | **1.786 mm** | same impedance, but 0.19 mm too thick |
+| JLC04161H-7628E | 0.218 + 0.21040 = 0.428 mm | 0.6 | | no |
+| JLC04161H-7628B | 0.218 + 0.218 + 0.1164 = 0.552 mm | 0.4 | | no |
+| JLC04161H-7628C | 0.218 + 0.218 + 0.21040 = 0.646 mm | 0.15 | | no |
+| JLC04161H-7628F | 0.218 + 0.218 + 0.21040 = 0.646 mm | 0.25 | | no |
 
-This is not a nitpick. At h = 0.428 mm a 0.38 mm trace is roughly **75 Ω**, not
-50. Taking whatever 4-layer stackup the order form defaults to would silently
-wreck the RF path. Specify 7628D at order time and confirm it on the
-acknowledgement.
+Two things follow.
 
-The core came back **1.265 mm**, not the 1.065 mm assumed here previously. That
-only helps: it moves the In2.Cu-guard-to-In1.Cu-ground capacitance in §5 from
-3.82 × 10⁻⁸ down to **3.22 × 10⁻⁸ F/m²**.
+**The impedance argument is unchanged and still decides the order.** At
+h = 0.428 mm a 0.38 mm trace is roughly 75 Ω, not 50, so B/C/E/F are still out.
+Specify the stackup at order time and confirm it on the acknowledgement.
+
+**But 7628D was the wrong pick, and that is what the total-thickness question in
+NEXT-STEPS.md was detecting.** 7628D's layers sum to 1.786 mm because its core is
+1.265 mm; plain 7628 sums to 1.586 mm, which is a real 1.6 mm board. Since both
+have the identical 0.21040 mm top dielectric they give identical impedance, so
+plain 7628 is strictly better — right thickness, and it is the cheaper/faster
+default. The 1.265 mm core belonged to 7628D and has been reverted here and in
+§5; the board file's 1.065 mm was right all along.
+
+### JLCPCB's own material parameters
+
+From page 1 of the same document. These matter because the §2 calculation below
+was done with none of them:
+
+| | |
+|---|---|
+| Prepreg 7628 ε_r | **4.4** (3313 → 4.1, 1080 → 3.91, 2116 → 4.16) |
+| Core ε_r | 4.6 |
+| Solder mask ε_r | 3.8 |
+| Mask above trace / above substrate | 0.6 mil (0.01524 mm) / 1.2 mil |
+| Etch taper | **trace top width = base width − 0.7 mil** (0.01778 mm) |
+| Outer copper 1 oz | 0.035 mm |
+| Inner copper 0.5 oz | 0.0152 mm |
 
 The thin 0.21 mm top dielectric is what makes a sane-width 50 Ω microstrip
 possible, and it is why the RF trace must reference **In1.Cu**, not B.Cu.
@@ -71,14 +96,38 @@ Solving `Z₀ = 120π / (√ε_eff · [W/h + 1.393 + 0.667·ln(W/h + 1.444)])`:
 | 4.4 (datasheet, ~1 MHz) | 1.92 | 0.404 mm | 0.365 mm |
 | **4.2 (realistic at 2.4 GHz)** | **2.00** | **0.421 mm** | **0.382 mm** |
 
-**Use W = 0.38 mm.** FR4's ε_r falls with frequency — quoting 4.4 from a
-datasheet measured at 1 MHz and designing a 2.4 GHz trace to it makes the trace
-too narrow and the impedance high. The DRU allows 0.34–0.42 mm so you have room
-to accept whatever the fab's own calculator returns.
+**Use W = 0.38 mm.** The DRU allows 0.34–0.42 mm so you have room to accept
+whatever the fab's own calculator returns.
+
+### Checked against JLCPCB's parameters — 0.38 mm stands
+
+The table above is a bare-microstrip Hammerstad solve. JLCPCB's calculator models
+three things it does not, so it was worth re-running with their published numbers
+(§1) rather than assuming they cancel:
+
+| At W = 0.38 mm, h = 0.21040 mm, t = 0.035 mm | Z₀ |
+|---|---|
+| ε_r 4.2 (the assumption above), bare | 49.9 Ω |
+| **ε_r 4.4 (JLCPCB's published 7628 value), bare** | **48.8 Ω** |
+| ε_r 4.4, plus solder mask (0.6 mil, ε_r 3.8) | 48.2 Ω |
+| ε_r 4.4, using the etch-tapered mean width (0.371 mm) | 49.5 Ω |
+
+The two corrections push opposite ways and largely cancel: mask lowers Z₀ by
+~0.6 Ω, the etch taper raises it by ~0.7 Ω. **0.38 mm lands at roughly 48.5–49.5 Ω
+on JLCPCB's own material.** That is Γ = 0.012, VSWR 1.03 — about 0.01 dB of
+mismatch loss, which is nothing next to an antenna whose matching network is an
+unproven starting point (§3).
+
+So the ε_r 4.2 choice was defensible but not actually necessary: at JLCPCB's
+own 4.4 the exact 50 Ω width is 0.364 mm, and the difference between that and
+0.38 mm is 1.2 Ω. Both sit inside the DRU's 0.34–0.42 mm window. **Do not respin
+the trace for this.**
 
 **Confirm with the fab before ordering.** Prepreg thickness varies with copper
 distribution and the pressed result is not exactly nominal. If impedance actually
-matters to you, order with impedance control and let them adjust the width.
+matters to you, order with impedance control and let them adjust the width — they
+will solve it on the real pressed stackup with their own solver, which is a better
+answer than any of the numbers above.
 
 ### RF routing rules (enforced in the DRU)
 
@@ -88,8 +137,17 @@ matters to you, order with impedance control and let them adjust the width.
 - **Unbroken In1.Cu ground directly beneath the entire RF run.** Any slot or
   split under the trace forces the return current around it and wrecks the
   impedance.
-- **Stitching vias** along both sides of the RF trace. λ in FR4 ≈ 125/√ε_eff ≈
-  69 mm at 2.4 GHz, so λ/20 ≈ 3.5 mm — **space stitching vias ≤ 3 mm.**
+- **No stitching vias along the RF trace — corrected.** This previously said to
+  space them ≤ 3 mm (λ/20; λ in FR4 ≈ 125/√ε_eff ≈ 69 mm at 2.4 GHz). That is a
+  *coplanar waveguide* rule: it exists to tie top-side ground beside the trace
+  down to the reference plane. This board is not CPWG. Zone B has exactly one
+  ground layer, In1.Cu — F.Cu carries no ground pour beside the trace and neither
+  does B.Cu — so a stitching via has nothing to stitch to. Four were placed during
+  routing and KiCad reported all four as `via_dangling`, connected on one layer
+  only. It is also self-consistent: W = 0.38 mm in §2 comes from the **microstrip**
+  equation, and for microstrip the return current flows in the plane directly
+  under the trace. Going CPWG instead would need F.Cu ground either side at a
+  controlled gap and would make 0.38 mm the wrong width.
 - Keep the run as short as physically possible. Put the matching network
   immediately at the ANT pin, not near the antenna.
 
@@ -292,7 +350,7 @@ Parallel-plate estimate, `C/A = ε₀ε_r/d`:
 | Guard placement | d | C per area | Area to hit 400 pF |
 |---|---|---|---|
 | F.Cu guard over In1.Cu ground | 0.2104 mm | 1.85 × 10⁻⁷ F/m² | **21.6 cm²** |
-| In2.Cu guard over In1.Cu ground | 1.265 mm | 3.22 × 10⁻⁸ F/m² | 124 cm² |
+| In2.Cu guard over In1.Cu ground | 1.065 mm | 3.82 × 10⁻⁸ F/m² | 105 cm² |
 
 A probe 2 cm wide by 10 cm long is 20 cm² of guard — **right at the limit** if
 there is ground plane under it. Delete the ground from Zone C and the guard's
@@ -516,7 +574,7 @@ net-tie placement rules, and SENSE-to-SWITCH separation.
 
 | Band | y | Contents |
 |---|---|---|
-| RF | 12.5–19.3 | L2/C6/L3/C9/L4/C11 in a column at x = 16.8, J5 |
+| RF | 12.5–19.3 | L2/C6/L3/C9/L4/C11 in a column at x = 16.8 |
 | MCU | 19.4–31 | U1 (rot 90), X2 top-left, X1 below, DECD/DECA/DCC cluster left |
 | Debug / ambient | 33–39 | J4 Tag-Connect, U4 + C27 right, I²C pull-ups |
 | Power in | 40–52 | J1 USB-C left edge, J3 + D5 right, solar reserve |

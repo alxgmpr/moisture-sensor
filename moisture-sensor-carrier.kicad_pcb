@@ -44,7 +44,7 @@
 			)
 			(layer "F.Mask"
 				(type "Top Solder Mask")
-				(thickness 0.01)
+				(thickness 0.01524)
 			)
 			(layer "F.Cu"
 				(type "copper")
@@ -85,7 +85,7 @@
 			)
 			(layer "B.Mask"
 				(type "Bottom Solder Mask")
-				(thickness 0.01)
+				(thickness 0.01524)
 			)
 			(layer "B.Paste"
 				(type "Bottom Solder Paste")
@@ -1165,17 +1165,17 @@
 		)
 		(embedded_fonts no)
 		(model "${KIPRJMOD}/lib/FA-128 32.0000MF10Z-AJ0.STEP"
-		(offset
-			(xyz 0 0 0)
-		)
-		(scale
-			(xyz 1 1 1)
-		)
-		(rotate
-			(xyz 0 0 0)
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
 		)
 	)
-)
 	(footprint "Inductor_SMD:L_0201_0603Metric"
 		(layer "F.Cu")
 		(uuid "35404161-ebfe-4bdd-a0a8-a3ddb5a6f691")
@@ -4397,115 +4397,6 @@
 		)
 		(embedded_fonts no)
 	)
-	(footprint "TestPoint:TestPoint_Pad_D1.0mm"
-		(layer "F.Cu")
-		(uuid "5e235a15-b045-4979-a315-fc5e9aff8d5b")
-		(at 82.6 53.6)
-		(descr "SMD pad as test Point, diameter 1.0mm")
-		(tags "test point SMD pad")
-		(property "Reference" "J5"
-			(at 0 -1.448 0)
-			(layer "F.Fab")
-			(uuid "b91ec5fb-a3c6-488a-a5db-8e72e73514c4")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(property "Value" "Antenna feed"
-			(at 0 1.55 0)
-			(layer "F.Fab")
-			(uuid "f7c477bb-b5bb-4f85-9e28-be8e28cff7a4")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 0 0 0)
-			(unlocked yes)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "3cc48bb8-fc2e-432a-bae9-510be322e69e")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 0 0 0)
-			(unlocked yes)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "3a7e7ce6-fb12-40ef-9ec4-8d3c72ac02e1")
-			(effects
-				(font
-					(size 1.27 1.27)
-					(thickness 0.15)
-				)
-			)
-		)
-		(property ki_fp_filters "Connector*:*_1x??_*")
-		(path "/fb1e2865-b57f-4815-acc4-e6f27810fca5")
-		(sheetname "/")
-		(sheetfile "moisture-sensor-carrier.kicad_sch")
-		(units
-			(unit
-				(name "A")
-				(pins "1")
-			)
-		)
-		(duplicate_pad_numbers_are_jumpers no)
-		(fp_circle
-			(center 0 0)
-			(end 0 0.7)
-			(stroke
-				(width 0.12)
-				(type solid)
-			)
-			(fill no)
-			(layer "F.SilkS")
-			(uuid "9486938b-8e16-4f14-aa72-c84746fa1a2a")
-		)
-		(fp_circle
-			(center 0 0)
-			(end 1 0)
-			(stroke
-				(width 0.05)
-				(type solid)
-			)
-			(fill no)
-			(layer "F.CrtYd")
-			(uuid "c922c40a-fdaf-4250-af44-ba6b1ee98a9e")
-		)
-		(fp_text user "${REFERENCE}"
-			(at 0 -1.45 0)
-			(layer "F.Fab")
-			(uuid "449b3b63-22c1-4ca5-8f5e-22c0201d4bfe")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(pad "1" smd circle
-			(at 0 0)
-			(size 1 1)
-			(layers "F.Cu" "F.Mask")
-			(net "/ANT_FEED")
-			(pinfunction "Pin_1_1")
-			(pintype "passive")
-			(uuid "8b1877c9-cd64-4674-a006-84f1419c1aa8")
-		)
-		(embedded_fonts no)
-	)
 	(footprint "Inductor_SMD:L_0201_0603Metric"
 		(layer "F.Cu")
 		(uuid "5fca1920-607c-4f08-b944-4db99d9d7f03")
@@ -4885,56 +4776,6 @@
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
-			(start -4.7 3.9)
-			(end 4.7 3.9)
-			(stroke
-				(width 0.12)
-				(type solid)
-			)
-			(layer "F.Fab")
-			(uuid "7f2b2a20-c316-4240-b05b-b7c8aef1681a")
-		)
-		(fp_line
-			(start -4.7 2)
-			(end -4.7 3.9)
-			(stroke
-				(width 0.12)
-				(type solid)
-			)
-			(layer "F.Fab")
-			(uuid "0403ce43-a38d-498c-9948-0dffeda28431")
-		)
-		(fp_line
-			(start 4.7 2)
-			(end 4.7 3.9)
-			(stroke
-				(width 0.12)
-				(type solid)
-			)
-			(layer "F.Fab")
-			(uuid "852d2cdd-297f-4f51-9f90-275c655dc388")
-		)
-		(fp_line
-			(start -4.7 -1.9)
-			(end -4.7 0.1)
-			(stroke
-				(width 0.12)
-				(type solid)
-			)
-			(layer "F.Fab")
-			(uuid "63580cf1-e542-4190-8135-a1d628d95782")
-		)
-		(fp_line
-			(start 4.7 -1.9)
-			(end 4.7 0.1)
-			(stroke
-				(width 0.12)
-				(type solid)
-			)
-			(layer "F.Fab")
-			(uuid "08dc6805-df55-4a48-82c4-8cf89d9ed9aa")
-		)
-		(fp_line
 			(start -5.32 4.15)
 			(end 5.32 4.15)
 			(stroke
@@ -4975,6 +4816,16 @@
 			(uuid "65a16ca5-60e0-4e4a-b223-04eb625b1d98")
 		)
 		(fp_line
+			(start -4.7 3.9)
+			(end 4.7 3.9)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "F.Fab")
+			(uuid "7f2b2a20-c316-4240-b05b-b7c8aef1681a")
+		)
+		(fp_line
 			(start -4.47 3.65)
 			(end 4.47 3.65)
 			(stroke
@@ -4983,6 +4834,46 @@
 			)
 			(layer "F.Fab")
 			(uuid "04bbb6fe-4b9d-45c0-8721-247087894552")
+		)
+		(fp_line
+			(start -4.7 2)
+			(end -4.7 3.9)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "F.Fab")
+			(uuid "0403ce43-a38d-498c-9948-0dffeda28431")
+		)
+		(fp_line
+			(start 4.7 2)
+			(end 4.7 3.9)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "F.Fab")
+			(uuid "852d2cdd-297f-4f51-9f90-275c655dc388")
+		)
+		(fp_line
+			(start -4.7 -1.9)
+			(end -4.7 0.1)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "F.Fab")
+			(uuid "63580cf1-e542-4190-8135-a1d628d95782")
+		)
+		(fp_line
+			(start 4.7 -1.9)
+			(end 4.7 0.1)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "F.Fab")
+			(uuid "08dc6805-df55-4a48-82c4-8cf89d9ed9aa")
 		)
 		(fp_line
 			(start -4.47 -3.65)
@@ -9345,7 +9236,6 @@
 				)
 			)
 		)
-
 		(fp_text user "*"
 			(at -2.0447 -2 0)
 			(layer "F.Fab")
@@ -9357,7 +9247,6 @@
 				)
 			)
 		)
-
 		(fp_text user "${REFERENCE}"
 			(at 0 0 0)
 			(unlocked yes)
@@ -12351,7 +12240,6 @@
 				)
 			)
 		)
-
 		(fp_text user "*"
 			(at -2.54 -2.4 90)
 			(layer "F.Fab")
@@ -12363,7 +12251,6 @@
 				)
 			)
 		)
-
 		(fp_text user "${REFERENCE}"
 			(at 0 0 90)
 			(unlocked yes)

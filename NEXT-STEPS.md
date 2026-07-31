@@ -63,16 +63,28 @@ not at AM1.5, which is what distributor tables quote. The pre-regulator choice
 (TPS62122 buck or TPS7A1650 LDO) is gated on it. The 8 × 8 mm reserve, J3, D5
 and the `SOLAR_5V` net are all already on the board, so nothing blocks on this.
 
-### 3. Confirm the stackup with JLCPCB
+### 3. Stackup — resolved, and the answer changed
 
-Two questions, one order:
+**Ask for `JLC04161H-7628` — plain, no suffix.** Not 7628D.
 
-- **Ask for `JLC04161H-7628D` by name.** It is the only 4-layer 7628 variant with
-  a single 0.21040 mm prepreg under the top layer; the others put 0.43–0.65 mm
-  there, which takes the 0.38 mm RF trace from 50 Ω to roughly 75.
-- **Confirm the total thickness.** The published 7628D layer sum comes to
-  1.786 mm, not 1.6. If 7628D is not available at the target thickness we get
-  pushed onto 7628E, and the trace has to go to roughly 0.82 mm.
+Re-read against JLCPCB's published stackup list. Three 4-layer entries have the
+single 0.21040 mm prepreg under the top layer, not one: the default "No
+requirement Stackup", plain `JLC04161H-7628`, and `JLC04161H-7628D`. The first
+two have a 1.065 mm core and sum to **1.586 mm** — a real 1.6 mm board. 7628D has
+a 1.265 mm core and sums to **1.786 mm**.
+
+That is what the old "confirm the total thickness" question was detecting: 7628D
+was never going to be 1.6 mm. All three give identical impedance because the top
+dielectric is the same, so plain 7628 is strictly better — right thickness, and
+it is also the cheapest and quickest option. B/C/E/F remain out: they put
+0.43–0.65 mm under the top layer, which takes the 0.38 mm trace to roughly 75 Ω.
+
+The 0.38 mm width was re-checked against JLCPCB's own material parameters
+(7628 ε_r 4.4, mask ε_r 3.8 at 0.6 mil, etch taper of 0.7 mil) and lands at
+**48.5–49.5 Ω**, VSWR 1.03. No change needed. See LAYOUT.md §2.
+
+Still worth doing: **order with impedance control** so they solve it on the real
+pressed stackup, and confirm the stackup name on the acknowledgement.
 
 ### 4. Two enclosure openings, neither sealed
 
