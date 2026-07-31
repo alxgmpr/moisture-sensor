@@ -672,9 +672,9 @@ around them at 0.2 mm, guard on In2.Cu and B.Cu beneath.
   and it is half of what Figure 17 checks.
 - Electrode geometry: simulate or prototype for 10–30 pF dry with a swing inside
   ±15 pF.
-- Window-pane the paste apertures on `QFN48_6X6_NOR` and `QFN32_5X5_NOR`. Both
-  have a single full-area aperture on the thermal land (22.1 mm² and 13.0 mm²)
-  and both lands are drawn at D2 *max* rather than nominal.
+- ~~Window-pane the QFN paste apertures~~ — **done.** Lands moved to D2 nominal
+  (4.6 mm and 3.5 mm, from the vendor package drawings) with 3×3 aperture arrays
+  at 66 % coverage. See NEXT-STEPS.md.
 - Neither QFN footprint has centre-pad vias. Nordic's reference puts a grid
   under U1 pad 49; add them when routing. **Watch NT1** — the via grid must not
   bridge GND_PA to GND anywhere except at the tie.

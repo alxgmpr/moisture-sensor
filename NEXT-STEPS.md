@@ -105,9 +105,16 @@ factory milling.
 
 ## Verify before fab
 
-- **Window-pane the QFN paste apertures.** Both `QFN48_6X6_NOR` and
-  `QFN32_5X5_NOR` have a single full-area aperture on the thermal land — 22.1 mm²
-  and 13.0 mm². Both lands are also drawn at D2 *max* rather than nominal.
+- ~~Window-pane the QFN paste apertures~~ — **done.** Both lands were drawn
+  oversize and pasted as one full-area aperture. Against the vendor package
+  drawings (nRF54L15 Table 83: D2/E2 4.5/**4.6**/4.7 mm; nPM1300 Table 36:
+  3.4/**3.5**/3.6 mm) the QFN48 land was at D2 max and the QFN32 land was
+  3.6068 mm, i.e. *over* its 3.6 mm maximum. Both are now at D2 nominal with a
+  3×3 aperture array — U1 1.25 mm on 1.675 mm pitch, U2 0.95 mm on 1.275 mm
+  pitch, both 66 % coverage, inside IPC-7093's 50–80 %. Thermal paste volume
+  drops 35.1 → 22.2 mm². Verified in the exported `F.Paste` gerber: 9 flashes
+  each and no full-area aperture. Fixed in `lib/footprints.pretty/` and in the
+  placed instances, so a re-import stays correct.
 - **Add centre-pad vias** under U1 pad 49 and U2 pad 33. Neither vendor footprint
   has them; Nordic's reference uses a grid.
 - **Confirm C0 for the FA-128 with Epson.** Not published, and it is half of what
