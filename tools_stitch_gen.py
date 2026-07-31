@@ -10,7 +10,8 @@ pads, footprint bodies, existing tracks and vias, and four banned regions.
 
 Run it AFTER routing, not before - it reads the tracks that are on the board
 and keeps out of their way, so re-running it before the routes exist would
-propose vias on top of them.
+propose vias on top of them. GND vias are ignored as obstacles, since those
+are the output of a previous run; everything else is respected.
 """
 
 import os
@@ -55,6 +56,10 @@ def main():
     segs, vias = [], []
     for t in bd.GetTracks():
         if isinstance(t, pcbnew.PCB_VIA):
+            # Skip GND vias: those are the stitching this script generates, so
+            # counting them as obstacles makes a second run return nothing.
+            if t.GetNetname() == "GND":
+                continue
             p = t.GetPosition()
             vias.append((mm(p.x), mm(p.y)))
         else:

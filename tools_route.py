@@ -271,15 +271,15 @@ MCU = [
     ("/DECA",   F, 0.25, [(65.20, 64.00), "C12.1"]),
 
     # -- crystals -----------------------------------------------------------
-    # X2's pads are a 2x2 with 0.45 mm between columns and 0.3 mm between rows,
-    # so nothing threads between them: /XC1 has to reach the bottom-left pad
-    # from outside, which it does by running west above X2 and dropping at
-    # x = 69.50.
+    # X2's pad numbering was corrected - see tools_fix_footprints.py. Pad 1
+    # (XC1) is the TOP-left corner and pad 3 (XC2) the BOTTOM-right, the
+    # diagonal Epson puts the resonator on. That is also the easier routing:
+    # /XC1 drops straight into the near pad off its own lane, and only /XC2
+    # has to come round to the far side.
     ("/XC1",    F, 0.19, ["U1.34", (75.60, 58.90)]),
-    ("/XC1",    F, 0.20, [(75.60, 58.90), (72.00, 58.75), (69.50, 58.75),
-                          (69.50, 60.575), "X2.1"]),
+    ("/XC1",    F, 0.20, [(75.60, 58.90), (70.525, 58.60), "X2.1"]),
     ("/XC2",    F, 0.19, ["U1.35", (75.20, 59.35)]),
-    ("/XC2",    F, 0.20, [(75.20, 59.35), (71.475, 59.40), "X2.3"]),
+    ("/XC2",    F, 0.20, [(75.20, 59.35), (72.20, 59.35), (72.20, 60.575), "X2.3"]),
 
     ("/XL1",    F, 0.19, ["U1.1", (74.80, 66.90)]),
     ("/XL1",    F, 0.25, [(74.80, 66.90), (72.20, 68.10), (70.80, 68.10), "X1.1"]),

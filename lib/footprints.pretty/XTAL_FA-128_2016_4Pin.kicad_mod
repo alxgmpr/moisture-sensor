@@ -2,7 +2,7 @@
 	(version 20240108)
 	(generator "hand")
 	(layer "F.Cu")
-	(descr "Epson FA-128 32 MHz crystal, 2.0 x 1.6 x 0.5 mm, 4-pad. Land pattern is Epson's own recommendation: 0.50 x 0.85 mm pads on 0.95 mm (X) by 1.15 mm (Y) centres, giving a 1.45 x 2.00 mm outer envelope. KiCad's generic Crystal_SMD_2016-4Pin_2.0x1.6mm does NOT match - it uses 0.90 x 0.80 mm pads on 1.40 x 1.10 mm centres, a 2.30 mm outer span in X, which is 0.85 mm wider than Epson specify. Pads 1 and 3 are the crystal terminals; pads 2 and 4 are the metal cover and must go to ground.")
+	(descr "Epson FA-128 32 MHz crystal, 2.0 x 1.6 x 0.5 mm, 4-pad. Land pattern is Epson's own recommendation: 0.50 x 0.85 mm pads on 0.95 mm (X) by 1.15 mm (Y) centres, giving a 1.45 x 2.00 mm outer envelope. KiCad's generic Crystal_SMD_2016-4Pin_2.0x1.6mm does NOT match - it uses 0.90 x 0.80 mm pads on 1.40 x 1.10 mm centres, a 2.30 mm outer span in X, which is 0.85 mm wider than Epson specify. Pads 1 and 3 are the crystal terminals; pads 2 and 4 are the metal cover and must go to ground. PAD NUMBERING CORRECTED: pad 1 is the TOP-LEFT corner. Epson's dimension drawing puts the resonator between #1 and #3 with the 2.0 mm axis horizontal, and their recommended land is 1.45 x 2.00, i.e. the part sits with its 2.0 mm axis VERTICAL - so the crystal terminals fall on the TL-BR diagonal. This footprint previously had 1 and 3 on BL-TR, the COVER diagonal, which would have put XC1/XC2 on the grounded cover and shorted the crystal to GND. PAD NUMBERING CORRECTED: pad 1 is the TOP-LEFT corner. Epson's dimension drawing puts the resonator between #1 and #3 with the 2.0 mm axis horizontal, and their recommended land is 1.45 x 2.00, i.e. the part sits with its 2.0 mm axis VERTICAL - so the crystal terminals fall on the TL-BR diagonal. This footprint previously had 1 and 3 on BL-TR, the COVER diagonal, which would have put XC1/XC2 on the grounded cover and shorted the crystal to GND. PAD NUMBERING CORRECTED: pad 1 is the TOP-LEFT corner. Epson's dimension drawing puts the resonator between #1 and #3 with the 2.0 mm axis horizontal, and their recommended land is 1.45 x 2.00, i.e. the part sits with its 2.0 mm axis VERTICAL - so the crystal terminals fall on the TL-BR diagonal. This footprint previously had 1 and 3 on BL-TR, the COVER diagonal, which would have put XC1/XC2 on the grounded cover and shorted the crystal to GND.")
 	(tags "crystal 32MHz 2016 epson FA-128")
 	(attr smd)
 
@@ -19,10 +19,10 @@
 		(effects (font (size 0.8 0.8) (thickness 0.12)))
 	)
 
-	(fp_rect (start -1.0 -0.8) (end 1.0 0.8)
+	(fp_rect (start -0.8 -1.0) (end 0.8 1.0)
 		(stroke (width 0.05) (type solid)) (fill no) (layer "F.Fab")
 		(uuid "4d5e6f70-0100-4000-8000-000000000100"))
-	(fp_line (start -1.0 -0.35) (end -0.55 -0.8)
+	(fp_line (start -0.8 -0.55) (end -0.55 -1.0)
 		(stroke (width 0.1) (type solid)) (layer "F.Fab")
 		(uuid "4d5e6f70-0101-4000-8000-000000000101"))
 
@@ -32,7 +32,7 @@
 	(fp_line (start 1.15 -1.1) (end 1.15 1.1)
 		(stroke (width 0.12) (type solid)) (layer "F.SilkS")
 		(uuid "4d5e6f70-0111-4000-8000-000000000111"))
-	(fp_circle (center -1.45 0.575) (end -1.35 0.575)
+	(fp_circle (center -1.45 -0.575) (end -1.35 -0.575)
 		(stroke (width 0.2) (type solid)) (fill solid) (layer "F.SilkS")
 		(uuid "4d5e6f70-0112-4000-8000-000000000112"))
 
@@ -40,16 +40,16 @@
 		(stroke (width 0.05) (type solid)) (fill no) (layer "F.CrtYd")
 		(uuid "4d5e6f70-0120-4000-8000-000000000120"))
 
-	(pad "1" smd rect (at -0.475 0.575) (size 0.5 0.85)
+	(pad "2" smd rect (at -0.475 0.575) (size 0.5 0.85)
 		(layers "F.Cu" "F.Mask" "F.Paste")
 		(uuid "4d5e6f70-0201-4000-8000-000000000201"))
-	(pad "2" smd rect (at 0.475 0.575) (size 0.5 0.85)
+	(pad "3" smd rect (at 0.475 0.575) (size 0.5 0.85)
 		(layers "F.Cu" "F.Mask" "F.Paste")
 		(uuid "4d5e6f70-0202-4000-8000-000000000202"))
-	(pad "3" smd rect (at 0.475 -0.575) (size 0.5 0.85)
+	(pad "4" smd rect (at 0.475 -0.575) (size 0.5 0.85)
 		(layers "F.Cu" "F.Mask" "F.Paste")
 		(uuid "4d5e6f70-0203-4000-8000-000000000203"))
-	(pad "4" smd rect (at -0.475 -0.575) (size 0.5 0.85)
+	(pad "1" smd rect (at -0.475 -0.575) (size 0.5 0.85)
 		(layers "F.Cu" "F.Mask" "F.Paste")
 		(uuid "4d5e6f70-0204-4000-8000-000000000204"))
 	(model "${KIPRJMOD}/lib/FA-128 32.0000MF10Z-AJ0.STEP"
@@ -60,7 +60,7 @@
 			(xyz 1 1 1)
 		)
 		(rotate
-			(xyz 0 0 0)
+			(xyz 90 0 0)
 		)
 	)
 )

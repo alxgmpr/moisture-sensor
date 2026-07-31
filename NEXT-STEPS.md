@@ -351,6 +351,87 @@ already implies.
 
 ---
 
+### 2. X2's pad numbering was on the wrong diagonal — fixed, and it would have killed the 32 MHz oscillator
+
+Found while lining the 3D models up. The model was right and the footprint was
+wrong.
+
+FA-128 datasheet page 1, "External dimensions" TOP VIEW with the 2.0 mm axis
+horizontal, has **#4 top-left, #3 top-right, #1 bottom-left, #2 bottom-right**,
+and the "Internal connection (TOP VIEW)" inset puts the resonator between
+**#1 and #3** with the note *"#2 and #4 are connected to the cover. (Please
+connect to ground)"*. So the crystal terminals are the BL–TR diagonal and the
+cover pads are BR–TL.
+
+Epson's recommended land on the same page is **1.45 mm wide × 2.00 mm tall** —
+0.95 mm x-centres, 1.15 mm y-centres, 0.5 × 0.85 mm pads — which our footprint
+copies exactly. That land seats the part with its **2.0 mm axis vertical**, so
+the pinout rotates with it:
+
+| | #1 | #2 | #3 | #4 | crystal on |
+|---|---|---|---|---|---|
+| 90° CW | TL | BL | BR | TR | TL–BR |
+| 90° CCW | BR | TR | TL | BL | TL–BR |
+
+Both give the same answer, because 180° maps a diagonal to itself: **with the
+2.0 mm axis vertical the crystal terminals are always TL–BR.**
+
+The footprint had **pad 1 at BL and pad 3 at TR — the cover diagonal.** The
+schematic wires pad 1 to XC1 and pad 3 to XC2, so XC1 and XC2 would have landed
+on the two grounded cover pads and the actual crystal terminals would have been
+tied to GND through pads 2 and 4. The oscillator would not have started.
+
+**Nothing in ERC or DRC could see it.** All four pads exist, all four are
+connected, and the two ground pads are legitimately ground. It is only visible
+against the datasheet drawing, or — as it happened — by noticing that the 3D
+model's index mark refused to line up.
+
+Fixed in `tools_fix_footprints.py`, applied to both the library `.kicad_mod`
+and the placed instance: the numbering rotates one position so pad 1 is the
+top-left corner, which keeps 1–3 and 2–4 diagonal as the part requires. The
+silk pin-1 dot moved to match, and the F.Fab rectangle — drawn 2.0 × 1.6 where
+its own pads say 1.6 × 2.0 — was transposed and given its chamfer on the new
+pin-1 corner. `/XC1` and `/XC2` were re-routed to the corrected pads.
+
+**Renaming a pad does not move its net.** The net follows the piece of copper,
+so the first pass left GND on pads 1 and 3 — the same defect one corner round.
+The script now states the schematic's pad→net binding explicitly and enforces
+it.
+
+### 3. 3D models — all four missing or misaligned ones fixed
+
+`tools_3d_models.py`, written to both the board and the library.
+
+| | model | rotation | why |
+|---|---|---|---|
+| U1 | `lib/nordic/QFN48_6X6_NOR.step` | none | already on disk, shipped with the vendor footprints, never referenced |
+| U2 | `lib/nordic/QFN32_5X5_NOR.step` | none | same |
+| X1 | `lib/CM8V-T1A/…​.step` | (90, 0, 0) | vendor model, height along +Y |
+| X2 | `lib/FA-128 …​.STEP` | (90, 0, 0) | same |
+
+**The rule that makes this tractable:** KiCad's 3D frame is X = footprint X,
+**Y = minus footprint Y**, Z = up. A pad at footprint local (lx, ly) sits at
+3D (lx, −ly). The Nordic models confirm it — QFN48's pin-1 lead is at model
+(−2.768, **+2.200**) and its pad 1 at local (−2.921, **−2.200**), the same
+corner with y negated — which is why they need no rotation at all.
+
+The two crystal models are vendor exports with the package **height along +Y**
+instead of +Z, measured with cadquery rather than guessed:
+
+```
+FA-128     x -0.800..0.800 (1.600)   y 0.000..0.500 (0.500)   z -1.000..1.000 (2.000)
+CM8V-T1A   x -1.000..1.000 (2.000)   y 0.000..0.600 (0.600)   z -0.600..0.600 (1.200)
+```
+
+so both need one 90° turn about X to stand up. Verify with
+`kicad-cli pcb render --side top --pivot …` rather than by eye in the GUI — it
+is repeatable and it is how the FA-128 defect surfaced.
+
+Still without models, all legitimately: J4 (Tag-Connect, no body), NT1–NT3 (net
+ties) and TP1–TP5 (bare pads).
+
+---
+
 ## Verify before fab
 
 - ~~Window-pane the QFN paste apertures~~ — **done.** Both lands were drawn

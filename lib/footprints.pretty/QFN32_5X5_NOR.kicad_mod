@@ -268,4 +268,15 @@
   (pad "33" smd rect (at -1.275 1.275) (size 0.95 0.95) (layers "F.Paste"))
   (pad "33" smd rect (at 0.0 1.275) (size 0.95 0.95) (layers "F.Paste"))
   (pad "33" smd rect (at 1.275 1.275) (size 0.95 0.95) (layers "F.Paste"))
+	(model "${KIPRJMOD}/lib/nordic/QFN32_5X5_NOR.step"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
 )
