@@ -102,7 +102,53 @@ the question above: plain 7628 is **1.59 mm and flagged *Standard***, 7628D is
 Still worth doing: **order with impedance control** so they re-solve on the real
 pressed stackup, and confirm the stackup name on the acknowledgement.
 
-### 4. Two enclosure openings, neither sealed
+### 4. The board does not fit the enclosure — corner reliefs are missing
+
+**Measured from Hammond's STEP with cadquery** (`tools_encl_check.py`;
+`1551WK_Bottom.stp` and `1551WKBK.stp` agree exactly). The 1551WK cavity is not a
+rounded rectangle. It has **four corner bosses that run the full cavity height**:
+
+| | |
+|---|---|
+| Cavity at board height (Y = 6.25) | 75.090 × 35.090 mm, walls at X ±37.545, Z ±17.545 |
+| Corner boss radius | **4.4193 mm** at the board's bottom face (4.7136 at the floor, 4.2666 at the top — draft) |
+| Boss centres | **(±35.75, ±15.75)** from the box centre |
+| Posts | (±27.50, ±12.50) — a **55.00 × 25.00** pattern, **4.00 mm** tall (Y 2.20 → 6.20) |
+
+The post pattern and post height confirm LAYOUT.md §9 exactly, and the board's
+four mounting holes land on them. **The outline does not.** The board's R4.5
+corners are centred at (±32.5, ±12.5), only 4.596 mm from the boss centres, so
+the *entire* corner arc sits inside the boss — **4.32 mm of interference at all
+four corners**. Every one of 901 sampled points on the corner arc is inside.
+The board cannot be inserted.
+
+This also explains the drawing figures that "did not reconcile": `R4.42` is the
+boss radius (4.4193 measured) and `62.00 × 22.00` is the flat edge span left
+*between* the reliefs. Hammond's "Maximum PCB 74.50 × 34.50" assumes the corners
+are scalloped.
+
+**The fix is a concave relief arc at each corner**, centred on the boss:
+
+| Margin | Relief radius | Meets the board edge |
+|---|---|---|
+| 0.20 mm | R 4.619 | 5.697 mm in from each corner, both directions |
+| **0.25 mm** | **R 4.669** | **5.749 mm in from each corner** |
+| 0.30 mm | R 4.719 | 5.801 mm in from each corner |
+
+In board coordinates the boss centres are **(1.25, 1.25), (32.75, 1.25),
+(1.25, 72.75), (32.75, 72.75)**.
+
+**This touches the antenna, which is why it is not already done.** AE1's
+radiating arm runs board x 12.3 → 30.8 at y 2.5–3.5. At a 0.25 mm margin the
+relief cuts the board edge back to x ≈ 28.25 at y = 2.5, so **roughly 2.1–2.5 mm
+of the arm tip comes off**, taking the electrical length from ≈27.5 mm to
+≈25.4 mm. LAYOUT.md §3 says 27.5 mm "starts deliberately long: you can trim
+etched copper, you cannot add it", and puts λ/4 with FR4 loading at 24–25 mm — so
+25.4 mm may well be fine, or even closer to right. But it is an antenna change
+and it is your call. The mounting holes are unaffected (2.90 mm clear of the
+relief).
+
+### 5. Two enclosure openings, neither sealed
 
 The probe slot and the SHT45 jut-out slot. Both need potting, or accept losing
 the IP68 rating at those points.
@@ -133,10 +179,11 @@ factory milling.
   is no C0 row at all. It is half of what the Figure 17 ESR curve checks, so this
   needs an email to Epson. ESR (60 Ω max at 26–54 MHz), drive level (200 µW max,
   10 µW recommended) and the land pattern are all confirmed — see BOM.md.
-- **Confirm the 1551WK corner reliefs** against Hammond's STEP. The drawing's
-  `62.00 × 22.00` and `R4.42` do not reconcile cleanly with the `63.88 × 23.88`
-  cover-screw bosses; the `55.00 × 25.00` post pattern is unambiguous and is what
-  is drawn.
+- **1551WK corner reliefs — measured, and the board does not fit.** See the
+  BLOCKING entry below. `R4.42` from the drawing is confirmed exactly (4.4193 mm
+  measured) and `62.00 × 22.00` is the flat edge span *between* corner reliefs,
+  so the drawing was self-consistent all along — it was telling us the PCB needs
+  scalloped corners. The `55.00 × 25.00` post pattern is confirmed exactly.
 - **Get the DC-bias curve for L1** from Murata SimSurfing. They publish only a
   40 °C temperature-rise rating (620 mA) and no saturation current at all.
 - **Measure the cell.** Self-discharge is 74 % of the power budget and the
