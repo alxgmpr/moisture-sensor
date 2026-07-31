@@ -55,7 +55,10 @@ ZONES = [
     # priority even when the net matches. Nothing on F.Cu below y = 112.4 is
     # priority 2, so 3 cannot steal area from the SENSE electrodes.
     ("ZoneB_GND_F",  "GND",    ["F.Cu"],            0, (60.40,  53.00, 93.60, 104.00), None),
-    ("ZoneB_3V3",    "/+3V3",  ["In2.Cu"],          0, (60.40,  53.00, 93.60, 104.50), None),
+    # "+3V3", not "/+3V3": the rail is a power SYMBOL in the schematic, which
+    # makes it a global net without the root-sheet slash. build() aborts on an
+    # unresolvable net rather than silently pouring an unassigned zone.
+    ("ZoneB_3V3",    "+3V3",   ["In2.Cu"],          0, (60.40,  53.00, 93.60, 104.50), None),
     ("SenseEscape_GUARD_F", "/SHLD", ["F.Cu"],      3, (67.00, 105.80, 77.00, 112.40), None),
     ("SenseEscape_GUARD",   "/SHLD", ["B.Cu", "In2.Cu"], 1,
                                                       (67.00, 105.80, 77.00, 112.40), None),
@@ -82,7 +85,14 @@ ZONES = [
     ("FinePitchFanout", None,  ["F.Cu"],            0, (74.50,  65.30, 79.50,  67.00), "none"),  # U1 top
     ("FinePitchFanout", None,  ["F.Cu"],            0, (79.50,  60.30, 81.10,  65.70), "none"),  # U1 right
     ("FinePitchFanout", None,  ["F.Cu"],            0, (66.10,  92.00, 72.90,  99.40), "none"),  # U2
-    ("FinePitchFanout", None,  ["F.Cu"],            0, (71.90, 106.90, 75.00, 110.10), "none"),  # U3, digital side
+    # U3, digital side. Moved when U3 was rotated 90 deg to face the probe
+    # (tools_place_fixups.py): the supply and TWI pins used to be the EAST
+    # column at x = 73.1 and are now the NORTH row at y = 106.4, so the old
+    # window at (71.90, 106.90)-(75.00, 110.10) covered bare board. Nothing
+    # complains about a rule area in the wrong place - it just stops exempting
+    # what it was drawn for, and the GND escape started failing the 0.4 mm
+    # Power width rule instead.
+    ("FinePitchFanout", None,  ["F.Cu"],            0, (69.60, 105.20, 72.50, 107.30), "none"),  # U3, digital side
     ("FinePitchFanout", None,  ["F.Cu"],            0, (83.80,  90.80, 91.20,  94.20), "none"),  # U5
     ("FinePitchFanout", None,  ["F.Cu"],            0, (66.70,  81.80, 68.50,  89.20), "none"),  # J1
 ]

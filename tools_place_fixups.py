@@ -103,6 +103,60 @@ FIXUPS = [
     # /SW2 has no copper at all yet, so this is free to do now and would have
     # meant ripping up the switch node later.
     ("L10", None, 180.0),
+
+    # U3 turned 90 deg so its sense pins face the probe. This came out of
+    # trying to route /SENSE2 and finding it could not be done at all.
+    #
+    # THE BLOCKER. U3 is an MSOP-10 with five pads per side. As placed, the
+    # sense side was the WEST column at x = 68.9, and the probe is SOUTH:
+    #
+    #     U3.1 SHLD    (68.90, 107.50)
+    #     U3.2 SENSE1  (68.90, 108.00)
+    #     U3.3 SENSE2  (68.90, 108.50)
+    #     U3.4 CIN3    (68.90, 109.00)   unused, but still copper
+    #     U3.5 CIN4    (68.90, 109.50)   unused, but still copper
+    #
+    # Pads 4 and 5 sit directly below the two sense pins, so nothing can leave
+    # southward - both sense nets had to exit west and then turn. The pad
+    # column's west edge is x = 68.15 and the guard channel starts at 67.30,
+    # which leaves 0.65 mm to carry BOTH of them past the package, and the
+    # sense-to-shield rule wants 0.2 mm either side:
+    #
+    #     0.2 + w + 0.2 + w + 0.2 = 0.65  ->  w = 0.025 mm
+    #
+    # One 0.25 mm trace fits. Two do not, at any width worth using - dropping
+    # both to the 0.127 mm fab floor still lands 0.004 mm short, and a thin
+    # high-impedance sense trace is the wrong thing to want anyway.
+    #
+    # THE FIX. Rotated 90 deg, the sense column becomes the SOUTH row:
+    #
+    #     U3.1 SHLD    (70.00, 110.60)
+    #     U3.2 SENSE1  (70.50, 110.60)
+    #     U3.3 SENSE2  (71.00, 110.60)
+    #
+    # Both sense pins now face the electrodes directly with the whole 10 mm
+    # width of the escape corridor in front of them, and no unused pad in the
+    # way. The supply and TWI side (pads 6-10) turns to face north, toward the
+    # rest of the board, which is where those nets come from.
+    #
+    # This is the placement equivalent of the L1 and L10 rotations: the quiet
+    # nets take the awkward path and the sensitive ones get the short one.
+    ("U3", None, 90.0),
+
+    # The three sense test points move 0.5 mm south, because rotating U3 grew
+    # its courtyard southward into them:
+    #
+    #     U3 courtyard   y 105.355 .. 111.645   (was x-wide, now y-tall)
+    #     TP courtyard   y 111.454 .. 113.546   at the old y = 112.5
+    #
+    # DRC reported the TP2 pair; TP1 overlapped as well, by 0.191 mm. At
+    # y = 113.0 the test-point courtyards start at 111.954, clearing U3 by
+    # 0.309 mm. They stay inside the SenseEscape guard region (y 105.8..112.4)
+    # only at their north edge now, which is fine - what matters is that they
+    # sit over guard, and ZoneC_GUARD_F starts at y = 112.
+    ("TP1", (69.00, 113.00), None),
+    ("TP2", (72.00, 113.00), None),
+    ("TP3", (75.00, 113.00), None),
 ]
 
 

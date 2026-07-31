@@ -156,7 +156,14 @@ VIAS = [
 # jut-out bans pour and vias entirely; and J5's right-hand ground pad, whose
 # stitching via only grazes it.
 GND_EXTRA = [
-    ("GND",         F, 0.30,   ["U3.7",   (74.60, 109.00)]),          # -> via, In1.Cu
+    # U3.7 goes NORTH into ZoneB_GND_F, whose south edge is y = 104.00, rather
+    # than east to a via. After U3 was rotated 90 deg (tools_place_fixups.py)
+    # its ground pin sits at (71.50, 106.40) in the north row, 2.4 mm from the
+    # pour; the old route headed for a via at (74.60, 109.00) that was picked
+    # when the pin was at (73.10, 109.00). Necked to 0.25 mm through the pad
+    # row - 0.5 mm pitch leaves 0.2 mm to pins 6 and 8 - then full width.
+    ("GND",         F, 0.25,   ["U3.7",   (71.50, 105.40)]),
+    ("GND",         F, 0.40,   [(71.50, 105.40), (71.50, 103.50)]),
     ("GND",         F, 0.40,   ["J5.2b",  (79.00, 52.00)]),           # -> existing stitch via
     # Out of the jut-out. NoCopperSHT45 is the 0.87 mm gap BETWEEN U4's two pad
     # columns - the SHT4x datasheet 5.3 die keepout - and U4's pads sit 0.03 mm
@@ -421,7 +428,65 @@ SW2 = [
 ]
 
 
-ROUTES = RF + GND_PA + GND_C9 + GND_RF + GND_EXTRA + V3 + SW2 + MCU
+# --------------------------------------------------------------------------
+# The sense front end. This is the board's whole purpose and none of it was
+# routed: /SENSE1, /SENSE2 and /SHLD had no copper anywhere, so both electrode
+# zones and both inner guard zones filled as ISOLATED islands.
+#
+# U3 was rotated 90 deg to make this routable at all - as placed, its five
+# sense-side pads faced WEST while the probe is SOUTH, and the channel west of
+# the pad column could carry one 0.25 mm trace, not two. See the long note in
+# tools_place_fixups.py. After the rotation:
+#
+#     U3.1 SHLD    (70.00, 110.60)     SENSE2_electrode  x 69..85, y 122..152
+#     U3.2 SENSE1  (70.50, 110.60)     SENSE1_electrode  x 69..85, y 159..189
+#     U3.3 SENSE2  (71.00, 110.60)     guard (F/B/In2)   x 67.3..86.7, y 112..188
+#
+# SENSE1 is the SOIL electrode and the FAR one - the probe goes in tip first,
+# so the tip is in soil and SENSE2 sits above the soil line in air (LAYOUT.md
+# section 5). SENSE1 therefore has to travel the whole length of SENSE2's
+# electrode to reach y = 159.
+#
+# It does that in the 1.7 mm channel between the guard's west edge (67.30) and
+# the electrodes' west edge (69.00), running at x = 68.15 with 0.725 mm of
+# driven guard either side. The guard between it and SENSE2's electrode is the
+# entire point: guard-to-sense capacitance does not appear in the measurement,
+# because the guard is driven to the sense potential and carries no
+# displacement current. Length only costs where sense sees GROUND, and Zone C
+# has none on any layer.
+SENSE = [
+    ("/SENSE1",     F, 0.25,   ["U3.2",  (70.50, 112.00)]),
+    ("/SENSE1",     F, 0.25,   [(70.50, 112.00), (69.50, 113.00)]),
+    ("/SENSE1",     F, 0.25,   [(69.50, 113.00), "TP1.1"]),
+    ("/SENSE1",     F, 0.25,   ["TP1.1",  (68.15, 113.85)]),
+    ("/SENSE1",     F, 0.25,   [(68.15, 113.85), (68.15, 158.15)]),
+    ("/SENSE1",     F, 0.25,   [(68.15, 158.15), (69.00, 159.00)]),
+    ("/SENSE1",     F, 0.25,   [(69.00, 159.00), (70.00, 159.00)]),
+
+    # SENSE2 has the short run: one 45 onto its test point, then straight down
+    # into its own electrode. It stays east of SENSE1 the whole way.
+    ("/SENSE2",     F, 0.25,   ["U3.3",  (71.00, 112.00)]),
+    ("/SENSE2",     F, 0.25,   [(71.00, 112.00), (72.00, 113.00)]),
+    ("/SENSE2",     F, 0.25,   ["TP2.1",  (72.00, 123.00)]),
+]
+
+# The guard on B.Cu and In2.Cu has no pad of its own anywhere - U3 is an MSOP,
+# so every SHLD pad is on F.Cu - which is why both inner guard zones filled as
+# isolated copper. These vias tie F.Cu guard through to them.
+#
+# Each has to land where F.Cu carries GUARD and not ELECTRODE, so they sit in
+# the gaps: y 112..122 above SENSE2, y 152..159 between the two electrodes, and
+# the 1.7 mm strip east of the electrodes at x 85..86.7.
+SHLD_VIAS = [
+    (68.00, 108.50, "/SHLD", 0.60, 0.30),   # escape zone, west of U3
+    (77.00, 117.00, "/SHLD", 0.60, 0.30),   # gap above SENSE2's electrode
+    (77.00, 155.50, "/SHLD", 0.60, 0.30),   # gap between the two electrodes
+    (86.00, 140.00, "/SHLD", 0.60, 0.30),   # east strip, beside SENSE2
+    (86.00, 175.00, "/SHLD", 0.60, 0.30),   # east strip, beside SENSE1
+]
+
+
+ROUTES = RF + GND_PA + GND_C9 + GND_RF + GND_EXTRA + V3 + SW2 + SENSE + MCU
 
 # Vias to the In2.Cu +3V3 plane, one per escape above.
 V3_VIAS = [
@@ -448,7 +513,6 @@ V3_VIAS = [
 
 # GND vias that are not a pad escape.
 GND_VIAS = [
-    (74.60, 109.00, "GND", 0.60, 0.30),     # U3 ground, past the SenseNoGround carve
     (93.00,  58.90, "GND", 0.60, 0.30),     # U4 ground, out of the jut-out
 ]
 
@@ -514,7 +578,8 @@ STITCH = CENTRE_PAD + [
     ( 84.00, 102.50),
 ]
 
-ALL_VIAS = VIAS + V3_VIAS + GND_VIAS + MCU_VIAS + [(x, y, "GND", 0.60, 0.30) for x, y in STITCH]
+ALL_VIAS = (VIAS + V3_VIAS + GND_VIAS + MCU_VIAS + SHLD_VIAS
+            + [(x, y, "GND", 0.60, 0.30) for x, y in STITCH])
 
 
 # --------------------------------------------------------------------------

@@ -96,6 +96,21 @@
 	(constraint clearance (min 0.2mm))
 	(condition "A.NetClass == 'SENSE' && B.NetClass == 'SHIELD'"))
 
+# Channel to channel. There was no rule here at all, and the geometry needs
+# one: SENSE1 is the SOIL electrode and the FAR one, so its trace runs the
+# entire 30 mm length of SENSE2's electrode to reach the tip. Both nets are in
+# the SENSE class, so every rule above treats them as the same thing and
+# nothing stopped them being routed side by side.
+#
+# The measurement is RATIOMETRIC - SENSE1 in soil against SENSE2 in air
+# (LAYOUT.md section 5) - so coupling between the channels does not cancel, it
+# feeds straight into the reported number. As routed, SENSE1 sits at x = 68.15
+# and SENSE2's electrode starts at 69.00, with driven guard in between; 0.6 mm
+# keeps that arrangement and fails anything tighter.
+(rule "Sense channel to sense channel"
+	(constraint clearance (min 0.6mm))
+	(condition "A.NetClass == 'SENSE' && B.NetClass == 'SENSE' && A.NetName != B.NetName"))
+
 # -------------------------------------------------------------- power ------
 (rule "Power track width"
 	(constraint track_width (min 0.4mm))
