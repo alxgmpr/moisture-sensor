@@ -360,13 +360,23 @@ class Block:
     """
     ALL = []
 
-    def __init__(self, title, x0, y0, x1):
-        self.title, self.x0, self.y0, self.x1 = title, x0, y0, x1
-        self.cx, self.cy = snap(x0 + 16), snap(y0 + 26)
+    # A passive row wider than this reads as a queue rather than a group. Five
+    # keeps every block's passives inside one glance; the earlier code derived
+    # the count from the block WIDTH, so a wide column strung all thirteen MCU
+    # support parts out in a single line 300 mm long.
+    MAX_COLS = 5
+
+    def __init__(self, title, x0, y0, cols=MAX_COLS):
+        self.title, self.x0, self.y0 = title, x0, y0
+        self.cols = max(1, cols)
         self.step_x, self.step_y = 11 * G, 11 * G
-        self.cols = max(1, int((x1 - x0 - 26) // self.step_x))
+        self.cx, self.cy = snap(x0 + 16), snap(y0 + 26)
         self.n = 0
         self.maxy = y0 + 26
+        # Width is content-driven like the height. A fixed x1 leaves a box
+        # several times wider than what is in it, which is what made the first
+        # A1 attempt unreadable.
+        self.maxx = x0 + 40
         Block.ALL.append(self)
 
     def next_pos(self):
@@ -374,10 +384,51 @@ class Block:
              self.cy + (self.n // self.cols) * self.step_y)
         self.n += 1
         self.maxy = max(self.maxy, p[1])
+        self.maxx = max(self.maxx, p[0])
         return p
+
+    @property
+    def x1(self):
+        return snap(self.maxx + 22)
 
     def note(self, y):
         self.maxy = max(self.maxy, y)
+
+    def note_symbol(self, x, y, defn, stub=5.08):
+        """Record an explicitly placed symbol's full extent, stubs included.
+
+        Grid-placed parts size the block through next_pos(); anything placed
+        with an explicit coordinate has to report itself or the box closes
+        across it. U1 is 60 mm of pins and would otherwise sit half outside.
+        """
+        pl = pins_of(defn)
+        if not pl:
+            return
+        xs = [p[3] for p in pl]
+        ys = [p[4] for p in pl]
+        self.maxx = max(self.maxx, x + max(xs) + stub + 12)
+        self.maxy = max(self.maxy, y - min(ys) + stub)
+        self.miny_hint = min(getattr(self, 'miny_hint', y), y - max(ys) - stub)
+
+    def at(self, dx, dy):
+        """Absolute sheet coordinate from a block-relative offset.
+
+        Positions are declared relative to the block that owns them, so moving
+        a block moves its contents. Absolute coordinates silently detach when
+        a block moves, which is how J1 ended up 300 mm from its own box.
+        """
+        return (snap(self.x0 + dx), snap(self.y0 + dy))
+
+    def grid_below(self, gap=14.0):
+        """Start the auto-placed grid below everything placed so far.
+
+        Derived from the block's recorded extent rather than a hand-picked
+        offset: a large IC is placed explicitly, then its passives flow
+        underneath it. A constant here goes stale the moment a symbol changes
+        size or a block moves, and the failure is a silent stub-end collision
+        rather than an error.
+        """
+        self.cy = snap(self.maxy + gap)
 
     def add(self, lib, sym, ref, val, netmap, fp="", dnp=False, at=None):
         pos = at or self.next_pos()
@@ -395,7 +446,7 @@ class Block:
         y1 = snap(self.maxy + 20)
         graphics.append(
             f'\t(rectangle\n\t\t(start {snap(self.x0)} {snap(self.y0)})\n'
-            f'\t\t(end {snap(self.x1)} {y1})\n'
+            f'\t\t(end {self.x1} {y1})\n'
             f'\t\t(stroke (width 0.254) (type dash))\n\t\t(fill (type none))\n'
             f'\t\t(uuid "{U()}")\n\t)')
         graphics.append(
@@ -406,21 +457,48 @@ class Block:
         return y1
 
 # =============================================================== PLACEMENT ===
-# A2 = 594 x 420 mm. Three columns x three bands; title block bottom-right.
+# A1 = 841 x 594 mm. Three columns x three bands, read in the normal order:
+# left to right, then down.
+#
+# THE BLOCK ORDER IS THE BOARD ORDER. Reading the sheet walks the PCB from the
+# antenna end to the probe tip:
+#
+#   board y   block                        sheet slot
+#   -------   ---------------------------  ----------
+#    12-17    RF MATCH + ANTENNA           band 1, col A
+#    17-30    MCU - nRF54L15               band 1, col B
+#    17-30    MCU SUPPORT                  band 1, col C   (sits against the MCU)
+#    17-30    CLOCKS                       band 2, col A   (X1/X2 flank the MCU)
+#    33-36    SWD                          band 2, col B
+#    41-64    PMIC - nPM1300               band 2, col C
+#    41-64    USB-C + SOLAR INPUT          band 3, col A
+#    41-64    BATTERY + CHARGE STATUS      band 3, col B
+#    63-73    SENSE FRONT END              band 3, col C
+#
+# The board is 42 x 155 mm - a vertical strip. Reproducing that proportion on a
+# sheet would give an unreadable column, so what is preserved is the ORDER and
+# the adjacency, not the aspect ratio. A part that neighbours another on the
+# board neighbours it here.
+#
+# A2 does not fit this: the three bands need 448 mm of the 420 mm A2 height.
 
-COL_A, COL_A_END = 18, 150
-COL_B, COL_B_END = 158, 345
-COL_C, COL_C_END = 353, 578
+COL_A, COL_A_END = 18, 290
+COL_B, COL_B_END = 298, 570
+COL_C, COL_C_END = 578, 830
 
-B_USB   = Block("USB-C + SOLAR INPUT",                        COL_A,  20, COL_A_END)
-B_PMIC  = Block("PMIC - nPM1300 (charger / power path / ADC)", COL_B, 20, COL_B_END)
-B_MCU   = Block("MCU - nRF54L15-QFAA",                        COL_C,  20, COL_C_END)
-B_BATT  = Block("BATTERY + CHARGE STATUS",                    COL_A, 190, COL_A_END)
-B_SENSE = Block("SENSE FRONT END - FDC1004",                  COL_B, 190, COL_B_END)
-B_SUP   = Block("MCU SUPPORT (Nordic ref cfg 1)",             COL_C, 190, COL_C_END)
-B_SWD   = Block("SWD",                                        COL_A, 316, COL_A_END)
-B_XTAL  = Block("CLOCKS",                                     COL_B, 316, COL_B_END)
-B_RF    = Block("RF MATCH + ANTENNA",                         COL_C, 316, COL_C_END)
+BAND_1, BAND_2, BAND_3 = 20, 172, 348
+
+# The RF chain is a signal path, so it stays one row: ANT -> L2 -> L3 -> L4 ->
+# ANT_FEED reads as the chain it is. Everything else groups into a rectangle.
+B_RF    = Block("RF MATCH + ANTENNA",                          COL_A, BAND_1, cols=7)
+B_MCU   = Block("MCU - nRF54L15-QFAA",                         COL_B, BAND_1)
+B_SUP   = Block("MCU SUPPORT (Nordic ref cfg 1)",              COL_C, BAND_1)
+B_XTAL  = Block("CLOCKS",                                      COL_A, BAND_2, cols=2)
+B_SWD   = Block("SWD",                                         COL_B, BAND_2, cols=2)
+B_PMIC  = Block("PMIC - nPM1300 (charger / power path / ADC)", COL_C, BAND_2)
+B_USB   = Block("USB-C + SOLAR INPUT",                         COL_A, BAND_3)
+B_BATT  = Block("BATTERY + CHARGE STATUS",                     COL_B, BAND_3, cols=3)
+B_SENSE = Block("SENSE FRONT END - FDC1004",                   COL_C, BAND_3)
 
 # ---- USB-C + solar -----------------------------------------------------------
 # Solar is fitted on every board. It was briefly DNP-by-default on the theory
@@ -431,7 +509,7 @@ B_RF    = Block("RF MATCH + ANTENNA",                         COL_C, 316, COL_C_
 SOLAR_DNP = False
 
 _x, _y, USBD = place("Connector", "USB_C_Receptacle", "J1", "USB-C receptacle",
-                     (34.0, 52.0), "")
+                     B_USB.at(16, 32), "")
 for num, nm, typ, px, py, rot in pins_of(USBD):
     n = nm.upper()
     net = ("VBUS_IN" if n.startswith("VBUS")
@@ -439,10 +517,10 @@ for num, nm, typ, px, py, rot in pins_of(USBD):
            else "USB_CC1" if n == "CC1" else "USB_CC2" if n == "CC2"
            else None)
     wire_pin(_x, _y, USBD, num, net)
-B_USB.note(_y - min(p[4] for p in pins_of(USBD)))
+B_USB.note_symbol(_x, _y, USBD)
 # CC1/CC2 go straight to the PMIC - it has internal 5.1k Rd pulldowns (sec 6.1.3).
 # Do NOT fit the usual discrete 5.1k pair.
-B_USB.cy = snap(106.0)
+B_USB.grid_below()
 B_USB.add("Device", "C_Small", "C20", "1uF/10V X5R", {"1": "VBUS_IN", "2": "GND"})
 # Solar -> 5 V pre-regulator -> D5 -> VBUS. Pin 1 = K, pin 2 = A.
 B_USB.add("Device", "D_Schottky_Small", "D5", "RB751V-40 Schottky",
@@ -477,7 +555,7 @@ B_USB.add("Device", "C_Small", "C31", "10uF/25V X5R",
 # harvest advantage buys nothing when the panel already makes 1700-35000x the
 # board's average load. See HARDWARE.md section 4.
 u5_x, u5_y, LDOD = place("tps7a16", "TPS7A1650", "U5", "TPS7A1650 5V LDO",
-                         (40.0, 162.0), dnp=SOLAR_DNP)
+                         B_USB.at(22, 142), dnp=SOLAR_DNP)
 for _n, _net in {
     "8": "SOLAR_PANEL",    # IN
     # EN tied to IN. SBVS171F Pin Functions: "If not used, the EN pin can be
@@ -496,11 +574,11 @@ for _n, _net in {
     "7": None,             # DELAY, no reset function needed -> leave open
 }.items():
     wire_pin(u5_x, u5_y, LDOD, _n, _net)
-B_USB.note(u5_y)
+B_USB.note_symbol(u5_x, u5_y, LDOD)
 
 # ---- PMIC --------------------------------------------------------------------
 npm_x, npm_y, NPMD = place("npm1300", "NPM1300-QEAA-R7", "U2", "nPM1300-QEAA",
-                           (196.0, 46.0), "footprints:QFN32_5X5_NOR")
+                           B_PMIC.at(38, 26), "footprints:QFN32_5X5_NOR")
 for n, net in {
     "1": None, "2": "GND", "3": None, "4": "VSYS", "5": "SW2",
     # Pin 6 is PVSS2, the BUCK2 POWER ground - not a general ground pin.
@@ -517,9 +595,9 @@ for n, net in {
     "31": None, "32": "+3V3", "33": "GND",
 }.items():
     wire_pin(npm_x, npm_y, NPMD, n, net)
-B_PMIC.note(npm_y - min(p[4] for p in pins_of(NPMD)))
+B_PMIC.note_symbol(npm_x, npm_y, NPMD)
 
-B_PMIC.cy = snap(106.0)
+B_PMIC.grid_below()
 for ref, sym, val, nm in [
     ("C21", "C_Small", "10uF/25V X5R", {"1": "VSYS", "2": "GND"}),
     ("C22", "C_Small", "10uF/25V X5R", {"1": "VSYS", "2": "GND"}),
@@ -536,7 +614,7 @@ for ref, sym, val, nm in [
 
 # ---- MCU ---------------------------------------------------------------------
 nrf_x, nrf_y, NRFD = place("nordic", "NRF54L15-QFAA-R", "U1", "nRF54L15-QFAA",
-                           (388.0, 60.0), "footprints:QFN48_6X6_NOR")
+                           B_MCU.at(90, 40), "footprints:QFN48_6X6_NOR")
 for n, net in {
     "1": "XL1", "2": "XL2", "3": None, "4": None, "5": None,
     "6": None, "7": None, "8": None, "9": None,
@@ -554,7 +632,7 @@ for n, net in {
     "46": "DCC", "47": "+3V3", "48": "+3V3", "49": "GND",
 }.items():
     wire_pin(nrf_x, nrf_y, NRFD, n, net)
-B_MCU.note(nrf_y - min(p[4] for p in pins_of(NRFD)))
+B_MCU.note_symbol(nrf_x, nrf_y, NRFD)
 
 # ---- MCU support -------------------------------------------------------------
 # Topology is Nordic QFAA reference layout 0.8, NOT a generic decoupling
@@ -609,13 +687,13 @@ B_BATT.add("Device", "LED_Small", "D4", "RED", {"1": "LED1_K", "2": "LED1_A"})
 # ---- sense front end ---------------------------------------------------------
 # Pinout per TI SNOSCY5 Table 4-1. CIN3/CIN4 unused -> datasheet says leave open.
 fd_x, fd_y, FDCD = place("fdc", "FDC1004", "U3", "FDC1004",
-                         (188.0, 216.0), "Package_SO:MSOP-10_3x3mm_P0.5mm")
+                         B_SENSE.at(30, 26), "Package_SO:MSOP-10_3x3mm_P0.5mm")
 for n, net in {"1": "SHLD", "2": "SENSE1", "3": "SENSE2", "4": None,
                "5": None, "6": "SHLD", "7": "GND", "8": "FDC_VDD",
                "9": "SCL", "10": "SDA"}.items():
     wire_pin(fd_x, fd_y, FDCD, n, net)
-B_SENSE.note(fd_y - min(p[4] for p in pins_of(FDCD)))
-B_SENSE.cy = snap(258.0)
+B_SENSE.note_symbol(fd_x, fd_y, FDCD)
+B_SENSE.grid_below()
 B_SENSE.add("Device", "C_Small", "C26", "1uF/10V X7R", {"1": "FDC_VDD", "2": "GND"})
 # TWI pull-ups sit on the ALWAYS-ON +3V3 rail, NOT on the switched FDC_VDD.
 # Putting them on FDC_VDD deadlocks the board: LOADSW1 is commanded over TWI, so
@@ -632,11 +710,11 @@ B_SENSE.add("Device", "R_Small", "R23", "4.7k to +3V3", {"1": "+3V3", "2": "SCL"
 # on every sleep cycle. Idle is 80 nA typ, about 0.7 mAh/yr - cheaper than the
 # level shifting the alternative would need.
 sht_x, sht_y, SHTD = place("sht4x", "SHT4x", "U4", "SHT45-AD1F",
-                           (268.0, 216.0),
+                           B_SENSE.at(110, 26),
                            "Sensor_Humidity:Sensirion_DFN-4_1.5x1.5mm_P0.8mm_SHT4x_NoCentralPad")
 for n, net in {"1": "SDA", "2": "SCL", "3": "+3V3", "4": "GND"}.items():
     wire_pin(sht_x, sht_y, SHTD, n, net)
-B_SENSE.note(sht_y - min(p[4] for p in pins_of(SHTD)))
+B_SENSE.note_symbol(sht_x, sht_y, SHTD)
 B_SENSE.add("Device", "C_Small", "C27", "100nF X7R", {"1": "+3V3", "2": "GND"})
 
 for ref, net in [("TP1", "SENSE1"), ("TP2", "SENSE2"), ("TP3", "SHLD")]:
@@ -646,7 +724,7 @@ for ref, net in [("TP1", "SENSE1"), ("TP2", "SENSE2"), ("TP3", "SHLD")]:
 B_SWD.add("Connector_Generic", "Conn_02x05_Odd_Even", "J4", "SWD 10p 1.27mm",
           {"1": "+3V3", "2": "SWDIO", "3": "GND", "4": "SWDCLK", "5": "GND",
            "6": "P2.07_SWO", "7": None, "8": None, "9": "GND",
-           "10": "SWD_RST"}, at=(70.0, 346.0))
+           "10": "SWD_RST"}, at=B_SWD.at(52, 30))
 
 # ---- clocks ------------------------------------------------------------------
 # No discrete load caps: both oscillators use the nRF54L15 internal trim banks.
@@ -716,14 +794,34 @@ B_USB.add("Connector", "TestPoint", "TP5", "SOLAR_5V", {"1": "SOLAR_5V"})
 _col = {}
 for _b in Block.ALL:
     _y1 = _b.finalize()
+    print("  block %-34s x %3d..%-3d  y %5.1f..%-5.1f  (h %5.1f)"
+          % (_b.title, _b.x0, _b.x1, _b.y0, _y1, _y1 - _b.y0))
     _col.setdefault(_b.x0, []).append((_b.y0, _y1, _b.title))
 for _x0, _spans in _col.items():
     _spans.sort()
     for (_a0, _a1, _at), (_b0, _b1, _bt) in zip(_spans, _spans[1:]):
         if _a1 >= _b0:
             raise SystemExit(
-                f"ABORT: block '{_at}' (ends {_a1}) overlaps '{_bt}' (starts {_b0})")
-print("layout: blocks sized, no column overlap")
+                f"ABORT: block '{_at}' (ends y{_a1}) overlaps '{_bt}' (starts y{_b0})")
+
+# Boxes size themselves to their contents in x as well as y now, so a block can
+# grow sideways into its neighbour. That is invisible in the netlist and only
+# shows up as two dashed rectangles crossing, so check it here.
+for _a in Block.ALL:
+    for _b in Block.ALL:
+        if _a is _b or _a.x0 >= _b.x0:
+            continue
+        if _a.x1 > _b.x0 and not (_a.maxy + 20 < _b.y0 or _b.maxy + 20 < _a.y0):
+            raise SystemExit(
+                f"ABORT: block '{_a.title}' (ends x{_a.x1}) overlaps "
+                f"'{_b.title}' (starts x{_b.x0}) and they share rows")
+
+_sheet_w, _sheet_h = 841, 594
+_over = [(b.title, b.x1, snap(b.maxy + 20)) for b in Block.ALL
+         if b.x1 > _sheet_w - 8 or b.maxy + 20 > _sheet_h - 8]
+if _over:
+    raise SystemExit("ABORT: block runs off the A1 sheet: %s" % _over)
+print("layout: blocks sized, no overlap, all inside A1")
 
 # ---------------------------------------------------------------- self-check
 import collections as _c
@@ -767,14 +865,15 @@ doc = f'''(kicad_sch
 \t(generator "eeschema")
 \t(generator_version "10.0")
 \t(uuid "{ROOT_UUID}")
-\t(paper "A2")
+\t(paper "A1")
 \t(title_block
 \t\t(title "Indoor Capacitive Soil Moisture Sensor")
-\t\t(date "2026-07-30")
-\t\t(rev "B")
+\t\t(date "2026-07-31")
+\t\t(rev "C")
 \t\t(comment 1 "nRF54L15-QFAA + nPM1300-QEAA + FDC1004 - BTHome v2 over BLE")
-\t\t(comment 2 "Connectivity by global label. Generated by tools_gen_sch.py")
-\t\t(comment 3 "See HARDWARE.md for rationale and datasheet citations")
+\t\t(comment 2 "Block order is board order: antenna end top-left to probe tip bottom-right")
+\t\t(comment 3 "Rails are power symbols; labels are signals. Generated by tools_gen_sch.py")
+\t\t(comment 4 "See HARDWARE.md for rationale, LAYOUT.md for the zone map")
 \t)
 \t(lib_symbols
 {chr(10).join(emit_lib_symbol(k, used_lib[k]) for k in sorted(used_lib))}
