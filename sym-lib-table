@@ -6,4 +6,5 @@
 	(lib (name "npm1300") (type "KiCad") (uri "${KIPRJMOD}/lib/nordic/NPM1300-QEAA-R7.kicad_sym") (options "") (descr "Nordic nPM1300-QEAA PMIC vendor symbol"))
 	(lib (name "fdc") (type "KiCad") (uri "${KIPRJMOD}/lib/FDC1004.kicad_sym") (options "") (descr "TI FDC1004 - pinout per SNOSCY5 Table 4-1"))
 	(lib (name "sht4x") (type "KiCad") (uri "${KIPRJMOD}/lib/SHT4x.kicad_sym") (options "") (descr "Sensirion SHT4x - pinout per datasheet v7.1 section 5.4"))
+	(lib (name "tps7a16") (type "KiCad") (uri "${KIPRJMOD}/lib/TPS7A1650.kicad_sym") (options "") (descr "TI TPS7A1650 solar pre-regulator - pinout per SBVS171F Pin Functions"))
 )

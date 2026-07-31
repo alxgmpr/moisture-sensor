@@ -60,6 +60,7 @@ SRC = {
     "npm1300":           top_level_symbols(f"{PROJ}/lib/nordic/NPM1300-QEAA-R7.kicad_sym"),
     "fdc":               top_level_symbols(f"{PROJ}/lib/FDC1004.kicad_sym"),
     "sht4x":             top_level_symbols(f"{PROJ}/lib/SHT4x.kicad_sym"),
+    "tps7a16":           top_level_symbols(f"{PROJ}/lib/TPS7A1650.kicad_sym"),
 }
 
 def pins_of(defn):
@@ -112,7 +113,14 @@ FOOTPRINTS = {
     "D3": "LED_SMD:LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder",
     "D4": "LED_SMD:LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder",
     "TH1": HS_R0603,
-    # solar OR-ing
+    # solar pre-regulator + OR-ing. U5's DGN land pattern was checked against
+    # TI SBVS171F DGN0008C: 8 pads 1.4 x 0.45 mm on 0.65 mm pitch, rows on
+    # 4.4 mm centres, thermal pad metal ~1.6 x 1.92 mm. KiCad's HVSSOP-8 is
+    # 1.45 x 0.5 on +/-2.15 with a 1.57 x 1.89 pad - generous on every
+    # dimension rather than short, so this one does NOT need a project
+    # footprint the way X1/X2 did.
+    "U5": "Package_SO:HVSSOP-8-1EP_3x3mm_P0.65mm_EP1.57x1.89mm",
+    "C30": HS_C0603, "C31": HS_C0603,
     "D5": "Diode_SMD:D_SOD-323_HandSoldering",
     # clocks. Standard pads on X2 (no hand variant for 2016-4pin exists).
     # Micro Crystal CM8V-T1A. The vendor land pattern (0.8 x 1.5 mm pads on
@@ -381,6 +389,12 @@ B_XTAL  = Block("CLOCKS",                                     COL_B, 316, COL_B_
 B_RF    = Block("RF MATCH + ANTENNA",                         COL_C, 316, COL_C_END)
 
 # ---- USB-C + solar -----------------------------------------------------------
+# The solar path is an option, not the default build. The panel is external and
+# lives in a window; most boards ship without it. Flip this to False for a
+# solar-equipped build - it is the only thing that has to change, and the
+# footprints stay on the board either way so a unit can be retrofitted.
+SOLAR_DNP = True
+
 _x, _y, USBD = place("Connector", "USB_C_Receptacle", "J1", "USB-C receptacle",
                      (34.0, 52.0), "")
 for num, nm, typ, px, py, rot in pins_of(USBD):
@@ -395,11 +409,59 @@ B_USB.note(_y - min(p[4] for p in pins_of(USBD)))
 # Do NOT fit the usual discrete 5.1k pair.
 B_USB.cy = snap(106.0)
 B_USB.add("Device", "C_Small", "C20", "1uF/10V X5R", {"1": "VBUS_IN", "2": "GND"})
-# Solar -> 5 V pre-regulator (TBD) -> D5 -> VBUS. Pin 1 = K, pin 2 = A.
+# Solar -> 5 V pre-regulator -> D5 -> VBUS. Pin 1 = K, pin 2 = A.
 B_USB.add("Device", "D_Schottky_Small", "D5", "RB751V-40 Schottky",
-          {"1": "VBUS_IN", "2": "SOLAR_5V"})
+          {"1": "VBUS_IN", "2": "SOLAR_5V"}, dnp=SOLAR_DNP)
+# J3 stays a JST GH. The barrel jack the user plugs into lives on the panel
+# pigtail, not on the board: a 5.5 x 2.1 mm jack is 11.0 mm tall (CUI PJ-102AH)
+# against 6.90 mm of clearance under the cell here, so putting it on the board
+# would have forced the whole solar block into the y 62-74 end band.
 B_USB.add("Connector_Generic", "Conn_01x02", "J3", "Solar panel",
-          {"1": "SOLAR_PANEL", "2": "GND"})
+          {"1": "SOLAR_PANEL", "2": "GND"}, dnp=SOLAR_DNP)
+# C30 is rated for whatever gets plugged into the barrel jack, not for the
+# panel. The Voltaic P126 is 9.2 V at its cold open-circuit worst case, but a
+# user-accessible DC jack is an unqualified input, and U5 itself is good to
+# 60 V. A 50 V input cap moves the ceiling off the capacitor and onto U5's
+# thermal limit (~19 V at the 100 mA VBUS current limit).
+# TI SBVS171F section 8.2.1.2.1.3: C_IN >= 0.1 uF required, 10 uF recommended;
+# C_OUT >= 2.2 uF required, 10 uF recommended. A 50 V 0603 derates hard - about
+# 1.5 uF at 12 V bias - which still clears the 0.1 uF input minimum by 15x.
+B_USB.add("Device", "C_Small", "C30", "4.7uF/50V X5R",
+          {"1": "SOLAR_PANEL", "2": "GND"}, dnp=SOLAR_DNP)
+B_USB.add("Device", "C_Small", "C31", "10uF/25V X5R",
+          {"1": "SOLAR_5V", "2": "GND"}, dnp=SOLAR_DNP)
+
+# U5 - solar 5 V pre-regulator. Placed explicitly rather than through the block
+# grid: the symbol is 40 mm wide and would overrun a grid cell.
+#
+# LDO, not the buck. With the Voltaic P126 the TPS62122 does now clear the
+# 1.5x V_IN rule (1.5 x 9.23 V = 13.9 V against 15 V operating), so this is a
+# judgement call rather than a disqualification. It stays an LDO because the
+# thing on the other end of that cable is a barrel jack: 17 V of headroom is
+# thin against whatever adapter someone finds in a drawer, and the buck's ~1.3x
+# harvest advantage buys nothing when the panel already makes 1700-35000x the
+# board's average load. See HARDWARE.md section 4.
+u5_x, u5_y, LDOD = place("tps7a16", "TPS7A1650", "U5", "TPS7A1650 5V LDO",
+                         (40.0, 162.0), dnp=SOLAR_DNP)
+for _n, _net in {
+    "8": "SOLAR_PANEL",    # IN
+    # EN tied to IN. SBVS171F Pin Functions: "If not used, the EN pin can be
+    # connected to IN. Make sure that VEN <= VIN at all times" - tying them
+    # together satisfies that identically, and EN-to-IN abs max is -62/+0.3 V.
+    "5": "SOLAR_PANEL",
+    "1": "SOLAR_5V",       # OUT
+    "4": "GND",
+    "9": "GND",            # PowerPAD - "TI highly recommends connecting to GND"
+    # Pin 2 is FB/DNC. On the FIXED-output versions the datasheet is explicit:
+    # "Do not connect to this pin. Do not route this pin to any electrical net,
+    # not even GND or IN." So this is a real no-connect, not a convenience one.
+    "2": None,
+    "3": None,             # PG open-drain, unused -> leave open
+    "6": None,             # NC
+    "7": None,             # DELAY, no reset function needed -> leave open
+}.items():
+    wire_pin(u5_x, u5_y, LDOD, _n, _net)
+B_USB.note(u5_y)
 
 # ---- PMIC --------------------------------------------------------------------
 npm_x, npm_y, NPMD = place("npm1300", "NPM1300-QEAA-R7", "U2", "nPM1300-QEAA",
@@ -599,7 +661,10 @@ B_PMIC.add("Device", "NetTie_2", "NT3", "GND_PVSS2 to GND (at the via)",
 # off GND left it with nothing but passive pins to drive it. GND_C9 does not -
 # it carries only C9 pin 2 and the net tie, both passive. GND_PVSS2 needs one
 # for the same reason as GND_PA: U2 pin 6 is a power input.
-for blk, net in [(B_USB, "VBUS_IN"), (B_USB, "SOLAR_5V"), (B_USB, "SOLAR_PANEL"),
+# SOLAR_5V no longer needs a flag: U5 pin 1 is a power OUTPUT and drives it.
+# Leaving the flag in place would put two power outputs on one net, which ERC
+# reports as a conflict.
+for blk, net in [(B_USB, "VBUS_IN"), (B_USB, "SOLAR_PANEL"),
                  (B_BATT, "VBAT"), (B_PMIC, "GND"), (B_PMIC, "VSYS"),
                  (B_SUP, "SWD_RST"), (B_RF, "GND_PA"),
                  (B_PMIC, "GND_PVSS2")]:

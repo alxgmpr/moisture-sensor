@@ -79,12 +79,33 @@ what the NT1 clearance exemption in the `.kicad_dru` is for. **NT2 must stay on
 B.Cu.** And the U1 centre-pad via array must not bridge GND_PA to GND anywhere
 except at NT1.
 
-### 2. Solar panel, then the pre-regulator
+### 2. Solar — selected; U5/C30/C31 still need placing
 
-The only part still fully unselected. Needs **V_OC 6–12 V under indoor light** —
-not at AM1.5, which is what distributor tables quote. The pre-regulator choice
-(TPS62122 buck or TPS7A1650 LDO) is gated on it. The 8 × 8 mm reserve, J3, D5
-and the `SOLAR_5V` net are all already on the board, so nothing blocks on this.
+**Panel: Voltaic Systems P126** (Adafruit 5366), 6 V 2 W ETFE, V_OC 8.59 V at
+STC. **Pre-regulator: U5 = TI TPS7A1650**, fixed 5.0 V LDO, HVSSOP-8, with
+C30 4.7 µF/50 V and C31 10 µF/25 V. See HARDWARE.md §4 and BOM.md.
+
+The panel moved *outdoors* — it VHB-mounts in a window on a lead, which removed
+the 200 lx constraint that had forced an amorphous panel and let crystalline
+silicon win on power per area, price and durability. At 136 × 112 mm it is
+larger than the whole enclosure, which is fine: a box in a plant pot is under
+the foliage, the worst place in the room for a panel.
+
+**Solar is an option, not the default build.** `SOLAR_DNP = True` in
+`tools_gen_sch.py` marks J3, D5, U5, C30 and C31 DNP; footprints stay so a unit
+can be retrofitted without a respin. Flip that one flag for a solar build.
+
+**The barrel jack is on the panel pigtail, not the board** — a CUI PJ-102AH is
+11.0 mm tall against 6.90 mm clear under the cell at J3, so it would have forced
+the whole solar block into the y 62–74 end band. J3 stays the 4.25 mm JST GH.
+
+**Still to do: U5, C30 and C31 exist in the schematic but are not placed on the
+PCB.** The ~8 × 8 mm reserve near J3 is still empty and they fit it. That is the
+only outstanding solar work.
+
+**Firmware, and it is the opposite of the USB path:** U5 is a 100 mA part, so do
+**not** raise the VBUS input current limit when running from solar. The 100 mA
+reset default is already correct there.
 
 ### 3. Stackup — resolved, and the answer changed
 
