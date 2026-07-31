@@ -61,6 +61,30 @@ SRC = {
     "fdc":               top_level_symbols(f"{PROJ}/lib/FDC1004.kicad_sym"),
     "sht4x":             top_level_symbols(f"{PROJ}/lib/SHT4x.kicad_sym"),
     "tps7a16":           top_level_symbols(f"{PROJ}/lib/TPS7A1650.kicad_sym"),
+    # Project power symbols for the rails KiCad's stock library does not carry.
+    # Regenerate with tools_gen_power_lib.py.
+    "power_local":       top_level_symbols(f"{PROJ}/lib/power_local.kicad_sym"),
+}
+
+# Every rail gets a power SYMBOL, never a text label.
+#
+# A power symbol is checked by ERC as a rail and carries its own graphic, so a
+# reader sees "this is the 3V3 supply" rather than having to match a string.
+# A plain label is only a name: before this, "+3V3" appeared 21 times as text,
+# and a single typo in one of those copies would have silently split the rail
+# into two nets that ERC had no reason to complain about.
+#
+# Maps net name -> (library, symbol). GND is the stock one and points down;
+# the rest point up.
+RAIL_SYMBOL = {
+    "GND":         ("power", "GND"),
+    "+3V3":        ("power", "+3V3"),
+    "VSYS":        ("power_local", "VSYS"),
+    "VBAT":        ("power_local", "VBAT"),
+    "VBUS_IN":     ("power_local", "VBUS_IN"),
+    "SOLAR_PANEL": ("power_local", "SOLAR_PANEL"),
+    "SOLAR_5V":    ("power_local", "SOLAR_5V"),
+    "FDC_VDD":     ("power_local", "FDC_VDD"),
 }
 
 def pins_of(defn):
@@ -260,14 +284,14 @@ def stub(x, y, defn, number, net, length=5.08):
         f'\t\t(uuid "{U()}")\n\t)')
     conn.append((a, b, net))
 
-def place_power(sym, at):
-    """Place a power symbol (GND, PWR_FLAG). Its pin sits at the origin."""
-    defn = SRC["power"][sym]
-    used_lib[f"power:{sym}"] = defn
+def place_power(sym, at, lib="power"):
+    """Place a power symbol (a rail, GND, or PWR_FLAG). Its pin sits at the origin."""
+    defn = SRC[lib][sym]
+    used_lib[f"{lib}:{sym}"] = defn
     x, y = at
     pwr_n[0] += 1
     parts.append(f'''\t(symbol
-\t\t(lib_id "power:{sym}")
+\t\t(lib_id "{lib}:{sym}")
 \t\t(at {x} {y} 0)
 \t\t(unit 1)
 \t\t(exclude_from_sim no)
@@ -294,13 +318,18 @@ def place_power(sym, at):
 \t\t)
 \t)''')
 
-def gnd(x, y, defn, number, length=5.08):
-    """Stub to a real GND power symbol rather than a text label."""
+def rail(x, y, defn, number, net, length=5.08):
+    """Stub to a real power symbol rather than a text label.
+
+    Used for every net in RAIL_SYMBOL. The symbol carries the net name itself,
+    so no label is emitted and there is no string to get wrong.
+    """
+    lib, sym = RAIL_SYMBOL[net]
     p = _pin(defn, number)
     a, b, _, _ = _endpoint(x, y, p, length)
     _wire(a, b)
-    place_power("GND", b)
-    conn.append((a, b, "GND"))
+    place_power(sym, b, lib)
+    conn.append((a, b, net))
 
 def nc(x, y, defn, number):
     """No-connect flag directly on an intentionally unused pin."""
@@ -309,11 +338,16 @@ def nc(x, y, defn, number):
     nocons.append(f'\t(no_connect (at {a[0]} {a[1]}) (uuid "{U()}"))')
 
 def wire_pin(x, y, defn, number, net):
-    """Dispatch: None -> no-connect, "GND" -> ground symbol, else net label."""
+    """Dispatch: None -> no-connect, a rail -> power symbol, else net label.
+
+    Signals still use labels: a label is the right tool for a point-to-point
+    net that crosses the sheet. Rails do not, because a rail is a rail
+    everywhere it appears and should look like one.
+    """
     if net is None:
         nc(x, y, defn, number)
-    elif net == "GND":
-        gnd(x, y, defn, number)
+    elif net in RAIL_SYMBOL:
+        rail(x, y, defn, number, net)
     else:
         stub(x, y, defn, number, net)
 

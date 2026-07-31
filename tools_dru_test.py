@@ -44,7 +44,11 @@ def run(name, items):
 # net-code table, and codes shift whenever a part is added or removed - which
 # silently re-pointed half these tests at the wrong nets once already.
 ANT,RFA,GNDPA,GND,NRESET   = "/ANT","/RF_A","/GND_PA","GND","/NRESET"
-SENSE1,SHLD,SW2,VBAT,PVSS2 = "/SENSE1","/SHLD","/SW2","/VBAT","/GND_PVSS2"
+# VBAT carries no leading slash: it is a global power symbol, not a local label.
+# The slashed nets below still are local labels. Getting this wrong does not
+# error - the rule simply never matches and the fire-test fails, which is what
+# this harness exists to catch.
+SENSE1,SHLD,SW2,VBAT,PVSS2 = "/SENSE1","/SHLD","/SW2","VBAT","/GND_PVSS2"
 GNDC9,XC1,XC2              = "/GND_C9","/XC1","/XC2"
 Y=90.0   # In2.Cu band in Zone B - now inside ZoneB_3V3, still empty of tracks
 ZA=45.0  # Zone A: no pour on In2.Cu or B.Cu, no rule areas

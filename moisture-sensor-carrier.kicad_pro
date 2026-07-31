@@ -653,10 +653,6 @@
         "pattern": "/RF_B"
       },
       {
-        "netclass": "RF",
-        "pattern": "/RF_C"
-      },
-      {
         "netclass": "SENSE",
         "pattern": "/SENSE1"
       },
@@ -682,31 +678,31 @@
       },
       {
         "netclass": "Power",
-        "pattern": "/VBAT"
+        "pattern": "VBAT"
       },
       {
         "netclass": "Power",
-        "pattern": "/VSYS"
+        "pattern": "VSYS"
       },
       {
         "netclass": "Power",
-        "pattern": "/VBUS_IN"
+        "pattern": "VBUS_IN"
       },
       {
         "netclass": "Power",
-        "pattern": "/+3V3"
+        "pattern": "+3V3"
       },
       {
         "netclass": "Power",
-        "pattern": "/FDC_VDD"
+        "pattern": "FDC_VDD"
       },
       {
         "netclass": "Power",
-        "pattern": "/SOLAR_5V"
+        "pattern": "SOLAR_5V"
       },
       {
         "netclass": "Power",
-        "pattern": "/SOLAR_PANEL"
+        "pattern": "SOLAR_PANEL"
       },
       {
         "netclass": "Power",

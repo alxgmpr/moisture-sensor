@@ -107,8 +107,14 @@
 	(constraint track_width (min 0.8mm))
 	# A.Net is NOT a valid property - it parses but evaluates false forever, so
 	# this rule was dead. Every other rule in this file uses A.NetName. Caught by
-	# injecting a 0.5 mm /VBAT track: 0 violations with A.Net, 2 with A.NetName.
-	(condition "A.NetName == '/VBAT' || A.NetName == '/VBUS_IN' || A.NetName == '/VSYS'"))
+	# injecting a 0.5 mm VBAT track: 0 violations with A.Net, 2 with A.NetName.
+	#
+	# These three lost their leading slash when they became power SYMBOLS rather
+	# than text labels: a local label on the root sheet is "/VBAT", a global
+	# power symbol is "VBAT". The rule matched neither for a while, which is the
+	# same silent-dead-rule failure the comment above describes. Nets that are
+	# still local labels - GND_PVSS2, GND_PA, GND_C9 - keep the slash.
+	(condition "A.NetName == 'VBAT' || A.NetName == 'VBUS_IN' || A.NetName == 'VSYS'"))
 
 # The buck switching node should be short and fat, never long and thin.
 (rule "Switch node width"
