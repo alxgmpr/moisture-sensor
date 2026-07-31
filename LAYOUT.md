@@ -517,6 +517,32 @@ to get R2.0 back is to narrow the probe to about **16.8 mm**, which leaves the
 turns out to crack in service, narrowing the electrodes is the lever, not the
 fillet.
 
+### No sharp corners anywhere on the outline
+
+The whole Edge.Cuts loop is tangent-continuous — **36 elements, 14 lines and
+22 arcs, zero sharp vertices**. FR4 cracks from sharp corners, the router dislikes
+them, and the probe is an 81 mm cantilever pushed into soil, so every angular
+junction is filleted.
+
+Twelve vertices needed it, all convex:
+
+| where | turn | fillet |
+|---|---|---|
+| 6 × corner relief meeting a straight board edge | 75.52° | R1.0 |
+| 2 × corner relief meeting the shoulder flat | 75.52° | R0.25 (the flat is only 0.409 mm) |
+| 2 × probe spear shoulder | 49.40° | R0.5 |
+| 2 × probe tip | 40.60° | R0.5 |
+
+Rounding a *convex* corner removes material, so the edge moves away from the
+enclosure wall and clearance can only improve — measured, it went from
+**0.2624 mm to 0.3476 mm** at the board's underside. 1.713 mm² of board was
+removed in total.
+
+Regenerate with `.venv-cq/bin/python tools_round_corners.py`. It detects sharp
+vertices by comparing incoming and outgoing tangents rather than filleting
+everything, so the jut-out fillets, the shoulder fillets and the relief joins that
+are already tangent are left untouched.
+
 ### Height budget — the thing that bit
 
 Board on the 4.00 mm posts: 4.00 + 1.6 (PCB) leaves **11.70 mm** to the lid.
