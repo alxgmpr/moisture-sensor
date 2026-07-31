@@ -609,7 +609,17 @@ L10.
 ## 10. Open items
 
 - **USB-C breaks IP68.** A port cutout in a watertight box needs a sealed cover,
-  or J1 becomes a service-only connector reached by opening the lid.
+  or J1 becomes a service-only connector reached by opening the lid. The same
+  applies to J3 on a solar-equipped build — but J3 is DNP on most units
+  (BOM.md), so on those the wall stays intact.
+- **The solar reserve is still empty.** U5, C30 and C31 are in the schematic but
+  not placed; the ~8 × 8 mm block near J3 in the Power-in band is where they go.
+  J3 and D5 do not move. Note the parts are DNP, so this is footprint placement
+  only — nothing is populated on a standard build.
+  **A barrel jack was considered here and rejected on height:** a CUI PJ-102AH
+  is 11.0 mm tall against the 6.90 mm clear under the cell at J3's position, so
+  it would have had to move to the y 62–74 band next to J2. It lives on the
+  panel pigtail instead. See HARDWARE.md §4.
 - **SHT45 in a sealed box measures the box, not the room.** Temperature still
   works; RH does not. Needs a PTFE membrane vent in the lid over U4 — the
   sensor's own `-AD1F` membrane protects the die but does not help if the

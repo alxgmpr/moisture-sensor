@@ -383,6 +383,12 @@ B_XTAL  = Block("CLOCKS",                                     COL_B, 316, COL_B_
 B_RF    = Block("RF MATCH + ANTENNA",                         COL_C, 316, COL_C_END)
 
 # ---- USB-C + solar -----------------------------------------------------------
+# The solar path is an option, not the default build. The panel is external and
+# lives in a window; most boards ship without it. Flip this to False for a
+# solar-equipped build - it is the only thing that has to change, and the
+# footprints stay on the board either way so a unit can be retrofitted.
+SOLAR_DNP = True
+
 _x, _y, USBD = place("Connector", "USB_C_Receptacle", "J1", "USB-C receptacle",
                      (34.0, 52.0), "")
 for num, nm, typ, px, py, rot in pins_of(USBD):
@@ -397,32 +403,40 @@ B_USB.note(_y - min(p[4] for p in pins_of(USBD)))
 # Do NOT fit the usual discrete 5.1k pair.
 B_USB.cy = snap(106.0)
 B_USB.add("Device", "C_Small", "C20", "1uF/10V X5R", {"1": "VBUS_IN", "2": "GND"})
-# Solar -> 5 V pre-regulator (TBD) -> D5 -> VBUS. Pin 1 = K, pin 2 = A.
+# Solar -> 5 V pre-regulator -> D5 -> VBUS. Pin 1 = K, pin 2 = A.
 B_USB.add("Device", "D_Schottky_Small", "D5", "RB751V-40 Schottky",
-          {"1": "VBUS_IN", "2": "SOLAR_5V"})
+          {"1": "VBUS_IN", "2": "SOLAR_5V"}, dnp=SOLAR_DNP)
+# J3 stays a JST GH. The barrel jack the user plugs into lives on the panel
+# pigtail, not on the board: a 5.5 x 2.1 mm jack is 11.0 mm tall (CUI PJ-102AH)
+# against 6.90 mm of clearance under the cell here, so putting it on the board
+# would have forced the whole solar block into the y 62-74 end band.
 B_USB.add("Connector_Generic", "Conn_01x02", "J3", "Solar panel",
-          {"1": "SOLAR_PANEL", "2": "GND"})
-# C30 sits on the panel side, so it is rated for the panel's cold open-circuit
-# voltage (16 cells x 0.99 V = 15.8 V worst case), not for 5 V. Both are the
-# same 10 uF / 25 V X5R 0603 already used at C21/C22/C24 - no new BOM line.
-# TI SBVS171F: C_IN >= 0.1 uF required, 10 uF recommended; C_OUT >= 2.2 uF
-# required, 10 uF recommended. A 25 V 0603 derates to roughly 3-5 uF at these
-# biases, which clears both minimums.
-B_USB.add("Device", "C_Small", "C30", "10uF/25V X5R", {"1": "SOLAR_PANEL", "2": "GND"})
-B_USB.add("Device", "C_Small", "C31", "10uF/25V X5R", {"1": "SOLAR_5V", "2": "GND"})
+          {"1": "SOLAR_PANEL", "2": "GND"}, dnp=SOLAR_DNP)
+# C30 is rated for whatever gets plugged into the barrel jack, not for the
+# panel. The Voltaic P126 is 9.2 V at its cold open-circuit worst case, but a
+# user-accessible DC jack is an unqualified input, and U5 itself is good to
+# 60 V. A 50 V input cap moves the ceiling off the capacitor and onto U5's
+# thermal limit (~19 V at the 100 mA VBUS current limit).
+# TI SBVS171F section 8.2.1.2.1.3: C_IN >= 0.1 uF required, 10 uF recommended;
+# C_OUT >= 2.2 uF required, 10 uF recommended. A 50 V 0603 derates hard - about
+# 1.5 uF at 12 V bias - which still clears the 0.1 uF input minimum by 15x.
+B_USB.add("Device", "C_Small", "C30", "4.7uF/50V X5R",
+          {"1": "SOLAR_PANEL", "2": "GND"}, dnp=SOLAR_DNP)
+B_USB.add("Device", "C_Small", "C31", "10uF/25V X5R",
+          {"1": "SOLAR_5V", "2": "GND"}, dnp=SOLAR_DNP)
 
 # U5 - solar 5 V pre-regulator. Placed explicitly rather than through the block
 # grid: the symbol is 40 mm wide and would overrun a grid cell.
 #
-# LDO, not the buck. The buck harvests more from a current-limited source, but
-# the panel that meets the 6-12 V V_OC requirement is 16 a-Si cells, whose
-# open-circuit voltage in direct sun at 0 C is 15.8 V. HARDWARE.md's rule is
-# V_IN rating >= 1.5x V_OC at the coldest condition, i.e. >= 23.7 V. The
-# TPS62122 is 15 V operating / 17 V absolute max, so it fails that rule on any
-# panel with enough cells to hold 5 V indoors. The TPS7A16 is 60 V. See
-# HARDWARE.md section 4.
+# LDO, not the buck. With the Voltaic P126 the TPS62122 does now clear the
+# 1.5x V_IN rule (1.5 x 9.23 V = 13.9 V against 15 V operating), so this is a
+# judgement call rather than a disqualification. It stays an LDO because the
+# thing on the other end of that cable is a barrel jack: 17 V of headroom is
+# thin against whatever adapter someone finds in a drawer, and the buck's ~1.3x
+# harvest advantage buys nothing when the panel already makes 1700-35000x the
+# board's average load. See HARDWARE.md section 4.
 u5_x, u5_y, LDOD = place("tps7a16", "TPS7A1650", "U5", "TPS7A1650 5V LDO",
-                         (40.0, 162.0))
+                         (40.0, 162.0), dnp=SOLAR_DNP)
 for _n, _net in {
     "8": "SOLAR_PANEL",    # IN
     # EN tied to IN. SBVS171F Pin Functions: "If not used, the EN pin can be

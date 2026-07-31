@@ -152,9 +152,11 @@ not 300 mA. And BAS70WS / BAT42WS / BAT43WS all quote **1 V** forward drop, whic
 defeats the point of a Schottky here.
 
 Forward-voltage figures across a distributor table are quoted at different test
-currents (1 mA to 1 A) and are not directly comparable. The ranking above holds
-at the low currents indoor solar produces; pull the V_f vs I_f curve if the drop
-turns out to matter at the real operating point.
+currents (1 mA to 1 A) and are not directly comparable. The 370 mV figure is
+quoted at 1 mA; the solar path now runs up to the 100 mA VBUS current limit
+(HARDWARE.md §4), where the drop will be higher. Pull the V_f vs I_f curve
+before assuming VBUS lands at 4.63 V under a charging load — 300 mA is the
+part's rating, so headroom exists, but the number will move.
 
 ### X2 — Epson FA-128, 32 MHz, C_L 8 pF
 
@@ -250,70 +252,76 @@ under-cell gap must not overlap `CELL_RECT`.
 | L10 | 2.2 µH, I_sat > 350 mA, I_max > 200 mA, DCR ≤ 400 mΩ | **Murata DFE201610P-2R2M** (footprint already set) |
 | D5 | Schottky, low V_f, SOD-323, ~200 mA | **Panjit RB751V-40_R1_00001** — selected |
 | J1 | USB-C receptacle, 16P USB2.0 | **HRO TYPE-C-31-M-12** (footprint already set) |
-| U5 | 5.0 V out, V_IN ≥ 23.7 V, low I_Q | **TI TPS7A1650DGNR** — selected, see below |
-| Panel | V_OC 6–12 V indoors, published low-lux data | **2 × Panasonic AM-1815CA in series** — selected |
+| U5 | 5.0 V out, V_IN ≥ 13.9 V, tolerant of a wrong adapter | **TI TPS7A1650DGNR** — selected, see below |
+| Panel | V_OC 6–12 V, external, window-mounted | **Voltaic Systems P126** (Adafruit 5366) — selected |
 | Cell | ≤ 6.5 mm thick, ≤ 34.92 × 74.92 mm | **Adafruit 1578**, 500 mAh, 29 × 36 × 4.8 mm — selected |
 | Enclosure | **Hammond 1551WKBK**, IP68 PC, 80 × 40 × 22 mm | + 4× nylon #2 screws for the antenna-end holes |
 
 Nothing on this board is open now. **U5, C30 and C31 are in the schematic but
 not placed on the PCB** — the ~8 × 8 mm reserve near J3 is still empty. No
-inductor is needed after all; the LDO wins on input rating (below), so the
-reserve only has to hold an HVSSOP-8 and two 0603s.
+inductor is needed; the LDO wins (below), so the reserve only has to hold an
+HVSSOP-8 and two 0603s.
 
-### Panel — 2 × Panasonic AM-1815CA in series
+### The solar path is DNP by default
 
-Amorton amorphous-silicon indoor glass cells, `CA` terminal (lead wire fitted).
-Everything below is from Panasonic's Amorton brochure (`Brochures_Amorton_E_2`),
-which publishes both a per-cell table and a per-part table at **FL 200 lx,
-25 °C** — the low-lux data that distributor tables do not carry.
+The panel is external and lives in a window. Most boards ship without it, so
+**J3, D5, U5, C30 and C31 are all marked DNP**. `SOLAR_DNP` at the top of the
+solar block in `tools_gen_sch.py` is the single switch; set it to `False` and
+re-run for a solar-equipped build. The footprints stay on the board either way,
+so a unit can be retrofitted without a respin.
 
-| | Requirement (HARDWARE.md §4) | 2 × AM-1815CA |
+TP5 stays populated — it is a bare pad with nothing to buy.
+
+**The barrel jack is not on the board.** A CUI PJ-102AH is 11.0 mm tall with a
+10.7 × 4.7 mm footprint, against the 6.90 mm of clearance under the cell at J3's
+position (LAYOUT.md §9). Putting it on the board would have forced the whole
+solar block into the y 62–74 end band next to J2. It goes on the panel pigtail
+instead, J3 stays the 4.25 mm JST GH it already is, and **no PCB placement or
+routing changes at all**.
+
+### Panel — Voltaic Systems P126 (Adafruit 5366)
+
+6 V, 2 W ETFE monocrystalline, external, window-mounted. All figures from the
+P126 datasheet (April 2023) at STC, 1000 W/m² 25 °C.
+
+| Symbol | Parameter | Nominal | Expected¹ |
+|---|---|---|---|
+| V_OC | Open-circuit voltage | **8.59 V** | 8.34 V |
+| V_P | Voltage at MPP | **7.09 V** | 6.84 V |
+| I_P | Current at MPP | 0.34 A | 0.29 A |
+| I_SC | Short-circuit current | 0.37 A | 0.33 A |
+| W_P | Max power | 2.38 W | 2.31 W |
+| η | Cell efficiency | 21.5 % (SunPower Maxeon) | — |
+
+¹ Voltaic's "expected" column already accounts for cell cutting, encapsulation
+losses and the worst cell in the series. Design to it.
+
+| | Requirement | P126 |
 |---|---|---|
-| V_OC indoors | 6–12 V | **10.0 V** at 200 lx (2 × 5.0 V) |
-| Loaded voltage | > 5.0 V + LDO dropout | **6.0 V** at 200 lx (V_ope, 2 × 3.0 V) |
-| Current at that point | as much as possible | 45.7 µA → **274 µW** |
-| I_SC | — | 48.2 µA at 200 lx |
-| Cells in series | many small, not few large | **16** (8 per module) |
-| V_OC worst case | ≤ 12 V indoors, ≪ 22 V VBUS abs max | 15.8 V at AM1.5 / 0 °C |
-| Size | fit near a 1551WK | 58.1 × 48.6 × 1.1 mm each, 7.8 g |
+| V_OC | 6–12 V | 8.59 V, mid-band |
+| Loaded voltage | > 5.0 V + LDO dropout across the useful light range | 7.09 V at STC, ~5.9 V at ~5 klx |
+| Worst-case V_OC | ≪ 22 V VBUS abs max | 9.23 V at 0 °C |
+| Power | ≫ 69 µW average load (HARDWARE.md §7) | 2.38 W STC, ~119 mW on a dull day |
+| Environment | sunlit windowsill | IPX7, −40…+85 °C, 10+ yr UV tested |
+| Cells in series | — | 12 (8.59 / 12 = 0.716 V/cell) |
 
-**Cell count is read off the part number, not guessed.** The brochure's
-"How to look at the Products name" page decodes the second digit of an `AM-1xxx`
-indoor part as the number of series cells, so AM-18xx is 8. It checks against the
-per-cell datum: 8 × 0.63 V/cell = 5.04 V vs the catalogued 5.0 V.
+Mechanical: **136 × 112 × 3.1 mm**, 79 g, ±0.5 mm, G110 VHB gasket mounting.
 
-**The worst-case 15.8 V is the number that picked the regulator.** From the same
-brochure: 0.89 V/cell at AM1.5 25 °C, V_OC tempco −0.45 %/°C, so a panel in
-direct sun through glass at 0 °C reaches 0.990 V/cell × 16 = 15.8 V. The
-HARDWARE.md rule is V_IN ≥ 1.5 × that = **23.7 V**, which rules out every 17 V
-buck. 15.8 V is also comfortably under the nPM1300's 22 V VBUS absolute maximum,
-so a shorted pass element cannot take the PMIC with it.
+**Larger than the enclosure in both axes** — the 1551WK is 80 × 40 mm. The panel
+VHB-mounts to a window and reaches the sensor on its own lead. See HARDWARE.md
+§4 for why that is the right arrangement rather than a compromise.
 
-**It does not fit on the enclosure.** One module is 58.1 × 48.6 mm against the
-1551WK's 80 × 40 mm lid. The panel mounts remotely on a lead into J3 — see
-HARDWARE.md §4 for the wiring and the glass-substrate caveat.
+**Its plug is 3.5 × 1.1 mm, not 5.5 × 2.1 mm.** Build the pigtail with a
+3.5 × 1.1 mm jack, or buy Voltaic's 3.5 → 5.5/2.1 adapter lead if you want the
+larger barrel. Do not fit a 5.5 mm jack and expect the panel to mate.
 
-**Smaller alternatives, all electrically identical.** Series cell count sets the
-voltage and area sets the current, so any pair of 8-cell indoor Amortons gives
-the same 10.0 V / 6.0 V and needs no change to U5 or its caps. Only the current
-moves — and with it the illuminance at which the solar path starts netting charge
-against the nPM1300's 1.8 mA VBUS overhead (HARDWARE.md §4):
-
-| Pair | Each (mm) | Pair (mm) | I_ope at 200 lx | P at 200 lx | Starts working at | On the 1551WK lid? |
-|---|---|---|---|---|---|---|
-| 2 × AM-1819CA | 31.0 × 24.0 | 62.0 × 24.0 | 6.9 µA | 41 µW | ~30,000 lx | **yes** |
-| 2 × AM-1801CA | 53.0 × 25.0 | 106.0 × 25.0 | 18.9 µA | 113 µW | ~13,000 lx | no |
-| **2 × AM-1815CA** | 58.1 × 48.6 | 116.2 × 48.6 | **45.7 µA** | **274 µW** | **~6,000 lx** | no |
-
-AM-1819CA is the only one that fits the lid, and at ~30,000 lx it needs direct
-outdoor sun to do anything — which a box sitting in a plant pot will not see.
-That is why the selection is the large pair on a lead rather than the small pair
-on the box. AM-1801CA is the middle option if 116 mm is too much panel.
-
-All three are stocked (AM-1801CA/AM-1819CA at DigiKey as `-DGK-E`, AM-1815CA at
-Mouser). **Distributor tables for these parts are wrong** — DigiKey lists
-AM-1819CA as "20.7 µW 4.9 V" and one listing gives AM-1815CA as "4.9 V, 4.2 µA,
-126 µW", whose three numbers do not multiply. Use the brochure.
+**Why not the Panasonic Amorton pair this document previously specified.** That
+choice was correct for the problem as originally posed — hold 5 V at 200 lx of
+*room* light, where amorphous silicon's 0.63 V/cell beats crystalline's ~0.4 V.
+Once the panel moved to a window at 5,000–50,000 lx the constraint disappeared
+and c-Si wins on every axis: roughly 2× the power per unit area, a fraction of
+the cost, a laminate built to sit in sunlight, and a low enough V_OC that the
+input-rating rule stops being the deciding factor.
 
 ### U5 — TI TPS7A1650DGNR
 
@@ -321,26 +329,38 @@ Fixed 5.0 V, HVSSOP-8 (DGN) with PowerPAD. All figures from SBVS171F.
 
 | | Requirement | TPS7A1650 | Source |
 |---|---|---|---|
-| Output | 5.0 V fixed | 5.0 V, ±2 % | §1 features, fixed-voltage option |
-| V_IN operating | ≥ 23.7 V (1.5 × panel V_OC cold) | **3–60 V** | §6.3 Recommended Operating Conditions |
-| V_IN absolute max | > 15.8 V | 62 V | §6.1 |
-| Dropout at panel currents | ≪ 1.0 V of headroom at 200 lx | 60 mV at 20 mA | §6.5, V_DO |
-| Ground current | secondary, but < panel I_SC | 5 µA typ, **15 µA max** at I_OUT = 10 µA | §6.5, I_GND |
-| Shutdown current | — | 1 µA | §1 features |
-| Enable | tie on, no logic available | EN → IN; V_EN_HI 1.2 V min, I_EN ±1 µA | §7, Pin Functions; §6.5 |
-| Output current | ≥ 45.7 µA, headroom for bright light | 100 mA | §1 features |
+| Output | 5.0 V fixed | 5.0 V, ±2 % | §1 features |
+| V_IN operating | ≥ 13.9 V (1.5 × panel V_OC cold) | **3–60 V** | §6.3 |
+| V_IN absolute max | > 9.23 V | 62 V | §6.1 |
+| Dropout | ≪ the 2.1 V headroom at STC | 60 mV at 20 mA | §6.5, V_DO |
+| Ground current | secondary | 5 µA typ, 15 µA max at I_OUT = 10 µA | §6.5, I_GND |
+| Output current | ≥ the 100 mA VBUS limit | 100 mA; I_LIM 225 mA typ / 101 mA min | §1, §7.3.5 |
+| Thermal | survive a wrong adapter | R_θJA 66.2 °C/W, T_SD 125 °C | §6.4, §6.5 |
+| Enable | tie on, no logic available | EN → IN; V_EN_HI 1.2 V min, I_EN ±1 µA | §7 Pin Functions, §6.5 |
 | Package | fits the 8 × 8 mm reserve | 3 × 3 mm HVSSOP-8 | DGN0008C |
 | Status | orderable | Active / Production, −40…125 °C | Package option addendum |
 
-**Chosen on input rating, not on efficiency.** The buck harvests roughly 1.5×
-more from the same panel, and it still loses: TPS62122 is 2–15 V recommended
-operating and 17 V absolute max, and this panel's cold bright V_OC is 15.8 V on
-its own. Reducing the cell count to fit the buck caps it at 10 cells, whose
-loaded voltage at 200 lx is ~4.2 V — below 5 V, so it would not regulate indoors.
-Full working in HARDWARE.md §4.
+**Chosen over the TPS62122 buck on input rating, deliberately, after the buck
+qualified.** With the P126 the buck clears the 1.5× rule (1.5 × 9.23 = 13.9 V
+against 15 V recommended operating), so this is not a disqualification the way it
+was with the 16-cell amorphous panel. It loses on judgement:
 
-**Note the datasheet's operating range is 2–15 V, not the 2–17 V this document
-carried before.** 17 V is the absolute maximum (SLVSAD5A §7.1).
+- The user-facing barrel jack is an unqualified DC input. A 19 V laptop brick
+  destroys a 17 V part; the TPS7A1650 rides it out at T_J ≈ 118 °C, inside its
+  125 °C shutdown, still regulating.
+- The 1.3× harvest advantage buys nothing — the panel already delivers
+  1,700–35,000× the board's average load, and the path is capped at 100 mA.
+- It would add an inductor, two feedback resistors and a C_ff, plus a project
+  footprint: KiCad's `WSON-6-1EP_2x2mm_P0.65mm_EP1x1.6mm` is 0.375 × 0.4 mm pads
+  on ±0.8875 mm against TI's DRV0006 0.45 × 0.3 mm and 1.95 mm span. Same class
+  of mismatch as the 2016 crystal.
+- A second switching node next to a capacitive front end that LAYOUT.md §6
+  already fences off from SW2.
+
+**U5 is a 100 mA part, and that sets a firmware rule.** The nPM1300's VBUS
+current limit defaults to IBUS100MA and reverts there on every reset — which is
+exactly right for this path. **Do not raise it when running from solar.** See
+HARDWARE.md §4; this is the opposite of the USB path's requirement.
 
 Pin handling, from the SBVS171F Pin Functions table:
 
@@ -348,9 +368,9 @@ Pin handling, from the SBVS171F Pin Functions table:
 |---|---|---|---|
 | 1 | OUT | `SOLAR_5V` | — |
 | 2 | FB/DNC | **nothing** | Fixed versions: *"Do not connect to this pin. Do not route this pin to any electrical net, not even GND or IN."* |
-| 3 | PG | open | Open-collector, unused. Datasheet allows open or GND. A pull-up would need a rail and burn current |
+| 3 | PG | open | Open-collector, unused. A pull-up would need a rail and burn current |
 | 4 | GND | GND | — |
-| 5 | EN | `SOLAR_PANEL` | *"If not used, the EN pin can be connected to IN. Make sure that V_EN ≤ V_IN at all times"* — tying them together satisfies that identically. EN-to-IN abs max −62/+0.3 V |
+| 5 | EN | `SOLAR_PANEL` | *"If not used, the EN pin can be connected to IN. Make sure that V_EN ≤ V_IN at all times"* — tying them satisfies that identically |
 | 6 | NC | open | Datasheet: open or any voltage between GND and IN |
 | 7 | DELAY | open | PG delay unused |
 | 8 | IN | `SOLAR_PANEL` | — |
@@ -361,29 +381,25 @@ specifies 8 pads 1.4 × 0.45 mm on 0.65 mm pitch, rows on 4.4 mm centres, therma
 pad metal ≈ 1.6 × 1.92 mm. KiCad's
 `Package_SO:HVSSOP-8-1EP_3x3mm_P0.65mm_EP1.57x1.89mm` is 1.45 × 0.5 mm on
 ±2.15 mm with a 1.57 × 1.89 mm pad — generous on every dimension rather than
-short, unlike the 2016 crystal land pattern that forced a vendor footprint for
-X2.
+short, unlike the 2016 land pattern that forced a vendor footprint for X2.
 
 ### C30, C31 — LDO input and output capacitors
 
-Both **10 µF / 25 V X5R 0603**, the same part already fitted at C21/C22/C24, so
-this adds no BOM line.
-
 | | Datasheet requirement (SBVS171F §8.2.1.2.1.3) | Fitted |
 |---|---|---|
-| C30, input | ≥ 0.1 µF for stability, 10 µF recommended | 10 µF nominal, ~3 µF at 10 V bias |
-| C31, output | ≥ 2.2 µF for stability, 10 µF recommended | 10 µF nominal, ~5 µF at 5 V bias |
+| C30, input | ≥ 0.1 µF for stability, 10 µF recommended | **4.7 µF / 50 V X5R 0603**, ~1.5 µF at 12 V bias |
+| C31, output | ≥ 2.2 µF for stability, 10 µF recommended | **10 µF / 25 V X5R 0603**, ~5 µF at 5 V bias |
 
-**C30 is rated for the panel, not for 5 V.** It sits on `SOLAR_PANEL`, which
-reaches 15.8 V open-circuit at the cold bright worst case, so the 25 V part is
-the requirement rather than a convenience. C31 could be 16 V but is the same part
-for consolidation. Check the manufacturer's DC-bias curve rather than the
-nameplate, as with C21/C22/C24 — a 25 V 0603 10 µF derates heavily, and the
-derated values above are what have to clear the two minimums.
+**C30 is 50 V because of the barrel jack, not the panel.** The P126 tops out at
+9.23 V, which a 25 V part covers easily — but a user-accessible DC jack is an
+unqualified input, and U5 is good to 60 V. Rating C30 at 50 V moves the ceiling
+off the capacitor and onto U5's thermal limit, which lands at about 19 V at the
+100 mA VBUS current limit. It costs one BOM line; C31 stays the same 10 µF/25 V
+X5R already at C21/C22/C24.
 
-The input capacitor can be increased without limit for a solar source; it buffers
-panel energy while VBUS is transiently loaded. 10 µF is the starting point, not
-a ceiling.
+Check the manufacturer's DC-bias curve rather than the nameplate, as with
+C21/C22/C24 — a 50 V 0603 derates hard, and the derated values above are what
+have to clear the two minimums. They do, by 15× and 2× respectively.
 
 ---
 
@@ -412,15 +428,15 @@ a ceiling.
 | C25 | 100nF X5R | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
 | C26 | 1uF/10V X7R | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
 | C27 | 100nF X7R | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
-| C30 | 10uF/25V X5R | `C_0603_1608Metric_Pad1.08x0.95mm_HandSolder` |
-| C31 | 10uF/25V X5R | `C_0603_1608Metric_Pad1.08x0.95mm_HandSolder` |
+| C30 | 4.7uF/50V X5R — **DNP** | `C_0603_1608Metric_Pad1.08x0.95mm_HandSolder` |
+| C31 | 10uF/25V X5R — **DNP** | `C_0603_1608Metric_Pad1.08x0.95mm_HandSolder` |
 | D3 | GREEN | `LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder` |
 | D4 | RED | `LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder` |
-| D5 | RB751V-40 Schottky | `D_SOD-323_HandSoldering` |
+| D5 | RB751V-40 Schottky — **DNP** | `D_SOD-323_HandSoldering` |
 | FB1 | FB 120R@100MHz | `L_0402_1005Metric_Pad0.77x0.64mm_HandSolder` |
 | J1 | USB-C receptacle | `USB_C_Receptacle_HRO_TYPE-C-31-M-12` |
 | J2 | Battery - Adafruit 1578 | `JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical` |
-| J3 | Solar panel | `JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal` |
+| J3 | Solar panel — **DNP** | `JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal` |
 | J4 | SWD 10p 1.27mm | `Tag-Connect_TC2050-IDC-NL_2x05_P1.27mm_Vertical` |
 | L1 | LQM18PN4R7MFRL 4.7uH | `L_0603_1608Metric_Pad1.05x0.95mm_HandSolder` |
 | L2 | 2.7nH LQP03HQ2N7B02 | `L_0201_0603Metric` |
@@ -446,7 +462,7 @@ a ceiling.
 | U2 | nPM1300-QEAA | `QFN32_5X5_NOR` |
 | U3 | FDC1004 | `MSOP-10_3x3mm_P0.5mm` |
 | U4 | SHT45-AD1F | `Sensirion_DFN-4_1.5x1.5mm_P0.8mm_SHT4x_NoCentralPad` |
-| U5 | TPS7A1650 5V LDO | `HVSSOP-8-1EP_3x3mm_P0.65mm_EP1.57x1.89mm` |
+| U5 | TPS7A1650 5V LDO — **DNP** | `HVSSOP-8-1EP_3x3mm_P0.65mm_EP1.57x1.89mm` |
 | X1 | CM8V-T1A 32.768kHz CL=7pF 20ppm | `XTAL_CM8V-T1A_2012` |
 | X2 | FA-128 32MHz CL=8pF | `Crystal_SMD_2016-4Pin_2.0x1.6mm` |
 
@@ -467,15 +483,25 @@ copper keepout is yours to draw. See LAYOUT.md §8.
 so they only draw when firmware turns them on.
 
 **U5 / C30 / C31** — in the schematic, **not yet placed on the PCB**. The
-~8 × 8 mm reserve near J3 is still empty. `SOLAR_5V` now has a real driver
-(U5 pin 1 is a power output), so the PWR_FLAG that used to hold that net up in
-ERC has been removed — two power outputs on one net is an ERC conflict.
+~8 × 8 mm reserve near J3 is still empty. J3 and D5 keep their existing places
+and routing. `SOLAR_5V` now has a real driver (U5 pin 1 is a power output), so
+the PWR_FLAG that used to hold that net up in ERC has been removed — two power
+outputs on one net is an ERC conflict.
 
-**Solar panel** — off-board, not in the component table. Order **two**
-AM-1815CA and wire them in series; a single one is 5.0 V open-circuit indoors and
-will not clear the LDO. Also needed and not on the board: a JST GH SHR-02V-S-B
-housing with two SSH-003T-P0.2 contacts for the pigtail, and a rigid flat backing
-for the two glass modules.
+**Solar panel and pigtail** — off-board, not in the component table, and only
+needed for a solar-equipped build:
+
+| Item | Part | Note |
+|---|---|---|
+| Panel | Voltaic Systems **P126** / Adafruit **5366** | 6 V 2 W ETFE, VHB-mounts to a window |
+| Barrel jack | 3.5 × 1.1 mm inline socket | **Matches the P126's own plug.** A 5.5 × 2.1 mm jack will not mate |
+| — or — | Voltaic 3.5 → 5.5/2.1 adapter lead | If you want the larger common barrel instead |
+| Housing | JST **SHR-02V-S-B** | Mates J3 |
+| Contacts | JST **SSH-003T-P0.2** ×2 | 26 AWG |
+
+Polarity is set once, when the pigtail is crimped, and centre-positive is the
+convention. J3 has no keying against a reversed panel and U5's IN pin is −0.3 V
+absolute maximum, so mark the housing at build time.
 
 **J4** — Tag-Connect TC2050-IDC-NL, standard 10-pin Cortex pinout: pin 1 VTref,
 2 SWDIO, 3 GND, 4 SWDCLK, 5 GND, 6 SWO, 7/8 NC, 9 GND, 10 nRESET. Nothing is

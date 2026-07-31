@@ -25,6 +25,9 @@ USB-C VBUS feeds nPM1300 VBUS directly. The solar branch carries the only diode 
 D5 blocks solar from back-feeding VBUS, and USB cannot back-feed the panel. One
 diode, on the branch that can afford the drop.
 
+**The whole solar branch is DNP on most builds** (§4). USB is the only populated
+input unless a unit is specifically built with the external window panel.
+
 **The 3.3 V rail must come from BUCK2, not BUCK1.** This is not a preference. The
 VSET resistor tables are asymmetric:
 
@@ -328,201 +331,178 @@ distinction drives §4.
 
 ## 4. Solar input
 
-Solar feeds VBUS through a 5 V pre-regulator, because the nPM1300's VBUS operates
-over 4.0-5.5 V (Table 6, VBUSOP).
+Solar is an **option, not the default build**. The panel is external, sits in a
+window on a lead, and plugs into a barrel jack on that lead. Most boards ship
+with the whole path unpopulated — `SOLAR_DNP = True` in `tools_gen_sch.py` marks
+J3, D5, U5, C30 and C31 DNP. The footprints stay on the board, so a unit can be
+retrofitted without a respin.
 
 ```
-2 x AM-1815CA in series --> J3 --> U5 TPS7A1650 (5.0 V) --> D5 --> VBUS
-      16 a-Si cells                  C30 in, C31 out
+Voltaic P126 (6 V, 2 W, ETFE)          on a windowsill
+  |  3.5 x 1.1 mm plug on its own lead
+  v
+3.5 x 1.1 mm barrel jack --- 2-core --- JST GH plug        pigtail, off-board
+                                          |
+                                          v
+                       J3 --> C30 --> U5 TPS7A1650 --> C31 --> D5 --> VBUS
+                                          5.0 V              0.37 V
 ```
 
-**Selected:** panel **2 × Panasonic AM-1815CA wired in series**, pre-regulator
-**U5 = TI TPS7A1650** (fixed 5.0 V LDO, DGN/HVSSOP-8). Support: C30 10 µF/25 V
-X5R on the panel side, C31 10 µF/25 V X5R on the 5 V side. No inductor, no
-feedback network — the 5.0 V part is fixed-output.
+**Selected:** panel **Voltaic Systems P126** (Adafruit 5366), pre-regulator
+**U5 = TI TPS7A1650**, C30 4.7 µF/50 V X5R, C31 10 µF/25 V X5R. No inductor and
+no feedback network — the 5.0 V part is fixed-output.
 
-### How the panel actually becomes 5 V
+### Why the panel moved outdoors, and what that changed
 
-A bare panel cannot feed VBUS directly. VBUS operates over **4.0–5.5 V** with OVP
-at 5.5 V — a 1.5 V window — while a panel's terminal voltage swings with both
-illumination and load. It needs active regulation.
+The earlier selection here was a pair of Panasonic AM-1815CA amorphous cells,
+chosen to hold 5 V under **200 lx of room light**. That constraint is gone: a
+window is 5,000–50,000 lx, one to two orders of magnitude up, and at those levels
+the reasoning inverts.
 
-**Panel voltage is set by cell count; panel current by area and light.** Indoors,
-current collapses (1–10 W/m² vs 1000 outdoors) but voltage holds up reasonably
-until you load it. So the panel should be **many small cells in series** — a high
-V_OC, low-current part — which keeps its loaded terminal voltage above the
-regulator's dropout across a much wider range of light than a few large cells at
-the same power.
+- **Crystalline silicon wins again.** a-Si is the right technology at 200 lx
+  because it holds 0.63 V/cell there against c-Si's ~0.4 V. At 5 klx and above
+  c-Si holds its voltage fine and delivers roughly 2× the power per unit area
+  (21.5 % cell efficiency against a-Si's 7.9 % at AM1.5), for a fraction of the
+  price, in a laminate meant to sit in sunlight.
+- **Energy stopped being the binding constraint.** The board averages 69 µW
+  (§7). The P126 makes 2.38 W at STC and ~119 mW on a dull day through glass —
+  1,700× the average load at the *bottom* of the range. Harvest efficiency no
+  longer decides anything.
+- **The 6–12 V V_OC target survives intact**, but it now applies at STC rather
+  than at 200 lx. The P126 is 8.59 V.
 
-Target: **V_OC roughly 6–12 V**, regulated down to 5.0 V, then through D5's
-0.37 V drop so VBUS sees ~4.7 V, mid-window. Absolute ceiling is 22 V (VBUS abs
-max) so a regulator failure cannot destroy the PMIC.
+### Panel — Voltaic Systems P126
 
-### Why amorphous silicon, and why 16 cells
+All figures from the P126 datasheet (April 2023), at STC (1000 W/m², 25 °C):
 
-Panasonic's Amorton brochure publishes **per-cell** figures for both light
-levels, which is what makes the indoor operating point derivable rather than
-guessed. For the glass substrate:
+| Symbol | Parameter | Nominal | Expected¹ |
+|---|---|---|---|
+| V_OC | Open-circuit voltage | **8.59 V** | 8.34 V |
+| V_P | Voltage at MPP | **7.09 V** | 6.84 V |
+| I_P | Current at MPP | 0.34 A | 0.29 A |
+| I_SC | Short-circuit current | 0.37 A | 0.33 A |
+| W_P | Max power | 2.38 W | 2.31 W |
+| η | Cell efficiency | 21.5 % | — |
 
-| | V_OC | I_SC | P_max | Condition |
-|---|---|---|---|---|
-| Indoor | **0.63 V/cell** | 17.0 µA/cm² | 7.3 µW/cm² | FL 200 lx, 25 °C |
-| Outdoor | **0.89 V/cell** | 14.8 mA/cm² | 7.89 mW/cm² | AM1.5, 100 mW/cm², 25 °C |
+¹ Voltaic's "expected" column is adjusted for cell cutting, encapsulation
+transmissivity and the worst cell in the series. Design to it, not to nominal.
 
-Temperature coefficients, same source: **V_OC −0.45 %/°C, I_SC +0.08 %/°C**.
+Mechanical: **136 × 112 × 3.1 mm**, 79 g, ±0.5 mm, IPX7, −40 to +85 °C, mounted
+with a G110 VHB gasket, 10+ years of third-party UV exposure testing. 12
+SunPower Maxeon cells in series — 8.59 V / 12 = 0.716 V/cell, which is the
+Maxeon signature and confirms the cell count.
 
-0.63 V/cell at 200 lx is the number that decides the technology. Small-cell
-crystalline silicon holds roughly 0.4 V/cell at the same illuminance, because
-c-Si starts at ~0.6 V/cell at AM1.5 and loses more of it logarithmically. a-Si
-needs about 60 % as many cells for the same indoor V_OC, which is the whole
-reason the indoor-harvesting market is amorphous.
+**Mounting, relative to the Hammond 1551WK: it isn't.** At 136 × 112 mm the
+panel is larger than the 80 × 40 mm enclosure in both axes. It VHB-mounts to a
+window or sill and reaches the sensor on its own lead. That is the right
+arrangement anyway — a box sitting in a plant pot is under the foliage, which is
+the worst place in the room for a panel.
 
-The 6–12 V requirement therefore sets the cell count directly:
+**The panel's own connector is 3.5 × 1.1 mm, not 5.5 × 2.1 mm.** Build the
+pigtail with a 3.5 × 1.1 mm jack so the P126 plugs straight in. If you want the
+larger and more common 5.5 × 2.1 mm barrel instead, Voltaic sell a 3.5 → 5.5/2.1
+adapter lead; do not simply fit a 5.5 mm jack and expect the panel to mate.
+
+### Why the barrel jack is not on the PCB
+
+A CUI PJ-102AH (the standard 5.5 × 2.1 mm jack) is **11.0 × 14.4 × 9.0 mm** with
+its barrel axis 6.50 mm above the board and a 10.7 × 4.7 mm footprint. The board
+has 11.70 mm to the lid, but J3 sits inside the cell shadow where only
+**6.90 mm** is clear (LAYOUT.md §9). An 11 mm jack therefore could not stay in
+the Power-in band at all — it would have had to move to the y 62–74 end strip
+alongside J2, dragging the whole solar block with it, and its wall hole would
+have run to ~16 mm in a 17.30 mm interior, into the lid seal.
+
+So J3 stays the 4.25 mm JST GH it already is, already placed and routed, and the
+barrel jack lives on the pigtail. The board does not change at all, and a
+connector that is DNP on most units does not consume 10.7 × 4.7 mm of a 34 mm
+wide board.
+
+### Pre-regulator — the buck now qualifies, and still loses
+
+VBUS operates over **4.0–5.5 V** (Table 6, VBUSOP) with OVP at 5.5 V — a 1.5 V
+window — so the panel has to be regulated. After D5's 0.37 V drop VBUS sees
+~4.63 V, mid-window.
+
+Worst case for V_OC is brightest and coldest. Taking STC at 0 °C, with the
+generic crystalline-silicon coefficient of −0.30 %/°C **[assumed — the P126
+datasheet does not publish a temperature coefficient]**:
 
 ```
-N >= 6.0 / 0.63 = 9.5   ->   N >= 10
-N <= 12.0 / 0.63 = 19   ->   N <= 19
+8.59 V x (1 + 0.0030 x 25) = 9.23 V
+1.5 x 9.23                 = 13.9 V   required V_IN rating
 ```
-
-The brochure's own part-number decoder confirms the second digit of an `AM-1xxx`
-indoor part is the series cell count, so **AM-18xx is 8 cells** and the
-catalogued 5.0 V V_OC is exactly 8 × 0.63. **Two 8-cell parts in series is 16
-cells**, sitting mid-band at 10.0 V.
-
-Note the catalogue tops out at 8 cells for indoor parts. There is no single
-stocked Amorton that reaches 6 V indoors — the series pair is not a shortcut,
-it is the only way to get there from the catalogue.
-
-### The indoor operating point
-
-Straight from the Amorton indoor product list (FL 200 lx, 25 °C), for one
-AM-1815 and for the series pair:
-
-| | One AM-1815 | 2 in series |
-|---|---|---|
-| V_OC | 5.0 V | **10.0 V** |
-| I_SC | 48.2 µA | 48.2 µA |
-| Operating point V_ope–I_ope | 3.0 V – 45.7 µA | **6.0 V – 45.7 µA = 274 µW** |
-| Size | 58.1 × 48.6 × 1.1 mm | 116.2 × 48.6 mm |
-| Weight | 7.8 g | 15.6 g |
-
-**The loaded terminal voltage at 200 lx is 6.0 V, not the 10.0 V open-circuit
-figure**, and 6.0 V is the number the regulator has to work from. It clears the
-LDO's 5.0 V + dropout with 0.5 V to spare — this panel holds 5 V under load at
-room-light levels, which is the thing a 5 V-at-AM1.5 panel cannot do.
-
-Worst case for V_OC is brightest and coldest. Take AM1.5 (a panel in direct sun
-behind window glass) at 0 °C:
-
-```
-0.89 V/cell x (1 + 0.0045 x 25) = 0.990 V/cell
-16 cells                        = 15.8 V
-```
-
-Two consequences fall out of that 15.8 V:
-
-- **It is below the nPM1300's 22 V VBUS absolute maximum.** If U5's pass element
-  fails short, the panel drives VBUS directly and the PMIC survives. That was
-  the point of capping panel V_OC at ~12 V indoors.
-- **It is the number the 1.5× V_IN rule applies to**: 1.5 × 15.8 = **23.7 V**.
-
-### Buck vs LDO — the V_IN rule decides it, not efficiency
-
-A panel is a current-limited source, which inverts the usual intuition:
-
-- An **LDO** passes whatever current the panel produces, at reduced voltage. Loss
-  is (V_panel − 5) × I. At the 200 lx operating point that is (6.0−5.0)/6.0 =
-  **17 %**; in bright light the panel voltage rises and the loss goes to ~45 %.
-- A **buck** converts the excess *voltage* into extra *current*, so it harvests
-  meaningfully more from the same panel — roughly 1.5× here.
-
-The buck is the better harvester and it still loses, because of the input rating:
 
 | | TPS62122 (buck) | TPS7A1650 (LDO) |
 |---|---|---|
-| V_IN, recommended operating | 2–**15 V** (SLVSAD5A §7.3) | 3–**60 V** (SBVS171F §6.3) |
-| V_IN, absolute max | 17 V (§7.1) | 62 V (§6.1) |
-| Needed: 1.5 × 15.8 V | 23.7 V — **fails** | 23.7 V — passes, 3.8× margin |
-| Panel worst-case V_OC alone | 15.8 V — already over the 15 V operating max | 15.8 V — 26 % of range |
+| V_IN recommended operating | 2–15 V (SLVSAD5A §7.3) | 3–60 V (SBVS171F §6.3) |
+| V_IN absolute max | 17 V (§7.1) | 62 V (§6.1) |
+| Against the 13.9 V rule | **passes**, 8 % margin | passes, 4.3× margin |
+| Panel's 9.23 V as % of operating max | 62 % | 15 % |
+| Extra parts | inductor, 2 feedback resistors, C_ff | none |
+| Footprint | KiCad's WSON-6 does **not** match TI's DRV0006 land pattern (0.375 × 0.4 on ±0.8875 vs TI's 0.45 × 0.3, span 2.15 vs 1.95) — needs a project footprint | KiCad's HVSSOP-8 matches DGN0008C |
+| Harvest | ~1.3× better | baseline |
 
-**The TPS62122 is out on its input rating.** Not marginally: the panel's cold
-bright open-circuit voltage exceeds the part's recommended operating maximum on
-its own, before any margin rule is applied. Trading cells away to fit it does not
-work either — the arithmetic above caps the buck at N ≤ 10 (1.5 × 10 × 0.99 =
-14.85 V), and a 10-cell panel's loaded voltage at 200 lx is only ~4.2 V, so it
-cannot make 5 V at room light at all. There is no cell count that satisfies both
-the 6–12 V band and the buck's 1.5× rule while still regulating indoors.
+**Unlike the earlier indoor panel, the buck is no longer disqualified.** It is
+rejected on judgement, and the judgement is about the barrel jack:
 
-Two corrections to what this section previously said. TPS62122 is **2–15 V**
-operating; the 17 V figure quoted before is the absolute maximum. And the
-motorboating concern does not arise, because the part is not being fitted — its
-UVLO is 2.5 V rising / 1.85 V falling, far below this panel's V_OC at any usable
-light, so it would not have chattered on that account anyway.
+- **A user-accessible DC jack is an unqualified input.** 17 V of absolute
+  maximum is thin against whatever adapter is in the drawer. A 12 V wall wart is
+  fine on either part; a 19 V laptop brick destroys the TPS62122 and leaves the
+  TPS7A1650 at T_J ≈ 118 °C, under its 125 °C thermal shutdown, still regulating.
+- **The 1.3× harvest advantage is worth nothing here.** The panel delivers
+  1,700–35,000× the board's average load, and the path is capped at 100 mA
+  regardless (below). Converting surplus into more surplus is not a benefit.
+- **A second switcher is a liability on this board specifically.** LAYOUT.md §6
+  writes a 3 mm SENSE-to-SWITCH keepout for the nPM1300's SW2 node because the
+  capacitive front end is sensitive to it. Putting another switching node in the
+  solar reserve near J3 adds a coupling path for no gain.
+- Four fewer parts and no project footprint to build.
 
-I_Q is secondary, as previously noted: with the panel dark the regulator is
-unpowered and D5 isolates it from the cell, so it cannot contribute to standing
-drain. For the record the TPS7A1650 is 5 µA typ / **15 µA max** ground current
-(SBVS171F §6.5, I_GND at I_OUT = 10 µA), which is 11 %/33 % of the panel's
-45.7 µA at 200 lx — significant against the harvest, irrelevant against the
-battery budget in §7.
+**U5 electrical, from SBVS171F.** V_OUT 5.0 V ±2 %; I_GND 5 µA typ / 15 µA max
+at I_OUT = 10 µA (§6.5); V_DO 60 mV at 20 mA (§6.5); I_LIM 225 mA typ, 101 mA
+min (§7.3.5); T_SD 125 °C; R_θJA 66.2 °C/W in DGN (§6.4). EN is tied to IN, which
+the Pin Functions table sanctions directly: *"If not used, the EN pin can be
+connected to IN. Make sure that V_EN ≤ V_IN at all times."* Pin 2 (FB/DNC) is a
+hard no-connect on the fixed-output versions — *"Do not route this pin to any
+electrical net, not even GND or IN."*
 
-### What the panel actually delivers, and the illuminance it needs
+Dissipation at the 100 mA ceiling, R_θJA 66.2 °C/W, 25 °C ambient:
 
-This is the number that should set expectations. Whenever VBUS is valid the
-nPM1300 draws **I_SUSP = 1.8 mA typ** from it (Table 9) — and that is the
-*minimised* figure, only reached after firmware writes VBUSSUSPEND (§6.1.4). The
-charger's own minimum is ICHG = 32 mA (§6.2.3). So the panel has to clear
+| Input | P_D | ΔT | T_J |
+|---|---|---|---|
+| Panel at STC, ~8.4 V under load | 340 mW | 22.5 °C | 47.5 °C |
+| 12 V adapter | 700 mW | 46.3 °C | 71.3 °C |
+| 19 V laptop brick | 1.40 W | 92.7 °C | 117.7 °C |
 
-```
-1.8 mA x 4.7 V           = 8.5 mW at VBUS
-/ 0.55 (LDO at high light) = 15.5 mW at U5's input
-```
+The practical input ceiling is therefore about **19 V on thermal grounds**, not
+the 60 V the part is rated for. C30 at 50 V is no longer what limits it.
 
-before the solar path nets any charge at all. The AM-1815CA pair makes 274 µW at
-200 lx. Amorton output scales slightly super-linearly with illuminance — the
-brochure's two per-cell datums give P ∝ E^1.12 between 200 lx and AM1.5 — so the
-crossover lands at roughly **6,000 lx**.
+I_Q remains secondary, as before: with the panel dark U5 is unpowered and D5
+isolates it from the cell, so it cannot contribute to standing drain.
 
-6,000 lx is a bright windowsill in daylight, not room lighting. Under 200–500 lx
-of room light the panel produces about 30× less than the PMIC's own VBUS
-overhead, and the solar input contributes nothing no matter which regulator is
-fitted. That is a consequence of feeding a microwatt source into a USB charger
-input, not of the parts chosen here.
+### The 100 mA ceiling, and what firmware must do
 
-The practical instruction that follows: **the panel goes on a window, not on the
-pot.** Panel size is the only lever, and it buys illuminance linearly — see the
-alternatives table in BOM.md.
+**U5 is a 100 mA part.** The nPM1300's VBUS input current limit defaults to
+IBUS100MA (95 mA min, Table 9) and reverts to it on every reset and cable event
+(§6.1.3). On the solar path that default is exactly right, and the firmware
+requirement is the opposite of the USB path:
 
-**Set the VBUS input current limit to match the panel.** The nPM1300 defaults to
-IBUS100MA on every reset and after every cable event (§3), so firmware must
-re-apply the limit on each boot. That applies to the solar path exactly as it
-does to the USB path, and it is the difference between the panel charging and the
-panel browning out the input.
+> **Do not raise the VBUS input current limit when running from solar.** Asking
+> for 500 mA from a 100 mA regulator collapses VBUS below VBUSMIN and the input
+> drops out. On USB the limit must be re-applied on every boot; on solar the
+> reset default is already correct, so the safe firmware behaviour is to leave
+> it alone unless USB has actually been detected on CC1/CC2.
 
-### Mounting
+100 mA at VBUS is ~110 mA of charge current into a 4.2 V cell, against the
+32–800 mA the charger can be set to. Either cap ICHG to ~100 mA on the solar
+path, or leave it at the USB setting and let the nPM1300's dynamic power-path
+management (§6.2.9) throttle to the input limit.
 
-**The panel does not fit the Hammond 1551WK.** One AM-1815CA is 58.1 × 48.6 mm
-against an 80 × 40 mm lid — it overhangs the short axis by 8.6 mm before the
-second cell is considered. It mounts remotely:
+A shorted pass element in U5 puts the panel's 9.23 V worst case straight onto
+VBUS, well under the 22 V VBUS absolute maximum, so it cannot destroy the PMIC.
+That remains true up to any adapter below 22 V.
 
-- Both cells adhered side by side to a rigid flat backing. The substrate is
-  1.1 mm **glass** and will crack if the backing flexes.
-- Series-wired cell to cell: module A negative to module B positive.
-- A two-conductor lead to a JST GH SHR-02V-S-B housing, plugged into J3.
-- The `CA` suffix is the brochure's "C type terminal with a lead wire, mainly for
-  indoor products", so both modules ship with leads already attached and nothing
-  is soldered to the glass.
-
-Polarity is set once, when the pigtail is crimped. J3 is a plain 2-pin connector
-with no keying against a reversed panel, and U5's IN pin is −0.3 V absolute
-maximum, so get it right at build time and mark the housing.
-
-One caveat on using indoor parts at window illuminance: the brochure states
-"since Amorton is designed for indoor use, please [use] it under 1,000 lux". The
-outdoor `AM-5xxx`/`AM-7xxx` line is the light-soak-stabilised one. The indoor
-line will still work at 6,000 lx; expect more Staebler-Wronski degradation over
-service life than the catalogue figures imply. No outdoor Amorton with 10–19
-cells is small enough to be usable here — the 10-cell AM-7A03 is 150 × 165 mm.
 
 ## 5. Sense front end — FDC1004
 
@@ -876,8 +856,15 @@ If you want more than 3.6 years, the only lever that matters is the cell.
 - I²C addresses all confirmed distinct: **FDC1004 0x50** (SNOSCY5 §6.5.1),
   **nPM1300 0x6B**, **SHT45-AD1F 0x44**. One bus, no split needed.
 - Cell datasheet: self-discharge rate, PCM quiescent current, NTC availability.
-- Solar panel and pre-regulator selected — see §4. **U5 and its two capacitors
-  are not placed on the PCB yet**; the ~8 × 8 mm reserve near J3 is still empty.
+- Solar panel and pre-regulator selected — see §4. **U5, C30 and C31 are not
+  placed on the PCB yet**; the ~8 × 8 mm reserve near J3 is still empty. J3 and
+  D5 are already placed and routed and do not move — keeping the barrel jack off
+  the board is what avoided a re-place.
+- Confirm the Voltaic P126's V_OC temperature coefficient. −0.30 %/°C is the
+  generic crystalline-silicon figure and is **[assumed]**; the datasheet does not
+  publish one. It sets the 13.9 V input-rating requirement in §4, which the
+  chosen 60 V part clears by 4.3× — so this is worth confirming but is not
+  load-bearing.
 - Confirm nPM1300 driver + fuel gauge availability in your NCS version.
 - Find the nPM1300 hibernate wake-timer maximum timeout — not yet checked. Only
   matters if you later want the PMIC to power-cycle the MCU rather than using
