@@ -3,9 +3,10 @@
 Companion to [HARDWARE.md](HARDWARE.md), [LAYOUT.md](LAYOUT.md) and [BOM.md](BOM.md).
 Written at the end of the placement session.
 
-**Schematic ERC 0 errors, 0 warnings. PCB DRC 0 errors.** The 4 remaining DRC
-warnings and 127 unconnected items are all "nothing is routed yet" — the sense
-electrodes and the Zone C guard have no copper path to U3 until routing lands.
+**Schematic ERC 0 errors, 0 warnings. PCB DRC 0 errors.** 4 isolated-copper
+warnings and 115 unconnected items remain — the sense electrodes and the Zone C
+guard have no copper path to U3 until the rest of the routing lands. The one
+`lib_footprint_mismatch` is J1 and is the deliberate silkscreen override.
 
 ---
 
@@ -24,7 +25,7 @@ re-run; do not hand-edit the `.kicad_sch`.
 
 ## The board
 
-**42.0 × 155.0 mm**, four layers, JLC04161H-**7628D**.
+**42.0 × 155.0 mm**, four layers, **JLC04161H-7628** (plain — see §3).
 
 | Zone | y | |
 |---|---|---|
@@ -33,28 +34,37 @@ re-run; do not hand-edit the `.kicad_sch`.
 | — SHT45 jut-out | 18.1 – 23.1 | x 34 → 42, through the side wall |
 | C probe | 74.0 – 155.0 | 20 mm wide, no ground on any layer |
 
-57 components placed, 508 mm² of courtyard in 2125 mm² of Zone B.
+58 footprints placed (56 schematic components plus AE1 and MP1, which have no
+symbols). J5 has been removed — see BOM.md.
 
 ---
 
 ## Blocking, in rough order
 
-### 1. Routing
+### 1. Routing — RF done, the rest open
 
-Nothing is routed. Order matters:
+Routing now lives in `tools_route.py`, which is re-runnable: it removes and
+re-adds only tracks, vias and zone fill, and never touches graphics, footprints
+or zone outlines. **Resolve net codes before mutating the board** — see the
+comment in `net_map()`.
 
-1. **RF first, while there is freedom.** Pin 31 → the matching chain → the
-   antenna feed is ~8.2 mm, and λ/8 at 2.4 GHz in FR4 is 8.6 mm — it is at the
-   limit. Stitch at the full ≤3 mm density along it. No vias in the path.
+1. ~~RF~~ — **done.** U1 pin 31 → L2 → C6 → L3 → C9 → L4 → C11 → AE1 feed, all on
+   F.Cu, no vias on any RF net, 0.36 mm (JLCPCB's own calculator — §3). Pin 31 to
+   the ground-plane edge is 8.579 mm against λ/8 = 8.6 mm. `/GND_PA` is F.Cu-only
+   with no vias and `/GND_C9` reaches B.Cu only, so Nordic's two grounding rules
+   hold. **No stitching vias** — that rule was CPWG-specific and does not apply
+   here; see LAYOUT.md §2.
 2. **The SW2 loop** — SW2 → L10 → C24 → PVSS2, kept physically tiny.
-3. **Sense into the probe.** This is the one that needs care: sense over ground
-   is measured capacitance. The Zone B pour will need carving away under the run
+3. **Sense into the probe.** The one that needs care: sense over ground is
+   measured capacitance. The Zone B pour will need carving away under the run
    from U3 down to the Zone C boundary.
 4. Everything else.
 
-Watch two things the DRU cannot catch: **NT1 must end up under the U1 centre
-pad** and **NT2 on B.Cu**, and the U1 centre-pad via array must not bridge
-GND_PA to GND anywhere except at NT1.
+Watch what the DRU cannot catch. **NT1 needs no copper** — its pads physically
+overlap U1 pad 32 and pad 49, so the tie is made by the land pattern; that is
+what the NT1 clearance exemption in the `.kicad_dru` is for. **NT2 must stay on
+B.Cu.** And the U1 centre-pad via array must not bridge GND_PA to GND anywhere
+except at NT1.
 
 ### 2. Solar panel, then the pre-regulator
 
@@ -117,8 +127,12 @@ factory milling.
   placed instances, so a re-import stays correct.
 - **Add centre-pad vias** under U1 pad 49 and U2 pad 33. Neither vendor footprint
   has them; Nordic's reference uses a grid.
-- **Confirm C0 for the FA-128 with Epson.** Not published, and it is half of what
-  the Figure 17 ESR curve checks.
+- **Confirm C0 for the FA-128 with Epson — still open, now confirmed unobtainable
+  from the datasheet.** `FA-128_en.pdf` was re-read end to end: the Specifications
+  table gives f_nom, T_stg, T_use, DL, f_tol, f_tem, C_L, R1 and f_age, and there
+  is no C0 row at all. It is half of what the Figure 17 ESR curve checks, so this
+  needs an email to Epson. ESR (60 Ω max at 26–54 MHz), drive level (200 µW max,
+  10 µW recommended) and the land pattern are all confirmed — see BOM.md.
 - **Confirm the 1551WK corner reliefs** against Hammond's STEP. The drawing's
   `62.00 × 22.00` and `R4.42` do not reconcile cleanly with the `63.88 × 23.88`
   cover-screw bosses; the `55.00 × 25.00` post pattern is unambiguous and is what
@@ -126,8 +140,11 @@ factory milling.
 - **Get the DC-bias curve for L1** from Murata SimSurfing. They publish only a
   40 °C temperature-rise rating (620 mA) and no saturation current at all.
 - **Measure the cell.** Self-discharge is 74 % of the power budget and the
-  1–3 %/month band spans 4.6 down to 2.1 years. The PCM's quiescent current is
-  another 16 % — more than the whole nRF+PMIC sleep draw.
+  1–3 %/month band spans 4.6 down to 2.1 years — still the least-known number in
+  the design. The **PCM is no longer a guess**: the DW01P datasheet gives
+  I_CC 3.0 µA typ / **6.0 µA max**, and at the max, runtime on the 500 mAh cell
+  goes from 2.92 to **2.51 years**. No distribution is published, so measure the
+  pack you actually bought. See HARDWARE.md §3.
 
 ---
 
@@ -158,8 +175,9 @@ factory milling.
   GUI 3D viewer — a different code path.
 - **The enclosure 3D model does not show either milled slot**, so the fit check
   is less useful than it looks.
-- **No 3D model for X2 or NT3.** X2's would come from Epson; NT3 is a net tie and
-  does not need one.
+- **No 3D model for NT3.** It is a net tie and does not need one. X2's is now
+  attached (`lib/FA-128 32.0000MF10Z-AJ0.STEP`) but its orientation has not been
+  checked in the 3D viewer.
 - **`/SOLAR_PANEL` is a single-node net** (J3.1) and stays that way until the
   pre-regulator lands on the board.
 
