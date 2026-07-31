@@ -37,3 +37,4 @@ __pycache__/
 
 # VS Code Local History extension (it is its own git repo)
 .history/
+.drutest/

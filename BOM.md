@@ -158,8 +158,17 @@ turns out to matter at the real operating point.
 
 ### X2 — Epson FA-128, 32 MHz, C_L 8 pF
 
-Ordering form per the datasheet: **`FA-128 32.000000MHz 8.0 +12.0-12.0`**, and
-specify the frequency-vs-temperature characteristic separately.
+Ordering form per the datasheet: **`FA-128 32.000000MHz 8.0 +10.0-10.0`**, and
+specify the frequency-vs-temperature characteristic and operating temperature
+range separately.
+
+**Corrected from `+12.0-12.0`.** Field ④ of Epson's ordering code is
+*frequency tolerance at +25 °C*, and the datasheet's standard value for that is
+**±10 × 10⁻⁶**, not ±12. The ±12 figure is the *frequency-versus-temperature*
+characteristic over −20…+75 °C, which is field ⑤ and a separate specification.
+The old code asked for a non-standard +25 °C tolerance and would have invited a
+"contact us" quote for no benefit. Using the standard ±10 also improves the
+budget below rather than costing anything.
 
 **2016 was never a requirement.** That came from Nordic's reference BOM. The
 datasheet characterises two package sizes (§11.9.1) and mandates neither:
@@ -176,23 +185,38 @@ FA-128 against the requirements:
 
 | nRF54L15 requires | Spec | FA-128 |
 |---|---|---|
-| Total tolerance | **±40 ppm** | ±12 initial + ±12 temp (−20…+75 °C) + ±1 aging = **25 ppm** |
-| | | or ±12 + ±17 (−30…+85 °C) + ±1 = 30 ppm |
+| Total tolerance | **±40 ppm** | **±10** initial + ±12 temp (−20…+75 °C) + ±1 aging = **23 ppm** |
+| | | or ±10 + ±17 (−30…+85 °C) + ±1 = 28 ppm |
 | Load capacitance | 6–9 pF | specifiable, 6 pF to ∞ |
 | Drive level | ≤ 100 µW | 200 µW max, 10 µW recommended |
 | ESR vs C0 | Figure 17 curve | **60 Ω max** at 26–54 MHz |
 
 At C_L = 8 pF the curve allows ~100 Ω for C0 ≈ 0.74 pF, so 60 Ω passes with
-margin. **Caveat: the FA-128 datasheet does not publish C0.** Nordic's 2.0 × 1.6
-characterisation figures (C0 0.74 pF, R_S 35 Ω) match this part's geometry and
-ESR class closely enough that it is very likely the same family, but confirm C0
-with Epson before committing.
+margin.
 
-**Check the land pattern before fab.** Epson's recommended footprint is four
-pads on a roughly 1.45 × 1.15 mm envelope; KiCad's generic
-`Crystal_SMD_2016-4Pin_2.0x1.6mm` uses 0.9 × 0.8 mm pads on ±0.7 / ±0.55 mm
-centres, giving a 2.3 mm outer span. That is a bigger mismatch than the one that
-forced a vendor footprint for X1 — expect to build an Epson-specific footprint.
+**C0 is confirmed absent from the datasheet — this one stays open.** Re-read
+`FA-128_en.pdf` end to end. The Specifications table gives f_nom, T_stg, T_use,
+DL, f_tol, f_tem, C_L, R1 and f_age, and there is **no C0 row anywhere**, so this
+is not an oversight in the earlier reading. Nordic's 2.0 × 1.6 characterisation
+figures (C0 0.74 pF, R_S 35 Ω) match this part's geometry and ESR class closely
+enough that it is very likely the same family, but it remains the one FA-128
+parameter that has to come from Epson directly. It is half of what the Figure 17
+ESR curve checks, so it is worth an email before committing to volume.
+
+Also confirmed from the datasheet while checking: **ESR R1 = 60 Ω max** for
+26 MHz ≤ f_nom ≤ 54 MHz, **drive level 200 µW max with 10 µW recommended**, and
+**pads #2 and #4 are connected to the cover and must go to ground.**
+
+**Land pattern — done.** `footprints:XTAL_FA-128_2016_4Pin` is built and placed,
+and it matches Epson's recommended footprint exactly: **0.50 × 0.85 mm pads on
+0.95 mm (X) × 1.15 mm (Y) centres**, a 1.45 × 2.00 mm outer envelope. The
+datasheet's own footprint drawing gives 1.45, 0.95, 1.15 and 0.85, which is the
+same pattern. KiCad's generic `Crystal_SMD_2016-4Pin_2.0x1.6mm` uses 0.9 × 0.8 mm
+pads on ±0.7 / ±0.55 mm centres for a 2.30 mm outer span in X — 0.85 mm wider
+than Epson specify, a bigger mismatch than the one that forced a vendor footprint
+for X1. The 3D model (`lib/FA-128 32.0000MF10Z-AJ0.STEP`) is attached to both the
+`.kicad_mod` and the placed instance; its orientation has not been checked in the
+3D viewer yet.
 
 ### Cell — Adafruit 1578, 500 mAh
 
@@ -294,7 +318,6 @@ TP5 and D5's anode on it.
 | J2 | Battery - Adafruit 1578 | `JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical` |
 | J3 | Solar panel | `JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal` |
 | J4 | SWD 10p 1.27mm | `Tag-Connect_TC2050-IDC-NL_2x05_P1.27mm_Vertical` |
-| J5 | Antenna feed | `TestPoint_Pad_D1.0mm` |
 | L1 | LQM18PN4R7MFRL 4.7uH | `L_0603_1608Metric_Pad1.05x0.95mm_HandSolder` |
 | L2 | 2.7nH LQP03HQ2N7B02 | `L_0201_0603Metric` |
 | L3 | 3.5nH LQP03HQ3N5B02 | `L_0201_0603Metric` |
@@ -346,3 +369,26 @@ soldered to the board; you need the cable and a retaining clip.
 enforce Nordic's two RF grounding rules, which are otherwise invisible in a
 netlist. **NT1 must be placed under the U1 centre pad on F.Cu; NT2 must be on
 B.Cu.** See LAYOUT.md §2.
+
+**J5 removed.** There is no test point on the antenna feed. A 1.0 mm pad on a
+2.4 GHz feed is roughly 0.1–0.2 pF of shunt capacitance — the same order as C11
+at 0.3 pF — so it perturbs the impedance it exists to measure. Tuning a PCB IFA
+is done by soldering a coax pigtail directly to the feed trace, shield to the
+adjacent ground pour, and removing it afterwards; that needs no footprint. J5
+also sat 5.8 mm off the feed line, which would have hung a λ/12 stub on the
+match.
+
+### J5 — Hirose U.FL-R-SMT-1(10), antenna connector
+
+Replaces the PCB inverted-F. See LAYOUT.md §3 for why. Verified against the
+Hirose U.FL catalogue drawing: **50 Ω, DC–8 GHz**, V.S.W.R. ≤1.3 to 3 GHz,
+mated height 1.9–2.4 mm nominal (2.5 mm max), **30 mating cycles**, 15.7 mg,
+7.7 mm² mounting area. Footprint `Connector_Coaxial:U.FL_Hirose_U.FL-R-SMT-1_Vertical`.
+
+Mated height is nothing against the 6.70 mm of clearance under the cell, and J5
+sits in the y 0–11.5 band that the cell does not cover anyway.
+
+**Buy an adhesive antenna with a U.FL plug on 1.13 mm or 1.32 mm coax** — Hirose
+specify V.S.W.R. per plug/cable in their catalogue, and the U.FL-LP-068HF
+(φ1.13) is the better of the two at 2.4 GHz (1.4 max vs 1.5 max at 3–6 GHz).
+U.FL is rated for 30 mating cycles, so treat it as mate-once.

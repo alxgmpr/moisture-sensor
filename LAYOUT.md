@@ -20,33 +20,58 @@ would be ~2.9 mm wide, which settles it.
 | F.Cu | copper | 0.035 mm | — | RF, signal, sense electrodes |
 | dielectric 1 | prepreg 7628×1 | **0.21040 mm** | 4.4 | RF reference gap |
 | In1.Cu | copper | 0.0152 mm | — | **GND** (zoned — see §4) |
-| dielectric 2 | core | **1.265 mm** | 4.6 | |
+| dielectric 2 | core | **1.065 mm** | 4.6 | |
 | In2.Cu | copper | 0.0152 mm | — | power / **guard pour** |
 | dielectric 3 | prepreg 7628×1 | 0.21040 mm | 4.4 | |
 | B.Cu | copper | 0.035 mm | — | signal / guard |
 
-### You must order JLC04161H-7628**D** specifically
+### Order JLC04161H-7628 — plain, no suffix
 
-Checked against JLCPCB's published controlled-impedance stackup list. They offer
-**six** 4-layer 7628 variants, and only one has a single 7628 prepreg between the
-top layer and L2:
+**Corrected.** This section previously said 7628**D** was the only 4-layer 7628
+variant with a single 7628 prepreg between the top layer and L2, and that the
+core was 1.265 mm. Re-read against JLCPCB's own published stackup list
+(*Controlled Impedance PCB Layer Stackup*, filtered to 1.6 mm / 1 oz outer /
+0.5 oz inner) — **three** of the eighteen 4-layer entries have that single
+0.21040 mm prepreg, not one:
 
-| JLC stackup | Top → L2 dielectric | Usable here? |
-|---|---|---|
-| **JLC04161H-7628D** | **0.21040 mm** (7628×1) | **yes — this is the one** |
-| JLC04161H-7628E | 0.218 + 0.21040 = 0.428 mm | no |
-| JLC04161H-7628B | 0.218 + 0.218 + 0.1164 = 0.552 mm | no |
-| JLC04161H-7628C | 0.218 + 0.218 + 0.21040 = 0.646 mm | no |
-| JLC04161H-7628F | 0.218 + 0.218 + 0.21040 = 0.646 mm | no |
+| JLC stackup | Top → L2 | Core | Layers sum | |
+|---|---|---|---|---|
+| "No requirement Stackup" (the default) | **0.21040 mm** | 1.065 mm | **1.586 mm** | JLC calls this lowest cost, quickest turnaround |
+| **JLC04161H-7628** | **0.21040 mm** | 1.065 mm | **1.586 mm** | **order this** |
+| JLC04161H-7628D | **0.21040 mm** | **1.265 mm** | **1.786 mm** | same impedance, but 0.19 mm too thick |
+| JLC04161H-7628E | 0.218 + 0.21040 = 0.428 mm | 0.6 | | no |
+| JLC04161H-7628B | 0.218 + 0.218 + 0.1164 = 0.552 mm | 0.4 | | no |
+| JLC04161H-7628C | 0.218 + 0.218 + 0.21040 = 0.646 mm | 0.15 | | no |
+| JLC04161H-7628F | 0.218 + 0.218 + 0.21040 = 0.646 mm | 0.25 | | no |
 
-This is not a nitpick. At h = 0.428 mm a 0.38 mm trace is roughly **75 Ω**, not
-50. Taking whatever 4-layer stackup the order form defaults to would silently
-wreck the RF path. Specify 7628D at order time and confirm it on the
-acknowledgement.
+Two things follow.
 
-The core came back **1.265 mm**, not the 1.065 mm assumed here previously. That
-only helps: it moves the In2.Cu-guard-to-In1.Cu-ground capacitance in §5 from
-3.82 × 10⁻⁸ down to **3.22 × 10⁻⁸ F/m²**.
+**The impedance argument is unchanged and still decides the order.** At
+h = 0.428 mm a 0.38 mm trace is roughly 75 Ω, not 50, so B/C/E/F are still out.
+Specify the stackup at order time and confirm it on the acknowledgement.
+
+**But 7628D was the wrong pick, and that is what the total-thickness question in
+NEXT-STEPS.md was detecting.** 7628D's layers sum to 1.786 mm because its core is
+1.265 mm; plain 7628 sums to 1.586 mm, which is a real 1.6 mm board. Since both
+have the identical 0.21040 mm top dielectric they give identical impedance, so
+plain 7628 is strictly better — right thickness, and it is the cheaper/faster
+default. The 1.265 mm core belonged to 7628D and has been reverted here and in
+§5; the board file's 1.065 mm was right all along.
+
+### JLCPCB's own material parameters
+
+From page 1 of the same document. These matter because the §2 calculation below
+was done with none of them:
+
+| | |
+|---|---|
+| Prepreg 7628 ε_r | **4.4** (3313 → 4.1, 1080 → 3.91, 2116 → 4.16) |
+| Core ε_r | 4.6 |
+| Solder mask ε_r | 3.8 |
+| Mask above trace / above substrate | 0.6 mil (0.01524 mm) / 1.2 mil |
+| Etch taper | **trace top width = base width − 0.7 mil** (0.01778 mm) |
+| Outer copper 1 oz | 0.035 mm |
+| Inner copper 0.5 oz | 0.0152 mm |
 
 The thin 0.21 mm top dielectric is what makes a sane-width 50 Ω microstrip
 possible, and it is why the RF trace must reference **In1.Cu**, not B.Cu.
@@ -71,14 +96,53 @@ Solving `Z₀ = 120π / (√ε_eff · [W/h + 1.393 + 0.667·ln(W/h + 1.444)])`:
 | 4.4 (datasheet, ~1 MHz) | 1.92 | 0.404 mm | 0.365 mm |
 | **4.2 (realistic at 2.4 GHz)** | **2.00** | **0.421 mm** | **0.382 mm** |
 
-**Use W = 0.38 mm.** FR4's ε_r falls with frequency — quoting 4.4 from a
-datasheet measured at 1 MHz and designing a 2.4 GHz trace to it makes the trace
-too narrow and the impedance high. The DRU allows 0.34–0.42 mm so you have room
-to accept whatever the fab's own calculator returns.
+The table above is a bare-microstrip Hammerstad solve, and it is **not** what the
+board uses. See below.
 
-**Confirm with the fab before ordering.** Prepreg thickness varies with copper
-distribution and the pressed result is not exactly nominal. If impedance actually
-matters to you, order with impedance control and let them adjust the width.
+### W = 0.36 mm, from JLCPCB's own calculator
+
+This is the number to trust, because it is the fab's solver on the exact stackup
+being ordered rather than anything derived here. Run at
+<https://jlcpcb.com/pcb-impedance-calculator> with 4 layers, 1.6 mm, 1 oz outer,
+0.5 oz inner, 50 Ω **Single Ended (Non coplanar)**, signal layer **L1**, top ref
+none, bottom ref **L2**:
+
+| Stackup | Top → L2 dielectric | Trace width for 50 Ω | Finished thickness |
+|---|---|---|---|
+| **JLC04161H-7628** | 7628 RC 49% 8.6 mil → **0.2104 mm** | **14.12 mil = 0.3586 mm** | **1.59 mm**, *Standard* |
+| JLC04161H-7628D | identical, 0.2104 mm | 14.12 mil = 0.3586 mm | 1.79 mm, *Special* |
+| JLC04161H-3313A | 3313 ×2 → 0.1070 + 0.0994 = 0.2064 mm | 13.57 mil = 0.3447 mm | 1.58 mm, *Special* |
+
+**The board now uses 0.36 mm.** The DRU's `opt` is 0.36 with the 0.34–0.42 mm
+window kept, so there is still room to accept whatever the fab returns after
+pressing.
+
+Three things fall out of this, and none of them were visible from the hand calc:
+
+**The calculator independently confirms §1.** It labels plain `JLC04161H-7628`
+**Standard** at a finished 1.59 mm and every other 4-layer variant *Special* —
+7628D comes back at **1.79 mm**, which is the thickness discrepancy that had been
+sitting open in NEXT-STEPS.md. 7628 and 7628D return the *same* trace width, since
+the top dielectric is identical; the only difference is board thickness and cost.
+
+**0.38 mm was not 50 Ω.** Our Hammerstad model at JLCPCB's published ε_r 4.4
+returns 50.39 Ω at their 0.3586 mm width — agreement to 0.4 Ω, which validates the
+model — and the same model puts the old 0.38 mm at **48.8 Ω** (Γ = 0.012,
+VSWR 1.024, return loss 38.5 dB). That is a small error and would not have broken
+anything, but there is no reason to carry it when the fab's own answer is free.
+The earlier ε_r 4.2 "realistic at 2.4 GHz" adjustment was what pushed the width up
+to 0.38; JLCPCB solve at 4.4 flat.
+
+**A 3313 stackup is marginally better and was not considered.** The calculator's
+first suggestion is `JLC04161H-3313A`, which reaches 0.2064 mm using two thin
+3313 prepregs. It is not being taken — 7628 is the *Standard* option, §1's whole
+argument is built on it, and the difference is 0.004 mm of dielectric — but it is
+worth knowing that "single 7628 prepreg" was a sufficient condition for a thin top
+dielectric, never a necessary one.
+
+**Still order with impedance control.** Pressed prepreg thickness varies with
+copper distribution, and the ±10% on finished thickness above is real. Impedance
+control lets them re-solve on the actual pressed stackup.
 
 ### RF routing rules (enforced in the DRU)
 
@@ -88,8 +152,17 @@ matters to you, order with impedance control and let them adjust the width.
 - **Unbroken In1.Cu ground directly beneath the entire RF run.** Any slot or
   split under the trace forces the return current around it and wrecks the
   impedance.
-- **Stitching vias** along both sides of the RF trace. λ in FR4 ≈ 125/√ε_eff ≈
-  69 mm at 2.4 GHz, so λ/20 ≈ 3.5 mm — **space stitching vias ≤ 3 mm.**
+- **No stitching vias along the RF trace — corrected.** This previously said to
+  space them ≤ 3 mm (λ/20; λ in FR4 ≈ 125/√ε_eff ≈ 69 mm at 2.4 GHz). That is a
+  *coplanar waveguide* rule: it exists to tie top-side ground beside the trace
+  down to the reference plane. This board is not CPWG. Zone B has exactly one
+  ground layer, In1.Cu — F.Cu carries no ground pour beside the trace and neither
+  does B.Cu — so a stitching via has nothing to stitch to. Four were placed during
+  routing and KiCad reported all four as `via_dangling`, connected on one layer
+  only. It is also self-consistent: W = 0.38 mm in §2 comes from the **microstrip**
+  equation, and for microstrip the return current flows in the plane directly
+  under the trace. Going CPWG instead would need F.Cu ground either side at a
+  controlled gap and would make 0.38 mm the wrong width.
 - Keep the run as short as physically possible. Put the matching network
   immediately at the ANT pin, not near the antenna.
 
@@ -137,116 +210,57 @@ off GND left it with only passive pins to drive it.
 
 ---
 
-## 3. Antenna: PCB inverted-F vs chip
+## 3. Antenna: U.FL connector + external adhesive antenna
 
-### The argument that actually decides it
+**The PCB inverted-F is gone.** AE1 has been replaced by **J5, a Hirose
+U.FL-R-SMT-1(10) receptacle**, feeding an adhesive antenna mounted inside the
+enclosure on a U.FL pigtail. Two things drove it, and the second one is the
+bigger deal.
 
-**The matching network already in the schematic is Nordic's, and it is matched to
-Nordic's reference antenna.** L2 2.7 nH, C6 1.5 pF, L3 3.5 nH, C9 2.0 pF,
-L4 3.5 nH, C11 0.3 pF, C13 3.9 pF are only meaningful with that geometry.
+**It was the only way the board fits the box.** The 1551WK has four internal
+corner bosses that need PCB corner reliefs (§9), and at the antenna end those
+reliefs cut straight through the IFA's radiating arm.
 
-- Take **Nordic's reference PCB antenna** → those values are a valid starting
-  point and you tune from a known-good position.
-- Take a **chip antenna** → discard all of them, start from the chip vendor's
-  reference network, and retune from scratch.
+**It makes Nordic's matching network correct rather than a guess.** This section
+used to carry a long caveat: the QFAA reference layout contains *no PCB antenna*,
+so L2/C6/L3/C9/L4/C11 were "a sensible starting point for a 2.4 GHz IFA, not a
+known-good position". What the reference *does* contain is the chain
+`ANT → L2 → C6 → L3 → C9 → L4 → C11` terminating at a board-edge pad **for a coax
+or connector launch**. That is exactly what a U.FL is. The values are now being
+used in the configuration Nordic characterised them in, and the caveat is
+withdrawn.
 
-That asymmetry is worth more than the small differences in the table below.
+### J5 — Hirose U.FL-R-SMT-1(10)
 
-| | PCB inverted-F | Chip antenna |
-|---|---|---|
-| BOM cost | **zero** | ~$0.30 + a placement |
-| Keepout needed | ~15 × 7 mm | ~10 × 5 mm |
-| Typical efficiency, good ground | 50–70 % | 40–60 % |
-| Part-to-part spread | excellent (etch-defined) | placement tolerance matters |
-| Matching values in schematic | **valid** | must be replaced |
-| Detuning near soil/water | high | high — no real advantage |
-
-**Recommendation: PCB inverted-F.** Zero cost, no placement risk, and the stake
-form factor gives a natural ground-plane edge to work from.
-
-### The reference layout does not contain an antenna
-
-The plan above said "copied from Nordic's reference layout". That is not
-possible, and the reason is worth recording so it is not assumed again.
-
-`nrf54l15-qfaa-reference-layout-0_8.zip` (and the QGAA 1.0 equivalent) contains
-a **15 × 13 mm board with no PCB antenna**. The RF chain runs
-`ANT → L2 → C6 → L3 → C9 → L4 → C11` and terminates at a pad on the board edge —
-a coax or connector launch. It is an MCU support reference, not an antenna
-reference. What it does give, and what is copied:
-
-- matching-network placement relative to pin 31
-- the C6-to-pin-32 and C9-to-bottom-layer grounding topology (§2 above)
-- MCU support component placement
-
-**Consequence for the matching network.** The argument in the table above — that
-Nordic's L2/C6/L3/C9/L4/C11 values are "valid" because they match Nordic's
-antenna — does not hold. There is no Nordic antenna. Treat those values as a
-sensible starting point for a 2.4 GHz IFA, not as a known-good position, and
-budget the VNA session accordingly.
-
-### The IFA as drawn
-
-Designed for this board's ground plane, in `lib/footprints.pretty/IFA_2450MHz.kicad_mod`,
-placed by `tools_gen_pcb.py`. All dimensions are named constants — trim and re-run.
+Verified against the Hirose U.FL catalogue drawing:
 
 | | |
 |---|---|
-| Ground plane edge | board y = 11.5 mm, full width |
-| Radiating arm | 18.5 × 1.0 mm at y = 2.5–3.5 |
-| Shorting stub | 1.0 mm wide at x = 12.8, y = 2.5 → 11.5 |
-| Feed stub | 0.5 mm wide at x = 16.8, y = 3.5 → 11.5 |
-| Feed-to-short spacing | 4.0 mm — this is the impedance knob |
-| Electrical length, short → open | ≈ 27.5 mm |
+| Impedance / bandwidth | **50 Ω, DC–8 GHz** |
+| V.S.W.R. | ≤1.3 to 3 GHz, ≤1.4–1.5 to 6 GHz (plug dependent) |
+| Mated height | 1.9–2.4 mm nominal, 2.0–2.5 mm max |
+| Durability | **30 mating cycles** — mate once in service |
+| Land pattern | 4.00 mm GND span, SIG at 1.9 mm, GND pads 2.2 × 1.0 mm |
+| Note on the drawing | **"No conductive traces in this area"** between the pads |
 
-λ/4 is 31.2 mm in air and roughly 24–25 mm with FR4 loading on one side, so 27.5 mm
-starts deliberately long: you can trim etched copper, you cannot add it.
+KiCad's `Connector_Coaxial:U.FL_Hirose_U.FL-R-SMT-1_Vertical` matches: its GND
+pads are 1.05 mm rather than 1.00 mm tall, but on ±1.475 mm centres, which gives
+Hirose's specified 4.00 mm outer span. Inside the ±0.05 mm tolerance either way.
 
-The feed sits at x = 16.8 so the 50 Ω line runs straight up from U1 pin 31 after
-the package is rotated 90°. No bend, no via.
+Placed at board **(16.8, 12.0)**, rotated 90° so the signal pad faces the
+matching network. **The RF run from U1 pin 31 to the signal pad is 6.554 mm**,
+against λ/8 = 8.6 mm — 76 % of the limit, where the PCB antenna sat at 99.8 %.
 
-**The antenna is a net tie.** An IFA is a shorted stub, so the feed is DC-grounded
-through the shorting stub. The footprint declares `net_tie_pad_groups "1, 2, 3"`
-— pad 1 on `/ANT_FEED`, pads 2 and 3 on `GND` — which is what stops DRC calling
-it a short. Because the arm and stub sit on `GND` rather than the RF net class,
-the DRU keepout exemption has to be written against the footprint reference
-(`!A.memberOfFootprint('AE1')`), not against the net class.
+### What this changed elsewhere
 
-**Switch to a chip antenna only if** the mechanical design cannot give you the
-keepout. The commonly-cited reason — "a chip antenna coexists better with nearby
-dielectric" — does not hold up here; both detune badly near wet soil, and the
-mitigation is distance, not part choice.
-
-### Soil proximity is the dominant effect, and it is mechanical
-
-Wet soil has ε_r of roughly 20–30 with real conductivity. Anything in the
-antenna's near field is going to load it. This is not fixable in the matching
-network, only in the mechanical design:
-
-- Put the antenna at the **top of the stake**, as far above the soil line as the
-  enclosure allows. λ = 125 mm in air, so **aim for ≥ 50 mm of separation**
-  (~0.4 λ) between the antenna and the soil surface.
-- Nothing conductive above or beside the antenna: no battery, no copper pour, no
-  screws, no metal-loaded plastic.
-
-**Tune with the enclosure fitted and a realistic soil load in place.** A network
-tuned on the bench in free space will be wrong once the board is in a pot. Budget
-a VNA session with a pot of damp soil as part of bring-up.
-
-Link budget is forgiving here — the BLE proxy is indoors and already deployed —
-so losing several dB of efficiency to soil loading is survivable. Do not
-over-engineer this at the expense of the measurement path.
-
-### Keepout
-
-Draw a rule area on **User.1 (AntennaKeepout)** covering the antenna and its
-clearance. The DRU forbids tracks, vias, zones and pads inside it.
-
-- The keepout must be **copper-free on all four layers**, ground pour included.
-  A ground plane under an IFA shorts out its near field and destroys efficiency.
-- Extend it to the board edge; do not ring the antenna with a ground guard.
-
----
+- **Zone A is now ordinary board.** ZoneB_GND floods it. The `AntennaKeepout` and
+  `AntennaCrossing` rule areas and the DRU rule that policed them are deleted.
+- **Soil proximity stops being a PCB problem.** It becomes a question of where you
+  stick the antenna in the box — still aim for as much separation from the soil
+  line as the enclosure allows, but no copper geometry depends on it.
+- **The VNA session becomes a check, not a tuning exercise.** Still worth doing
+  with the enclosure closed and a realistic soil load, because the adhesive
+  antenna and its position inside a plastic box are now the unknowns.
 
 ## 4. Ground plane strategy — the board is zoned, not uniformly poured
 
@@ -292,7 +306,7 @@ Parallel-plate estimate, `C/A = ε₀ε_r/d`:
 | Guard placement | d | C per area | Area to hit 400 pF |
 |---|---|---|---|
 | F.Cu guard over In1.Cu ground | 0.2104 mm | 1.85 × 10⁻⁷ F/m² | **21.6 cm²** |
-| In2.Cu guard over In1.Cu ground | 1.265 mm | 3.22 × 10⁻⁸ F/m² | 124 cm² |
+| In2.Cu guard over In1.Cu ground | 1.065 mm | 3.82 × 10⁻⁸ F/m² | 105 cm² |
 
 A probe 2 cm wide by 10 cm long is 20 cm² of guard — **right at the limit** if
 there is ground plane under it. Delete the ground from Zone C and the guard's
@@ -478,7 +492,7 @@ holes at (4.5, 9.5), (29.5, 9.5), (4.5, 64.5), (29.5, 64.5).
 
 | Zone | y | Notes |
 |---|---|---|
-| A antenna | 0 – 11.5 | no copper on any layer except AE1 |
+| A antenna | 0 – 11.5 | **now ordinary board** — J5 U.FL + ground pour |
 | B electronics | 11.5 – 74.0 | 34.0 × 62.5 mm, solid In1.Cu |
 | C probe | 74.0 – 155.0 | 20 mm wide, no ground on any layer |
 
@@ -487,8 +501,47 @@ target in §3. Insert depth 40 mm. SENSE2 (air reference) at y 82–112 and SENS
 (soil) at y 119–149 are both 16 × 30 mm — identical geometry is what makes the
 ratiometric measurement in §5 cancel anything.
 
-The probe leaves through a slot in the box end wall. R2.0 fillets at the shoulder
-keep the stress off the inside corners.
+The probe leaves through a slot in the box end wall.
+
+**Shoulder fillets are R0.5, not the R2.0 originally drawn.** The corner reliefs
+(§9 below and NEXT-STEPS.md §4) reach board x = 6.091 at y = 74, and the probe
+edge is at x = 7.0 — leaving **0.909 mm** per side for everything at the shoulder.
+R2.0 needs 2.0 mm of that and R1.0 needs 1.0 mm, so both are geometrically
+impossible once the enclosure's corner bosses are cleared. R0.5 leaves a
+**0.409 mm flat** at y = 74 between the relief and the fillet.
+
+This is a real reduction in stress relief on an 81 mm cantilever that gets pushed
+into soil, and it is the price of the board fitting the box at all. The only way
+to get R2.0 back is to narrow the probe to about **16.8 mm**, which leaves the
+16 mm electrodes only 0.4 mm of guard either side — not viable. If the shoulder
+turns out to crack in service, narrowing the electrodes is the lever, not the
+fillet.
+
+### No sharp corners anywhere on the outline
+
+The whole Edge.Cuts loop is tangent-continuous — **36 elements, 14 lines and
+22 arcs, zero sharp vertices**. FR4 cracks from sharp corners, the router dislikes
+them, and the probe is an 81 mm cantilever pushed into soil, so every angular
+junction is filleted.
+
+Twelve vertices needed it, all convex:
+
+| where | turn | fillet |
+|---|---|---|
+| 6 × corner relief meeting a straight board edge | 75.52° | R1.0 |
+| 2 × corner relief meeting the shoulder flat | 75.52° | R0.25 (the flat is only 0.409 mm) |
+| 2 × probe spear shoulder | 49.40° | R0.5 |
+| 2 × probe tip | 40.60° | R0.5 |
+
+Rounding a *convex* corner removes material, so the edge moves away from the
+enclosure wall and clearance can only improve — measured, it went from
+**0.2624 mm to 0.3476 mm** at the board's underside. 1.713 mm² of board was
+removed in total.
+
+Regenerate with `.venv-cq/bin/python tools_round_corners.py`. It detects sharp
+vertices by comparing incoming and outgoing tangents rather than filleting
+everything, so the jut-out fillets, the shoulder fillets and the relief joins that
+are already tangent are left untouched.
 
 ### Height budget — the thing that bit
 
@@ -516,7 +569,7 @@ net-tie placement rules, and SENSE-to-SWITCH separation.
 
 | Band | y | Contents |
 |---|---|---|
-| RF | 12.5–19.3 | L2/C6/L3/C9/L4/C11 in a column at x = 16.8, J5 |
+| RF | 12.5–19.3 | L2/C6/L3/C9/L4/C11 in a column at x = 16.8 |
 | MCU | 19.4–31 | U1 (rot 90), X2 top-left, X1 below, DECD/DECA/DCC cluster left |
 | Debug / ambient | 33–39 | J4 Tag-Connect, U4 + C27 right, I²C pull-ups |
 | Power in | 40–52 | J1 USB-C left edge, J3 + D5 right, solar reserve |
@@ -599,9 +652,9 @@ around them at 0.2 mm, guard on In2.Cu and B.Cu beneath.
   and it is half of what Figure 17 checks.
 - Electrode geometry: simulate or prototype for 10–30 pF dry with a swing inside
   ±15 pF.
-- Window-pane the paste apertures on `QFN48_6X6_NOR` and `QFN32_5X5_NOR`. Both
-  have a single full-area aperture on the thermal land (22.1 mm² and 13.0 mm²)
-  and both lands are drawn at D2 *max* rather than nominal.
+- ~~Window-pane the QFN paste apertures~~ — **done.** Lands moved to D2 nominal
+  (4.6 mm and 3.5 mm, from the vendor package drawings) with 3×3 aperture arrays
+  at 66 % coverage. See NEXT-STEPS.md.
 - Neither QFN footprint has centre-pad vias. Nordic's reference puts a grid
   under U1 pad 49; add them when routing. **Watch NT1** — the via grid must not
   bridge GND_PA to GND anywhere except at the tie.

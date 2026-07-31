@@ -176,7 +176,6 @@ PLACEMENT = {
     "C9":  (18.7, 16.9, 0),
     "L4":  (16.8, 15.3, 90),
     "C11": (14.9, 15.3, 0),
-    "J5":  (22.6, 13.6, 0),
 
     # -- MCU and its clocks
     "U1":  (17.0, 23.0, 90),
@@ -668,7 +667,7 @@ elif any(o for _, _, o in _ENCL_PARTS):
                     (0, 0, ENCL_Z), ENCL_ROT)
 
 # References that legitimately have no 3D model: bare copper, or no part fitted.
-NO_MODEL_EXPECTED = {"AE1", "NT1", "NT2", "J4", "J5",
+NO_MODEL_EXPECTED = {"AE1", "NT1", "NT2", "J4",
                      "TP1", "TP2", "TP3", "TP4", "TP5"}
 
 # Mechanical-only footprints are not in the netlist, so the placement checks
