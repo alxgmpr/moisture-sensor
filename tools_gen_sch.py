@@ -60,6 +60,7 @@ SRC = {
     "npm1300":           top_level_symbols(f"{PROJ}/lib/nordic/NPM1300-QEAA-R7.kicad_sym"),
     "fdc":               top_level_symbols(f"{PROJ}/lib/FDC1004.kicad_sym"),
     "sht4x":             top_level_symbols(f"{PROJ}/lib/SHT4x.kicad_sym"),
+    "tps7a16":           top_level_symbols(f"{PROJ}/lib/TPS7A1650.kicad_sym"),
 }
 
 def pins_of(defn):
@@ -112,7 +113,14 @@ FOOTPRINTS = {
     "D3": "LED_SMD:LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder",
     "D4": "LED_SMD:LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder",
     "TH1": HS_R0603,
-    # solar OR-ing
+    # solar pre-regulator + OR-ing. U5's DGN land pattern was checked against
+    # TI SBVS171F DGN0008C: 8 pads 1.4 x 0.45 mm on 0.65 mm pitch, rows on
+    # 4.4 mm centres, thermal pad metal ~1.6 x 1.92 mm. KiCad's HVSSOP-8 is
+    # 1.45 x 0.5 on +/-2.15 with a 1.57 x 1.89 pad - generous on every
+    # dimension rather than short, so this one does NOT need a project
+    # footprint the way X1/X2 did.
+    "U5": "Package_SO:HVSSOP-8-1EP_3x3mm_P0.65mm_EP1.57x1.89mm",
+    "C30": HS_C0603, "C31": HS_C0603,
     "D5": "Diode_SMD:D_SOD-323_HandSoldering",
     # clocks. Standard pads on X2 (no hand variant for 2016-4pin exists).
     # Micro Crystal CM8V-T1A. The vendor land pattern (0.8 x 1.5 mm pads on
@@ -394,6 +402,46 @@ B_USB.add("Device", "D_Schottky_Small", "D5", "RB751V-40 Schottky",
           {"1": "VBUS_IN", "2": "SOLAR_5V"})
 B_USB.add("Connector_Generic", "Conn_01x02", "J3", "Solar panel",
           {"1": "SOLAR_PANEL", "2": "GND"})
+# C30 sits on the panel side, so it is rated for the panel's cold open-circuit
+# voltage (16 cells x 0.99 V = 15.8 V worst case), not for 5 V. Both are the
+# same 10 uF / 25 V X5R 0603 already used at C21/C22/C24 - no new BOM line.
+# TI SBVS171F: C_IN >= 0.1 uF required, 10 uF recommended; C_OUT >= 2.2 uF
+# required, 10 uF recommended. A 25 V 0603 derates to roughly 3-5 uF at these
+# biases, which clears both minimums.
+B_USB.add("Device", "C_Small", "C30", "10uF/25V X5R", {"1": "SOLAR_PANEL", "2": "GND"})
+B_USB.add("Device", "C_Small", "C31", "10uF/25V X5R", {"1": "SOLAR_5V", "2": "GND"})
+
+# U5 - solar 5 V pre-regulator. Placed explicitly rather than through the block
+# grid: the symbol is 40 mm wide and would overrun a grid cell.
+#
+# LDO, not the buck. The buck harvests more from a current-limited source, but
+# the panel that meets the 6-12 V V_OC requirement is 16 a-Si cells, whose
+# open-circuit voltage in direct sun at 0 C is 15.8 V. HARDWARE.md's rule is
+# V_IN rating >= 1.5x V_OC at the coldest condition, i.e. >= 23.7 V. The
+# TPS62122 is 15 V operating / 17 V absolute max, so it fails that rule on any
+# panel with enough cells to hold 5 V indoors. The TPS7A16 is 60 V. See
+# HARDWARE.md section 4.
+u5_x, u5_y, LDOD = place("tps7a16", "TPS7A1650", "U5", "TPS7A1650 5V LDO",
+                         (40.0, 162.0))
+for _n, _net in {
+    "8": "SOLAR_PANEL",    # IN
+    # EN tied to IN. SBVS171F Pin Functions: "If not used, the EN pin can be
+    # connected to IN. Make sure that VEN <= VIN at all times" - tying them
+    # together satisfies that identically, and EN-to-IN abs max is -62/+0.3 V.
+    "5": "SOLAR_PANEL",
+    "1": "SOLAR_5V",       # OUT
+    "4": "GND",
+    "9": "GND",            # PowerPAD - "TI highly recommends connecting to GND"
+    # Pin 2 is FB/DNC. On the FIXED-output versions the datasheet is explicit:
+    # "Do not connect to this pin. Do not route this pin to any electrical net,
+    # not even GND or IN." So this is a real no-connect, not a convenience one.
+    "2": None,
+    "3": None,             # PG open-drain, unused -> leave open
+    "6": None,             # NC
+    "7": None,             # DELAY, no reset function needed -> leave open
+}.items():
+    wire_pin(u5_x, u5_y, LDOD, _n, _net)
+B_USB.note(u5_y)
 
 # ---- PMIC --------------------------------------------------------------------
 npm_x, npm_y, NPMD = place("npm1300", "NPM1300-QEAA-R7", "U2", "nPM1300-QEAA",
@@ -592,7 +640,10 @@ B_PMIC.add("Device", "NetTie_2", "NT3", "GND_PVSS2 to GND (at the via)",
 # off GND left it with nothing but passive pins to drive it. GND_C9 does not -
 # it carries only C9 pin 2 and the net tie, both passive. GND_PVSS2 needs one
 # for the same reason as GND_PA: U2 pin 6 is a power input.
-for blk, net in [(B_USB, "VBUS_IN"), (B_USB, "SOLAR_5V"), (B_USB, "SOLAR_PANEL"),
+# SOLAR_5V no longer needs a flag: U5 pin 1 is a power OUTPUT and drives it.
+# Leaving the flag in place would put two power outputs on one net, which ERC
+# reports as a conflict.
+for blk, net in [(B_USB, "VBUS_IN"), (B_USB, "SOLAR_PANEL"),
                  (B_BATT, "VBAT"), (B_PMIC, "GND"), (B_PMIC, "VSYS"),
                  (B_SUP, "SWD_RST"), (B_RF, "GND_PA"),
                  (B_PMIC, "GND_PVSS2")]:
