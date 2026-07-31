@@ -7751,7 +7751,7 @@
 				)
 			)
 		)
-		(property "Value" "LQM18PN4R7MFRL 4.7uH"
+		(property "Value" "MLZ1608M4R7WT000 4.7uH"
 			(at 0 1.43 0)
 			(layer "F.Fab")
 			(uuid "66e33b59-aa00-4530-b631-aa115b1f52b8")

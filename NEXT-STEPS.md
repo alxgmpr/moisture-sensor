@@ -234,8 +234,14 @@ factory milling.
   measured) and `62.00 × 22.00` is the flat edge span *between* corner reliefs,
   so the drawing was self-consistent all along — it was telling us the PCB needs
   scalloped corners. The `55.00 × 25.00` post pattern is confirmed exactly.
-- **Get the DC-bias curve for L1** from Murata SimSurfing. They publish only a
-  40 °C temperature-rise rating (620 mA) and no saturation current at all.
+- ~~Get the DC-bias curve for L1 from Murata SimSurfing~~ — **closed by changing
+  the part.** L1 is now the **TDK MLZ1608M4R7WT000**, which publishes I_sat
+  (120 mA at 50 % L drop) and I_temp (350 mA typ). The Murata published neither —
+  only a 620 mA temperature-rise figure — and saturation is what matters in a
+  buck. Nordic's `4.7 µH / 120 mA / ±20 % / 650 mΩ` line turns out to be the TDK
+  part's datasheet row verbatim, and the nRF54L15 publishes no DC/DC peak
+  current at all (§11.14). Worst-case peak through L1 is ~60 mA at maximum TX
+  power, ~2× under the 120 mA half-inductance point. See BOM.md.
 - **Measure the cell.** Self-discharge is 74 % of the power budget and the
   1–3 %/month band spans 4.6 down to 2.1 years — still the least-known number in
   the design. The **PCM is no longer a guess**: the DW01P datasheet gives

@@ -528,7 +528,12 @@ B_MCU.note(nrf_y - min(p[4] for p in pins_of(NRFD)))
 # and DECA is the same net as DECRF. VDD is fed directly from the rail with no
 # ferrite in the supply path.
 for ref, sym, val, nm in [
-    ("L1",  "L_Small", "LQM18PN4R7MFRL 4.7uH", {"1": "DCC", "2": "DECD"}),
+    # TDK MLZ1608M4R7WT000, not the Murata LQM18PN4R7M. The Murata publishes no
+    # saturation current at all - only a 620 mA temperature-rise rating - and
+    # saturation is the parameter that matters in a buck. The TDK publishes both
+    # (Isat 120 mA at 50 % L drop, Itemp 350 mA typ), so there is nothing left
+    # open. See BOM.md.
+    ("L1",  "L_Small", "MLZ1608M4R7WT000 4.7uH", {"1": "DCC", "2": "DECD"}),
     ("C1",  "C_Small", "2.2uF/2.5V X6T",    {"1": "DECD", "2": "GND"}),
     ("FB1", "L_Small", "FB 120R@100MHz",    {"1": "DECD", "2": "DECA"}),
     ("C2",  "C_Small", "2.2uF/2.5V X6T",    {"1": "DECA", "2": "GND"}),

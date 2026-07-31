@@ -73,7 +73,7 @@ net**. VDD is fed straight from the 3.3 V rail with no ferrite in the supply pat
 | Des | Value | Description | FP | Net / pin |
 |---|---|---|---|---|
 | U1 | nRF54L15-QFAA | SoC, QFN48 6×6 mm, 0.4 mm pitch | QFN-48 | — |
-| L1 | 4.7 µH | **LQM18PN4R7MFRL**, 120 mA, ±20%, DCR 0.55 Ω max | 0603 | DCC (46) → DECD (45) |
+| L1 | 4.7 µH | **MLZ1608M4R7WT000**, I_sat 120 mA, ±20%, DCR 650 mΩ max | 0603 | DCC (46) → DECD (45) |
 | C1 | 2.2 µF | X6T, ±20%, 2.5 V | 0201 | DECD (45) → GND |
 | FB1 | 120 Ω @ 100 MHz | Ferrite bead, 200 mA, 500 mΩ max | 0201 | DECD (45) → DECA (43) |
 | C2 | 2.2 µF | X6T, ±20%, 2.5 V | 0201 | DECA → GND |

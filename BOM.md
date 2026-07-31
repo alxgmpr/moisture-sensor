@@ -95,42 +95,71 @@ alignment pads.
 Both GH footprints have two `MP` mounting-post pads with no net. That is normal;
 they are mechanical.
 
-### L1 — Murata LQM18PN4R7MFRL
+### L1 — TDK MLZ1608M4R7WT000
 
-Selected over the TDK MLZ1608M4R7WT000, which met Nordic's numbers but landed
-exactly on two of them.
+**Changed from the Murata LQM18PN4R7MFRL. Closed — this was an open item and
+should not have been.**
 
-| | Nordic requires | TDK MLZ1608M4R7W | **Murata LQM18PN4R7M** |
-|---|---|---|---|
-| Inductance | 4.7 µH ±20 % | 4.7 ±20 % | 4.7 ±20 % |
-| **DC resistance** | **≤ 650 mΩ** | 0.5 Ω ±30 % → **650 mΩ** worst case | 0.44 Ω ±25 % → **550 mΩ** worst case |
-| Current | 120 mA | **I_sat 120 mA** at 50 % L drop | 620 mA rated, 40 °C rise |
-| Size | 0603 | 1608 metric | 1.6 × 0.8 × 0.8 mm |
-| SRF | — | — | 40 MHz min |
+The Murata was picked for "margin against the spec": 620 mA rated against
+Nordic's 120 mA, and 550 mΩ worst-case DCR against the 650 mΩ limit. But the
+620 mA is a **temperature-rise** rating, and Murata publishes **no saturation
+current at all** for this part. In a buck, saturation is the parameter that
+matters — a thermal rating tells you the part will not cook, not that it will
+still be an inductor. The design was carrying an unanswerable question.
 
-**The two current figures are not the same measurement.** TDK publishes both a
-saturation current (120 mA, defined where inductance has dropped 50 %) and a
-temperature-rise current (350 mA). Murata publishes **no saturation current at
-all** — confirmed against both the reference spec and Murata's own product page,
-which lists exactly one current parameter: *Rated Current (Temperature Rise) /
-Max. 620 mA*. That page also states **DC Resistance (max.) 0.55 Ω** directly,
-confirming the 0.44 Ω ±25 % calculation, and the part as **shielded (ferrite
-core)** — worth having next to the RF section.
+**Nordic's "requirement" is this part's datasheet row.** The nRF54L15 reference
+BOM (datasheet §14, QFAA circuit configuration 1) lists
+`L1  4.7 µH  Inductor, 120 mA, ±20%, 650 mΩ  0603`. The MLZ1608M4R7WT000 row in
+TDK's `inductor_commercial_decoupling_mlz1608_en` is:
 
-Murata plots an L-vs-current curve for this part with an **X axis running to
-1400 mA** against a 4.7 µH Y axis, which implies useful inductance well past
-Nordic's 120 mA. That is inference from the axis range, not a measured value —
-pull the exact DC-bias curve from
-[SimSurfing](https://ds.murata.com/simsurfing/index.html) before volume.
+| | TDK datasheet | Nordic's line |
+|---|---|---|
+| L | 4.7 µH | 4.7 µH |
+| Tolerance | ±20 % | ±20 % |
+| DC resistance | 0.5 Ω ±30 % → **650 mΩ** max | 650 mΩ |
+| **I_sat** | **120 mA** | 120 mA |
+| Size | 1608 metric | 0603 |
 
-Two smaller notes: this document is stamped **"Reference Only"** and headed
-*reference specification*, so the delivery spec may differ; and DCR is not worth
-optimising for power here — at the few mA the nRF54L15 DC/DC draws, the 100 mΩ
-difference is microwatts, and HARDWARE.md §7 puts the whole wake cycle at 0.6 %
-of the budget. The reason to prefer the Murata is **margin against the spec**,
-not efficiency.
+All four match. So "the TDK lands exactly on two of Nordic's numbers", which is
+why it was rejected the first time, is circular — those numbers were copied from
+this part. It is not marginal against the spec; it *is* the spec.
 
-### D5 — Panjit RB751V-40
+TDK's footnote defines the rating precisely: *"Current assumed when inductance
+ratio has decreased by 50 % max."* It also publishes I_temp = 350 mA typ, so both
+mechanisms are specified.
+
+**And 120 mA is not a converter requirement.** The nRF54L15's REGULATORS
+electrical specification (§11.14) publishes recommended VDD, the power-fail
+comparator thresholds and nothing else — no DC/DC peak inductor current, no
+switching frequency. Unlike the nPM1300, where Table 19 genuinely demands
+I_sat > 350 mA because the hysteretic peak is set by the converter (HARDWARE.md
+§3), Nordic states no inductor current requirement for the nRF54L15 at all.
+
+**What the part actually carries.** The buck steps VDD 3.3 V down to the 0.9 V
+DECD rail, and DECD feeds DECA/DECRF through FB1, so essentially all active
+current passes through L1:
+
+| Condition | I at VDD | Average through L1 |
+|---|---|---|
+| RX 1M/2M | 2.1 mA | 6.5 mA |
+| TX 0 dBm | 3.7 mA | 11.5 mA |
+| TX max power, QFN | 9.1 mA | 28.4 mA |
+| TX max + 3 mA CPU/peripherals | 12.1 mA | 37.7 mA |
+
+Ripple adds ±17 mA at 4 MHz or ±9 mA at 8 MHz for 4.7 µH, so the **worst-case
+peak is around 60 mA** — and that is at maximum TX power, which this design does
+not use (indoor, to a BLE proxy that is already deployed; LAYOUT.md §3 calls the
+link budget forgiving). At 0 dBm it is under 30 mA peak.
+
+**60 mA against a 120 mA half-inductance point is about 2×**, on the part whose
+numbers Nordic quoted. That is the answer, and it needed a current estimate
+rather than a trip to SimSurfing.
+
+**What it costs.** TDK's 650 mΩ worst case against Murata's 550 mΩ, at 37.7 mA,
+is 0.89 mW against 0.75 mW — 0.14 mW, for 300 ms an hour, or about **0.1 mAh/yr
+out of 163**. Below the noise on every other term in HARDWARE.md §7.
+
+### D5 — Panjit RB751V-40### D5 — Panjit RB751V-40
 
 DK `3757-RB751V-40_R1_00001CT-ND`, $0.14.
 
@@ -272,7 +301,7 @@ under-cell gap must not overlap `CELL_RECT`.
 
 | Ref | Requirement | Candidate |
 |---|---|---|
-| L1 | 4.7 µH, 120 mA, ±20 %, DCR ≤ 650 mΩ, 0603 | **Murata LQM18PN4R7MFRL** — selected |
+| L1 | 4.7 µH, ±20 %, DCR ≤ 650 mΩ, published I_sat, 0603 | **TDK MLZ1608M4R7WT000** — selected |
 | L10 | 2.2 µH, I_sat > 350 mA, I_max > 200 mA, DCR ≤ 400 mΩ | **Murata DFE201610P-2R2M** (footprint already set) |
 | D5 | Schottky, low V_f, SOD-323, ~200 mA | **Panjit RB751V-40_R1_00001** — selected |
 | J1 | USB-C receptacle, 16P USB2.0 | **HRO TYPE-C-31-M-12** (footprint already set) |
@@ -462,7 +491,7 @@ have to clear the two minimums. They do, by 15× and 2× respectively.
 | J2 | Battery - Adafruit 1578 | `JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical` |
 | J3 | Solar panel | `JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal` |
 | J4 | SWD 10p 1.27mm | `Tag-Connect_TC2050-IDC-NL_2x05_P1.27mm_Vertical` |
-| L1 | LQM18PN4R7MFRL 4.7uH | `L_0603_1608Metric_Pad1.05x0.95mm_HandSolder` |
+| L1 | MLZ1608M4R7WT000 4.7uH | `L_0603_1608Metric_Pad1.05x0.95mm_HandSolder` |
 | L2 | 2.7nH LQP03HQ2N7B02 | `L_0201_0603Metric` |
 | L3 | 3.5nH LQP03HQ3N5B02 | `L_0201_0603Metric` |
 | L4 | 3.5nH LQP03HQ3N5B02 | `L_0201_0603Metric` |
