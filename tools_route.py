@@ -37,9 +37,9 @@ F, B, IN1, IN2 = "F.Cu", "B.Cu", "In1.Cu", "In2.Cu"
 # after the package was rotated 90 degrees:
 #
 #     U1.31  60.079   /ANT
-#     L2.1   58.82           C6.1  74.58,58.5   shunt, /RF_A
-#     L2.2   58.18   /RF_A   C6.2  75.22,58.5   -> U1.32, top layer only
-#     L3.1   57.22   /RF_A
+#     L2.1   58.82
+#     L2.2   58.18   /RF_A   C6.1  76.25,57.18  shunt, /RF_A - 0.39 mm to L3.1
+#     L3.1   57.22   /RF_A   C6.2  76.25,57.82  -> U1.32, top layer only
 #     L3.2   56.58   /RF_B   C9.1  78.38,56.9   shunt, /RF_B
 #     L4.1   55.62   /RF_B   C9.2  79.02,56.9   -> via -> B.Cu -> NT2
 #     L4.2   54.98   /ANT_FEED
@@ -63,8 +63,7 @@ RF = [
     ("/ANT",        F, 0.36,   [(76.80, 59.30),  (76.80, 58.82)]),   # flare, into L2.1
 
     ("/RF_A",       F, 0.36,   [(76.80, 58.18),  (76.80, 57.22)]),   # L2.2 -> L3.1
-    ("/RF_A",       F, 0.36,   [(74.58, 58.50),  (74.58, 57.70),
-                                (76.80, 57.70)]),                    # C6.1 shunt into the node
+    ("/RF_A",       F, 0.36,   [(76.10, 57.18),  (76.65, 57.20)]),   # C6.1 shunt, 0.39 mm to L3.1
 
     ("/RF_B",       F, 0.36,   [(76.80, 56.58),  (76.80, 55.62)]),   # L3.2 -> L4.1
     ("/RF_B",       F, 0.36,   [(78.38, 56.90),  (78.38, 56.10),
@@ -78,20 +77,22 @@ RF = [
 # C6's ground reaches pin 32 and nothing else, on F.Cu, with no via - Nordic
 # rule 1. It then reaches the centre pad through NT1, whose pads physically
 # overlap U1.32 and U1.49, so the tie needs no copper of its own.
-# The last hop necks to 0.3 mm because pad 32 is 0.1968 mm from pin 31 by pitch.
-# Pin 33 (DECA) sits immediately left of pad 32 at x = 76.0, so the return
-# cannot cut diagonally across the pad row - it runs ABOVE the row and drops
-# straight onto pad 32 through the 0.1968 mm gap between pins 33 and 31.
-# Pin 33 (DECA) sits immediately left of pad 32, so the corridor to pad 32 is
-# only 0.597 mm wide (pin 33 right edge 76.1016 to pin 31 left edge 76.6984),
-# and the 0.38 mm RF flare eats 0.088 mm of it. So the return runs ABOVE the pad
-# row at full 0.4 mm width, then necks to 0.18 mm for the last 0.5 mm and drops
-# onto pad 32 below the flare. 0.18 mm carries nothing - it is a decoupling
-# return, not a current path.
+#
+# It is now a straight climb up x = 76.36 rather than the old diagonal from
+# (75.22, 58.5). C6 was moved under pin 32 for that reason - see the long note
+# in tools_place_fixups.py. The diagonal swept through the only corridor U1
+# pins 33, 34 and 35 had to escape through, and left pin 33 with no legal
+# escape at any width.
+#
+# Width is 0.20 mm, not 0.40, and it is set by what is either side: pin 33's
+# pad at x = 76.102 and the /ANT run at x = 76.62. 76.36 +/- 0.10 holds
+# 0.168 mm to the pad and 0.16 mm to /ANT, against the 0.15 mm that QFNEscape
+# and MatchingNetwork allow there. The last 0.25 mm necks to 0.18 mm to drop
+# onto pad 32 below the RF flare.
 GND_PA = [
-    ("/GND_PA",     F, 0.40,   [(75.22, 58.50),  (76.20, 59.30)]),
-    ("/GND_PA",     F, 0.18,   [(76.20, 59.30),  (76.36, 59.55)]),
-    ("/GND_PA",     F, 0.18,   [(76.36, 59.55),  (76.36, 59.80)]),
+    ("/GND_PA",     F, 0.18,   [(76.10, 57.82),  (76.35, 58.40)]),
+    ("/GND_PA",     F, 0.18,   [(76.35, 58.40),  (76.35, 59.55)]),
+    ("/GND_PA",     F, 0.18,   [(76.35, 59.55),  (76.36, 59.80)]),
 ]
 
 # C9's ground reaches the BOTTOM layer only - Nordic rule 2 - where NT2 ties it
@@ -183,14 +184,17 @@ V3 = [
     # class, where 0.19 mm holds 0.2035 mm and needs no exemption at all.
     ("/+3V3",       F, 0.19,   ["U1.36",  (74.55, 60.079)]),
     ("/+3V3",       F, 0.40,   [(74.55, 60.079), (73.30, 60.05)]),
-    ("/+3V3",       F, 0.19,   ["U1.47",  (73.35, 64.80)]),
-    ("/+3V3",       F, 0.40,   [(73.35, 64.80), (72.90, 65.00), (72.60, 65.00)]),
-    ("/+3V3",       F, 0.19,   ["U1.48",  (73.35, 65.20)]),
-    ("/+3V3",       F, 0.40,   [(73.35, 65.20), (72.90, 65.00)]),
+    # 47 and 48 turn SOUTH into the package corner rather than running west,
+    # which keeps them off /DCC on pin 46 - it needs 0.3 mm as a SWITCH net and
+    # the pins are 0.4 mm apart.
+    ("/+3V3",       F, 0.19,   ["U1.47",  (73.35, 64.80), (73.35, 65.55)]),
+    ("/+3V3",       F, 0.30,   [(73.35, 65.55), (73.80, 65.90)]),
+    ("/+3V3",       F, 0.19,   ["U1.48",  (73.60, 65.45)]),
+    ("/+3V3",       F, 0.30,   [(73.60, 65.45), (73.80, 65.90)]),
     ("/+3V3",       F, 0.19,   ["U1.10",  (78.40, 66.55)]),
     ("/+3V3",       F, 0.40,   [(78.40, 66.55), (78.40, 67.30)]),
     ("/+3V3",       F, 0.19,   ["U1.22",  (80.70, 61.60)]),
-    ("/+3V3",       F, 0.40,   [(80.70, 61.60), (81.20, 61.60)]),
+    ("/+3V3",       F, 0.30,   [(80.70, 61.60), (81.20, 62.30)]),
 
     # -- U2 -----------------------------------------------------------------
     # Pin 12 cannot drop straight south: R20/R21 sit at y 99.68..100.32 and the
@@ -209,9 +213,9 @@ V3 = [
     ("/+3V3",       F, 0.40,   ["C10.1",  (68.60, 67.40)]),
     ("/+3V3",       F, 0.60,   ["C3.1",   (63.90, 68.20)]),
     ("/+3V3",       F, 0.40,   ["C27.1",  (90.00, 60.60)]),
-    ("/+3V3",       F, 0.40,   ["R22.1",  (83.00, 73.50)]),
-    ("/+3V3",       F, 0.40,   ["R23.1",  (83.00, 75.00)]),
-    ("/+3V3",       F, 0.40,   ["J4.1",   (68.46, 77.30)]),
+    ("/+3V3",       F, 0.40,   ["R22.1",  (82.40, 73.50)]),
+    ("/+3V3",       F, 0.40,   ["R23.1",  (82.40, 75.00)]),
+    ("/+3V3",       F, 0.40,   ["J4.1",   (68.46, 77.40), (66.90, 78.00)]),
     ("/+3V3",       F, 0.40,   ["C25.1",  (71.93, 102.50)]),
 
     # BUCK2 output. L10 -> C24 is the second half of the SW2 loop and stays a
@@ -225,14 +229,149 @@ V3 = [
                                 (92.60, 62.30)]),
 ]
 
-ROUTES = RF + GND_PA + GND_C9 + GND_RF + GND_EXTRA + V3
+
+# ------------------------------------------------------------------- MCU ---
+# The left column fans out at 0.19 mm, which holds 0.2035 mm to the neighbouring
+# pad - inside the FinePitchFanout window, and above the 0.2 mm Default
+# clearance anyway. It has to be 0.19 mm and not wider: pin 47 (/+3V3, Power)
+# sits next to pin 46 (/DCC, SWITCH, 0.3 mm), and 0.298 - w/2 >= 0.3 has no
+# solution at any positive width. That is the package, not the routing.
+#
+# The bottom row escapes through the corridor C6 vacated - three lanes at
+# y = 58.30, 58.70 and 59.10, nested so the net that travels furthest west
+# (/DECA) takes the outermost one and turns north clear of the others.
+MCU = [
+    # -- DC/DC filter: DCC -> L1 -> DECD -> FB1 -> DECA ---------------------
+    # /DCC only flares to its 0.5 mm SWITCH width at x = 73.10, by which point
+    # /+3V3 from pin 47 has turned south and is out of the way.
+    ("/DCC",    F, 0.19, ["U1.46", (72.50, 64.40)]),
+    ("/DCC",    F, 0.50, [(72.50, 64.40), (72.20, 64.40), "L1.1"]),
+
+    # /DECD takes the detour over L1 - 1.005 mm of corridor between FB1 and L1,
+    # which a 0.3 mm Default-class track fits and a 0.5 mm SWITCH one does not.
+    ("/DECD",   F, 0.19, ["U1.45", (72.95, 64.00)]),
+    ("/DECD",   F, 0.30, [(72.95, 64.00), (72.60, 63.40), (72.40, 63.30),
+                          (69.90, 63.30), "FB1.1"]),
+    ("/DECD",   F, 0.30, ["FB1.1", (69.125, 63.30), "L1.2"]),
+    ("/DECD",   F, 0.30, ["L1.2", (69.30, 65.60), "C1.1"]),
+
+    # /DECA reaches U1 twice - pin 43 on the left column and pin 33 (DECRF) in
+    # the bottom row. Pin 33 is the one C6 had to move for.
+    ("/DECA",   F, 0.19, ["U1.43", (73.35, 63.20)]),
+    ("/DECA",   F, 0.25, [(73.35, 63.20), (72.60, 62.80), (71.50, 62.70), "FB1.2"]),
+    # Pin 33 has to clear /GND_PA's climb before it turns, so it runs west at
+    # y = 58.55 for the first millimetre and only then drops to its own lane.
+    ("/DECA",   F, 0.19, ["U1.33", (76.00, 58.45)]),
+    ("/DECA",   F, 0.20, [(76.00, 58.45), (75.20, 58.45), (74.60, 58.10),
+                          (68.80, 58.10)]),
+    ("/DECA",   F, 0.25, [(68.80, 58.10), (68.80, 61.60)]),
+    ("/DECA",   F, 0.25, [(68.80, 61.60), (70.60, 61.60), (70.60, 62.40), "FB1.2"]),
+    ("/DECA",   F, 0.25, [(68.80, 61.60), (66.20, 61.60), (66.00, 62.40), "C2.1"]),
+    ("/DECA",   F, 0.25, ["C2.1", (65.20, 62.60), (65.20, 65.40), "C5.1"]),
+    ("/DECA",   F, 0.25, [(65.20, 64.00), "C12.1"]),
+
+    # -- crystals -----------------------------------------------------------
+    # X2's pads are a 2x2 with 0.45 mm between columns and 0.3 mm between rows,
+    # so nothing threads between them: /XC1 has to reach the bottom-left pad
+    # from outside, which it does by running west above X2 and dropping at
+    # x = 69.50.
+    ("/XC1",    F, 0.19, ["U1.34", (75.60, 58.90)]),
+    ("/XC1",    F, 0.20, [(75.60, 58.90), (72.00, 58.75), (69.50, 58.75),
+                          (69.50, 60.575), "X2.1"]),
+    ("/XC2",    F, 0.19, ["U1.35", (75.20, 59.35)]),
+    ("/XC2",    F, 0.20, [(75.20, 59.35), (71.475, 59.40), "X2.3"]),
+
+    ("/XL1",    F, 0.19, ["U1.1", (74.80, 66.90)]),
+    ("/XL1",    F, 0.25, [(74.80, 66.90), (72.20, 68.10), (70.80, 68.10), "X1.1"]),
+    ("/XL2",    F, 0.19, ["U1.2", (75.20, 67.40)]),
+    ("/XL2",    F, 0.25, [(75.20, 67.40), (73.20, 68.70), "X1.2"]),
+
+    # -- reset --------------------------------------------------------------
+    # Pin 30 sits between the /ANT escape and pin 29, so it leaves at x = 77.25
+    # rather than straight down: 0.175 mm to the /ANT flare and 0.153 mm to pin
+    # 29, both inside the QFNEscape window.
+    ("/NRESET", F, 0.19, ["U1.30", (77.25, 59.40)]),
+    ("/NRESET", F, 0.25, [(77.25, 59.40), (77.80, 58.30), (82.00, 58.30), "R1.1"]),
+    ("/NRESET", F, 0.25, [(82.00, 58.30), "C13.1"]),
+
+    # -- SWD, PMIC_INT: the B.Cu debug bus ---------------------------------
+    # B.Cu is empty across Zone B, so the five long runs go there rather than
+    # fight the F.Cu ground pour. They reference the In2.Cu +3V3 plane 0.21 mm
+    # below, which is a fine AC return for SWD.
+    #
+    # Five parallel lanes down the east side at 0.7 mm pitch, peeling west one
+    # at a time BELOW J4. The order is forced and it is worth stating: after a
+    # lane turns west it runs north to its via, and that northward leg crosses
+    # any shallower horizontal whose span covers it. So the shallowest peel must
+    # have the EASTERNMOST destination, and the lane order west to east has to
+    # match the peel order top to bottom:
+    #
+    #   lane 83.0  SWO       peels y 78.6 -> x 73.54   (J4 pin 6)
+    #   lane 83.7  SWDCLK    peels y 79.3 -> x 72.27   (J4 pin 4)
+    #   lane 84.4  SWDIO     peels y 80.0 -> x 69.73   (J4 pin 2)
+    #   lane 85.6  SWD_RST   peels y 80.7 -> x 68.20   (J4 pin 10)
+    #   lane 86.6  PMIC_INT  runs on to y 101.5        (U2 pin 8)
+    #
+    # J4 is a Tag-Connect with no legs, so its signal pads are F.Cu only and
+    # B.Cu passes straight under the connector - only the three NPTH alignment
+    # holes have to be cleared. Pins 6 and 10 are approached from the NORTH
+    # because pins 5 and 9 (both GND) sit directly south of them.
+    ("/SWDIO",  F, 0.19, ["U1.25", (79.20, 59.30)]),
+    ("/SWDIO",  F, 0.20, [(79.20, 59.30), (79.20, 59.00)]),
+    ("/SWDIO",  B, 0.25, [(79.20, 59.00), (79.20, 57.40), (84.40, 57.40),
+                          (84.40, 80.00), (69.73, 80.00), (69.73, 78.00)]),
+    ("/SWDIO",  F, 0.25, [(69.73, 78.00), "J4.2"]),
+
+    ("/SWDCLK", F, 0.19, ["U1.26", (78.80, 59.45)]),
+    ("/SWDCLK", F, 0.20, [(78.80, 59.45), (78.30, 59.00)]),
+    ("/SWDCLK", B, 0.25, [(78.30, 59.00), (79.00, 59.70), (83.00, 59.70),
+                          (83.70, 60.40), (83.70, 79.30), (72.27, 79.30),
+                          (72.27, 78.20)]),
+    ("/SWDCLK", F, 0.25, [(72.27, 78.20), "J4.4"]),
+
+    ("/P2.07_SWO", F, 0.19, ["U1.18", (80.70, 63.20)]),
+    ("/P2.07_SWO", F, 0.20, [(80.70, 63.20), (81.00, 63.20)]),
+    ("/P2.07_SWO", B, 0.25, [(81.00, 63.20), (83.00, 65.20), (83.00, 78.60),
+                             (73.54, 78.60), (73.54, 73.90)]),
+    ("/P2.07_SWO", F, 0.25, [(73.54, 73.90), "J4.6"]),
+
+    ("/SWD_RST", F, 0.30, ["R1.2", (85.60, 58.00)]),
+    ("/SWD_RST", B, 0.25, [(85.60, 58.00), (85.60, 80.70), (68.20, 80.70),
+                           (68.20, 74.00), (68.46, 73.60)]),
+    ("/SWD_RST", F, 0.25, [(68.46, 73.60), "J4.10"]),
+
+    # PMIC_INT joins the bus from the FAR side. Its via would otherwise have to
+    # cross all four SWD lanes to reach the east edge, so it runs east on F.Cu
+    # at y = 60.60 - under C13, over R1, clear of C7 - and drops to B.Cu at
+    # x = 86.90, east of every lane.
+    ("/PMIC_INT", F, 0.19, ["U1.23", (80.90, 61.20)]),
+    ("/PMIC_INT", F, 0.25, [(80.90, 61.20), (81.40, 60.60), (86.90, 60.60)]),
+    ("/PMIC_INT", B, 0.25, [(86.90, 60.60), (86.90, 101.50),
+                            (66.00, 101.50), (65.50, 99.00), (65.80, 97.75)]),
+    ("/PMIC_INT", F, 0.30, [(65.80, 97.75), "U2.8"]),
+]
+
+MCU_VIAS = [
+    (79.20, 59.00, "/SWDIO",     0.60, 0.30),
+    (69.73, 78.00, "/SWDIO",     0.60, 0.30),
+    (78.30, 59.00, "/SWDCLK",    0.60, 0.30),
+    (72.27, 78.20, "/SWDCLK",    0.60, 0.30),
+    (81.00, 63.20, "/P2.07_SWO", 0.60, 0.30),
+    (73.54, 73.90, "/P2.07_SWO", 0.60, 0.30),
+    (85.60, 58.00, "/SWD_RST",   0.60, 0.30),
+    (68.46, 73.60, "/SWD_RST",   0.60, 0.30),
+    (86.90, 60.60, "/PMIC_INT",  0.60, 0.30),
+    (65.80, 97.75, "/PMIC_INT",  0.60, 0.30),
+]
+
+ROUTES = RF + GND_PA + GND_C9 + GND_RF + GND_EXTRA + V3 + MCU
 
 # Vias to the In2.Cu +3V3 plane, one per escape above.
 V3_VIAS = [
     (73.30,  60.05, "/+3V3", 0.60, 0.30),   # U1.36
-    (72.60,  65.00, "/+3V3", 0.60, 0.30),   # U1.47 + U1.48
+    (73.80,  65.90, "/+3V3", 0.60, 0.30),   # U1.47 + U1.48
     (78.40,  67.30, "/+3V3", 0.60, 0.30),   # U1.10
-    (81.20,  61.60, "/+3V3", 0.60, 0.30),   # U1.22
+    (81.20,  62.30, "/+3V3", 0.60, 0.30),   # U1.22
     (67.00,  99.25, "/+3V3", 0.60, 0.30),   # U2.12
     (69.75,  92.50, "/+3V3", 0.60, 0.30),   # U2.28
     (67.30,  92.50, "/+3V3", 0.60, 0.30),   # U2.32
@@ -242,9 +381,9 @@ V3_VIAS = [
     (68.60,  67.40, "/+3V3", 0.60, 0.30),   # C10
     (63.90,  68.20, "/+3V3", 0.80, 0.40),   # C3, the VDD bulk cap
     (90.00,  60.60, "/+3V3", 0.60, 0.30),   # C27, SHT45 decoupling
-    (83.00,  73.50, "/+3V3", 0.60, 0.30),   # R22
-    (83.00,  75.00, "/+3V3", 0.60, 0.30),   # R23
-    (68.46,  77.30, "/+3V3", 0.60, 0.30),   # J4, SWD header
+    (82.40,  73.50, "/+3V3", 0.60, 0.30),   # R22 - clear of the B.Cu debug bus
+    (82.40,  75.00, "/+3V3", 0.60, 0.30),   # R23
+    (66.90,  78.00, "/+3V3", 0.60, 0.30),   # J4, clear of the B.Cu bus at x = 68.2
     (71.93, 102.50, "/+3V3", 0.60, 0.30),   # C25
     (61.80,  97.00, "/+3V3", 0.80, 0.40),   # C24, the BUCK2 output cap
     (92.60,  62.30, "/+3V3", 0.60, 0.30),   # U4, out of the jut-out
@@ -260,7 +399,7 @@ GND_VIAS = [
 # to the In1.Cu plane. Kept clear of the RF corridor - see the note above.
 STITCH = []
 
-ALL_VIAS = VIAS + V3_VIAS + GND_VIAS + [(x, y, "GND", 0.60, 0.30) for x, y in STITCH]
+ALL_VIAS = VIAS + V3_VIAS + GND_VIAS + MCU_VIAS + [(x, y, "GND", 0.60, 0.30) for x, y in STITCH]
 
 
 # --------------------------------------------------------------------------

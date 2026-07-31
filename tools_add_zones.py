@@ -72,7 +72,13 @@ ZONES = [
     # QFNEscape window and everything else on it escapes at 0.19 mm, which
     # holds 0.2035 mm to its neighbours and needs no exemption.
     ("FinePitchFanout", None,  ["F.Cu"],            0, (74.20,  59.60, 75.05,  60.50), "none"),  # U1 pin 36 only
-    ("FinePitchFanout", None,  ["F.Cu"],            0, (72.90,  60.30, 74.50,  65.70), "none"),  # U1 left
+    # /GND_PA's climb from C6 pad 2 to U1 pin 32. It is 0.18 mm wide, not the
+    # 0.4 mm the Power class asks for, and the reason is the same as everywhere
+    # else here: it runs in a 0.5 mm slot between pin 33's pad at x = 76.102 and
+    # L2's pad at x = 76.600. Stops at x = 76.55, short of the /ANT run at
+    # 76.62, so the RF keeps its own clearance.
+    ("FinePitchFanout", None,  ["F.Cu"],            0, (76.15,  57.60, 76.55,  60.20), "none"),  # /GND_PA climb
+    ("FinePitchFanout", None,  ["F.Cu"],            0, (72.20,  60.30, 74.50,  65.70), "none"),  # U1 left
     ("FinePitchFanout", None,  ["F.Cu"],            0, (74.50,  65.30, 79.50,  67.00), "none"),  # U1 top
     ("FinePitchFanout", None,  ["F.Cu"],            0, (79.50,  60.30, 81.10,  65.70), "none"),  # U1 right
     ("FinePitchFanout", None,  ["F.Cu"],            0, (66.10,  92.00, 72.90,  99.40), "none"),  # U2
