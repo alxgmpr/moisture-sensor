@@ -461,9 +461,12 @@ MCU = [
                           (68.80, 58.10)]),
     ("/DECA",   F, 0.25, [(68.80, 58.10), (68.80, 61.60)]),
     ("/DECA",   F, 0.25, [(68.80, 61.60), (70.60, 61.60), (70.60, 62.40), "FB1.2"]),
-    ("/DECA",   F, 0.25, [(68.80, 61.60), (66.20, 61.60), (66.00, 62.40), "C2.1"]),
-    ("/DECA",   F, 0.25, ["C2.1", (65.20, 62.60), (65.20, 65.40), "C5.1"]),
-    ("/DECA",   F, 0.25, [(65.20, 64.00), "C12.1"]),
+    # Rewritten for the bank's new positions. It now taps C2 first - the
+    # closest of the three to pin 43 - and carries on west and south to C12
+    # and C5 rather than running out to x = 65.20 and back.
+    ("/DECA",   F, 0.25, [(68.80, 61.60), "C2.1"]),
+    ("/DECA",   F, 0.25, ["C2.1", (68.30, 63.10), (68.30, 64.00), "C12.1"]),
+    ("/DECA",   F, 0.25, ["C12.1", (68.30, 64.00), (68.30, 65.40), "C5.1"]),
 
     # -- crystals -----------------------------------------------------------
     # X2's pad numbering was corrected - see tools_fix_footprints.py. Pad 1
@@ -684,6 +687,24 @@ V3_VIAS = [
 ]
 
 # GND vias that are not a pad escape.
+# Local ground returns for the DC/DC and DECA decoupling.
+#
+# Audit finding 5: C1's ground pad was 4.87 mm from the nearest ground via, the
+# longest leg of the nRF54L15 DC/DC loop by a wide margin - and C1 is the DECD
+# output cap, so that return carries the switching ripple. The DECA bank was
+# 2.4 to 2.6 mm out for the same reason: the stitching array is a 2.5 mm grid
+# that knows nothing about where the decoupling landed.
+#
+# A capacitor's return path is half its job, and a via next to the pad is the
+# whole fix. These four are placed against the ground pads rather than on the
+# grid, which is what the grid cannot do for itself.
+DECOUPLING_GND_VIAS = [
+    (71.70, 66.30, "GND", 0.60, 0.30),   # C1,  DECD output cap    4.87 -> ~1.1
+    (66.00, 62.60, "GND", 0.60, 0.30),   # C2,  DECA bulk          2.64 -> ~0.9
+    (65.30, 63.30, "GND", 0.60, 0.30),   # C12, DECA 10nF          2.60 -> ~1.3
+    (65.30, 66.10, "GND", 0.60, 0.30),   # C5,  DECA 2.2nF         2.44 -> ~1.3
+]
+
 GND_VIAS = [
     (93.00,  58.90, "GND", 0.60, 0.30),     # U4 ground, out of the jut-out
 ]
@@ -750,7 +771,7 @@ STITCH = CENTRE_PAD + [
     ( 84.00, 102.50),
 ]
 
-ALL_VIAS = (VIAS + V3_VIAS + GND_VIAS + MCU_VIAS + SHLD_VIAS
+ALL_VIAS = (VIAS + V3_VIAS + GND_VIAS + MCU_VIAS + SHLD_VIAS + DECOUPLING_GND_VIAS
             + [(x, y, "GND", 0.60, 0.30) for x, y in STITCH])
 
 

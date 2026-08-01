@@ -154,6 +154,33 @@ FIXUPS = [
     # 0.309 mm. They stay inside the SenseEscape guard region (y 105.8..112.4)
     # only at their north edge now, which is fine - what matters is that they
     # sit over guard, and ZoneC_GUARD_F starts at y = 112.
+    # The DECA bank turned end for end and pulled east. Audit finding 4: C2,
+    # C12 and C5 sat 8.17, 8.19 and 8.44 mm from pin 43, where Nordic's own
+    # reference layout puts them against the package.
+    #
+    # Half of that was free. All three had their /DECA pad on the WEST side,
+    # pointing AWAY from U1, so the net left the capacitor going in the wrong
+    # direction and doubled back - 1.13 mm each, for a rotation.
+    #
+    # The rest is what the space allows, and it is not much. The band between
+    # the bank and the FB1/L1 column is 0.67 mm wide, so each cap can only move
+    # until its courtyard meets its neighbour:
+    #
+    #     C2   blocked by FB1 west edge 68.84  ->  centre 67.50
+    #     C12  blocked by L1  west edge 68.31  ->  centre 66.97
+    #     C5   same, and it straddles L1's row ->  centre 66.97
+    #
+    # Together: 8.17 -> 6.04, 8.19 -> 6.59, 8.44 -> 6.90 mm.
+    #
+    # Nordic gets these against the pins because their reference uses 0201s.
+    # A 0402 hand-solder courtyard is 2.28 mm on its long axis and the corridor
+    # between the L1/FB1 column and U1 is 1.50 mm, so no orientation of a 0402
+    # fits there at all. Closing the remaining ~6 mm means either 0201s for
+    # this bank or re-planning the whole west side of U1; it is not a nudge.
+    ("C2",  (67.50, 62.60), 180.0),
+    ("C12", (66.97, 64.00), 180.0),
+    ("C5",  (66.97, 65.40), 180.0),
+
     # X2 stays at 0, and this entry exists to say so deliberately rather than
     # by omission - FIXUPS only SETS orientations, so a part with no entry keeps
     # whatever the board already has.
