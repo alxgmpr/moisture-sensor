@@ -30,6 +30,145 @@ BOARD = os.path.join(os.path.dirname(os.path.abspath(__file__)),
 F, B, IN1, IN2 = "F.Cu", "B.Cu", "In1.Cu", "In2.Cu"
 
 
+def _seg_rect_dist(a, b, rect):
+    """Distance from segment a-b to an axis-aligned rect. 0 if it enters."""
+    x0, y0, x1, y1 = rect
+    if _rect_contains(rect, a) or _rect_contains(rect, b):
+        return 0.0
+    best = 1e9
+    corners = ((x0, y0), (x1, y0), (x1, y1), (x0, y1))
+    for i in range(4):
+        c, d = corners[i], corners[(i + 1) % 4]
+        # segment-segment: sample both ways, enough for a clearance floor
+        best = min(best, _seg_point_dist(a, b, c), _seg_point_dist(c, d, a),
+                   _seg_point_dist(c, d, b))
+    return best
+
+def _rect_contains(rect, p):
+    x0, y0, x1, y1 = rect
+    return x0 <= p[0] <= x1 and y0 <= p[1] <= y1
+
+def _seg_point_dist(a, b, p):
+    ax, ay = a
+    bx, by = b
+    px, py = p
+    dx, dy = bx - ax, by - ay
+    L2 = dx * dx + dy * dy
+    if L2 < 1e-12:
+        return ((px - ax) ** 2 + (py - ay) ** 2) ** 0.5
+    t = max(0.0, min(1.0, ((px - ax) * dx + (py - ay) * dy) / L2))
+    return ((px - ax - t * dx) ** 2 + (py - ay - t * dy) ** 2) ** 0.5
+
+FAB_MIN_TRACK = 0.127     # JLCPCB floor, matches "Fab minimum track" in the DRU
+
+
+class Escape:
+    """A pad escape whose neck width is MEASURED, not written down.
+
+    Every fine-pitch escape on this board was hand-tuned: 18 entries at
+    0.19 mm, three at 0.18, and a comment on each explaining which two pads set
+    it. That works until something moves. Rotating U3 by 90 degrees left its
+    fanout window covering bare board and the ground escape silently failing
+    the 0.4 mm Power width rule; rotating L10 left a route aimed at where its
+    pad used to be. A written-down width is a cached measurement, and this
+    board has now broken three of them.
+
+    So: given the pad and the direction to leave, walk outward and ask how
+    close the nearest OTHER pad gets. The widest legal neck is
+
+        w = 2 * (nearest_other_pad_distance - clearance)
+
+    clamped to the fab floor and to the width the net actually wants. Then
+    flare to full width once clear of the row.
+
+        Escape("/SCL", "U2.14", (66.0, 97.5), 0.30)
+
+    emits the neck and the flare as two ordinary ROUTES entries, so everything
+    downstream - orthogonalise(), check_angles(), the DRU - sees no difference.
+    """
+
+    def __init__(self, net, pad, toward, width, layer=None, clearance=0.15,
+                 run=None, neck_max=None):
+        self.net, self.pad, self.toward = net, pad, toward
+        self.width, self.layer, self.clearance = width, layer, clearance
+        self.run = run              # how far to hold the neck; None = auto
+        # Ceiling on the measured neck. It exists because this measures against
+        # PADS and nothing else: in a dense fanout the binding constraint is
+        # often the neighbouring TRACK, which is not on the board yet when the
+        # width is computed. Left unset, U1's escapes come out at the
+        # pad-limited 0.297 mm and short /XC2.
+        #
+        # So the measurement is the default and this is the override, which is
+        # the right way round - an unset neck_max still narrows on its own when
+        # a part moves closer, and a set one is a stated constraint rather than
+        # a number someone once measured and wrote down.
+        self.neck_max = neck_max
+
+    def _exit_dir(self, pads, fp_centre):
+        """Leave perpendicular to the pad row: straight away from the package."""
+        px, py = pads[self.pad]
+        dx, dy = px - fp_centre[0], py - fp_centre[1]
+        if abs(dx) >= abs(dy):
+            return (1.0 if dx > 0 else -1.0, 0.0)
+        return (0.0, 1.0 if dy > 0 else -1.0)
+
+    def expand(self, board, pads, obs):
+        if self.pad not in pads:
+            raise SystemExit(f"Escape: unknown pad {self.pad!r}")
+        ref = self.pad.split('.')[0]
+        fp = board.FindFootprintByReference(ref)
+        if fp is None:
+            raise SystemExit(f"Escape: no footprint {ref!r}")
+        c = fp.GetPosition()
+        centre = (pcbnew.ToMM(c.x), pcbnew.ToMM(c.y))
+        ux, uy = self._exit_dir(pads, centre)
+        px, py = pads[self.pad]
+
+        # How far out does the pad row reach in the exit direction? Flare past
+        # it. Derived from the footprint's own pads, so it follows a rotation.
+        reach = 0.0
+        for q in fp.Pads():
+            b = q.GetBoundingBox()
+            for cx, cy in ((pcbnew.ToMM(b.GetLeft()), pcbnew.ToMM(b.GetTop())),
+                           (pcbnew.ToMM(b.GetRight()), pcbnew.ToMM(b.GetBottom())),
+                           (pcbnew.ToMM(b.GetLeft()), pcbnew.ToMM(b.GetBottom())),
+                           (pcbnew.ToMM(b.GetRight()), pcbnew.ToMM(b.GetTop()))):
+                reach = max(reach, (cx - px) * ux + (cy - py) * uy)
+        run = self.run if self.run is not None else round(reach + 0.30, 4)
+        corner = (round(px + ux * run, 4), round(py + uy * run, 4))
+
+        # Widest neck that keeps `clearance` to every other net's pad along the
+        # way. Measured against the real board, not against a remembered pitch.
+        #
+        # Two things this has to get right, both of which it got wrong first
+        # time and both of which clamped every escape to the fab floor:
+        #
+        #   - measure to pad EDGES, not centres. A 0.5 mm pitch neighbour is
+        #     0.5 mm away centre to centre and rather less than that edge to
+        #     edge, and it is the edge the clearance rule cares about.
+        #   - skip the escaping pad itself. The segment starts on it, so its
+        #     distance is identically zero and it wins every minimum.
+        #
+        # Same-net pads are skipped too: a track does not need clearance to
+        # copper it is already connected to.
+        worst = 1e9
+        for rect, qnet in obs:
+            if qnet == self.net:
+                continue
+            if _rect_contains(rect, (px, py)):
+                continue                    # the pad being escaped
+            worst = min(worst, _seg_rect_dist((px, py), corner, rect))
+        neck = round(2 * (worst - self.clearance), 4)
+        neck = min(neck, self.width)
+        if self.neck_max is not None:
+            neck = min(neck, self.neck_max)
+        neck = max(FAB_MIN_TRACK, neck)
+
+        lay = self.layer or F
+        return [(self.net, lay, neck, [self.pad, corner]),
+                (self.net, lay, self.width, [corner, self.toward])]
+
+
 # --------------------------------------------------------------------------
 # RF. See LAYOUT.md section 2 and section 3.
 #
@@ -192,8 +331,7 @@ GND_EXTRA = [
     # pour; the old route headed for a via at (74.60, 109.00) that was picked
     # when the pin was at (73.10, 109.00). Necked to 0.25 mm through the pad
     # row - 0.5 mm pitch leaves 0.2 mm to pins 6 and 8 - then full width.
-    ("GND",         F, 0.25,   ["U3.7",   (71.50, 105.40)]),
-    ("GND",         F, 0.40,   [(71.50, 105.40), (71.50, 103.50)]),
+    Escape("GND", "U3.7", (71.50, 103.50), 0.40),
     ("GND",         F, 0.40,   ["J5.2b",  (79.00, 52.00)]),           # -> existing stitch via
     # Out of the jut-out. NoCopperSHT45 is the 0.87 mm gap BETWEEN U4's two pad
     # columns - the SHT4x datasheet 5.3 die keepout - and U4's pads sit 0.03 mm
@@ -226,8 +364,13 @@ V3 = [
     # FinePitchFanout window; it is 1.75 mm from the /ANT run at x = 76.8, so the
     # RF escape keeps its full clearance. Every other bottom-row pin is Default
     # class, where 0.19 mm holds 0.2035 mm and needs no exemption at all.
+    # NOT an Escape(). Pin 36 is the END of the row and deliberately leaves
+    # WEST into the package corner rather than perpendicular, which is the one
+    # thing Escape's automatic exit direction cannot infer - it reads the
+    # direction from the footprint centre and would send this one north into
+    # /XC2. Corner pins stay explicit.
     ("+3V3",       F, 0.19,   ["U1.36",  (74.55, 60.079)]),
-    ("+3V3",       F, 0.40,   [(74.55, 60.079), (73.30, 60.05)]),
+    ("+3V3",       F, 0.40,   [(74.55, 60.079), (73.30, 60.079)]),
     # 47 and 48 turn SOUTH into the package corner rather than running west,
     # which keeps them off /DCC on pin 46 - it needs 0.3 mm as a SWITCH net and
     # the pins are 0.4 mm apart.
@@ -235,20 +378,17 @@ V3 = [
     ("+3V3",       F, 0.30,   [(73.35, 65.55), (73.80, 65.90)]),
     ("+3V3",       F, 0.19,   ["U1.48",  (73.60, 65.45)]),
     ("+3V3",       F, 0.30,   [(73.60, 65.45), (73.80, 65.90)]),
-    ("+3V3",       F, 0.19,   ["U1.10",  (78.40, 66.55)]),
-    ("+3V3",       F, 0.40,   [(78.40, 66.55), (78.40, 67.30)]),
-    ("+3V3",       F, 0.19,   ["U1.22",  (80.70, 61.60)]),
+    Escape("+3V3", "U1.10", (78.40, 67.30), 0.40, neck_max=0.19),
+    Escape("+3V3", "U1.22", (80.70, 61.60), 0.30, neck_max=0.19),
     ("+3V3",       F, 0.30,   [(80.70, 61.60), (81.20, 62.30)]),
 
     # -- U2 -----------------------------------------------------------------
     # Pin 12 cannot drop straight south: R20/R21 sit at y 99.68..100.32 and the
     # 0.873 mm gap under the pad row will not take a via plus its clearance. It
     # runs west along y = 99.25 into the space between R20 and R21 instead.
-    ("+3V3",       F, 0.30,   ["U2.12",  (69.25, 99.25), (67.00, 99.25)]),
-    ("+3V3",       F, 0.30,   ["U2.28",  (69.75, 92.80)]),
-    ("+3V3",       F, 0.40,   [(69.75, 92.80), (69.75, 92.50)]),
-    ("+3V3",       F, 0.30,   ["U2.32",  (67.75, 92.80)]),
-    ("+3V3",       F, 0.40,   [(67.75, 92.80), (67.30, 92.50)]),
+    Escape("+3V3", "U2.12", (67.00, 99.25), 0.30),
+    Escape("+3V3", "U2.28", (69.75, 92.50), 0.40),
+    Escape("+3V3", "U2.32", (67.30, 92.50), 0.40),
 
     # -- decoupling and the rest -------------------------------------------
     ("+3V3",       F, 0.40,   ["C4.1",   (71.90, 57.40)]),
@@ -666,25 +806,20 @@ TOL = 1e-4      # mm; below this a coordinate difference is rounding, not intent
 
 
 def obstacles(board):
-    """Every pad centre with its net name, for scoring corner choices."""
+    """Every pad as (x0, y0, x1, y1) with its net name.
+
+    Bounding boxes, not centres: clearance is measured to copper edges, and a
+    QFN pad is 0.76 mm long against a 0.4 mm pitch, so the difference decides
+    whether an escape fits.
+    """
     out = []
     for fp in board.GetFootprints():
         for pad in fp.Pads():
-            p = pad.GetPosition()
-            out.append((pcbnew.ToMM(p.x), pcbnew.ToMM(p.y), pad.GetNetname()))
+            b = pad.GetBoundingBox()
+            out.append(((pcbnew.ToMM(b.GetLeft()), pcbnew.ToMM(b.GetTop()),
+                         pcbnew.ToMM(b.GetRight()), pcbnew.ToMM(b.GetBottom())),
+                        pad.GetNetname()))
     return out
-
-
-def _seg_point_dist(a, b, p):
-    ax, ay = a
-    bx, by = b
-    px, py = p
-    dx, dy = bx - ax, by - ay
-    L2 = dx * dx + dy * dy
-    if L2 < 1e-12:
-        return ((px - ax) ** 2 + (py - ay) ** 2) ** 0.5
-    t = max(0.0, min(1.0, ((px - ax) * dx + (py - ay) * dy) / L2))
-    return ((px - ax - t * dx) ** 2 + (py - ay - t * dy) ** 2) ** 0.5
 
 
 def _corner_score(a, corner, b, net, obs):
@@ -694,12 +829,19 @@ def _corner_score(a, corner, b, net, obs):
     corner dropped into a 0.4 mm pad pitch is how this went from one DRC
     violation to eight on the first attempt - /XC1 landed on X2's ground pad.
     """
+    # Pad CENTRES here, deliberately, though the neck calculation uses edges.
+    # Corner selection is a tie-break between two legal options, and scoring it
+    # on bounding boxes made it worse in practice - measured, DRC 1 -> 3 - most
+    # likely because a box collapses several pads to the same zero distance and
+    # the ranking loses resolution. The neck calculation needs true edges; this
+    # needs a stable ordering.
     worst = 1e9
-    for px, py, pnet in obs:
+    for rect, pnet in obs:
         if pnet == net:
             continue
-        d = min(_seg_point_dist(a, corner, (px, py)),
-                _seg_point_dist(corner, b, (px, py)))
+        cx, cy = (rect[0] + rect[2]) / 2, (rect[1] + rect[3]) / 2
+        d = min(_seg_point_dist(a, corner, (cx, cy)),
+                _seg_point_dist(corner, b, (cx, cy)))
         if d < worst:
             worst = d
     return worst
@@ -790,7 +932,8 @@ def net_map(board):
     the NETINFO wrappers, so FindNet() afterwards hands back an unusable
     SwigPyObject. Resolve first, mutate second.
     """
-    names = {n for n, _, _, _ in ROUTES} | {n for _, _, n, _, _ in ALL_VIAS}
+    names = {e.net if isinstance(e, Escape) else e[0] for e in ROUTES}
+    names |= {n for _, _, n, _, _ in ALL_VIAS}
     out = {}
     for name in sorted(names):
         ni = board.FindNet(name)
@@ -828,15 +971,38 @@ def add_via(board, x, y, code, size, drill, top=F, bottom=B):
     board.Add(v)
 
 
+def guard_hand_routing(check):
+    """Refuse to run if the copper on the board is not what we last wrote.
+
+    THIS SCRIPT DELETES EVERY TRACK AND VIA before re-adding from ROUTES, so a
+    run over hand-drawn routing destroys it. tools_route_guard.py holds the
+    fingerprint logic; it deliberately does not import pcbnew, because pcbnew
+    segfaults at interpreter shutdown here and took the stamp write with it.
+    """
+    if check or "--force" in sys.argv:
+        return
+    import tools_route_guard
+    if tools_route_guard.check(quiet=True):
+        raise SystemExit(1)
+
+
 def main():
     check = "--check" in sys.argv
+    guard_hand_routing(check)
     board = pcbnew.LoadBoard(BOARD)
 
     codes = net_map(board)          # must happen before clear_copper()
     pads = pad_map(board)           # ditto - Remove() invalidates the wrappers
     obs = obstacles(board)
+
+    # Expand any Escape() entries against the real board before anything else
+    # looks at them. Downstream sees ordinary (net, layer, width, points).
+    flat = []
+    for e in ROUTES:
+        flat.extend(e.expand(board, pads, obs) if isinstance(e, Escape) else [e])
+
     routes = [(n, l, w, orthogonalise(resolve(p, pads), "auto", n, obs))
-              for n, l, w, p in ROUTES]
+              for n, l, w, p in flat]
     check_angles(routes)
     removed = clear_copper(board)
 
@@ -855,9 +1021,17 @@ def main():
 
     out = "/tmp/routed.kicad_pcb" if check else BOARD
     pcbnew.SaveBoard(out, board)
+
+    # The stamp is NOT written here. pcbnew segfaults at interpreter shutdown
+    # on this build, after the board is safely written, and the crash takes any
+    # unflushed file with it - the stamp came out zero bytes every time, which
+    # then blocks every later run. Stamp from the standalone script instead:
+    #
+    #     python3 tools_route_guard.py stamp
     print(f"removed {removed} existing copper items")
     print(f"added   {segs} segments, {len(ALL_VIAS)} vias")
     print(f"wrote   {out}")
+    sys.stdout.flush()
 
 
 if __name__ == "__main__":
