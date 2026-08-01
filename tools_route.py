@@ -275,7 +275,7 @@ MCU = [
     # /DECD takes the detour over L1 - 1.005 mm of corridor between FB1 and L1,
     # which a 0.3 mm Default-class track fits and a 0.5 mm SWITCH one does not.
     ("/DECD",   F, 0.19, ["U1.45", (72.95, 64.00)]),
-    ("/DECD",   F, 0.30, [(72.95, 64.00), (72.60, 63.40), (72.40, 63.30),
+    ("/DECD",   F, 0.30, [(72.95, 64.00), (72.25, 63.30),
                           (69.90, 63.30), "FB1.1"]),
     ("/DECD",   F, 0.30, ["FB1.1", (69.125, 63.30), "L1.2"]),
     ("/DECD",   F, 0.30, ["L1.2", (69.30, 65.60), "C1.1"]),
@@ -283,11 +283,11 @@ MCU = [
     # /DECA reaches U1 twice - pin 43 on the left column and pin 33 (DECRF) in
     # the bottom row. Pin 33 is the one C6 had to move for.
     ("/DECA",   F, 0.19, ["U1.43", (73.35, 63.20)]),
-    ("/DECA",   F, 0.25, [(73.35, 63.20), (72.60, 62.80), (71.50, 62.70), "FB1.2"]),
+    ("/DECA",   F, 0.25, [(73.35, 63.20), (72.85, 62.70), (71.50, 62.70), "FB1.2"]),
     # Pin 33 has to clear /GND_PA's climb before it turns, so it runs west at
     # y = 58.55 for the first millimetre and only then drops to its own lane.
     ("/DECA",   F, 0.19, ["U1.33", (76.00, 58.45)]),
-    ("/DECA",   F, 0.20, [(76.00, 58.45), (75.20, 58.45), (74.60, 58.10),
+    ("/DECA",   F, 0.20, [(76.00, 58.45), (75.65, 58.10),
                           (68.80, 58.10)]),
     ("/DECA",   F, 0.25, [(68.80, 58.10), (68.80, 61.60)]),
     ("/DECA",   F, 0.25, [(68.80, 61.60), (70.60, 61.60), (70.60, 62.40), "FB1.2"]),
@@ -302,7 +302,7 @@ MCU = [
     # /XC1 drops straight into the near pad off its own lane, and only /XC2
     # has to come round to the far side.
     ("/XC1",    F, 0.19, ["U1.34", (75.60, 58.90)]),
-    ("/XC1",    F, 0.20, [(75.60, 58.90), (70.525, 58.60), "X2.1"]),
+    ("/XC1",    F, 0.20, [(75.60, 58.90), (75.30, 58.60), (70.525, 58.60), "X2.1"]),
     ("/XC2",    F, 0.19, ["U1.35", (75.20, 59.35)]),
     ("/XC2",    F, 0.20, [(75.20, 59.35), (72.20, 59.35), (72.20, 60.575), "X2.3"]),
 
@@ -316,7 +316,8 @@ MCU = [
     # rather than straight down: 0.175 mm to the /ANT flare and 0.153 mm to pin
     # 29, both inside the QFNEscape window.
     ("/NRESET", F, 0.19, ["U1.30", (77.25, 59.40)]),
-    ("/NRESET", F, 0.25, [(77.25, 59.40), (77.80, 58.30), (82.00, 58.30), "R1.1"]),
+    ("/NRESET", F, 0.25, [(77.25, 59.40), (77.45, 59.20), (77.45, 58.60),
+                          (77.75, 58.30), (82.00, 58.30), "R1.1"]),
     ("/NRESET", F, 0.25, [(82.00, 58.30), "C13.1"]),
 
     # -- SWD, PMIC_INT: the B.Cu debug bus ---------------------------------
@@ -630,6 +631,125 @@ def resolve(pts, pads):
     return out
 
 
+TOL = 1e-4      # mm; below this a coordinate difference is rounding, not intent
+
+
+def obstacles(board):
+    """Every pad centre with its net name, for scoring corner choices."""
+    out = []
+    for fp in board.GetFootprints():
+        for pad in fp.Pads():
+            p = pad.GetPosition()
+            out.append((pcbnew.ToMM(p.x), pcbnew.ToMM(p.y), pad.GetNetname()))
+    return out
+
+
+def _seg_point_dist(a, b, p):
+    ax, ay = a
+    bx, by = b
+    px, py = p
+    dx, dy = bx - ax, by - ay
+    L2 = dx * dx + dy * dy
+    if L2 < 1e-12:
+        return ((px - ax) ** 2 + (py - ay) ** 2) ** 0.5
+    t = max(0.0, min(1.0, ((px - ax) * dx + (py - ay) * dy) / L2))
+    return ((px - ax - t * dx) ** 2 + (py - ay - t * dy) ** 2) ** 0.5
+
+
+def _corner_score(a, corner, b, net, obs):
+    """Smallest distance from either new segment to a pad on a DIFFERENT net.
+
+    Higher is better. Corners are what a mechanical decomposition adds, and a
+    corner dropped into a 0.4 mm pad pitch is how this went from one DRC
+    violation to eight on the first attempt - /XC1 landed on X2's ground pad.
+    """
+    worst = 1e9
+    for px, py, pnet in obs:
+        if pnet == net:
+            continue
+        d = min(_seg_point_dist(a, corner, (px, py)),
+                _seg_point_dist(corner, b, (px, py)))
+        if d < worst:
+            worst = d
+    return worst
+
+
+def orthogonalise(pts, mode="straight", net=None, obs=()):
+    """Rewrite a polyline so every segment lies on a 45 degree multiple.
+
+    The board's routing policy is 0/45/90/135 and nothing else. Writing that by
+    hand does not survive contact with real pad coordinates: a pad sits at
+    y = 60.079 and the waypoint after it is written 60.05, which looks like a
+    horizontal run and is actually 1.33 degrees. Forty-one segments were off
+    that way, most of them by less than two degrees, and several by a tenth -
+    invisible in the layout editor and perfectly visible to a fab.
+
+    So the decomposition happens here rather than in the table. For a segment
+    that is neither axial nor diagonal, run STRAIGHT along the longer axis
+    first and take the 45 into the far end:
+
+        |dx| > |dy|:  A -> (A.x + sign(dx)*(|dx|-|dy|), A.y) -> B
+        |dy| > |dx|:  A -> (A.x, A.y + sign(dy)*(|dy|-|dx|)) -> B
+
+    Leaving straight and turning late is what an escape wants anyway: the
+    corner lands away from the pad row it just left, not inside it.
+    """
+    out = [pts[0]]
+    for b in pts[1:]:
+        a = out[-1]
+        dx, dy = b[0] - a[0], b[1] - a[1]
+        adx, ady = abs(dx), abs(dy)
+        if adx < TOL or ady < TOL or abs(adx - ady) < TOL:
+            out.append(b)                       # already axial or 45
+            continue
+        # Build both legal corners, then pick. "straight" runs along the longer
+        # axis first and takes the 45 into the far end; "diag" is the reverse.
+        if adx > ady:
+            c_straight = (round(a[0] + (1 if dx > 0 else -1) * (adx - ady), 6), a[1])
+            c_diag = (round(b[0] - (1 if dx > 0 else -1) * (adx - ady), 6), b[1])
+        else:
+            c_straight = (a[0], round(a[1] + (1 if dy > 0 else -1) * (ady - adx), 6))
+            c_diag = (b[0], round(b[1] - (1 if dy > 0 else -1) * (ady - adx), 6))
+
+        if mode == "auto" and obs:
+            # Take whichever corner keeps further from other nets' pads. A
+            # fixed preference is wrong about half the time in a fanout, and
+            # both fixed choices came out at seven violations when measured;
+            # "straight" everywhere put /XC1 on top of X2's ground pad.
+            corner = max((c_straight, c_diag),
+                         key=lambda c: _corner_score(a, c, b, net, obs))
+        else:
+            corner = c_straight if mode == "straight" else c_diag
+        out.append(corner)
+        out.append(b)
+    return out
+
+
+def check_angles(routes):
+    """Abort if anything still lies off a 45 degree multiple.
+
+    orthogonalise() should make this unreachable. It exists because a silent
+    off-angle segment is exactly the failure this is meant to end, and because
+    a future edit to the emit path should not be able to reintroduce one.
+    """
+    import math
+    bad = []
+    for net, layer, width, pts in routes:
+        for a, b in zip(pts, pts[1:]):
+            dx, dy = b[0] - a[0], b[1] - a[1]
+            if abs(dx) < TOL and abs(dy) < TOL:
+                continue
+            ang = math.degrees(math.atan2(dy, dx)) % 45
+            if min(ang, 45 - ang) > 0.01:
+                bad.append((net, layer, a, b,
+                            math.degrees(math.atan2(dy, dx)) % 180))
+    if bad:
+        for net, layer, a, b, ang in bad:
+            print(f"  OFF-ANGLE {net} {layer} "
+                  f"({a[0]:.4f},{a[1]:.4f})->({b[0]:.4f},{b[1]:.4f})  {ang:.3f} deg")
+        raise SystemExit(f"ABORT: {len(bad)} segments off a 45 degree multiple")
+
+
 def net_map(board):
     """Resolve every net name we route to its net code, BEFORE anything else.
 
@@ -683,7 +803,10 @@ def main():
 
     codes = net_map(board)          # must happen before clear_copper()
     pads = pad_map(board)           # ditto - Remove() invalidates the wrappers
-    routes = [(n, l, w, resolve(p, pads)) for n, l, w, p in ROUTES]
+    obs = obstacles(board)
+    routes = [(n, l, w, orthogonalise(resolve(p, pads), "auto", n, obs))
+              for n, l, w, p in ROUTES]
+    check_angles(routes)
     removed = clear_copper(board)
 
     segs = 0
