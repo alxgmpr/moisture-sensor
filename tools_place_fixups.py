@@ -19,6 +19,14 @@ import pcbnew
 BOARD = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                      "moisture-sensor-carrier.kicad_pcb")
 
+# ref -> (library, footprint) to swap in before positioning. The generator is
+# frozen, so a footprint change has to happen here or not at all.
+# ref -> (library, footprint) to swap in before positioning. The generator is
+# frozen, so a footprint change has to happen here or not at all. Empty for now
+# - see the C27 note below.
+SWAPS = {}
+
+
 # ref, (x, y) or None to leave alone, orientation degrees or None
 FIXUPS = [
     # L1 turned end for end. It was placed with pad 1 (/DCC) at x = 69.125, the
@@ -236,6 +244,44 @@ FIXUPS = [
     # and 58.10) and is a placement job for the whole corner, not a rotation.
     ("X2", None, 0.0),
 
+    # C27 onto the tab, across the two rails where they turn around U4.
+    # 9.58 -> ~0.6 mm, and the loop U4.3 -> C27 -> U4.4 collapses from
+    # something that ran back through the enclosure wall to about 1 mm2.
+    #
+    # It sits EAST of U4 rather than in the north or south band, because the
+    # bands can only reach one rail each: GND leaves along y = 58.90 and +3V3
+    # along y = 62.30, on opposite sides of the package. East is where both
+    # turn, so it is the only spot that touches both.
+    # C27 stays where it is, at 9.58 mm from U4.3, and this is the note saying
+    # so on purpose. It was the last outstanding bypass distance and it does not
+    # close cleanly.
+    #
+    # The distance is structural, not a placement oversight: U4 is out on the
+    # jut-out THROUGH the enclosure wall and C27 is back inside the box. Three
+    # rule areas govern the tab - SHT45_Jut bans pour and vias across all of it,
+    # NoCopperSHT45 bans tracks as well under the die - so both rails have to
+    # come around U4 from the EAST, and there is exactly one strip where a cap
+    # could bridge them:
+    #
+    #     east strip   x 101.045 .. 102.000  =  0.955 mm
+    #     0402 rotated                          1.010 mm  -> does not fit
+    #     0201 rotated                          0.790 mm  -> fits
+    #
+    # A 0201 was tried: swapped in, placed at (101.47, 60.60) rot 90, inside a
+    # 0.06 mm window bounded by U4's courtyard on one side and the 0.300 mm
+    # board-edge clearance on the other. The placement itself is legal. The
+    # ROUTING is not - the two hops onto its pads kept merging with the long tab
+    # runs and dragging +3V3 back across U4's pads and into the die keepout,
+    # 10 DRC violations including a +3V3/SCL short. Reverted.
+    #
+    # It is also the weakest case on the board electrically. The SHT45 is an I2C
+    # part at 400 kHz drawing microamps idle and ~60 mA only while its heater
+    # fires, on millisecond timescales. Roughly 10 nH of loop at those speeds is
+    # nothing - unlike C9, where 5 nH flipped a 2.4 GHz shunt inductive.
+    #
+    # If it is worth closing later: place the 0201 at (101.47, 60.60) rot 90 and
+    # draw the two 0.3 mm hops BY HAND, east of x = 101.2 so neither crosses
+    # NoCopperSHT45.
     ("TP1", (69.00, 113.00), None),
     ("TP2", (72.00, 113.00), None),
     ("TP3", (75.00, 113.00), None),
@@ -245,6 +291,30 @@ FIXUPS = [
 def main():
     check = "--check" in sys.argv
     board = pcbnew.LoadBoard(BOARD)
+
+    for ref, (lib, name) in SWAPS.items():
+        old = board.FindFootprintByReference(ref)
+        if old is None:
+            raise SystemExit(f"no footprint {ref!r} to swap")
+        if old.GetFPIDAsString() == f"{lib}:{name}":
+            continue                                  # already swapped
+        new = pcbnew.FootprintLoad(
+            f"/Applications/KiCad/KiCad.app/Contents/SharedSupport/footprints/{lib}.pretty",
+            name)
+        if new is None:
+            raise SystemExit(f"could not load {lib}:{name}")
+        new.SetReference(ref)
+        new.SetValue(old.GetValue())
+        new.SetPosition(old.GetPosition())
+        new.SetOrientation(old.GetOrientation())
+        # carry the nets across by pad name, so routing survives the swap
+        nets = {p.GetPadName(): p.GetNet() for p in old.Pads()}
+        for p in new.Pads():
+            if p.GetPadName() in nets:
+                p.SetNet(nets[p.GetPadName()])
+        board.Remove(old)
+        board.Add(new)
+        print(f"  {ref:4s} footprint -> {lib}:{name}")
 
     for ref, pos, rot in FIXUPS:
         fp = board.FindFootprintByReference(ref)

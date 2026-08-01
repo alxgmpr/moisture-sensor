@@ -421,6 +421,11 @@ V3 = [
     ("+3V3",       F, 0.60,   ["C24.1",  (61.80, 97.00)]),
     ("+3V3",       F, 0.40,   [(100.75, 61.00), (101.20, 61.00), (101.20, 62.30),
                                 (92.60, 62.30)]),
+    # C27's two stubs are deliberately NOT here - see the note in
+    # tools_place_fixups.py. The placement is done; the two 0.3 mm hops from
+    # the rails onto its pads are left to hand routing, because generating them
+    # kept merging with the long tab runs and dragging a track back across
+    # U4's pads and the NoCopperSHT45 die keepout.
 ]
 
 
