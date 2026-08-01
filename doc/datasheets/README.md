@@ -1,23 +1,89 @@
 # Datasheets
 
-The exact document revisions this design was verified against. HARDWARE.md and
-BOM.md cite section and table numbers from *these* files — pulling a newer
-revision from the vendor may renumber them.
+The PDFs in this directory are **not tracked** — `.gitignore` holds
+`/doc/datasheets/*.pdf`. They are large, they are not ours, and they are all
+re-fetchable. This index is the tracked part, and it is the part that matters:
+HARDWARE.md and BOM.md cite section, table and figure numbers from *these*
+revisions, and vendors renumber between revisions.
 
-| File | Ref | Part | Revision | Pages |
+To rebuild the directory on a fresh checkout, see [Refetching](#refetching).
+
+## Semiconductors
+
+| File | Ref | Part | Manufacturer | Revision | Pages |
+|---|---|---|---|---|---|
+| `nRF54L15.pdf` | U1 | nRF54L15-QFAA wireless SoC | Nordic | v1.0 | 940 |
+| `nPM1300.pdf` | U2 | nPM1300-QEAA PMIC | Nordic | v1.3 | 175 |
+| `FDC1004.pdf` | U3 | FDC1004 capacitance-to-digital converter | TI | Rev. C | 35 |
+| `SHT4x.pdf` | U4 | SHT45-AD1F humidity/temperature sensor | Sensirion | version 5 | 24 |
+| `TPS7A1650.pdf` | U5 | TPS7A16 60 V LDO | TI | Rev. F | 37 |
+| `RB751V-40.pdf` | D5 | RB751V-40 small-signal Schottky, SOD-323 | Panjit | — | 4 |
+| `DW01-P.pdf` | — | DW01-P cell protection IC | Fortune | V10 | 11 |
+
+The nRF54L15 document covers nRF54L15/L10/L05 as a family; only the L15-QFAA
+columns apply. `DW01-P.pdf` is not a board part — it is the protection IC
+*inside* the Adafruit 1578 pack, and it is here because BOM.md's TH1 note turns
+on the fact that the pack ships DW01P + 8205A and therefore has no thermistor.
+
+## Frequency control
+
+| File | Ref | Part | Manufacturer | Pages |
 |---|---|---|---|---|
-| [nRF54L15.pdf](nRF54L15.pdf) | U1 | Nordic nRF54L15-QFAA wireless SoC | v1.0 | 940 |
-| [nPM1300.pdf](nPM1300.pdf) | U2 | Nordic nPM1300-QEAA PMIC | v1.3 | 175 |
-| [FDC1004.pdf](FDC1004.pdf) | U3 | TI FDC1004 capacitance-to-digital converter | Rev. C | 35 |
-| [SHT4x.pdf](SHT4x.pdf) | U4 | Sensirion SHT45-AD1F humidity/temp sensor | version 5 | 24 |
-| [TPS7A1650.pdf](TPS7A1650.pdf) | U5 | TI TPS7A16 60 V LDO | Rev. F | 37 |
+| `CM8V-T1A.pdf` | X1 | CM8V-T1A 32.768 kHz, C_L 7 pF, ±20 ppm | Micro Crystal | 2 |
+| `FA-128.pdf` | X2 | FA-128 32 MHz, C_L 8 pF | Epson | 2 |
 
-The nRF54L15 document covers nRF54L15/L10/L05 as a family. Only the L15-QFAA
-columns apply here.
+## Passives
 
-## Not yet collected
+| File | Ref | Part | Manufacturer | Pages |
+|---|---|---|---|---|
+| `MLZ1608.pdf` | L1 | MLZ1608M4R7WT000 4.7 µH — series sheet | TDK | 6 |
+| `DFE201610P-2R2M.pdf` | L10 | DFE201610P-2R2M 2.2 µH metal alloy | Murata | 1 |
+| `LQP03HQ.pdf` | L2, L3, L4 | LQP03HQ series — covers 2N7B02 and 3N5B02 | Murata | 16 |
+| `GJM0335C1E1R5WB01.pdf` | C6 | GJM0335 1.5 pF C0G 0201 | Murata | 29 |
+| `GJM0335C1E2R0WB01.pdf` | C9 | GJM0335 2.0 pF C0G 0201 | Murata | 29 |
 
-Passives and connectors are sourced from BOM.md rather than from local PDFs.
-The two crystals (X1 Micro Crystal CM8V-T1A, X2 Epson FA-128) were spec-checked
-against vendor datasheets during selection — see BOM.md § "Crystals" — but those
-PDFs are not committed here.
+L3 and L4 are the same part, and both LQP03HQ values live in one series sheet.
+The two GJM0335 files are per-value exports of the same series document.
+
+## Connectors and mechanical
+
+| File | Ref | Part | Manufacturer | Pages |
+|---|---|---|---|---|
+| `U.FL-R-SMT-1.pdf` | J5 | U.FL-R-SMT-1(10) — drawing EDC3-302540-10 | Hirose | 1 |
+| `JST_PH.pdf` | J2 | B2B-PH-K-S — PH series | JST | 5 |
+| `JST_GH.pdf` | J3 | SM02B-GHS-TB / SM03B-GHS-TB — GH series | JST | 6 |
+| `TC2050-IDC-NL.pdf` | J4 | TC2050-IDC-NL Plug-of-Nails, no legs | Tag-Connect | 3 |
+| `1551WK.pdf` | — | 1551WK enclosure (1551WKBK = black PC) | Hammond | 1 |
+
+`U.FL-R-SMT-1.pdf` and `1551WK.pdf` are vector drawings with no text layer, so
+they will not turn up in a full-text search of this directory.
+
+## Gaps
+
+No datasheet on file, because the BOM does not name a manufacturer part number:
+
+| Ref | Value |
+|---|---|
+| J1 | USB-C receptacle — footprint says HRO `TYPE-C-31-M-12`, not carried by DigiKey or LCSC under that string |
+| D3, D4 | green / red 0603 LEDs |
+| FB1 | ferrite bead, 120 Ω @ 100 MHz, 0402 |
+| TH1 | 10 k B3435 NTC |
+| C11 | 0.3 pF C0G 0201 |
+| C13 | 3.9 pF C0G 0402 |
+| — | bulk R and C values (see BOM.md component list) |
+
+C11 and C13 sit in the RF path, so they will need real part numbers before
+fabrication even though the rest of the passives can stay generic.
+
+## Refetching
+
+Everything except the five files below came from the DigiKey Product
+Information API v4, via the `digikey` skill's `sync_datasheets_digikey.py`
+in `--mpn-list` mode. Given a file of MPNs it re-downloads the lot.
+
+Fetched by hand, and not reproducible that way:
+
+- `nRF54L15.pdf`, `nPM1300.pdf` — Nordic infocenter
+- `CM8V-T1A.pdf`, `FA-128.pdf`, `MLZ1608.pdf`, `DW01-P.pdf` — vendor sites
+- `1551WK.pdf` — `https://www.hammfg.com/files/parts/pdf/1551WKBK.pdf`
+  (DigiKey's link for this one 404s)

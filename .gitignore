@@ -26,6 +26,11 @@ fp-info-cache
 *.drl
 *.gbr
 
+# Vendor datasheets - kept on disk, not in history. They are large, they are
+# not ours, and they are all re-fetchable. doc/datasheets/README.md is tracked
+# and records the exact revision of each, which is the part that matters.
+/doc/datasheets/*.pdf
+
 # macOS -------------------------------------------------------------------
 .DS_Store
 ._*
