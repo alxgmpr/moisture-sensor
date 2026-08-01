@@ -97,9 +97,39 @@ GND_PA = [
 
 # C9's ground reaches the BOTTOM layer only - Nordic rule 2 - where NT2 ties it
 # to GND. The short F.Cu stub down to the via is the unavoidable part.
+#
+# NT2's GND side had nothing to connect to and DRC listed it as unconnected.
+# The arrangement assumed a B.Cu ground pour for the net tie to land in, and
+# this board has none: Zone B's B.Cu is bare copper-free, and the only B.Cu
+# zones anywhere are Zone C's SHLD guard and two keepouts. So C9's return
+# stopped at the net tie and went nowhere.
+#
+# Nordic's rule reads "isolated from ALL ground layers except the bottom ground
+# layer", which presumes their stackup where the bottom IS a ground layer. Here
+# the ground plane is In1.Cu - and In1.Cu is the microstrip reference sitting
+# directly beneath the RF trace, which is the plane the rule exists to keep
+# C9's return current out of near the trace.
+#
+# So the return stays on B.Cu, as intended, and lands at the GND stitching via
+# at (81.50, 55.00) - a through via that reaches In1.Cu. That puts C9's ground
+# into the plane 4.70 mm east of the /ANT run at x = 76.80, rather than
+# immediately under it. Pouring B.Cu ground across Zone B instead would give
+# the tie somewhere to land, but it would also put a second plane 1.065 mm
+# under the RF trace and change the 50 ohm geometry that LAYOUT.md section 2
+# had JLCPCB's calculator solve.
 GND_C9 = [
     ("/GND_C9",     F, 0.40,   [(79.02, 56.90),  (79.60, 56.30)]),
     ("/GND_C9",     B, 0.40,   [(79.60, 56.30),  (80.30, 55.20)]),
+]
+
+# NT2's GND side out to the stitching via. B.Cu, so C9's return never touches
+# In1.Cu until it is well clear of the RF run.
+# It drops SOUTH first. Running straight east from the tie passes 0.20 mm under
+# NT2's own /GND_C9 pad at (80.30, 55.20) and DRC calls it a short between the
+# two sides of the net tie - which is exactly what a net tie is there to stop.
+GND_C9_TIE = [
+    ("GND",         B, 0.40,   ["NT2.2", (79.30, 53.80), (80.50, 53.80),
+                                (81.50, 54.80), (81.50, 55.00)]),
 ]
 
 # C11's ground goes straight down to the In1.Cu plane. J5's two ground pads sit
@@ -487,7 +517,8 @@ SHLD_VIAS = [
 ]
 
 
-ROUTES = RF + GND_PA + GND_C9 + GND_RF + GND_EXTRA + V3 + SW2 + SENSE + MCU
+ROUTES = (RF + GND_PA + GND_C9 + GND_C9_TIE + GND_RF + GND_EXTRA
+          + V3 + SW2 + SENSE + MCU)
 
 # Vias to the In2.Cu +3V3 plane, one per escape above.
 V3_VIAS = [

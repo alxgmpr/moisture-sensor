@@ -154,6 +154,45 @@ FIXUPS = [
     # 0.309 mm. They stay inside the SenseEscape guard region (y 105.8..112.4)
     # only at their north edge now, which is fine - what matters is that they
     # sit over guard, and ZoneC_GUARD_F starts at y = 112.
+    # X2 stays at 0, and this entry exists to say so deliberately rather than
+    # by omission - FIXUPS only SETS orientations, so a part with no entry keeps
+    # whatever the board already has.
+    #
+    # Rotating it was tried, because the FA-128's two crystal terminals sit on a
+    # DIAGONAL (pads 1 and 3 are opposite corners) while U1's XC1/XC2 pins are
+    # side by side 0.4 mm apart, and that is what makes the two nets different
+    # lengths however they are routed. A full sweep at (71.0, 60.0):
+    #
+    #     rot     XC1     XC2     sum   mismatch
+    #       0   5.117   3.758   8.875      1.359   <- kept
+    #      90   5.190   3.667   8.857      1.523
+    #     135   4.718   4.210   8.928      0.507
+    #     180   4.155   4.721   8.875      0.566
+    #     315   4.603   4.322   8.925      0.281   <- best on paper
+    #
+    # 315 deg routed out at 6.10 and 6.08 mm - a 0.03 mm mismatch against 1.52.
+    # It was still reverted, for two reasons.
+    #
+    # It does not route. The other diagonal carries the two GROUND pads, so at
+    # any 45 deg rotation a ground pad sits between the approach and the crystal
+    # pad it is aimed at. At 315 the XC2 approach dived across U1's own pad row
+    # and bridged mask to pins 36 and 37; at 180 it ran straight into pad 2.
+    # Both needed a detour long enough to give back what the symmetry won.
+    #
+    # And the symmetry is not the binding constraint. The load capacitors are
+    # internal to the nRF54L15, so a length mismatch only unbalances STRAY
+    # capacitance: 1.36 mm at roughly 1.2 pF/cm is about 0.16 pF out of an 8 pF
+    # load, which pulls well under 1 ppm against the crystal's own 20 ppm.
+    #
+    # What does matter is TOTAL length - stray C adds to both sides, pulls
+    # frequency and eats startup margin - and rotation cannot help that. Nordic's
+    # reference puts the crystal against the package; here the two runs total
+    # 8.9 mm. Closing that means moving X2 east, which is blocked in three
+    # directions at once (U1's west pad row at x = 74.079, the /DECA run
+    # reaching x = 70.60 at y = 61.60, and the XC1/DECA escape lanes at y 58.60
+    # and 58.10) and is a placement job for the whole corner, not a rotation.
+    ("X2", None, 0.0),
+
     ("TP1", (69.00, 113.00), None),
     ("TP2", (72.00, 113.00), None),
     ("TP3", (75.00, 113.00), None),
