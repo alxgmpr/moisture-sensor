@@ -261,15 +261,11 @@ GND_C9 = [
     ("/GND_C9",     B, 0.40,   [(79.60, 56.30),  (80.30, 55.20)]),
 ]
 
-# NT2's GND side out to the stitching via. B.Cu, so C9's return never touches
-# In1.Cu until it is well clear of the RF run.
-# It drops SOUTH first. Running straight east from the tie passes 0.20 mm under
-# NT2's own /GND_C9 pad at (80.30, 55.20) and DRC calls it a short between the
-# two sides of the net tie - which is exactly what a net tie is there to stop.
-GND_C9_TIE = [
-    ("GND",         B, 0.40,   ["NT2.2", (79.30, 53.80), (80.50, 53.80),
-                                (81.50, 54.80), (81.50, 55.00)]),
-]
+# NT2's GND side needs no track any more. It sits in ZoneB_GND_B, the local
+# B.Cu ground pour added for exactly this - see tools_add_zones.py. The 4.20 mm
+# detour that used to be here was 1.68 nH of the 5.18 nH that made C9's shunt
+# branch inductive.
+GND_C9_TIE = []
 
 # C11's ground goes straight down to the In1.Cu plane. J5's two ground pads sit
 # on the Zone A ground pour, which now floods the whole area, so they need no
@@ -395,7 +391,10 @@ V3 = [
     ("+3V3",       F, 0.40,   ["C7.1",   (82.20, 63.50)]),
     ("+3V3",       F, 0.40,   ["C8.1",   (79.43, 69.30)]),
     ("+3V3",       F, 0.40,   ["C10.1",  (68.60, 67.40)]),
-    ("+3V3",       F, 0.60,   ["C3.1",   (63.90, 68.20)]),
+    # C3 turned round, so its +3V3 pad faces EAST now and this run had to move
+    # with it - heading west from the new pad crosses C3's own GND pad, which
+    # DRC reported as a +3V3/GND short. It drops SOUTH into a via instead.
+    ("+3V3",       F, 0.60,   ["C3.1",   (67.83, 69.60)]),
     ("+3V3",       F, 0.40,   ["C27.1",  (90.00, 60.60)]),
     ("+3V3",       F, 0.40,   ["R22.1",  (82.40, 73.50)]),
     ("+3V3",       F, 0.40,   ["R23.1",  (82.40, 75.00)]),
@@ -676,7 +675,7 @@ V3_VIAS = [
     (82.20,  63.50, "+3V3", 0.60, 0.30),   # C7
     (79.43,  69.30, "+3V3", 0.60, 0.30),   # C8
     (68.60,  67.40, "+3V3", 0.60, 0.30),   # C10
-    (63.90,  68.20, "+3V3", 0.80, 0.40),   # C3, the VDD bulk cap
+    (67.83,  69.60, "+3V3", 0.80, 0.40),   # C3, the VDD bulk cap
     (90.00,  60.60, "+3V3", 0.60, 0.30),   # C27, SHT45 decoupling
     (82.40,  73.50, "+3V3", 0.60, 0.30),   # R22 - clear of the B.Cu debug bus
     (82.40,  75.00, "+3V3", 0.60, 0.30),   # R23

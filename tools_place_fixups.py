@@ -181,6 +181,22 @@ FIXUPS = [
     ("C12", (66.97, 64.00), 180.0),
     ("C5",  (66.97, 65.40), 180.0),
 
+    # C3, the VDD bulk cap, same story as the DECA bank. Its +3V3 pad was on
+    # the WEST side at x = 65.138 while U1.48 is at x = 74.079, so the rail left
+    # the capacitor heading away from the part it feeds. Turning it recovers
+    # 1.72 mm - a 0603's pads are further apart than an 0402's, so the rotation
+    # is worth more here.
+    #
+    # East is limited by two different neighbours on two different rows: C10's
+    # courtyard starts at x = 68.86 and overlaps C3's upper edge, X1's starts at
+    # 69.56 and overlaps its lower edge. The binding one is C10, at centre
+    # 66.97. Together: 9.43 -> 6.93 mm.
+    #
+    # Same packaging ceiling as the DECA bank. A 0603 hand-solder courtyard is
+    # 3.38 x 1.55 mm and the only gap nearer U1 is 1.51 mm tall, so it does not
+    # fit there in any orientation.
+    ("C3", (66.97, 68.20), 180.0),
+
     # X2 stays at 0, and this entry exists to say so deliberately rather than
     # by omission - FIXUPS only SETS orientations, so a part with no entry keeps
     # whatever the board already has.

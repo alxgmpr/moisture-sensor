@@ -74,6 +74,33 @@ ZONES = [
     # row (y < 60.3), which is where the RF escape lives - that row has its own
     # QFNEscape window and everything else on it escapes at 0.19 mm, which
     # holds 0.2035 mm to its neighbours and needs no exemption.
+    # B.Cu ground, local to the RF return. C9's shunt has to reach ground on a
+    # layer that is NOT the microstrip's reference plane - Nordic's rule 2 - and
+    # this board had nowhere for it to land: In1.Cu is the RF reference, In2.Cu
+    # is the 3V3 plane, and B.Cu in Zone B was bare copper-free. So the return
+    # ran ~5 mm as a narrow B.Cu track to the nearest stitching via, and a
+    # narrow track is an inductor:
+    #
+    #     F.Cu stub 0.83 mm            0.50 nH
+    #     through via F.Cu->B.Cu       1.34 nH
+    #     B.Cu via -> NT2 1.30 mm      0.52 nH
+    #     B.Cu NT2 -> stitch 4.20 mm   1.68 nH
+    #     via B.Cu -> In1.Cu           1.15 nH
+    #                                  ------- 5.18 nH = +j78.2 ohm at 2.4 GHz
+    #
+    # against C9's own -j33.2 ohm. The shunt branch came out at +45 ohm, i.e.
+    # INDUCTIVE - a 2.0 pF shunt capacitor behaving as an inductor. That is the
+    # same failure the C6 stub had (see tools_place_fixups.py), one layer down.
+    #
+    # With a pour under the via the path is stub + via + a short hop into copper
+    # that spreads: about 2.0 nH, +j30.7 ohm, and the branch stays capacitive.
+    #
+    # It starts at x = 78.00, which is 1.20 mm east of the /ANT column at 76.80,
+    # so it never sits under the RF trace and the 50 ohm geometry LAYOUT.md
+    # section 2 solved for microstrip-over-In1.Cu is untouched. Three existing
+    # stitching vias - (81.50, 55.00), (84.00, 55.00), (86.50, 55.00) - tie it
+    # to In1.Cu, all at least 4.70 mm from the trace.
+    ("ZoneB_GND_B",  "GND",    ["B.Cu"],            0, (78.00,  51.50, 88.00,  62.00), None),
     ("FinePitchFanout", None,  ["F.Cu"],            0, (74.20,  59.60, 75.05,  60.50), "none"),  # U1 pin 36 only
     # /GND_PA's climb from C6 pad 2 to U1 pin 32. It is 0.18 mm wide, not the
     # 0.4 mm the Power class asks for, and the reason is the same as everywhere
