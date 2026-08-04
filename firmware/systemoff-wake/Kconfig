@@ -1,0 +1,9 @@
+config TEST_LABEL
+	string "Name of this test case, printed at startup"
+	default "T4a — wake from System OFF on P0.04 (low-power domain)"
+
+config TEST_EXPECT_WAKE
+	bool "This port is expected to be able to wake the system"
+	default y
+
+source "Kconfig.zephyr"

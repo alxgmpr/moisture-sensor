@@ -1,0 +1,54 @@
+/*
+ * T3 — negative control on the same-port rule.
+ *
+ * SCL = P1.11  clock pin, peripheral domain
+ * SDA = P0.04  clock pin, LOW-POWER domain
+ *
+ * Both pins are clock pins, so the only rule violated is the port crossing:
+ * §8.8.3 says peripherals must use pins in their own domain and "cannot mix
+ * pins from different ports". i2c22 is a peripheral-domain instance (TWIM20-22
+ * live there; TWIM30 is the low-power-domain instance that owns P0), so P0.04
+ * is out of its reach.
+ *
+ * P0.04 is Button 3 — chosen over P0.02 because P0.00-P0.03 are the DK's
+ * UART0 and we need the console to read the result. Do not press Button 3
+ * during the run.
+ *
+ * This may fail at build time rather than at runtime. Either outcome confirms
+ * the rule; record which one you got, because they are different evidence.
+ */
+
+&pinctrl {
+	i2c22_test_default: i2c22_test_default {
+		group1 {
+			psels = <NRF_PSEL(TWIM_SCL, 1, 11)>,
+				<NRF_PSEL(TWIM_SDA, 0, 4)>;
+		};
+	};
+
+	i2c22_test_sleep: i2c22_test_sleep {
+		group1 {
+			psels = <NRF_PSEL(TWIM_SCL, 1, 11)>,
+				<NRF_PSEL(TWIM_SDA, 0, 4)>;
+			low-power-enable;
+		};
+	};
+};
+
+&i2c22 {
+	status = "okay";
+	pinctrl-0 = <&i2c22_test_default>;
+	pinctrl-1 = <&i2c22_test_sleep>;
+	pinctrl-names = "default", "sleep";
+	clock-frequency = <I2C_BITRATE_FAST>;
+};
+
+&button3 {
+	status = "disabled";
+};
+
+/ {
+	aliases {
+		testbus = &i2c22;
+	};
+};

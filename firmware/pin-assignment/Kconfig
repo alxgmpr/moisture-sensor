@@ -1,0 +1,13 @@
+config TEST_LABEL
+	string "Name of this test case, printed at startup"
+	default "T1 baseline — SCL P1.11 (clock pin), SDA P1.10, both on P1"
+
+config TEST_EXPECT_PASS
+	bool "This case is expected to communicate successfully"
+	default y
+	help
+	  Set n for the negative controls. The firmware compares the actual
+	  result against this and shouts if they disagree — a rule you cannot
+	  make fail is a rule you have not tested.
+
+source "Kconfig.zephyr"

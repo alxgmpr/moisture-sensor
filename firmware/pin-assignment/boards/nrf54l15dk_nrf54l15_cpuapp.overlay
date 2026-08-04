@@ -1,0 +1,51 @@
+/*
+ * T1 — baseline. Our actual pins, both on P1, SCL on a dedicated clock pin.
+ *
+ * SCL = P1.11  clock pin per the QFAA pin assignment table
+ * SDA = P1.10  adjacent, same port, not a clock pin (Table 77 does not
+ *              require one for SDA)
+ *
+ * P1.10 is LED 1 on the DK, but the LED is driven through an NX138AKS FET
+ * gate behind 1 MΩ (DK guide Figure 10), so it does not load the bus. The
+ * node is disabled here anyway to stop the LED driver claiming the pin.
+ *
+ * No bias-pull-up: the board uses external 4.7 kΩ (HARDWARE.md §5) and that
+ * is the design point being tested. Fit external resistors, or accept your
+ * breakout's own. See firmware/README.md.
+ */
+
+&pinctrl {
+	i2c22_test_default: i2c22_test_default {
+		group1 {
+			psels = <NRF_PSEL(TWIM_SCL, 1, 11)>,
+				<NRF_PSEL(TWIM_SDA, 1, 10)>;
+		};
+	};
+
+	i2c22_test_sleep: i2c22_test_sleep {
+		group1 {
+			psels = <NRF_PSEL(TWIM_SCL, 1, 11)>,
+				<NRF_PSEL(TWIM_SDA, 1, 10)>;
+			low-power-enable;
+		};
+	};
+};
+
+&i2c22 {
+	status = "okay";
+	pinctrl-0 = <&i2c22_test_default>;
+	pinctrl-1 = <&i2c22_test_sleep>;
+	pinctrl-names = "default", "sleep";
+	clock-frequency = <I2C_BITRATE_FAST>;	/* 400 kHz — the rate the
+						 * 4.7 kΩ choice was sized for */
+};
+
+&led1 {
+	status = "disabled";
+};
+
+/ {
+	aliases {
+		testbus = &i2c22;
+	};
+};
