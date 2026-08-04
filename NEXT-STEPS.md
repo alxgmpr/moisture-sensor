@@ -517,6 +517,8 @@ ties) and TP1–TP5 (bare pads).
 
 ## Bring-up
 
+### Only our board can do these
+
 - **Tune the antenna with the enclosure fitted and a realistic soil load.** The
   matching values are Nordic's but there is no Nordic antenna — the QFAA
   reference layout contains none — so treat them as a starting point, not a
@@ -524,11 +526,77 @@ ties) and TP1–TP5 (bare pads).
 - **Check whether the jut-out perturbs the IFA.** It is an 8 mm cantilever
   5.8 mm from U1, within the antenna's near field. Unpowered FR4 with four thin
   traces, so probably very little, but measure rather than assume.
-- **Trim INTCAP** on both oscillators. The register value excludes PCB stray.
-- **Verify `BUCKnPWMSET`.** A buck left in forced PWM draws 4.0 mA against
-  800 nA — that alone would end the power budget.
-- **Re-apply the VBUS current limit on every boot.** It reverts to 100 mA on any
-  reset or cable event.
+- **Trim INTCAP** on both oscillators. The register value excludes PCB stray,
+  and the DK's stray is not ours — the DK is only good for rehearsing the
+  procedure, not for a value.
+- **Absolute sleep current** against the 500 mAh budget (§7). The DK carries
+  loads we do not.
+
+### On the nRF54L15 DK (PCA10156) — before our board exists
+
+The DK validates the **pin assignment** and nothing else in the power chain.
+See "What the DK's nPM1300 is not" below.
+
+- **Prove the three pin-assignment rules from HARDWARE.md §6.** All three are
+  datasheet readings that currently sit unverified, and all three are
+  schematic-level if wrong.
+  - **SCL on a dedicated clock pin.** `P1.11` has no default DK function and is
+    on header P1. Bring up TWIM on it and confirm it enumerates. Then repeat on
+    a non-clock pin (`P1.09`, the pin the earlier guess used — DK Button 1) and
+    confirm it *fails*. A rule you cannot make fail is a rule you have not
+    tested.
+  - **SDA and SCL on the same port.** `P1.10` is DK LED 1, but the LED is driven
+    through an NX138AKS FET gate with a 1 MΩ pulldown (DK guide Figure 10) — a
+    high-impedance load that will not disturb a 4.7 kΩ-pulled-up bus. Use our
+    actual pin; the LED just flickers on bus traffic. `P1.12` is free if a clean
+    pin is wanted for the first attempt.
+  - **`P0.00` can wake from System OFF.** It is UART0_TXD by default but is
+    brought out on header P0. Disconnect the virtual serial ports first (the
+    current-measurement setup requires that anyway), drive an edge, confirm
+    wake. Then confirm a P2 pin does *not* wake, which is the claim in Table 40
+    that moved PMIC_INT off P2.00.
+- **Set VDD:nRF to 3.3 V in Board Configurator before any current measurement.**
+  The DK default is **1.8 V**. Our rail is 3.3 V, so numbers taken at the
+  default are not comparable to anything in the power budget.
+- **Current measurement is on header P6**, which sits between the PMIC and the
+  SoC. Remove the jumper and insert the PPK2 or a 10 Ω 0402 at R24 for a scope.
+  Leave SB9 closed so the external flash stays on VDD:IO and out of the
+  measurement.
+
+### What the DK's nPM1300 is not
+
+**It is not reachable from the nRF54L15.** The DK's PMIC is owned by the nRF5340
+board controller and configured from the host through nRF Connect for Desktop's
+Board Configurator (DK guide §2.9). It exists to provide a programmable
+1.8–3.3 V VDD:nRF and to power the LEDs. The P0/P1/P2 pin maps (Tables 1–3)
+carry no PMIC signals at all — there is no TWI path from the SoC to the PMIC.
+The DK is also USB-only powered from J3, so there is no battery connector, no
+charger in use, no NTC, and no load-switch output on any header.
+
+So none of the PMIC work can be done on the DK alone:
+
+- `BUCKnPWMSET` — forced PWM at 4.0 mA against 800 nA
+- the VBUS 100 mA limit reverting on every reset and cable event
+- LOADSW1 gating of FDC_VDD, and the LSOUT active discharge (§5)
+- charger current, termination voltage, NTC/JEITA
+- reading VBUS presence from status registers instead of a VBUSOUT pin
+
+### Needs an nPM1300 EK (PCA10152) alongside the DK
+
+The EK brings the PMIC's TWI out on header **P11**, the load-switch pins on
+**P8**, and has JST battery connectors for packs with and without an NTC. Wire
+P11 to the DK's P1 header on our actual pins and the whole list above becomes
+testable, with a real cell on the charger.
+
+The highest-value one is **the §5 gating sequence**: LOADSW1 fed from VOUT2,
+pull-ups on the always-on rail, active discharge enabled. Hang an FDC1004 on
+LSOUT1, power-cycle it on the real duty cycle, and confirm it enumerates every
+time and that FDC_VDD actually collapses between wakes. The deadlock analysis
+says the current topology is right; this is what turns that from reasoning into
+a measurement.
+
+Doing this before our board arrives also means first power-on is a hardware
+bring-up rather than a hardware-and-firmware bring-up at the same time.
 
 ---
 
