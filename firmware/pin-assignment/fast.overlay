@@ -1,0 +1,20 @@
+/*
+ * Bus speed override — stack on top of another case's overlay:
+ *
+ *   -DEXTRA_DTC_OVERLAY_FILE="t2.overlay;fast.overlay"
+ *
+ * 400 kHz leaves so much I2C setup/hold margin that a pin-to-pin skew inside
+ * the die does not show. The clock-pin requirement (Table 77, §10.1.2) is a
+ * timing-margin claim — the pins are "optimized to ensure correct timing
+ * between the clock and data signals" — so it should only bite once the
+ * margin is small enough to matter.
+ *
+ * 1 MHz is the TWIM ceiling on this part; the BME280 is rated to 3.4 MHz, so
+ * the sensor is not the limit here.
+ */
+
+#include <zephyr/dt-bindings/i2c/i2c.h>
+
+&i2c22 {
+	clock-frequency = <I2C_BITRATE_FAST_PLUS>;
+};

@@ -1,0 +1,58 @@
+/*
+ * T3-control — the same P0.04 wire, on the instance that can actually reach it.
+ *
+ * SCL = P0.03  clock pin, low-power domain
+ * SDA = P0.04  unchanged from T3
+ *
+ * T3 fails with -ENODEV, which is also exactly what a loose jumper looks like.
+ * This run keeps SDA physically where T3 had it and moves the peripheral into
+ * the same domain as the pin: i2c30 is the low-power-domain TWIM instance,
+ * where TWIM20-22 are peripheral-domain. If this passes, the P0.04 wire and
+ * the sensor are both good and T3's failure is the port crossing rather than
+ * the bench.
+ *
+ * uart30 has to go: UARTE30 and TWIM30 are the same peripheral instance, and
+ * the board DTS enables uart30 on P0.00-P0.03. It is not the console (uart20
+ * is), so nothing is lost by disabling it.
+ */
+
+#include <zephyr/dt-bindings/i2c/i2c.h>
+
+&uart30 {
+	status = "disabled";
+};
+
+&pinctrl {
+	i2c30_test_default: i2c30_test_default {
+		group1 {
+			psels = <NRF_PSEL(TWIM_SCL, 0, 3)>,
+				<NRF_PSEL(TWIM_SDA, 0, 4)>;
+		};
+	};
+
+	i2c30_test_sleep: i2c30_test_sleep {
+		group1 {
+			psels = <NRF_PSEL(TWIM_SCL, 0, 3)>,
+				<NRF_PSEL(TWIM_SDA, 0, 4)>;
+			low-power-enable;
+		};
+	};
+};
+
+&i2c30 {
+	status = "okay";
+	pinctrl-0 = <&i2c30_test_default>;
+	pinctrl-1 = <&i2c30_test_sleep>;
+	pinctrl-names = "default", "sleep";
+	clock-frequency = <I2C_BITRATE_FAST>;
+};
+
+&button3 {
+	status = "disabled";
+};
+
+/ {
+	aliases {
+		testbus = &i2c30;
+	};
+};

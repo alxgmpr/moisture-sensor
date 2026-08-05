@@ -220,7 +220,18 @@ int main(void)
 	printk("VERDICT: %s%s\n",
 	       passed ? "PASS" : "FAIL",
 	       (passed == IS_ENABLED(CONFIG_TEST_EXPECT_PASS))
-		       ? "" : "  *** UNEXPECTED — the datasheet reading in HARDWARE.md §6 is wrong ***");
+		       ? "" : "  *** UNEXPECTED — disagrees with HARDWARE.md §6 ***");
+
+	if (passed != IS_ENABLED(CONFIG_TEST_EXPECT_PASS)) {
+		/* The first version of this said the datasheet reading was
+		 * wrong. It cannot show that. Table 77 is a timing-margin
+		 * claim, and a pass only means the margin was not consumed
+		 * here — at this rate, this temperature, this bus length. */
+		printk("A negative control that passes does not void the rule. It shows\n"
+		       "the rule was not reproducible at this operating point, which is\n"
+		       "a much weaker statement. See firmware/README.md before moving\n"
+		       "any pin on the strength of it.\n");
+	}
 
 	return 0;
 }

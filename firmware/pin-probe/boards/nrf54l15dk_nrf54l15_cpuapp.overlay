@@ -1,0 +1,17 @@
+/*
+ * Free the pins under test from their board-DTS owners so nothing else
+ * configures them while the probe is reading. uart30 owns P0.00-P0.03 and is
+ * the same instance as i2c30; it is not the console (uart20 is).
+ */
+
+&uart30 {
+	status = "disabled";
+};
+
+&button3 {
+	status = "disabled";
+};
+
+&led1 {
+	status = "disabled";
+};
