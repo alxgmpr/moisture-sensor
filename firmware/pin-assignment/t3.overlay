@@ -10,13 +10,19 @@
  * live there; TWIM30 is the low-power-domain instance that owns P0), so P0.04
  * is out of its reach.
  *
- * P0.04 is Button 3 — chosen over P0.02 because P0.00-P0.03 are the DK's
- * UART0 and we need the console to read the result. Do not press Button 3
- * during the run.
+ * P0.04 is Button 3 — chosen over P0.02 because P0.00-P0.03 are claimed by
+ * uart30, which the board DTS enables. (The Zephyr console is uart20 on
+ * P1.04/P1.05, not the P0 UART.) Do not press Button 3 during the run.
  *
- * This may fail at build time rather than at runtime. Either outcome confirms
- * the rule; record which one you got, because they are different evidence.
+ * i2c22 rather than i2c20: UARTE20 and TWIM20 are the same peripheral
+ * instance, and uart20 is the console.
+ *
+ * This builds clean under NCS v3.2.2 — neither dtc nor the pinctrl layer
+ * rejects the port crossing. Whatever enforces §8.8.3 does so in silicon, so
+ * this is a runtime test.
  */
+
+#include <zephyr/dt-bindings/i2c/i2c.h>
 
 &pinctrl {
 	i2c22_test_default: i2c22_test_default {

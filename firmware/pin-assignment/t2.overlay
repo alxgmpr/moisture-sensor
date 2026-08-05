@@ -16,6 +16,8 @@
  * instead, swap 14 for 9 below and do not touch Button 1 during the run.
  */
 
+#include <zephyr/dt-bindings/i2c/i2c.h>
+
 &pinctrl {
 	i2c22_test_default: i2c22_test_default {
 		group1 {

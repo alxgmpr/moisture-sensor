@@ -3,8 +3,8 @@
  *
  * P0.04 is Button 3 on the DK, so the wake source is a physical button:
  * active low, idle high through the internal pull-up. Our actual pin is
- * P0.00, but that is UART0_TXD on the DK and we need the console to read the
- * result. The claim under test is about the port, not the pin.
+ * P0.00, but the board DTS gives that to uart30. The claim under test is
+ * about the port, not the pin.
  *
  * button3 is disabled so the input driver does not also claim it.
  */

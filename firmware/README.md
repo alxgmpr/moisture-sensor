@@ -81,10 +81,10 @@ Then `west flash` and read the console at 115200.
 
 ## Reading the results
 
-**T3 may fail at build time rather than at runtime.** Both outcomes confirm the
-port rule, but they are different evidence — a build-time rejection says the
-toolchain knows the constraint, a runtime failure says the silicon enforces it.
-Record which one you got.
+**T3 is a runtime test.** All five configurations build clean under NCS v3.2.2
+— neither dtc nor the pinctrl layer rejects the port crossing, so nothing in
+the toolchain knows about §8.8.3. If the rule is real, only the silicon
+enforces it.
 
 **T4b's expected result is `-ENOTSUP` from
 `gpio_pin_interrupt_configure()`**, not a silent non-wake. A pin that refuses
@@ -105,11 +105,41 @@ read it to be. That does not immediately free the pin — it means the reading i
 unreliable and all three need re-checking against the datasheet before the
 pinout is frozen. Note it in NEXT-STEPS.md rather than acting on it directly.
 
-## Known rough edges
+## Build status
 
-- The apps use `i2c22`. If the build reports a pinctrl conflict, another node
-  in the DK's board DTS has claimed a pin; check `build/zephyr/zephyr.dts` and
-  either disable the conflicting node or move to `i2c20`/`i2c21`.
-- Editors will flag the Zephyr includes as missing. There is no
-  `compile_commands.json` until the first `west build`; the errors are the
-  language server, not the code.
+All five configurations compile under **NCS v3.2.2** and the resolved
+devicetree was checked against the intent in each case — `psels` decode to the
+pins named in the table above, and the negative controls really do carry
+`CONFIG_TEST_EXPECT_*=n`.
+
+Nothing here has been run on hardware. Compiling proves the overlays resolve,
+not that any claim in the table is true.
+
+Notes on choices that the board DTS forced:
+
+- **`i2c22`, not `i2c20`.** UARTE20 and TWIM20 are the same peripheral
+  instance, and `uart20` is the Zephyr console on this board.
+- **The console is `uart20` on P1.04/P1.05** — the DK guide's "UART1", not the
+  P0 UART. P0.00–P0.03 are still claimed by `uart30`, which the board DTS also
+  enables, so they stay off limits for a different reason.
+- Node labels used by the overlays (`led1` = P1.10, `led3` = P1.14,
+  `button3` = P0.04) were read from `nrf54l15dk_common.dtsi`, not assumed.
+
+Editors will flag the Zephyr includes as missing until a build generates
+`compile_commands.json`. That is the language server, not the code.
+
+## Reproducing the build without an NCS install
+
+The toolchain image is amd64-only, so this runs under emulation on Apple
+silicon — slow but workable for apps this size.
+
+```bash
+docker volume create ncs-src && docker run --rm --platform linux/amd64 -v ncs-src:/workdir -w /workdir ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.2.2 'west init -m https://github.com/nrfconnect/sdk-nrf --mr v3.2.2 . && west update --narrow -o=--depth=1'
+```
+
+```bash
+docker run --rm --platform linux/amd64 -v ncs-src:/workdir -v ncs-build:/builds -v "$PWD:/fw" -w /workdir ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.2.2 'source /opt/toolchain-env.sh; export ZEPHYR_BASE=/workdir/zephyr; west build -p always -b nrf54l15dk/nrf54l15/cpuapp -d /builds/t1 /fw/pin-assignment'
+```
+
+The image's entrypoint is `bash -c`, so the whole command has to be one quoted
+string — `docker run … uname -m` runs `uname` with `$0` set to `-m`.
