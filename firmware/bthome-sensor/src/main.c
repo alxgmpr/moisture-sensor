@@ -152,6 +152,31 @@ static void advertise(const uint8_t *svc_data)
 	}
 
 	/*
+	 * Ask the stack what identity it actually holds, rather than trusting
+	 * the address we handed bt_id_create().
+	 *
+	 * The earlier version printed our own computed buffer, which is a
+	 * deterministic function of the chip id — so it printed the same six
+	 * bytes whether bt_id_create() had succeeded, failed, or been ignored.
+	 * That made "stable across resets" a tautology and hid a real bug for
+	 * the whole build. This line is the only one that can contradict us.
+	 */
+	{
+		bt_addr_le_t ids[CONFIG_BT_ID_MAX];
+		size_t count = ARRAY_SIZE(ids);
+
+		bt_id_get(ids, &count);
+		if (count > 0) {
+			printk("stack identity: %02X:%02X:%02X:%02X:%02X:%02X (type %u, %u id%s)\n",
+			       ids[0].a.val[5], ids[0].a.val[4], ids[0].a.val[3],
+			       ids[0].a.val[2], ids[0].a.val[1], ids[0].a.val[0],
+			       ids[0].type, (unsigned)count, count == 1 ? "" : "s");
+		} else {
+			printk("stack identity: NONE — bt_id_create() did not take\n");
+		}
+	}
+
+	/*
 	 * Non-connectable, non-scannable: there is no GATT service worth
 	 * connecting to, and staying connectable would hold the radio up
 	 * waiting for connections we do not want.
