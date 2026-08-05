@@ -1,0 +1,19 @@
+config SENSOR_CYCLE_SECONDS
+	int "Seconds between wake cycles"
+	default 3600
+	help
+	  Hourly by default, matching the 8760 wakes/yr in HARDWARE.md §7. The
+	  committed default is the product value; dev.conf overrides it.
+
+config SENSOR_ADV_WINDOW_MS
+	int "Milliseconds to advertise per wake"
+	default 2000
+
+config SENSOR_DEVICE_NAME
+	string "BLE local name"
+	default "Plant-1"
+	help
+	  Seven characters maximum. The advertisement has nine spare bytes and
+	  the name element costs two on top of its text.
+
+source "Kconfig.zephyr"
