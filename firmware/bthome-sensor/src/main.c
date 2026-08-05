@@ -13,6 +13,7 @@
 #include <string.h>
 
 #include <zephyr/drivers/hwinfo.h>
+#include <zephyr/drivers/timer/nrf_grtc_timer.h>
 
 #include "bthome.h"
 
@@ -60,6 +61,65 @@ static int set_stable_identity(void)
 	return 0;
 }
 
+/* One wet-to-dry sweep, then it repeats, so the curve is visible in a session. */
+#define SIM_DRY_PERIOD_MS   (6ULL * 60 * 60 * 1000)
+#define SIM_MOIST_WET_CPCT  8000U   /* 80.00 % */
+#define SIM_MOIST_DRY_CPCT  2500U   /* 25.00 % */
+
+/* SENSE2 reads four points below SENSE1 so that a positional mix-up between
+ * the two entities is obvious in Home Assistant rather than invisible. */
+#define SIM_SENSE2_OFFSET   400U
+
+/*
+ * GRTC SYSCOUNTER survives System OFF — the datasheet is explicit that
+ * SYSCOUNTERL/H are restored on wakeup even though the rest of GRTC resets.
+ * That makes it the one clock that measures total elapsed time across cold
+ * boots, which is why the simulation can be a pure function of it and needs no
+ * stored state.
+ *
+ * The counter runs at sys_clock_hw_cycles_per_sec(), not a fixed 1 MHz, so
+ * convert rather than assume.
+ */
+static uint64_t elapsed_ms(void)
+{
+	uint64_t ticks = z_nrf_grtc_timer_read();
+
+	return (ticks * 1000ULL) / (uint64_t)sys_clock_hw_cycles_per_sec();
+}
+
+/* Triangle wave in [-amplitude, +amplitude], integer only. */
+static int32_t triangle(uint64_t t_ms, uint32_t period_ms, int32_t amplitude)
+{
+	uint32_t phase = (uint32_t)(t_ms % period_ms);
+	uint32_t half = period_ms / 2U;
+	uint32_t up = (phase < half) ? phase : (period_ms - phase);
+
+	return ((int32_t)up * 2 * amplitude) / (int32_t)half - amplitude;
+}
+
+static struct bthome_values sim_values(uint64_t t_ms)
+{
+	uint64_t phase = t_ms % SIM_DRY_PERIOD_MS;
+	uint32_t span = SIM_MOIST_WET_CPCT - SIM_MOIST_DRY_CPCT;
+	uint16_t m1 = (uint16_t)(SIM_MOIST_WET_CPCT -
+				 (uint64_t)span * phase / SIM_DRY_PERIOD_MS);
+	uint64_t drained = t_ms / (30ULL * 60 * 1000);   /* 1 % per 30 min */
+
+	struct bthome_values v = {
+		.battery_pct = (drained >= 99) ? 1U : (uint8_t)(100U - drained),
+		.temperature_cc =
+			(int16_t)(2100 + triangle(t_ms, 20U * 60 * 1000, 150)),
+		.humidity_cpct =
+			(uint16_t)(4500 + triangle(t_ms, 37U * 60 * 1000, 800)),
+		.moisture1_cpct = m1,
+		.moisture2_cpct = (m1 > SIM_SENSE2_OFFSET)
+					  ? (uint16_t)(m1 - SIM_SENSE2_OFFSET)
+					  : 0U,
+	};
+
+	return v;
+}
+
 static void advertise(const uint8_t *svc_data)
 {
 	const struct bt_data ad[] = {
@@ -100,17 +160,12 @@ static void advertise(const uint8_t *svc_data)
 
 int main(void)
 {
-	/* Fixed values for now; Task 4 replaces this with the simulation. */
-	const struct bthome_values v = {
-		.battery_pct = 87,
-		.temperature_cc = 2345,
-		.humidity_cpct = 4120,
-		.moisture1_cpct = 6250,
-		.moisture2_cpct = 5875,
-	};
+	uint64_t now_ms = elapsed_ms();
+	const struct bthome_values v = sim_values(now_ms);
 	uint8_t svc[BTHOME_ADV_DATA_LEN];
 
 	printk("\n=== bthome-sensor ===\n");
+	printk("elapsed %llu ms\n", now_ms);
 
 	if (bthome_encode(&v, svc, sizeof(svc)) != BTHOME_ADV_DATA_LEN) {
 		printk("encode failed\n");
@@ -122,6 +177,12 @@ int main(void)
 		printk(" %02X", svc[i]);
 	}
 	printk("\n");
+
+	printk("battery %u%%  temp %d.%02d C  hum %u.%02u%%  m1 %u.%02u%%  m2 %u.%02u%%\n",
+	       v.battery_pct, v.temperature_cc / 100, (v.temperature_cc % 100 + 100) % 100,
+	       v.humidity_cpct / 100, v.humidity_cpct % 100,
+	       v.moisture1_cpct / 100, v.moisture1_cpct % 100,
+	       v.moisture2_cpct / 100, v.moisture2_cpct % 100);
 
 	advertise(svc);
 
