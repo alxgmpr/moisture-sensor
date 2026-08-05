@@ -143,6 +143,69 @@ sleeps. The firmware prints a warning if it detects it got past `sys_poweroff()`
 A partial pass in T1–T3 counts as a failure. An intermittent bus is exactly what
 a violated timing rule looks like, and it is not something we can design around.
 
+## Results
+
+Run on the DK with a BME280 (chip ID 0x60 at 0x76), VDD:nRF at 3.3 V, the
+breakout's own pull-ups, 20 passes per case.
+
+| Case | Pins | Expected | Actual | |
+|---|---|---|---|---|
+| T1 | SCL P1.11, SDA P1.10, 400 kHz | PASS | **PASS** 20/20 | harness is good |
+| T2 | SCL P1.14, SDA P1.10, 400 kHz | FAIL | **PASS** 20/20 | rule not reproducible |
+| T2-fast | SCL P1.14, SDA P1.10, 1 MHz | FAIL | **PASS** 20/20 | still not, at the TWIM ceiling |
+| T3-control | i2c30, SCL P0.03, SDA P0.04 | PASS | **PASS** 20/20 | sensor + P0.04 wire good |
+| T3 | i2c22, SCL P1.11, SDA P0.04 | FAIL | **FAIL** -ENODEV | port rule enforced |
+
+### The port rule holds (§8.8.3)
+
+T3 is the one that would have broken a board. A peripheral-domain TWIM
+(`i2c22`) cannot reach a low-power-domain pin (P0.04). The control is what
+makes this stand up: same sensor, same P0.04 wire, `i2c30` instead of `i2c22`,
+and it passes 20/20. Both lines were verified to carry external pull-ups with
+`pin-probe` immediately before the T3 run, so "no device" is not a loose wire.
+
+**Keep SDA and SCL on the same port.** Confirmed by experiment, not just by
+reading.
+
+### The clock-pin rule is not reproducible here (Table 77)
+
+A non-clock pin works as TWIM SCL at 400 kHz and at 1 MHz, which is the TWIM
+ceiling on this part. There is no faster I²C test available, so via TWIM the
+requirement cannot be made to bite at all.
+
+**This does not mean the requirement is void.** Table 77 is a timing-margin
+claim — clock pins are "optimized to ensure correct timing between the clock
+and data signals". A pass shows the margin was not consumed at this rate, at
+room temperature, on 10 cm of jumper wire. Process corners, temperature, and a
+real PCB are all outside what was tested.
+
+Worth noting Table 77 also requires a clock pin for SPIM `SCK`, and SPIM00 runs
+at 32 MHz where pin-to-pin skew genuinely matters. The requirement is plausibly
+dimensioned by the fastest peripheral and applied across the table. That is a
+hypothesis these results are consistent with, not something they establish.
+
+**Design call: keep P1.11.** It costs nothing and satisfies a documented
+requirement, and a room-temperature bench test that did not fail is not
+evidence against one. What the result buys is a known-large margin at our
+400 kHz operating point, so deviating later would be a low-risk deliberate
+choice rather than a blind one.
+
+### Bench traps that cost time
+
+- **The P1 header's 00-03 positions are parenthesized on the silkscreen** and
+  are not connected without modification (P1.00/P1.01 need SB3-SB6, P1.02/P1.03
+  are NFC1/NFC2 and need 0 Ω resistors). P0.00-P0.04 are *not* parenthesized.
+  Wiring "03" and "04" on the P1 header instead of the P0 header lands on
+  P1.03 (not connected) and P1.04 (`uart20` TXD, the console).
+- **The P6 jumper feeds VDD:nRF.** With it out, the SoC is unpowered while the
+  debugger stays alive on USB 5 V, and `nrfutil device reset` fails with "debug
+  port unavailable" rather than anything mentioning power.
+- **Each GPIO header carries its own `VDD:IO` pin** — buffered VDD:nRF, so
+  3.3 V once configured, and a more convenient supply for a breakout than P6.
+- Two failures in a row here were bench faults, not results. `pin-probe` exists
+  because `-ENODEV` and a loose wire are the same reading; run it before
+  banking any negative result.
+
 ## What to do with an unexpected result
 
 T2 or T3 passing means the corresponding rule in HARDWARE.md §6 is not what we
