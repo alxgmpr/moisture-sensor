@@ -585,6 +585,39 @@ loads we do not — but it proves nothing is holding the SoC awake.
   more convenient 3.3 V supply for a breakout than P6.
 - The Zephyr console is **VCOM1**, not VCOM0.
 
+### BTHome firmware on the DK — simulated data, 2026-08-05
+
+The seven-task BTHome plan
+([docs/superpowers/plans/2026-08-04-bthome-firmware.md](docs/superpowers/plans/2026-08-04-bthome-firmware.md))
+is implemented and console-verified on the DK. Full detail, build/flash
+instructions and packet layout: [firmware/bthome-sensor/README.md](firmware/bthome-sensor/README.md).
+
+Console-verified: the product-default build (no `dev.conf`) reports
+`sleeping 3600 s`; the dev build (`dev.conf`, 30 s cycle) repeats correctly
+across multiple System OFF wakes, with `elapsed` climbing monotonically, the
+BLE identity unchanged across resets, and `m1` reading four points above `m2`
+on every cycle as the encoder's ordering test requires. The encoder's host
+tests (`./tests/bthome/run.sh`) pass.
+
+**Not yet confirmed: Home Assistant discovery.** Seeing one `Plant-1` device
+with five entities in HA, values matching the console, and both moisture
+entities trending down over a session needs a human watching HA's Bluetooth
+integration over several cycles, and is being collected separately. Treat that
+as expected-but-unverified until this entry is updated.
+
+**What remains:**
+
+- **Real sensor drivers** — needs our board. The DK has no soil-moisture,
+  temperature or humidity sensors attached, so all five values stay simulated
+  until then.
+- **Encryption** — BTHome's packet ID becomes mandatory once encryption is
+  turned on, and that counter needs to be persisted across cold-boot wakes to
+  avoid rewinding on every cycle. No NVS/settings subsystem exists yet.
+- **Real battery reporting** — needs the nPM1300 EK (see "Needs an nPM1300 EK"
+  below) for the fuel gauge, plus the open question already in HARDWARE.md §5:
+  confirm the NCS fuel gauge library's availability for nRF54L15 and its
+  RAM/flash cost for a design that cold-boots hourly.
+
 ### What the DK's nPM1300 is not
 
 **It is not reachable from the nRF54L15.** The DK's PMIC is owned by the nRF5340

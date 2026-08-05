@@ -866,8 +866,20 @@ Add above `main()`:
 ```c
 static void sleep_until_next_cycle(void)
 {
-	int err = z_nrf_grtc_wakeup_prepare((uint64_t)CONFIG_SENSOR_CYCLE_SECONDS *
-					    USEC_PER_SEC);
+	int err;
+
+	printk("sleeping %d s\n", CONFIG_SENSOR_CYCLE_SECONDS);
+	k_msleep(50);   /* sys_poweroff() does not wait for the console */
+
+	/*
+	 * The console drain above must happen before we arm the wake source:
+	 * z_nrf_grtc_wakeup_prepare() clears every other GRTC channel and
+	 * expects to be followed immediately by sys_poweroff(). Kernel timer
+	 * activity between the two (even a k_msleep()) runs through the
+	 * channels it just cleared and undoes the arm.
+	 */
+	err = z_nrf_grtc_wakeup_prepare((uint64_t)CONFIG_SENSOR_CYCLE_SECONDS *
+					USEC_PER_SEC);
 
 	if (err < 0) {
 		/*
@@ -879,12 +891,11 @@ static void sleep_until_next_cycle(void)
 		sys_reboot(SYS_REBOOT_COLD);
 	}
 
-	printk("sleeping %d s\n", CONFIG_SENSOR_CYCLE_SECONDS);
-	k_msleep(50);   /* sys_poweroff() does not wait for the console */
-
 	sys_poweroff();
 }
 ```
+
+The order matters and is not interchangeable: `z_nrf_grtc_wakeup_prepare()` must be followed immediately by `sys_poweroff()`, so anything that touches a kernel timer — including the `k_msleep(50)` that drains the console — has to happen *before* the arm, not after. An earlier version of this function put the drain between the two calls, which silently undid the arm and left the device asleep forever with no wake source.
 
 - [ ] **Step 3: Restructure main around them**
 
@@ -1192,6 +1203,6 @@ git push
 | `dev.conf` 30 s override | 2, 5 |
 | End-to-end HA verification | 7 |
 
-**Deviation from the spec:** no `boards/nrf54l15dk_nrf54l15_cpuapp.overlay` is created. The spec's file listing included one, but the app uses only board-default aliases (`sw0`) and adds no pins, so an overlay would be an empty file. Noted in Task 2.
+**Deviation from the spec:** `boards/nrf54l15dk_nrf54l15_cpuapp.overlay` is not created until Task 6, not from the start. The spec's file listing included one, and Task 2's note that none was needed was correct only through Task 5 — the app used board-default aliases (`sw0`) and added no pins. Task 6's watchdog needs `wdt31`, which ships `status = "disabled"` in the SoC's base devicetree, so from Task 6 onward the overlay exists to enable it.
 
 **Type consistency:** `struct bthome_values` field names and types are identical in Tasks 1, 2, 4 and 5. `bthome_encode()` is called with the same signature everywhere and its return compared against `BTHOME_ADV_DATA_LEN` in both the tests and `main()`. `elapsed_ms()` returns `uint64_t` and `sim_values()` takes `uint64_t` throughout.
