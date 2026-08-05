@@ -94,8 +94,11 @@ module would imply a stability it does not have.
 |---|---|---|
 | `SENSOR_CYCLE_SECONDS` | `3600` | Hourly, matching the 8760 wakes/yr in HARDWARE.md §7 |
 | `SENSOR_ADV_WINDOW_MS` | `2000` | ~20 transmissions at a 100 ms interval |
-| `SENSOR_ADV_INTERVAL_MS` | `100` | |
 | `SENSOR_DEVICE_NAME` | `"Plant-1"` | 7 characters is the maximum the spare bytes allow |
+
+The advertising interval is not a Kconfig: `main.c` passes
+`BT_GAP_ADV_FAST_INT_MIN_2`/`BT_GAP_ADV_FAST_INT_MAX_2` directly to
+`bt_le_adv_start()`, which is 100–150 ms.
 
 A `dev.conf` overlay sets `SENSOR_CYCLE_SECONDS=30` so a cycle can be observed
 without waiting an hour. The product default stays hourly so the committed
@@ -182,8 +185,11 @@ ordering invariant — wrong data bound to the wrong entity is worse than no dat
 and HA marking an entity stale is honest about what happened. The stub cannot
 fail; the API forbids it now so real drivers cannot reintroduce it later.
 
-**A watchdog**, configured to halt in System OFF, with a timeout a few times the
-awake window. Covers a hang while the radio is up. This is the one optional
+**A watchdog**, with a timeout of fixed overhead plus the advertising window,
+with margin. It is not halted by anything the firmware does at sleep time —
+the peripheral loses power in System OFF along with the rest of the chip, and
+waking from System OFF is a full reset, so there is nothing left counting
+down to fire. Covers a hang while the radio is up. This is the one optional
 piece in the design.
 
 ## Testing

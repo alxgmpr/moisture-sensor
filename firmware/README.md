@@ -9,6 +9,9 @@ Nothing else in the bring-up list can be tested on the DK. The DK's nPM1300 is
 owned by the nRF5340 board controller and is not on the nRF54L15's bus — see
 [NEXT-STEPS.md](../NEXT-STEPS.md) under "What the DK's nPM1300 is not".
 
+For the BTHome BLE beacon firmware (also DK-only, not a fire-test), see
+[bthome-sensor/](bthome-sensor/README.md).
+
 Each test declares its own expected outcome and reports an `*** UNEXPECTED ***`
 line when the result disagrees. A negative control that quietly passes is the
 result we most need to notice.

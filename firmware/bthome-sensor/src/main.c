@@ -124,6 +124,13 @@ static struct bthome_values sim_values(uint64_t t_ms)
 	return v;
 }
 
+/* The advertisement is exactly 31 of 31 bytes with a 7-character name; a
+ * longer CONFIG_SENSOR_DEVICE_NAME makes bt_le_adv_start() fail at runtime,
+ * and the device silently stops advertising every cycle while the console
+ * still looks healthy. */
+BUILD_ASSERT(sizeof(CONFIG_SENSOR_DEVICE_NAME) - 1 <= 7,
+	     "BLE name must fit the 9 spare AD bytes");
+
 static void advertise(const uint8_t *svc_data)
 {
 	const struct bt_data ad[] = {
@@ -191,8 +198,6 @@ static void sleep_until_next_cycle(void)
 	int err;
 
 	printk("sleeping %d s\n", CONFIG_SENSOR_CYCLE_SECONDS);
-	k_msleep(50);   /* sys_poweroff() does not wait for the console */
-
 	/*
 	 * The console drain above must happen before we arm the wake source:
 	 * z_nrf_grtc_wakeup_prepare() clears every other GRTC channel and
@@ -200,6 +205,8 @@ static void sleep_until_next_cycle(void)
 	 * activity between the two (even a k_msleep()) runs through the
 	 * channels it just cleared and undoes the arm.
 	 */
+	k_msleep(50);   /* sys_poweroff() does not wait for the console */
+
 	err = z_nrf_grtc_wakeup_prepare((uint64_t)CONFIG_SENSOR_CYCLE_SECONDS *
 					USEC_PER_SEC);
 
@@ -223,8 +230,12 @@ static void sleep_until_next_cycle(void)
  * in System OFF along with the rest of the chip, and waking from System OFF
  * is a full reset. There is nothing left counting down to fire.
  *
- * The timeout is several times the advertising window; anything longer than
- * that awake means something is stuck.
+ * The window is the advertising window plus a fixed margin, not a multiple of
+ * the window: the cycle's ~2.1 s cost (bt_enable, encode, console) is mostly
+ * fixed overhead, not proportional to CONFIG_SENSOR_ADV_WINDOW_MS. A multiple
+ * shrinks along with the window, so a short window (e.g. 400 ms) would demand
+ * the fixed overhead complete inside a budget it cannot meet, and the device
+ * would watchdog-reset forever without ever reaching sys_poweroff().
  *
  * There is no wdt_feed() anywhere in this file, deliberately: the watchdog is
  * armed once per cold boot and never fed again, so the whole cycle — escape
@@ -237,7 +248,7 @@ static void watchdog_start(void)
 	const struct device *wdt = DEVICE_DT_GET(DT_NODELABEL(wdt31));
 	struct wdt_timeout_cfg cfg = {
 		.window.min = 0,
-		.window.max = CONFIG_SENSOR_ADV_WINDOW_MS * 4,
+		.window.max = CONFIG_SENSOR_ADV_WINDOW_MS + 6000,
 		.callback = NULL,
 		.flags = WDT_FLAG_RESET_SOC,
 	};

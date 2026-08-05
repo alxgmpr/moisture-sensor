@@ -36,7 +36,12 @@ pure function of elapsed time or re-derived from the chip itself:
 5. **Encode.** `bthome_encode()` fills a 17-byte BTHome v2 payload.
 6. **Advertise.** Non-connectable, for `CONFIG_SENSOR_ADV_WINDOW_MS`
    (2000 ms by default).
-7. **Sleep.** Arm the GRTC wake alarm, drain the console, `sys_poweroff()`.
+7. **Sleep.** Drain the console, arm the GRTC wake alarm, `sys_poweroff()`. Order
+   matters here: `z_nrf_grtc_wakeup_prepare()` disables every other GRTC
+   channel and expects `sys_poweroff()` to follow immediately, so any kernel
+   timer activity after the arm (even a `k_msleep()`) runs through the
+   channels it just cleared and undoes it — the device never wakes. See the
+   comment in `sleep_until_next_cycle()` in `src/main.c`.
 
 The product default is an hourly cycle (`CONFIG_SENSOR_CYCLE_SECONDS=3600`).
 `dev.conf` overrides that to 30 seconds so a full cycle can be watched without
@@ -86,8 +91,14 @@ check which VCOM the terminal is attached to before suspecting the firmware.
 
 ## The escape hatch
 
-Hold **Button 0** and press RESET. The firmware prints a notice and idles
-forever instead of running a cycle, keeping the board reachable for flashing.
+Hold **Button 0** and press RESET. The firmware is written to print a notice
+and idle forever instead of running a cycle, keeping the board reachable for
+flashing. **This has not yet been verified on hardware** — only the
+console-observed behaviors above (cycles repeating, payload bytes, stable BLE
+identity, elapsed climbing across System OFF) have. See
+[NEXT-STEPS.md](../../NEXT-STEPS.md) ("BTHome firmware on the DK") for the
+current status of that check.
+
 Without it, a one-hour (or even 30-second) cycle leaves a very small window to
 flash into before the device drops into System OFF and stops answering the
 debugger.
@@ -147,3 +158,10 @@ Battery, temperature, humidity and both moisture values are a simulated
 drying curve, a pure function of elapsed time — not real sensor reads. See
 [NEXT-STEPS.md](../../NEXT-STEPS.md) for what real hardware needs before that
 changes.
+
+The simulated battery declines monotonically from 100% and never resets — it
+is driven off GRTC elapsed time, which survives even a chip erase. After
+roughly 49.5 hours of accumulated DK uptime it pins at 1% permanently, while
+the moisture curve keeps cycling every 6 hours as usual. That is expected
+behavior of the stub, not a fault — worth knowing before a future Home
+Assistant demo makes it look like a dead cell.
