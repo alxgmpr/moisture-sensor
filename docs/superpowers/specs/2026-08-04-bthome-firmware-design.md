@@ -101,9 +101,13 @@ A `dev.conf` overlay sets `SENSOR_CYCLE_SECONDS=30` so a cycle can be observed
 without waiting an hour. The product default stays hourly so the committed
 default is the real one.
 
-Button 0 is P1.13 on the DK. Our board has no button, so the escape hatch there
-will need a spare GPIO or a test point — worth choosing before layout is final
-rather than after.
+Button 0 is P1.13 on the DK. **The escape hatch is DK-only and needs no
+equivalent on our board.** Our board carries no button (no `SW` designator
+exists) and all five test points are committed — TP1 SENSE1, TP2 SENSE2,
+TP3 SHLD, TP4 SHPHLD, TP5 SOLAR_5V — but none is needed: with a debugger
+attached the device is in Debug Interface mode and System OFF is *emulated*
+(datasheet §5.2.1), so the CPU keeps running and stays reachable. Connecting
+the Tag-Connect is the escape hatch. No layout change required.
 
 ## Packet layout
 
