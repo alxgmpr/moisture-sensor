@@ -231,6 +231,14 @@ rather than Nordic's documented constraints, and they need the nPM1300 EK.
   port unavailable" rather than anything mentioning power.
 - **Each GPIO header carries its own `VDD:IO` pin** — buffered VDD:nRF, so
   3.3 V once configured, and a more convenient supply for a breakout than P6.
+- **`sys_poweroff()` makes the device unprogrammable.** T4a sleeps 5 s then
+  enters System OFF, and a device in System OFF does not answer the debugger —
+  the next flash simply fails. Press RESET and program inside the 5 s window,
+  or `nrfutil device recover`. T4b returns early and never sleeps, so it is
+  safe to leave on the board.
+- To put the DK back in a sane state, build and flash the stock sample:
+  `west build -p always -b nrf54l15dk/nrf54l15/cpuapp $ZEPHYR_BASE/samples/hello_world`.
+  It prints on VCOM1.
 - Two failures in a row here were bench faults, not results. `pin-probe` exists
   because `-ENODEV` and a loose wire are the same reading; run it before
   banking any negative result.
