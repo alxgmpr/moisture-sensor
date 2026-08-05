@@ -1041,11 +1041,20 @@ Add above `main()`:
 
 ```c
 /*
- * Covers a hang while the radio is up. Halted in System OFF so it does not
- * fire during the sleep — the GRTC alarm owns that timing.
+ * Covers a hang while the radio is up. It does not fire during the sleep —
+ * not because of WDT_OPT_PAUSE_HALTED_BY_DBG below (that only pauses the
+ * counter under a debugger), but because the watchdog peripheral loses power
+ * in System OFF along with the rest of the chip, and waking from System OFF
+ * is a full reset. There is nothing left counting down to fire.
  *
  * The timeout is several times the advertising window; anything longer than
  * that awake means something is stuck.
+ *
+ * There is no wdt_feed() anywhere in this file, deliberately: the watchdog is
+ * armed once per cold boot and never fed again, so the whole cycle — escape
+ * check, encode, advertise — has to finish inside window.max on its own.
+ * Measured overhead is about 2.1 s against the 8 s window this config
+ * produces, which is the margin that invariant relies on.
  */
 static void watchdog_start(void)
 {

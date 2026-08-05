@@ -2,9 +2,17 @@
 
 BTHome v2 BLE beacon for the **nRF54L15 DK (PCA10156)**, NCS v3.2.2. Advertises
 five simulated soil-sensor values — battery, temperature, humidity, and two
-moisture readings — and appears in Home Assistant as one device with five
-entities. It runs the real product cycle end to end; only the sensor read is
-faked, since our own board and sensors are not built yet.
+moisture readings — over standard BTHome v2 service data, which Home
+Assistant's Bluetooth integration is designed to pick up automatically as one
+device with five entities. It runs the real product cycle end to end; only
+the sensor read is faked, since our own board and sensors are not built yet.
+
+Console-verified: the cycle, the payload bytes, the stable BLE identity across
+resets, and moisture reading above moisture_2 on the wire, all as designed.
+**Actual discovery in Home Assistant has not yet been verified** — that check
+needs a human watching the HA integration over several cycles. See
+[NEXT-STEPS.md](../../NEXT-STEPS.md) ("BTHome firmware on the DK") for the
+current status of that check.
 
 Design and rationale: [docs/superpowers/specs/2026-08-04-bthome-firmware-design.md](../../docs/superpowers/specs/2026-08-04-bthome-firmware-design.md).
 This README covers how to build, run and verify it; the design doc covers why
@@ -103,7 +111,10 @@ Covers the golden byte vector, negative temperature as two's-complement
 
 ## Packet layout
 
-22 of 31 available advertising bytes:
+22 of 31 available advertising bytes. The remaining 9 are exactly consumed by
+the `BT_DATA_NAME_COMPLETE` element carrying `"Plant-1"` — the advertisement
+is full, and the 7-character `SENSOR_DEVICE_NAME` limit has no headroom (see
+the design doc for the byte accounting).
 
 ```
 02 01 06                          Flags: LE General Discoverable, no BR/EDR
