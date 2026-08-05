@@ -33,16 +33,20 @@ wiring.
 default is 1.8 V. Our rail is 3.3 V and the bus timing under test is sensitive
 to it.
 
-For T1–T3 you need an I²C target. Use an **SHT4x breakout** — the SHT45-AD1F is
-already in our BOM (HARDWARE.md §5), so this doubles as bring-up of a driver we
-need. Wire it to header P1:
+For T1–T3 you need an I²C target. The firmware speaks **BME280/BMP280**,
+probing 0x76 and 0x77 and accepting either chip ID. Wire it to header P1:
 
-| Breakout | DK |
-|---|---|
-| VDD | VDD (P4 test point or header P6, 3.3 V) |
-| GND | GND |
-| SCL | P1.11 (T1, T3) / P1.14 (T2) |
-| SDA | P1.10 (T1, T2) / P0.04 (T3) |
+| Breakout | DK | |
+|---|---|---|
+| VIN / VCC | 3.3 V — P6 header (jumper fitted) or a P4 test point | not the 5 V on P30/P31/P32 |
+| GND | any GND | |
+| SCL | P1.11 (T1, T3) / P1.14 (T2) | |
+| SDA | P1.10 (T1, T2) / P0.04 (T3) | |
+
+An SHT4x would have been the better target — the SHT45-AD1F is in our BOM
+(HARDWARE.md §5), so it would have doubled as driver bring-up, and its 2-byte
+CRC gives protocol-level corruption detection. The BME280 has no CRC, so it is
+purely a bus target. See "Integrity checking" below.
 
 **Pull-ups.** The overlays do not enable the internal ones, because the board
 uses external 4.7 kΩ at 400 kHz and that is the design point under test. Fit
@@ -52,6 +56,20 @@ in parallel and note what you actually ran.
 
 **Do not press Button 3** during T3 or T4a — it is on P0.04, and a press shorts
 the line.
+
+### Integrity checking without a CRC
+
+The BME280 has no checksum, so a corrupt byte is indistinguishable from a real
+one at the protocol level. Each pass therefore re-reads the 26-byte factory
+calibration block (0x88..0xA1) and compares it against the copy taken at
+startup. That block is constant for the life of the part, so any difference is
+the bus rather than the sensor — and 26 bytes of known-good data catches more
+than a single register would. Mismatches are counted separately from bus
+errors, because they mean different things: a NAK is a bus that did not work, a
+mismatch is a bus that lied.
+
+Each pass also writes two registers before reading, so a pin that only fails in
+one direction still shows up.
 
 ## Building and flashing
 
@@ -78,6 +96,16 @@ west build -p -b nrf54l15dk/nrf54l15/cpuapp systemoff-wake -- -DEXTRA_DTC_OVERLA
 ```
 
 Then `west flash` and read the console at 115200.
+
+**The console is VCOM1, not VCOM0** — `uart20` is the DK guide's "UART1" on
+P1.04/P1.05. On macOS that is the higher-numbered `/dev/cu.usbmodem*` of the
+pair. VCOM0 stays silent and looks identical to a dead board.
+
+Flashing without west, from a hex built in the container:
+
+```bash
+nrfutil device program --firmware merged.hex --options chip_erase_mode=ERASE_ALL && nrfutil device reset
+```
 
 ## Reading the results
 
@@ -112,8 +140,10 @@ devicetree was checked against the intent in each case — `psels` decode to the
 pins named in the table above, and the negative controls really do carry
 `CONFIG_TEST_EXPECT_*=n`.
 
-Nothing here has been run on hardware. Compiling proves the overlays resolve,
-not that any claim in the table is true.
+**Run on hardware so far:** T1 boots on the DK, `i2c22` initialises, and the
+probe correctly reports `-ENODEV` at both addresses with nothing wired. That
+exercises the no-device path and shows the harness reports honestly. No test
+in the table has produced a real result yet — that needs the BME280 attached.
 
 Notes on choices that the board DTS forced:
 
