@@ -532,36 +532,58 @@ ties) and TP1–TP5 (bare pads).
 - **Absolute sleep current** against the 500 mAh budget (§7). The DK carries
   loads we do not.
 
-### On the nRF54L15 DK (PCA10156) — before our board exists
+### On the nRF54L15 DK (PCA10156) — done, 2026-08-04
 
-The DK validates the **pin assignment** and nothing else in the power chain.
-See "What the DK's nPM1300 is not" below.
+All four claims from HARDWARE.md §6 were exercised on the DK with a BME280 as
+the bus target. Firmware, overlays and full results are in
+[firmware/](firmware/README.md).
 
-- **Prove the three pin-assignment rules from HARDWARE.md §6.** All three are
-  datasheet readings that currently sit unverified, and all three are
-  schematic-level if wrong.
-  - **SCL on a dedicated clock pin.** `P1.11` has no default DK function and is
-    on header P1. Bring up TWIM on it and confirm it enumerates. Then repeat on
-    a non-clock pin (`P1.09`, the pin the earlier guess used — DK Button 1) and
-    confirm it *fails*. A rule you cannot make fail is a rule you have not
-    tested.
-  - **SDA and SCL on the same port.** `P1.10` is DK LED 1, but the LED is driven
-    through an NX138AKS FET gate with a 1 MΩ pulldown (DK guide Figure 10) — a
-    high-impedance load that will not disturb a 4.7 kΩ-pulled-up bus. Use our
-    actual pin; the LED just flickers on bus traffic. `P1.12` is free if a clean
-    pin is wanted for the first attempt.
-  - **`P0.00` can wake from System OFF.** It is UART0_TXD by default but is
-    brought out on header P0. Disconnect the virtual serial ports first (the
-    current-measurement setup requires that anyway), drive an edge, confirm
-    wake. Then confirm a P2 pin does *not* wake, which is the claim in Table 40
-    that moved PMIC_INT off P2.00.
-- **Set VDD:nRF to 3.3 V in Board Configurator before any current measurement.**
-  The DK default is **1.8 V**. Our rail is 3.3 V, so numbers taken at the
-  default are not comparable to anything in the power budget.
-- **Current measurement is on header P6**, which sits between the PMIC and the
-  SoC. Remove the jumper and insert the PPK2 or a 10 Ω 0402 at R24 for a scope.
-  Leave SB9 closed so the external flash stays on VDD:IO and out of the
-  measurement.
+| Claim | Result |
+|---|---|
+| SDA and SCL must share a port (§8.8.3) | **confirmed** — `i2c22` cannot reach P0.04 |
+| P0 can wake from System OFF (Table 40) | **confirmed** — real wake, `RESET_LOW_POWER_WAKE` |
+| P2 cannot wake (Table 40) | **confirmed** — `-ENOTSUP`, the port will not arm |
+| TWIM SCL needs a clock pin (Table 77) | **not reproducible** — see below |
+
+**The pin assignment is unchanged.** Every rule we designed to held, so nothing
+moves. The value is that three of them were previously "read a table and
+believed it" and are now demonstrated — §8.8.3 especially, since a peripheral
+that cannot reach its pin is not something ERC or DRC catches.
+
+**The clock-pin rule could not be made to fail**, at 400 kHz or at 1 MHz, which
+is the TWIM ceiling on this part. That is not evidence the rule is void: Table
+77 is a timing-margin claim, and a room-temperature bench on jumper wire
+consumes none of the margin. **P1.11 stays.** What we gained is knowing the
+margin is large at our operating point, so deviating later would be a
+deliberate low-risk choice rather than a blind one.
+
+**Honest assessment of the exercise.** None of it changed the board. The prior
+probability that Nordic's own tables were right was always high, and we had
+already complied with all three rules, so the tests could only ever return
+"yes, you were right". What it did buy, beyond the verification itself, is a
+working container build, flash and console path, plus `pin-probe` for telling
+`-ENODEV` apart from a loose wire — all of which real bring-up needs anyway,
+and all cheaper to build against a known answer than an unknown one.
+
+**Still to do on the DK, and not yet done:** set VDD:nRF to 3.3 V in Board
+Configurator (default is 1.8 V) and take a System OFF current baseline on P6
+with the PPK2. Leave SB9 closed so the external flash stays on VDD:IO and out
+of the measurement. This will not give us our sleep figure — the DK carries
+loads we do not — but it proves nothing is holding the SoC awake.
+
+**Bench traps, both of which cost time here:**
+
+- The **P1 header's 00-03 positions are parenthesized** on the silkscreen and
+  are not connected without modification (P1.00/P1.01 need SB3-SB6, P1.02/P1.03
+  are NFC1/NFC2 and need 0 Ω resistors). P0.00-P0.04 are not parenthesized.
+  Wiring "03"/"04" on the P1 header instead of P0 lands on P1.03 (dead) and
+  P1.04 (`uart20` TXD, the console).
+- The **P6 jumper feeds VDD:nRF**. With it out the SoC is unpowered while the
+  debugger stays alive on USB 5 V, and the failure surfaces as `nrfutil` saying
+  "debug port unavailable" with no mention of power.
+- Each GPIO header carries its own **`VDD:IO`** pin — buffered VDD:nRF, and a
+  more convenient 3.3 V supply for a breakout than P6.
+- The Zephyr console is **VCOM1**, not VCOM0.
 
 ### What the DK's nPM1300 is not
 
@@ -587,6 +609,12 @@ The EK brings the PMIC's TWI out on header **P11**, the load-switch pins on
 **P8**, and has JST battery connectors for packs with and without an NTC. Wire
 P11 to the DK's P1 header on our actual pins and the whole list above becomes
 testable, with a real cell on the charger.
+
+**This is now the blocking item.** With the DK work closed out, everything
+remaining in the bring-up list needs the EK, and it is where the genuine
+uncertainty lives: the pin rules were Nordic's documented constraints, but the
+power chain is our own topology decisions. Those are the ones that would cost a
+board spin.
 
 The highest-value one is **the §5 gating sequence**: LOADSW1 fed from VOUT2,
 pull-ups on the always-on rail, active discharge enabled. Hang an FDC1004 on

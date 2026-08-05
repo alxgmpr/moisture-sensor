@@ -155,6 +155,8 @@ breakout's own pull-ups, 20 passes per case.
 | T2-fast | SCL P1.14, SDA P1.10, 1 MHz | FAIL | **PASS** 20/20 | still not, at the TWIM ceiling |
 | T3-control | i2c30, SCL P0.03, SDA P0.04 | PASS | **PASS** 20/20 | sensor + P0.04 wire good |
 | T3 | i2c22, SCL P1.11, SDA P0.04 | FAIL | **FAIL** -ENODEV | port rule enforced |
+| T4a | wake from P0.04 | wakes | **WOKE** `RESET_LOW_POWER_WAKE` | P0 wakes |
+| T4b | wake from P2.08 | cannot arm | **-ENOTSUP** | P2 cannot |
 
 ### The port rule holds (§8.8.3)
 
@@ -189,6 +191,33 @@ requirement, and a room-temperature bench test that did not fail is not
 evidence against one. What the result buys is a known-large margin at our
 400 kHz operating point, so deviating later would be a low-risk deliberate
 choice rather than a blind one.
+
+### The wake rules hold (Table 40)
+
+T4a produced a genuine System OFF wake from P0.04 — `RESET_LOW_POWER_WAKE` on
+the following boot, which only a real wake sets, and the emulated-System-OFF
+warning never fired. T4b returned `-ENOTSUP` from
+`gpio_pin_interrupt_configure()`: P2 will not even arm a level sense. That is
+the stronger of the two possible negative results, since a refusal cannot be
+confused with a floating pin.
+
+**PMIC_INT stays on P0.00.**
+
+### Was this worth doing?
+
+Not as much as it looked when proposed. All four claims confirmed what we had
+already read and already designed to, so the pinout is unchanged. The prior
+probability that Nordic's tables were correct was high, and a test that can only
+return "yes, you were right" carries little information.
+
+What it did buy: the pinout is demonstrated rather than assumed; there is now a
+working container build, flash and console path plus `pin-probe`, all of which
+real bring-up needs and all cheaper to debug against a known answer; two bench
+traps are documented; and the clock-pin margin turns out to be large.
+
+The untested risk is entirely in the power chain — `BUCKnPWMSET`, the VBUS
+limit reverting, the §5 LOADSW1 gating. Those are our own topology decisions
+rather than Nordic's documented constraints, and they need the nPM1300 EK.
 
 ### Bench traps that cost time
 
