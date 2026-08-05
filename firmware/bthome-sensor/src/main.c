@@ -14,6 +14,9 @@
 
 #include <zephyr/drivers/hwinfo.h>
 #include <zephyr/drivers/timer/nrf_grtc_timer.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/sys/poweroff.h>
+#include <zephyr/sys/reboot.h>
 
 #include "bthome.h"
 
@@ -158,34 +161,104 @@ static void advertise(const uint8_t *svc_data)
 	bt_le_adv_stop();
 }
 
+static const struct gpio_dt_spec escape_btn = GPIO_DT_SPEC_GET(DT_ALIAS(sw0), gpios);
+
+/*
+ * Held at boot, this keeps the device awake and therefore programmable. A
+ * device in System OFF does not answer the debugger, so without an escape a
+ * one-hour cycle leaves a very small window to flash in.
+ *
+ * DK only. Our board needs no equivalent: with a debugger attached the device
+ * is in Debug Interface mode and System OFF is emulated, so it stays reachable.
+ */
+static bool escape_held(void)
+{
+	if (!gpio_is_ready_dt(&escape_btn)) {
+		return false;
+	}
+
+	if (gpio_pin_configure_dt(&escape_btn, GPIO_INPUT) < 0) {
+		return false;
+	}
+
+	/* The devicetree spec carries GPIO_ACTIVE_LOW, so 1 means pressed. */
+	return gpio_pin_get_dt(&escape_btn) == 1;
+}
+
+static void sleep_until_next_cycle(void)
+{
+	int err;
+
+	printk("sleeping %d s\n", CONFIG_SENSOR_CYCLE_SECONDS);
+	k_msleep(50);   /* sys_poweroff() does not wait for the console */
+
+	/*
+	 * The console drain above must happen before we arm the wake source:
+	 * z_nrf_grtc_wakeup_prepare() clears every other GRTC channel and
+	 * expects to be followed immediately by sys_poweroff(). Kernel timer
+	 * activity between the two (even a k_msleep()) runs through the
+	 * channels it just cleared and undoes the arm.
+	 */
+	err = z_nrf_grtc_wakeup_prepare((uint64_t)CONFIG_SENSOR_CYCLE_SECONDS *
+					USEC_PER_SEC);
+
+	if (err < 0) {
+		/*
+		 * This is the one failure that must not fall through to sleep.
+		 * System OFF with no wake source never returns, so a device
+		 * that sleeps here is gone until someone presses reset.
+		 */
+		printk("GRTC wake prepare failed (%d) — resetting instead\n", err);
+		sys_reboot(SYS_REBOOT_COLD);
+	}
+
+	sys_poweroff();
+}
+
 int main(void)
 {
-	uint64_t now_ms = elapsed_ms();
-	const struct bthome_values v = sim_values(now_ms);
+	uint64_t now_ms;
+	struct bthome_values v;
 	uint8_t svc[BTHOME_ADV_DATA_LEN];
 
 	printk("\n=== bthome-sensor ===\n");
+
+	if (escape_held()) {
+		printk("Button 0 held — staying awake so the board can be flashed.\n");
+		while (1) {
+			k_sleep(K_FOREVER);
+		}
+	}
+
+	now_ms = elapsed_ms();
+	v = sim_values(now_ms);
+
 	printk("elapsed %llu ms\n", now_ms);
 
 	if (bthome_encode(&v, svc, sizeof(svc)) != BTHOME_ADV_DATA_LEN) {
-		printk("encode failed\n");
-		return 0;
+		/* Never advertise a partial packet: a missing field rebinds
+		 * SENSE2 to the wrong Home Assistant entity silently. Skipping
+		 * the advertisement lets HA mark the entity stale, which is
+		 * honest about what happened. */
+		printk("encode failed — skipping this advertisement\n");
+	} else {
+		printk("payload:");
+		for (size_t i = 0; i < sizeof(svc); i++) {
+			printk(" %02X", svc[i]);
+		}
+		printk("\n");
+
+		printk("battery %u%%  temp %d.%02d C  hum %u.%02u%%  m1 %u.%02u%%  m2 %u.%02u%%\n",
+		       v.battery_pct, v.temperature_cc / 100,
+		       (v.temperature_cc % 100 + 100) % 100,
+		       v.humidity_cpct / 100, v.humidity_cpct % 100,
+		       v.moisture1_cpct / 100, v.moisture1_cpct % 100,
+		       v.moisture2_cpct / 100, v.moisture2_cpct % 100);
+
+		advertise(svc);
 	}
 
-	printk("payload:");
-	for (size_t i = 0; i < sizeof(svc); i++) {
-		printk(" %02X", svc[i]);
-	}
-	printk("\n");
+	sleep_until_next_cycle();
 
-	printk("battery %u%%  temp %d.%02d C  hum %u.%02u%%  m1 %u.%02u%%  m2 %u.%02u%%\n",
-	       v.battery_pct, v.temperature_cc / 100, (v.temperature_cc % 100 + 100) % 100,
-	       v.humidity_cpct / 100, v.humidity_cpct % 100,
-	       v.moisture1_cpct / 100, v.moisture1_cpct % 100,
-	       v.moisture2_cpct / 100, v.moisture2_cpct % 100);
-
-	advertise(svc);
-
-	printk("cycle complete\n");
-	return 0;
+	return 0;   /* unreachable */
 }
