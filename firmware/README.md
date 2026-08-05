@@ -29,16 +29,33 @@ wiring.
 
 ## Bench setup
 
-**Set VDD:nRF to 3.3 V in Board Configurator before anything else.** The DK
-default is 1.8 V. Our rail is 3.3 V and the bus timing under test is sensitive
-to it.
+**Set VDD:nRF to 3.3 V in Board Configurator before anything else.**
+
+There is no fixed 3.3 V rail on this board. P6 and the P4 test points carry
+VDD:nRF, the programmable 1.8-3.3 V rail, and **the factory default is 1.8 V** —
+so an unconfigured DK reads 1.8 V everywhere and there is no 3.3 V to find. The
+only fixed supply on the GPIO headers is the 5.0 V on P30/P31/P32 pin 1.
+
+There is no CLI for this: `nrfutil device` exposes board-controller firmware
+programming but not the voltage. Open nRF Connect for Desktop, install/open
+**Board Configurator**, select the DK, set VDD to 3.3 V, apply. It persists
+across power cycles (DK guide §2.9).
+
+**Do not power the breakout from the 5 V pin instead.** Its onboard regulator
+would pull SDA/SCL up to 3.3 V against an nRF still running at 1.8 V, which
+breaches the VDD + 0.3 V pin limit.
+
+Running the set at 1.8 V would still be valid — none of the three rules under
+test is voltage-marginal, and the BME280 die is in spec down to 1.71 V. But it
+is not our design point, so a marginal result would be harder to read, and most
+breakouts have an LDO on VIN that will not regulate from 1.8 V.
 
 For T1–T3 you need an I²C target. The firmware speaks **BME280/BMP280**,
 probing 0x76 and 0x77 and accepting either chip ID. Wire it to header P1:
 
 | Breakout | DK | |
 |---|---|---|
-| VIN / VCC | 3.3 V — P6 header (jumper fitted) or a P4 test point | not the 5 V on P30/P31/P32 |
+| VIN / VCC | VDD:nRF — P6 header (jumper fitted) or a P4 test point, **after** setting it to 3.3 V | not the 5 V on P30/P31/P32 |
 | GND | any GND | |
 | SCL | P1.11 (T1, T3) / P1.14 (T2) | |
 | SDA | P1.10 (T1, T2) / P0.04 (T3) | |
