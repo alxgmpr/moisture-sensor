@@ -10,7 +10,55 @@
 #include <zephyr/bluetooth/bluetooth.h>
 #include <zephyr/sys/printk.h>
 
+#include <string.h>
+
+#include <zephyr/drivers/hwinfo.h>
+
 #include "bthome.h"
+
+/*
+ * The BLE identity must be identical on every cold boot. Zephyr generates one
+ * when none is configured — the LBS sample logs "No ID address" and does
+ * exactly that — and a fresh address each hour would make Home Assistant
+ * register a new device every hour.
+ *
+ * Deriving it from the chip's own ID keeps it stable with no settings
+ * subsystem, no NVS, and no flash wear.
+ */
+static int set_stable_identity(void)
+{
+	bt_addr_le_t addr = { .type = BT_ADDR_LE_RANDOM };
+	uint8_t hwid[16];
+	ssize_t n;
+	int err;
+
+	n = hwinfo_get_device_id(hwid, sizeof(hwid));
+	if (n < 6) {
+		printk("hwinfo_get_device_id returned %d\n", (int)n);
+		return -1;
+	}
+
+	/* Fold every byte of the device id into six so none of it is ignored. */
+	memset(addr.a.val, 0, sizeof(addr.a.val));
+	for (ssize_t i = 0; i < n; i++) {
+		addr.a.val[i % 6] ^= hwid[i];
+	}
+
+	/* A static random address must have its two most significant bits set. */
+	addr.a.val[5] |= 0xC0;
+
+	err = bt_id_create(&addr, NULL);
+	if (err < 0) {
+		printk("bt_id_create failed (%d)\n", err);
+		return err;
+	}
+
+	printk("identity: %02X:%02X:%02X:%02X:%02X:%02X\n",
+	       addr.a.val[5], addr.a.val[4], addr.a.val[3],
+	       addr.a.val[2], addr.a.val[1], addr.a.val[0]);
+
+	return 0;
+}
 
 static void advertise(const uint8_t *svc_data)
 {
@@ -21,6 +69,10 @@ static void advertise(const uint8_t *svc_data)
 			sizeof(CONFIG_SENSOR_DEVICE_NAME) - 1),
 	};
 	int err;
+
+	if (set_stable_identity() < 0) {
+		printk("continuing with the stack's own identity\n");
+	}
 
 	err = bt_enable(NULL);
 	if (err) {
