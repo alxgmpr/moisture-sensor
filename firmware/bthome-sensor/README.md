@@ -91,13 +91,17 @@ check which VCOM the terminal is attached to before suspecting the firmware.
 
 ## The escape hatch
 
-Hold **Button 0** and press RESET. The firmware is written to print a notice
-and idle forever instead of running a cycle, keeping the board reachable for
-flashing. **This has not yet been verified on hardware** — only the
-console-observed behaviors above (cycles repeating, payload bytes, stable BLE
-identity, elapsed climbing across System OFF) have. See
-[NEXT-STEPS.md](../../NEXT-STEPS.md) ("BTHome firmware on the DK") for the
-current status of that check.
+Hold **Button 0** and press RESET. The firmware prints a notice and idles
+forever instead of running a cycle, keeping the board reachable for flashing.
+**Verified on hardware:**
+
+```
+=== bthome-sensor ===
+Button 0 held — staying awake so the board can be flashed.
+```
+
+The device then stays awake indefinitely — no further cycles appear, and the
+debug port answers on every attempt, which a device in System OFF does not.
 
 Without it, a one-hour (or even 30-second) cycle leaves a very small window to
 flash into before the device drops into System OFF and stops answering the

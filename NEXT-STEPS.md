@@ -599,6 +599,11 @@ BLE identity unchanged across resets, and `m1` reading four points above `m2`
 on every cycle as the encoder's ordering test requires. The encoder's host
 tests (`./tests/bthome/run.sh`) pass.
 
+The **Button 0 escape hatch is confirmed**: held at boot it prints
+`Button 0 held — staying awake so the board can be flashed.` and then stays
+awake indefinitely, with no further cycles and the debug port answering on
+every attempt — which a device in System OFF does not.
+
 **Not yet confirmed: Home Assistant discovery.** Seeing one `Plant-1` device
 with five entities in HA, values matching the console, and both moisture
 entities trending down over a session needs a human watching HA's Bluetooth
