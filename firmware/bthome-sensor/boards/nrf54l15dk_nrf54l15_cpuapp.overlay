@@ -1,0 +1,10 @@
+/*
+ * wdt31 is the application watchdog on this board (see
+ * nrf54l15dk_common.dtsi: watchdog0 = &wdt31), but like every peripheral in
+ * the SoC's base devicetree it ships status = "disabled" until a board
+ * overlay opts in.
+ */
+
+&wdt31 {
+	status = "okay";
+};

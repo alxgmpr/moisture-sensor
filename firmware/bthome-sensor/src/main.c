@@ -15,6 +15,7 @@
 #include <zephyr/drivers/hwinfo.h>
 #include <zephyr/drivers/timer/nrf_grtc_timer.h>
 #include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/watchdog.h>
 #include <zephyr/sys/poweroff.h>
 #include <zephyr/sys/reboot.h>
 
@@ -215,6 +216,40 @@ static void sleep_until_next_cycle(void)
 	sys_poweroff();
 }
 
+/*
+ * Covers a hang while the radio is up. Halted in System OFF so it does not
+ * fire during the sleep — the GRTC alarm owns that timing.
+ *
+ * The timeout is several times the advertising window; anything longer than
+ * that awake means something is stuck.
+ */
+static void watchdog_start(void)
+{
+	const struct device *wdt = DEVICE_DT_GET(DT_NODELABEL(wdt31));
+	struct wdt_timeout_cfg cfg = {
+		.window.min = 0,
+		.window.max = CONFIG_SENSOR_ADV_WINDOW_MS * 4,
+		.callback = NULL,
+		.flags = WDT_FLAG_RESET_SOC,
+	};
+	int err;
+
+	if (!device_is_ready(wdt)) {
+		printk("watchdog not ready — continuing without it\n");
+		return;
+	}
+
+	if (wdt_install_timeout(wdt, &cfg) < 0) {
+		printk("wdt_install_timeout failed — continuing without it\n");
+		return;
+	}
+
+	err = wdt_setup(wdt, WDT_OPT_PAUSE_HALTED_BY_DBG);
+	if (err < 0) {
+		printk("wdt_setup failed (%d) — continuing without it\n", err);
+	}
+}
+
 int main(void)
 {
 	uint64_t now_ms;
@@ -229,6 +264,8 @@ int main(void)
 			k_sleep(K_FOREVER);
 		}
 	}
+
+	watchdog_start();
 
 	now_ms = elapsed_ms();
 	v = sim_values(now_ms);
