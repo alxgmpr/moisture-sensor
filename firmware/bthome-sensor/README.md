@@ -9,10 +9,11 @@ the sensor read is faked, since our own board and sensors are not built yet.
 
 Console-verified: the cycle, the payload bytes, the stable BLE identity across
 resets, and moisture reading above moisture_2 on the wire, all as designed.
-**Actual discovery in Home Assistant has not yet been verified** — that check
-needs a human watching the HA integration over several cycles. See
-[NEXT-STEPS.md](../../NEXT-STEPS.md) ("BTHome firmware on the DK") for the
-current status of that check.
+**Discovery in Home Assistant is also verified** (2026-08-05): the BTHome
+integration picks the beacon up unaided as one device, `Plant-1 6100`, with
+five entities, values matching the console, and `sensor.…_moisture` reading
+four points above `sensor.…_moisture_2`. See [NEXT-STEPS.md](../../NEXT-STEPS.md)
+("BTHome firmware on the DK") for the readings and the session-long trend.
 
 Design and rationale: [docs/superpowers/specs/2026-08-04-bthome-firmware-design.md](../../docs/superpowers/specs/2026-08-04-bthome-firmware-design.md).
 This README covers how to build, run and verify it; the design doc covers why
@@ -154,7 +155,9 @@ raised anywhere. This is why the encoder's host tests pin the byte offsets of
 each field directly (`test_moisture_order` in `tests/bthome/test_bthome.c`),
 and why it is worth re-checking against a live Home Assistant instance after
 any change near the encoder: `moisture` should read a few points above
-`moisture_2`, not the reverse.
+`moisture_2`, not the reverse. Check the **entity IDs**, not the device page —
+both entities are displayed as plain "Moisture" there, so the suffix is the
+only thing that tells them apart.
 
 ## What is stubbed
 

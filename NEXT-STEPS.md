@@ -604,11 +604,40 @@ The **Button 0 escape hatch is confirmed**: held at boot it prints
 awake indefinitely, with no further cycles and the debug port answering on
 every attempt — which a device in System OFF does not.
 
-**Not yet confirmed: Home Assistant discovery.** Seeing one `Plant-1` device
-with five entities in HA, values matching the console, and both moisture
-entities trending down over a session needs a human watching HA's Bluetooth
-integration over several cycles, and is being collected separately. Treat that
-as expected-but-unverified until this entry is updated.
+**Home Assistant discovery is confirmed** (2026-08-05, HA at 10.1.3.4). The
+BTHome integration picked the beacon up on its own as one device, `Plant-1
+6100`, at `E7:B4:88:36:61:00` — the same identity the console prints — with
+five entities and no YAML:
+
+| Entity | Reading |
+|---|---|
+| `sensor.plant_1_6100_battery` | 79 % |
+| `sensor.plant_1_6100_humidity` | 38.75 % |
+| `sensor.plant_1_6100_moisture` | 38.6 % |
+| `sensor.plant_1_6100_moisture_2` | 34.6 % |
+| `sensor.plant_1_6100_temperature` | 71.942 °F |
+
+(HA also creates a sixth, disabled-by-default signal-strength entity.)
+
+**The positional `_2` mapping lands the right way round.** The entity IDs
+settle the question the device page's two identically-named "Moisture" rows
+cannot: the higher reading is `…_moisture`, the lower is `…_moisture_2`, four
+points apart, exactly as the encoder's ordering test requires.
+
+Values match the console field for field. Consecutive console cycles read
+`m1` 38.84 → 38.76 → 38.68 → 38.60 with `m2` pinned 4.00 below, and HA's
+states tracked that same series one cycle at a time. Both moisture entities
+decline monotonically across a session — `moisture_2` fell 50.6 % → 34.6 %
+over the 17:00–18:45 window in a dense 30-second staircase, so HA is receiving
+essentially every advertisement, not an occasional one.
+
+That the whole session lives under a single HA device rather than accumulating
+new ones is the identity work holding up across hundreds of System OFF wakes.
+
+One trap worth knowing: **the Developer Tools → States table does not always
+repaint on a websocket update.** It sat two cycles stale until the page was
+reloaded, which reads exactly like missed advertisements. Reload before
+concluding the beacon dropped out.
 
 **What remains:**
 
