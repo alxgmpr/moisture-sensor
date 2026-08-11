@@ -1,6 +1,5 @@
 (sym_lib_table
 	(version 7)
-	(lib (name "moisture-sensor-carrier-eagle-import") (type "KiCad") (uri "${KIPRJMOD}/moisture-sensor-carrier-eagle-import.kicad_sym") (options "") (descr "Legacy Eagle import - superseded, kept for reference"))
 	(lib (name "New_Library") (type "KiCad") (uri "${KIPRJMOD}/lib/New_Library.kicad_sym") (options "") (descr ""))
 	(lib (name "nordic") (type "KiCad") (uri "${KIPRJMOD}/lib/nordic/NRF54L15-QFAA-R.kicad_sym") (options "") (descr "Nordic nRF54L15-QFAA vendor symbol"))
 	(lib (name "npm1300") (type "KiCad") (uri "${KIPRJMOD}/lib/nordic/NPM1300-QEAA-R7.kicad_sym") (options "") (descr "Nordic nPM1300-QEAA PMIC vendor symbol"))

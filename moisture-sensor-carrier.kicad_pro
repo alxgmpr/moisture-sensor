@@ -164,14 +164,14 @@
           "td_onpthpad": true,
           "td_onroundshapesonly": false,
           "td_onsmdpad": true,
-          "td_ontrackend": false,
+          "td_ontrackend": true,
           "td_onvia": true
         }
       ],
       "teardrop_parameters": [
         {
           "td_allow_use_two_tracks": true,
-          "td_curve_segcount": 0,
+          "td_curve_segcount": 1,
           "td_height_ratio": 1.0,
           "td_length_ratio": 0.5,
           "td_maxheight": 2.0,
@@ -182,7 +182,7 @@
         },
         {
           "td_allow_use_two_tracks": true,
-          "td_curve_segcount": 0,
+          "td_curve_segcount": 1,
           "td_height_ratio": 1.0,
           "td_length_ratio": 0.5,
           "td_maxheight": 2.0,
@@ -193,7 +193,7 @@
         },
         {
           "td_allow_use_two_tracks": true,
-          "td_curve_segcount": 0,
+          "td_curve_segcount": 1,
           "td_height_ratio": 1.0,
           "td_length_ratio": 0.5,
           "td_maxheight": 2.0,
@@ -262,7 +262,7 @@
       "internal_id": "",
       "mfg": "",
       "mpn": "",
-      "sch_revision": "B"
+      "sch_revision": "C"
     },
     "layer_pairs": [],
     "layer_presets": [],
@@ -847,7 +847,7 @@
         "uuid": "29551000-a13a-494c-a3a3-b85b9fc11a3c"
       }
     ],
-    "used_designators": "U$9-12,FAULT1,#FLG1-3,#FLG_SOLAR_PANEL1,TH1,D1-6,#PWR1-19,SJ1,VBAT1,#FLG_GND_PA1,#FLG_VBAT1,JP3,J1-3,#SUPPLY1-8,#P+1-6,#FLG_3V3_MCU1,FID1-5,#FLG_SWD_RST1,C1-11,011,U1-3,CHG1,R1-14,R16,R19-20,IC1-2,1,#FLG_VBUS_IN1,#U$1,#U$5-8,#U$13-16,#U$20,#U$23-24,#U$28,#U$31-33,#U$36-38,#U$41,#U$46,#U$50-51,#U$55-56,#U$58-60,#U$69-71,#FLG_GND1,LED3,L1-2,X1-2,#FLG_VSYS1,#FLG_SOLAR_5V1",
+    "used_designators": "U$9-12,VBAT1,#FLG1-3,1,IC1-2,FAULT1,TH1,#FLG_SOLAR_PANEL1,D1-6,#PWR1-19,SJ1,C1-11,011,J1-3,#FLG_VBAT1,JP3,#FLG_GND_PA1,U1-3,#SUPPLY1-8,#FLG_SWD_RST1,#P+1-6,#FLG_3V3_MCU1,FID1-5,CHG1,R1-14,R16,R19-20,#FLG_VBUS_IN1,LED3,#FLG_GND1,#U$1,#U$5-8,#U$13-16,#U$20,#U$23-24,#U$28,#U$31-33,#U$36-38,#U$41,#U$46,#U$50-51,#U$55-56,#U$58-60,#U$69-71,#FLG_VSYS1,L1-2,X1-2,#FLG_SOLAR_5V1",
     "variants": []
   },
   "sheets": [

@@ -64,16 +64,12 @@ No datasheet on file, because the BOM does not name a manufacturer part number:
 
 | Ref | Value |
 |---|---|
-| J1 | USB-C receptacle — footprint says HRO `TYPE-C-31-M-12`, not carried by DigiKey or LCSC under that string |
-| D3, D4 | green / red 0603 LEDs |
-| FB1 | ferrite bead, 120 Ω @ 100 MHz, 0402 |
-| TH1 | 10 k B3435 NTC |
-| C11 | 0.3 pF C0G 0201 |
+| C30 | Murata GRM21BR61H475KA12L, 4.7 µF / 50 V X5R 0805 |
 | C13 | 3.9 pF C0G 0402 |
 | — | bulk R and C values (see BOM.md component list) |
 
-C11 and C13 sit in the RF path, so they will need real part numbers before
-fabrication even though the rest of the passives can stay generic.
+C13 is the nRF54L15 RESET filter rather than part of the RF match, but it still
+needs a real part number before a production BOM is released.
 
 ## Refetching
 

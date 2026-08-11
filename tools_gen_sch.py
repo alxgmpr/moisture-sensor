@@ -109,6 +109,7 @@ def pins_of(defn):
 # capacitance at 2.4 GHz to shift a 0.3 pF cap. Those stay 0201 standard.
 HS_C0402 = "Capacitor_SMD:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder"
 HS_C0603 = "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder"
+HS_C0805 = "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder"
 HS_R0402 = "Resistor_SMD:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder"
 HS_R0603 = "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
 HS_L0402 = "Inductor_SMD:L_0402_1005Metric_Pad0.77x0.64mm_HandSolder"
@@ -137,7 +138,7 @@ FOOTPRINTS = {
     "R25": HS_R0402, "R26": HS_R0402,
     "D3": "LED_SMD:LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder",
     "D4": "LED_SMD:LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder",
-    "TH1": HS_R0603,
+    "TH1": "footprints:Thermistor_SEMITEC_103JT_Wired",
     # solar pre-regulator + OR-ing. U5's DGN land pattern was checked against
     # TI SBVS171F DGN0008C: 8 pads 1.4 x 0.45 mm on 0.65 mm pitch, rows on
     # 4.4 mm centres, thermal pad metal ~1.6 x 1.92 mm. KiCad's HVSSOP-8 is
@@ -145,7 +146,7 @@ FOOTPRINTS = {
     # dimension rather than short, so this one does NOT need a project
     # footprint the way X1/X2 did.
     "U5": "Package_SO:HVSSOP-8-1EP_3x3mm_P0.65mm_EP1.57x1.89mm",
-    "C30": HS_C0603, "C31": HS_C0603,
+    "C30": HS_C0805, "C31": HS_C0603,
     "D5": "Diode_SMD:D_SOD-323_HandSoldering",
     # clocks. Standard pads on X2 (no hand variant for 2016-4pin exists).
     # Micro Crystal CM8V-T1A. The vendor land pattern (0.8 x 1.5 mm pads on
@@ -543,9 +544,10 @@ class Block:
         """
         self.cy = snap(self.maxy + gap)
 
-    def add(self, lib, sym, ref, val, netmap, fp="", dnp=False, at=None, rot=0):
+    def add(self, lib, sym, ref, val, netmap, fp="", dnp=False, at=None, rot=0,
+            mpn=""):
         pos = at or self.next_pos()
-        x, y, d = place(lib, sym, ref, val, pos, fp, dnp, rot)
+        x, y, d = place(lib, sym, ref, val, pos, fp, dnp, rot, mpn)
         self.note(y)
         seen = set()
         for num, nm, typ, px, py, prot in pins_of(d):
@@ -622,7 +624,7 @@ B_SENSE = Block("SENSE FRONT END - FDC1004",                   COL_C, BAND_3)
 SOLAR_DNP = False
 
 _x, _y, USBD = place("Connector", "USB_C_Receptacle", "J1", "USB-C receptacle",
-                     B_USB.at(16, 32), "")
+                     B_USB.at(16, 32), "", mpn="TYPE-C-31-M-12")
 for num, nm, typ, px, py, rot in pins_of(USBD):
     n = nm.upper()
     net = ("VBUS_IN" if n.startswith("VBUS")
@@ -637,7 +639,8 @@ B_USB.grid_below()
 B_USB.add("Device", "C_Small", "C20", "1uF/10V X5R", {"1": "VBUS_IN", "2": "GND"})
 # Solar -> 5 V pre-regulator -> D5 -> VBUS. Pin 1 = K, pin 2 = A.
 B_USB.add("Device", "D_Schottky_Small", "D5", "RB751V-40 Schottky",
-          {"1": "VBUS_IN", "2": "SOLAR_5V"}, dnp=SOLAR_DNP)
+          {"1": "VBUS_IN", "2": "SOLAR_5V"}, dnp=SOLAR_DNP,
+          mpn="RB751V-40_R1_00001")
 # J3 stays a JST GH. The barrel jack the user plugs into lives on the panel
 # pigtail, not on the board: a 5.5 x 2.1 mm jack is 11.0 mm tall (CUI PJ-102AH)
 # against 6.90 mm of clearance under the cell here, so putting it on the board
@@ -650,12 +653,14 @@ B_USB.add("Connector_Generic", "Conn_01x02", "J3", "Solar panel",
 # 60 V. A 50 V input cap moves the ceiling off the capacitor and onto U5's
 # thermal limit (~19 V at the 100 mA VBUS current limit).
 # TI SBVS171F section 8.2.1.2.1.3: C_IN >= 0.1 uF required, 10 uF recommended;
-# C_OUT >= 2.2 uF required, 10 uF recommended. A 50 V 0603 derates hard - about
-# 1.5 uF at 12 V bias - which still clears the 0.1 uF input minimum by 15x.
-B_USB.add("Device", "C_Small", "C30", "4.7uF/50V X5R",
-          {"1": "SOLAR_PANEL", "2": "GND"}, dnp=SOLAR_DNP)
+# C_OUT >= 2.2 uF required, 10 uF recommended. C30 uses 0805 to improve
+# effective capacitance, availability and voltage margin over a 50 V 0603.
+B_USB.add("Device", "C_Small", "C30", "4.7uF/50V X7R 0805",
+          {"1": "SOLAR_PANEL", "2": "GND"}, dnp=SOLAR_DNP,
+          mpn="GRM21BR61H475KA12L")
 B_USB.add("Device", "C_Small", "C31", "10uF/25V X5R",
-          {"1": "SOLAR_5V", "2": "GND"}, dnp=SOLAR_DNP)
+          {"1": "SOLAR_5V", "2": "GND"}, dnp=SOLAR_DNP,
+          mpn="CL10A106MA8NRNC")
 
 # U5 - solar 5 V pre-regulator. Placed explicitly rather than through the block
 # grid: the symbol is 40 mm wide and would overrun a grid cell.
@@ -781,7 +786,7 @@ B_MCU.note_symbol(nrf_x, nrf_y, NRFD)
 chain(B_SUP, B_SUP.at(34, 30), "DCC", [
     ("series", "L1",  "L_Small", "4.7uH",          "DECD", "MLZ1608M4R7WT000"),
     ("shunt",  "C1",  "C_Small", "2.2uF/2.5V X6T", "GND"),
-    ("series", "FB1", "L_Small", "FB 120R@100MHz", "DECA"),
+    ("series", "FB1", "L_Small", "FB 120R@100MHz", "DECA", "MMZ1005S121CT000"),
     ("shunt",  "C2",  "C_Small", "2.2uF/2.5V X6T", "GND"),
     ("shunt",  "C12", "C_Small", "10nF/6.3V X7R",  "GND"),
     ("shunt",  "C5",  "C_Small", "2.2nF X7R",      "GND"),
@@ -817,12 +822,14 @@ B_BATT.add("Connector_Generic", "Conn_01x02", "J2", "Battery - Adafruit 1578",
 # JEITA. A leaded NTC taped to the cell and soldered to these pads is better
 # than the 0603 land.
 B_BATT.add("Device", "Thermistor_NTC", "TH1", "10k B3435 - couple to cell",
-           {"1": "NTC", "2": "GND"})
+           {"1": "NTC", "2": "GND"}, mpn="103JT-025")
 # LEDs sink into the PMIC drivers, fed from VSYS. Pin 1 = K, pin 2 = A.
 B_BATT.add("Device", "R_Small", "R25", "1k", {"1": "VSYS", "2": "LED0_A"})
-B_BATT.add("Device", "LED_Small", "D3", "GREEN", {"1": "LED0_K", "2": "LED0_A"})
+B_BATT.add("Device", "LED_Small", "D3", "GREEN", {"1": "LED0_K", "2": "LED0_A"},
+           mpn="LTST-C190KGKT")
 B_BATT.add("Device", "R_Small", "R26", "1k", {"1": "VSYS", "2": "LED1_A"})
-B_BATT.add("Device", "LED_Small", "D4", "RED", {"1": "LED1_K", "2": "LED1_A"})
+B_BATT.add("Device", "LED_Small", "D4", "RED", {"1": "LED1_K", "2": "LED1_A"},
+           mpn="LTST-C190KRKT")
 
 # ---- sense front end ---------------------------------------------------------
 # Pinout per TI SNOSCY5 Table 4-1. CIN3/CIN4 unused -> datasheet says leave open.
@@ -890,7 +897,7 @@ chain(B_RF, B_RF.at(34, 30), "ANT", [
     ("series", "L3",  "L_Small", "3.5nH", "RF_B",     "LQP03HQ3N5B02"),
     ("shunt",  "C9",  "C_Small", "2.0pF", "GND_C9",   "GJM0335C1E2R0WB01"),
     ("series", "L4",  "L_Small", "3.5nH", "ANT_FEED", "LQP03HQ3N5B02"),
-    ("shunt",  "C11", "C_Small", "0.3pF C0G", "GND"),
+    ("shunt",  "C11", "C_Small", "0.3pF C0G", "GND", "GRM0335C1ER30BA01D"),
 ])
 B_RF.grid_below()
 # The antenna is an external adhesive part on a U.FL pigtail, not PCB copper.

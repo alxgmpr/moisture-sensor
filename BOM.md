@@ -238,16 +238,52 @@ Also confirmed from the datasheet while checking: **ESR R1 = 60 Ω max** for
 26 MHz ≤ f_nom ≤ 54 MHz, **drive level 200 µW max with 10 µW recommended**, and
 **pads #2 and #4 are connected to the cover and must go to ground.**
 
-**Land pattern — done.** `footprints:XTAL_FA-128_2016_4Pin` is built and placed,
-and it matches Epson's recommended footprint exactly: **0.50 × 0.85 mm pads on
-0.95 mm (X) × 1.15 mm (Y) centres**, a 1.45 × 2.00 mm outer envelope. The
-datasheet's own footprint drawing gives 1.45, 0.95, 1.15 and 0.85, which is the
-same pattern. KiCad's generic `Crystal_SMD_2016-4Pin_2.0x1.6mm` uses 0.9 × 0.8 mm
-pads on ±0.7 / ±0.55 mm centres for a 2.30 mm outer span in X — 0.85 mm wider
-than Epson specify, a bigger mismatch than the one that forced a vendor footprint
-for X1. The 3D model (`lib/FA-128 32.0000MF10Z-AJ0.STEP`) is attached to both the
-`.kicad_mod` and the placed instance; its orientation has not been checked in the
-3D viewer yet.
+**Land pattern — corrected 2026-08-01, placement rework still open.**
+`footprints:XTAL_FA-128_2016_4Pin` now carries Epson's recommended land:
+**0.95 × 0.85 mm pads on 1.45 mm (X) × 1.15 mm (Y) centres**, a 2.40 × 2.00 mm
+outer envelope, X being the crystal's 2.0 mm axis.
+
+The earlier version of this footprint had **0.50 × 0.85 mm pads on 0.95 × 1.15
+centres** and a 1.45 × 2.00 envelope. That came from misreading the four callouts
+on Epson's footprint drawing. They are not interchangeable — read them by where
+the dimension arrows terminate:
+
+| Callout | Terminates on | Role |
+|---|---|---|
+| 1.45 | pad centres | pitch, X |
+| 0.95 | pad edges | pad width, X |
+| 1.15 | pad centres | pitch, Y |
+| 0.85 | pad edges | pad height, Y |
+
+Taking 1.45 as the outer envelope and 0.95 as the X pitch produced a land 0.95 mm
+short in X. Against the part's own terminals (centres ±0.625 on the 2.0 mm axis,
+±0.475 on the 1.6 mm axis, from the bottom-view 0.65/0.6 and 0.5/0.45 callouts)
+the old land gave a 0.05 mm toe on the long axis and **zero margin on either side
+of the short axis** — pad and terminal exactly coincident. Epson's land gives a
+0.20 mm toe beyond the package edge on both axes.
+
+`Crystal_SMD_2016-4Pin_2.0x1.6mm` was rejected on the same misreading. It is
+0.9 × 0.8 mm pads on 1.4 × 1.1 centres, a 2.30 × 1.90 envelope — within 0.05 mm
+of Epson on every dimension and with the same corner numbering, so it is a
+perfectly good substitute. The custom footprint is kept only because it holds
+Epson's exact figures, the way `XTAL_CM8V-T1A_2012` does for X1.
+
+Pad numbering was already right and is unchanged: **#1 and #3 are the crystal
+terminals, #2 and #4 are the cover and go to ground**, with #1 bottom-left in
+Epson's top view. X2's placement angle moved from −90° to 180° so that the same
+pad still faces the same way on the board; XC1 and XC2 still land on pads 1 and 3.
+
+**Open:** the corrected land does not fit the routing that was laid around the
+undersized pads. DRC gains 14 errors, all local to X2 — pad 3 shorts a +3V3
+track, pad 4 shorts the XC1 track, and pads 1 and 3 now reach the `ZoneB_GND_F`
+pour. The +3V3 and XC1/XC2 approach need re-routing and X2 may need to move; see
+LAYOUT.md before re-filling zones.
+
+The 3D model (`lib/FA-128 32.0000MF10Z-AJ0.STEP`) is attached to both the
+`.kicad_mod` and the placed instance, rotated `(90 0 90)` to follow the land's
+long axis moving from Y to X. Its orientation still has not been checked in the
+3D viewer, and the file's internal `FILE_NAME` is `FA-128 54.0000MF15Z-E3.STEP`
+— a 54 MHz variant, same body, but not the part we are buying.
 
 ### Cell — Adafruit 1578, 500 mAh
 
@@ -440,8 +476,8 @@ short, unlike the 2016 land pattern that forced a vendor footprint for X2.
 
 | | Datasheet requirement (SBVS171F §8.2.1.2.1.3) | Fitted |
 |---|---|---|
-| C30, input | ≥ 0.1 µF for stability, 10 µF recommended | **4.7 µF / 50 V X5R 0603**, ~1.5 µF at 12 V bias |
-| C31, output | ≥ 2.2 µF for stability, 10 µF recommended | **10 µF / 25 V X5R 0603**, ~5 µF at 5 V bias |
+| C30, input | ≥ 0.1 µF for stability, 10 µF recommended | **Murata GRM21BR61H475KA12L**, 4.7 µF / 50 V X5R, 0805 |
+| C31, output | ≥ 2.2 µF for stability, 10 µF recommended | **Samsung CL10A106MA8NRNC**, 10 µF / 25 V X5R, 0603 |
 
 **C30 is 50 V because of the barrel jack, not the panel.** The P126 tops out at
 9.23 V, which a 25 V part covers easily — but a user-accessible DC jack is an
@@ -450,9 +486,10 @@ off the capacitor and onto U5's thermal limit, which lands at about 19 V at the
 100 mA VBUS current limit. It costs one BOM line; C31 stays the same 10 µF/25 V
 X5R already at C21/C22/C24.
 
-Check the manufacturer's DC-bias curve rather than the nameplate, as with
-C21/C22/C24 — a 50 V 0603 derates hard, and the derated values above are what
-have to clear the two minimums. They do, by 15× and 2× respectively.
+The input capacitor was enlarged from 0603 to 0805 for better DC-bias retention,
+availability and hand assembly. Check the manufacturer's DC-bias curve rather
+than the nameplate; both parts must remain above the stability minimum at their
+actual operating voltage.
 
 ---
 
@@ -481,13 +518,13 @@ have to clear the two minimums. They do, by 15× and 2× respectively.
 | C25 | 100nF X5R | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
 | C26 | 1uF/10V X7R | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
 | C27 | 100nF X7R | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
-| C30 | 4.7uF/50V X5R | `C_0603_1608Metric_Pad1.08x0.95mm_HandSolder` |
-| C31 | 10uF/25V X5R | `C_0603_1608Metric_Pad1.08x0.95mm_HandSolder` |
-| D3 | GREEN | `LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder` |
-| D4 | RED | `LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder` |
+| C30 | 4.7uF/50V X5R — GRM21BR61H475KA12L | `C_0805_2012Metric_Pad1.18x1.45mm_HandSolder` |
+| C31 | 10uF/25V X5R — CL10A106MA8NRNC | `C_0603_1608Metric_Pad1.08x0.95mm_HandSolder` |
+| D3 | GREEN — LTST-C190KGKT | `LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder` |
+| D4 | RED — LTST-C190KRKT | `LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder` |
 | D5 | RB751V-40 Schottky | `D_SOD-323_HandSoldering` |
-| FB1 | FB 120R@100MHz | `L_0402_1005Metric_Pad0.77x0.64mm_HandSolder` |
-| J1 | USB-C receptacle | `USB_C_Receptacle_HRO_TYPE-C-31-M-12` |
+| FB1 | FB 120R@100MHz — MMZ1005S121CT000 | `L_0402_1005Metric_Pad0.77x0.64mm_HandSolder` |
+| J1 | USB-C receptacle — TYPE-C-31-M-12 / JLC C165948 | `USB_C_Receptacle_HRO_TYPE-C-31-M-12` |
 | J2 | Battery - Adafruit 1578 | `JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical` |
 | J3 | Solar panel | `JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal` |
 | J4 | SWD 10p 1.27mm | `Tag-Connect_TC2050-IDC-NL_2x05_P1.27mm_Vertical` |
@@ -505,7 +542,7 @@ have to clear the two minimums. They do, by 15× and 2× respectively.
 | R23 | 4.7k to +3V3 | `R_0402_1005Metric_Pad0.72x0.64mm_HandSolder` |
 | R25 | 1k | `R_0402_1005Metric_Pad0.72x0.64mm_HandSolder` |
 | R26 | 1k | `R_0402_1005Metric_Pad0.72x0.64mm_HandSolder` |
-| TH1 | 10k B3435 - couple to cell | `R_0603_1608Metric_Pad0.98x0.95mm_HandSolder` |
+| TH1 | Semitec 103JT-025, 10k B3435 - bond to cell | `Thermistor_SEMITEC_103JT_Wired` |
 | TP1 | SENSE1 | `TestPoint_Pad_D1.0mm` |
 | TP2 | SENSE2 | `TestPoint_Pad_D1.0mm` |
 | TP3 | SHLD | `TestPoint_Pad_D1.0mm` |
@@ -517,16 +554,16 @@ have to clear the two minimums. They do, by 15× and 2× respectively.
 | U4 | SHT45-AD1F | `Sensirion_DFN-4_1.5x1.5mm_P0.8mm_SHT4x_NoCentralPad` |
 | U5 | TPS7A1650 5V LDO | `HVSSOP-8-1EP_3x3mm_P0.65mm_EP1.57x1.89mm` |
 | X1 | CM8V-T1A 32.768kHz CL=7pF 20ppm | `XTAL_CM8V-T1A_2012` |
-| X2 | FA-128 32MHz CL=8pF | `Crystal_SMD_2016-4Pin_2.0x1.6mm` |
+| X2 | FA-128 32MHz CL=8pF | `XTAL_FA-128_2016_4Pin` |
 
 ---
 
 ## Notes on specific parts
 
 **TH1** — the pack has no thermistor (DW01P + 8205A only), so this is fitted,
-not DNP, and must be **thermally coupled to the cell**. A board-mounted NTC
-measures board temperature and partly defeats the JEITA logic. Consider a
-leaded NTC taped to the cell body instead of the 0603 land.
+not DNP. Use the selected Semitec 103JT-025 thin-film NTC bonded to the broad
+face of the pouch with insulating polyimide tape. Its leads solder to the two
+enlarged SMD wire pads; strain-relieve the lead pair before final assembly.
 
 **U4 SHT45-AD1F** — no copper under the sensor except the four pin pads, and the
 die pad must not be soldered. The `_NoCentralPad` footprint handles the pad; the
