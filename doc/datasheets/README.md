@@ -13,17 +13,24 @@ To rebuild the directory on a fresh checkout, see [Refetching](#refetching).
 | File | Ref | Part | Manufacturer | Revision | Pages |
 |---|---|---|---|---|---|
 | `nRF54L15.pdf` | U1 | nRF54L15-QFAA wireless SoC | Nordic | v1.0 | 940 |
-| `nPM1300.pdf` | U2 | nPM1300-QEAA PMIC | Nordic | v1.3 | 175 |
+| `nPM2100_Datasheet_v1.0.pdf` | U2 | nPM2100-QEAA primary-cell PMIC | Nordic | v1.0 | 114 |
 | `FDC1004.pdf` | U3 | FDC1004 capacitance-to-digital converter | TI | Rev. C | 35 |
 | `SHT4x.pdf` | U4 | SHT45-AD1F humidity/temperature sensor | Sensirion | version 5 | 24 |
-| `TPS7A1650.pdf` | U5 | TPS7A16 60 V LDO | TI | Rev. F | 37 |
-| `RB751V-40.pdf` | D5 | RB751V-40 small-signal Schottky, SOD-323 | Panjit | — | 4 |
-| `DW01-P.pdf` | — | DW01-P cell protection IC | Fortune | V10 | 11 |
 
 The nRF54L15 document covers nRF54L15/L10/L05 as a family; only the L15-QFAA
-columns apply. `DW01-P.pdf` is not a board part — it is the protection IC
-*inside* the Adafruit 1578 pack, and it is here because BOM.md's TH1 note turns
-on the fact that the pack ships DW01P + 8205A and therefore has no thermistor.
+columns apply.
+
+### nPM2100 application documents
+
+| File | Document | Nordic ref | Revision |
+|---|---|---|---|
+| `nPM2100_HW_Design_Guidelines_nwp_058.pdf` | Hardware Design Guidelines — inductor/capacitor selection, CR2032 reservoir test | nwp_058 | 2025-03-28 |
+| `nan_048.pdf` | Using the nPM2100 Fuel Gauge — host library, CR2032 model, state persistence | nan_048 | 2025-07-01 |
+| `nPM2100_EK_User_Guide.pdf` | nPM2100 EK (PCA10170) user guide — EK wiring, jumpers | 4532_011 | v0.9.0, 2025-03-28 |
+| `nPM2100_Reverse_Battery_ngl_002.pdf` | Reverse battery protection for the nPM2100 | ngl_002 | 2026-03-18 |
+
+HARDWARE.md cites the nPM2100 PS as "PS" and these by their Nordic ref
+(nwp_058, nan_048, ngl_002, EK UG).
 
 ## Frequency control
 
@@ -37,7 +44,6 @@ on the fact that the pack ships DW01P + 8205A and therefore has no thermistor.
 | File | Ref | Part | Manufacturer | Pages |
 |---|---|---|---|---|
 | `MLZ1608.pdf` | L1 | MLZ1608M4R7WT000 4.7 µH — series sheet | TDK | 6 |
-| `DFE201610P-2R2M.pdf` | L10 | DFE201610P-2R2M 2.2 µH metal alloy | Murata | 1 |
 | `LQP03HQ.pdf` | L2, L3, L4 | LQP03HQ series — covers 2N7B02 and 3N5B02 | Murata | 16 |
 | `GJM0335C1E1R5WB01.pdf` | C6 | GJM0335 1.5 pF C0G 0201 | Murata | 29 |
 | `GJM0335C1E2R0WB01.pdf` | C9 | GJM0335 2.0 pF C0G 0201 | Murata | 29 |
@@ -50,13 +56,27 @@ The two GJM0335 files are per-value exports of the same series document.
 | File | Ref | Part | Manufacturer | Pages |
 |---|---|---|---|---|
 | `U.FL-R-SMT-1.pdf` | J5 | U.FL-R-SMT-1(10) — drawing EDC3-302540-10 | Hirose | 1 |
-| `JST_PH.pdf` | J2 | B2B-PH-K-S — PH series | JST | 5 |
-| `JST_GH.pdf` | J3 | SM02B-GHS-TB / SM03B-GHS-TB — GH series | JST | 6 |
 | `TC2050-IDC-NL.pdf` | J4 | TC2050-IDC-NL Plug-of-Nails, no legs | Tag-Connect | 3 |
 | `1551WK.pdf` | — | 1551WK enclosure (1551WKBK = black PC) | Hammond | 1 |
 
 `U.FL-R-SMT-1.pdf` and `1551WK.pdf` are vector drawings with no text layer, so
 they will not turn up in a full-text search of this directory.
+
+## Superseded — kept as board-2 reference
+
+These parts are off this board's BOM after the coin-cell architecture change,
+but the files stay: board 2 (the pump controller) inherits the charging
+architecture, and HARDWARE.md §4/§9 point here.
+
+| File | Was | Note |
+|---|---|---|
+| `nPM1300.pdf` | U2 | board 2's PMIC; the old §3/§9 analysis cites it |
+| `TPS7A1650.pdf` | U5 | solar pre-regulator, board 2 |
+| `RB751V-40.pdf` | D5 | solar-path Schottky, board 2 |
+| `DW01-P.pdf` | — | protection IC inside the old Adafruit 1578 pack |
+| `JST_PH.pdf` | J2 | old battery connector |
+| `JST_GH.pdf` | J3 | old solar connector |
+| `DFE201610P-2R2M.pdf` | L10 | old nPM1300 buck inductor; L10 is now DFE201210U-2R2M |
 
 ## Gaps
 
@@ -64,7 +84,8 @@ No datasheet on file, because the BOM does not name a manufacturer part number:
 
 | Ref | Value |
 |---|---|
-| C30 | Murata GRM21BR61H475KA12L, 4.7 µF / 50 V X5R 0805 |
+| L10 | Murata DFE201210U-2R2M=P2, 2.2 µH (nwp_058 Table 1) |
+| BT1 | CR2032 retainer — MPD BU2032SM-BT-GTR, open until placement |
 | C13 | 3.9 pF C0G 0402 |
 | — | bulk R and C values (see BOM.md component list) |
 
@@ -80,6 +101,11 @@ in `--mpn-list` mode. Given a file of MPNs it re-downloads the lot.
 Fetched by hand, and not reproducible that way:
 
 - `nRF54L15.pdf`, `nPM1300.pdf` — Nordic infocenter
+- `nPM2100_Datasheet_v1.0.pdf`, `nan_048.pdf` — Nordic's docs site is behind a
+  Cloudflare challenge for scripts; both were downloaded in a browser. The three
+  other nPM2100 documents (`nwp_058`, EK UG, `ngl_002`) are also served from
+  `www.nordicsemi.com/-/media/Software-and-other-downloads/Product-Briefs/` and
+  were fetched via the Internet Archive.
 - `CM8V-T1A.pdf`, `FA-128.pdf`, `MLZ1608.pdf`, `DW01-P.pdf` — vendor sites
 - `1551WK.pdf` — `https://www.hammfg.com/files/parts/pdf/1551WKBK.pdf`
   (DigiKey's link for this one 404s)

@@ -29,7 +29,10 @@ fp-info-cache
 # Vendor datasheets - kept on disk, not in history. They are large, they are
 # not ours, and they are all re-fetchable. doc/datasheets/README.md is tracked
 # and records the exact revision of each, which is the part that matters.
+# *.txt alongside them are pdftotext extractions for grepping - derived, and
+# regenerable with `pdftotext -layout foo.pdf foo.txt`.
 /doc/datasheets/*.pdf
+/doc/datasheets/*.txt
 
 # macOS -------------------------------------------------------------------
 .DS_Store

@@ -66,34 +66,21 @@ HARDWARE.md §2.
 
 ## Connector heights — resolved
 
-The Hammond 1551WK leaves **6.70 mm** of clear component height under the cell
-(LAYOUT.md §9). JST PH is 8 mm mounting height per JST's own PH datasheet, and
-the 2×5 1.27 mm SWD header is comparable, so all three were changed:
+With the Li-ion cell deleted from the lid, the height budget opened up: there is
+now **11.70 mm** of clearance to the lid over the whole electronics band, and
+the tallest things on the board are the CR2032 retainer (~6 mm with cell) and
+the U.FL connector (2.4 mm mated). Only two connectors remain:
 
-| Ref | Was | Height | Now | Height |
-|---|---|---|---|---|
-| J2 | JST PH `B3B-PH-K` | 8 mm | JST GH `SM03B-GHS-TB` **horizontal** | **4.25 mm** |
-| J3 | JST PH `B2B-PH-K` | 8 mm | JST GH `SM02B-GHS-TB` **horizontal** | **4.25 mm** |
-| J4 | `PinHeader_2x05_P1.27mm_Vertical_SMD` | ≈6 mm | Tag-Connect `TC2050-IDC-NL` | 0 |
+| Ref | Part | Height | Note |
+|---|---|---|---|
+| J4 | Tag-Connect `TC2050-IDC-NL` | 0 | nothing soldered; needs the TC2050 cable + retaining clip |
+| J5 | Hirose U.FL `U.FL-R-SMT-1(10)` | 2.4 mm | mate-once, see below |
 
-Heights measured from the vendor STEP models KiCad ships, not from a vendor
-blurb. JST GH is rated **1 A** (JST GH series page, AWG #26), comfortably over
-the 500 mA charge current.
-
-**Vertical and horizontal GH are the same height** — 4.20 mm for `BM**B-GHS-TBT`
-against 4.25 mm for the side-entry `SM**B-GHS-TB`, on an identical 4.95 mm board
-footprint. The choice between them is cable exit direction, not height: the cell hangs
-from the lid to within 6.70 mm of the board, and a top-entry header sends the
-lead straight up into it. **Side-entry selected.** See LAYOUT.md §9.
+J2 (battery) and J3 (solar) are deleted with the architecture change — the
+CR2032 sits in an on-board retainer and there is no external power input at all.
 
 Tag-Connect uses the standard 10-pin Cortex debug pinout, which is what J4 was
-already wired to, so no net changes. It needs a **TC2050-IDC-NL cable plus a
-retaining clip** — no connector is fitted to the board at all, which is where the
-height saving comes from. The `-NL` footprint also carries three unnumbered
-alignment pads.
-
-Both GH footprints have two `MP` mounting-post pads with no net. That is normal;
-they are mechanical.
+already wired to, so no net changes.
 
 ### L1 — TDK MLZ1608M4R7WT000
 
@@ -131,9 +118,9 @@ mechanisms are specified.
 **And 120 mA is not a converter requirement.** The nRF54L15's REGULATORS
 electrical specification (§11.14) publishes recommended VDD, the power-fail
 comparator thresholds and nothing else — no DC/DC peak inductor current, no
-switching frequency. Unlike the nPM1300, where Table 19 genuinely demands
-I_sat > 350 mA because the hysteretic peak is set by the converter (HARDWARE.md
-§3), Nordic states no inductor current requirement for the nRF54L15 at all.
+switching frequency. (The nPM2100 on this board *does* state a converter-driven
+peak requirement — 550 mA on L10, HARDWARE.md §3 — but the nRF54L15 states
+none for L1.)
 
 **What the part actually carries.** The buck steps VDD 3.3 V down to the 0.9 V
 DECD rail, and DECD feeds DECA/DECRF through FB1, so essentially all active
@@ -159,33 +146,28 @@ rather than a trip to SimSurfing.
 is 0.89 mW against 0.75 mW — 0.14 mW, for 300 ms an hour, or about **0.1 mAh/yr
 out of 163**. Below the noise on every other term in HARDWARE.md §7.
 
-### D5 — Panjit RB751V-40### D5 — Panjit RB751V-40
+### L10 — boost inductor, 2.2 µH, I_sat > 550 mA
 
-DK `3757-RB751V-40_R1_00001CT-ND`, $0.14.
+Replaces the old nPM1300 buck inductor (same designator, different part). The
+nPM2100 permits **2.2 µH ±20% only** — other inductances break the control loop
+(nwp_058 §3.1) — and requires **I_sat > 550 mA** because the hysteretic ULP/LP
+peak current (typ. 150 mA) plus startup transients are set by the converter, not
+the load. DCR < 300 mΩ (PS §9.3.2 BOM).
 
-| | Requirement | RB751V-40 |
-|---|---|---|
-| Forward drop | ~0.3 V so VBUS lands mid-window (HARDWARE.md §4) | 370 mV @ 1 mA |
-| Current | ~200 mA | 300 mA |
-| Reverse | ≫ 5.5 V, clear of the 22 V VBUS abs max | **40 V** |
-| Leakage | low | 500 nA @ 30 V |
-| Package | SOD-323 | SOD-323 |
+Candidates with efficiency measured on the nPM2100 EK (nwp_058 Tables 4–5,
+VBAT 2.9 V → VOUT 3.3 V):
 
-Runner-up **BAT201M3 RRG** has a genuinely lower drop (290 mV @ 10 mA) and 1 A
-rating, but only 20 V reverse — thin against the 22 V VBUS ceiling — and 50 µA
-leakage, 100× the Panjit. Take it if the drop matters more than the margin.
+| Part | Size | Efficiency @ 100 µA / 120 mA | I_sat | DCR |
+|---|---|---|---|---|
+| **Murata DFE201210U-2R2M=P2** | 2012 | 91.9% / 94.7% | 2000 mA | 228 mΩ |
+| TDK MLP2016H2R2MT0S1 | 2016 | 91.5% / 95.0% | 550 mA | 110 mΩ |
+| Samsung CIGT201610EH2R2MNE | 2016 | 90.6% / 95.1% | 2900 mA | 73 mΩ |
 
-**Two near-identical part numbers to avoid.** `RB751V-40WS` (Taiwan Semi) and
-`RB751V-40X` (Panjit) both quote the same 370 mV @ 1 mA but are rated **30 mA**,
-not 300 mA. And BAS70WS / BAT42WS / BAT43WS all quote **1 V** forward drop, which
-defeats the point of a Schottky here.
-
-Forward-voltage figures across a distributor table are quoted at different test
-currents (1 mA to 1 A) and are not directly comparable. The 370 mV figure is
-quoted at 1 mA; the solar path now runs up to the 100 mA VBUS current limit
-(HARDWARE.md §4), where the drop will be higher. Pull the V_f vs I_f curve
-before assuming VBUS lands at 4.63 V under a charging load — 300 mA is the
-part's rating, so headroom exists, but the number will move.
+**Select the Murata** — it is the efficiency/margin midpoint, it is the same
+2012 size family as the old part, and its 2 A I_sat clears the 550 mA floor by
+3.6×. The old footprint (`L_Murata_DFE201610P`) is a DFE2016-size part; the
+DFE2012 lands on a slightly smaller pad, so the footprint updates with the
+schematic change.
 
 ### X2 — Epson FA-128, 32 MHz, C_L 8 pF
 
@@ -285,211 +267,50 @@ long axis moving from Y to X. Its orientation still has not been checked in the
 3D viewer, and the file's internal `FILE_NAME` is `FA-128 54.0000MF15Z-E3.STEP`
 — a 54 MHz variant, same body, but not the part we are buying.
 
-### Cell — Adafruit 1578, 500 mAh
+### Cell — CR2032, and the holder
 
-DK `1528-1841-ND`, $7.95. Li-ion pouch, 3.7 V, **29.0 × 36.0 × 4.8 mm**, with PCM.
+Any major-brand **CR2032** (Panasonic, Murata, Duracell) — 225 mAh nominal,
+LiMnO₂, 20 mm × 3.2 mm, ~10-year shelf life, ~1%/yr self-discharge. The fuel
+gauge's default LiMnO₂ model is the CR2032 (nan_048 §3), so no battery-model
+work is needed. User-replaceable; battery-out is the off switch; the board ships
+without a cell.
 
-Chosen over the larger 258 (1200 mAh) for fit margin. The 258 is 34.0 mm across
-a 34.92 mm interior — 0.9 mm total — and its datasheet part code is `503562`,
-implying a **35 mm nominal** cell that would not fit at all. Pouch cells also
-swell. 1578 is 29 mm across, leaving 6 mm of slack, and costs 0.5 years of
-runtime (2.9 vs 3.45).
+**Holder — open until placement, two candidates:**
 
-The 1551WK leaves **11.70 mm** between the board top face and the lid. A cell
-adhered to the lid at thickness T leaves 11.70 − T of component clearance, and
-the tallest part on the board is J2/J3 at 4.25 mm. Box interior is
-74.92 × 34.92 mm, so the cell needs its short side ≤ 34.92 and long side ≤ 74.92.
+| Part | Type | Height (with cell) | Note |
+|---|---|---|---|
+| **MPD BU2032SM-BT-GTR** | SMD retainer, 20 mm | ~5.6 mm | the usual coin-cell choice; two retention clips |
+| Keystone 3003 | SMD retainer, low profile | ~5.0 mm | wider footprint |
 
-Everything in the Adafruit range that fits, with runtime from
-`0.95·C / (0.24·C + 42.8)`:
+Selection criteria, in order: it must sit in Zone B clear of the sense escape
+and the RF corridor; nothing taller may sit under it; and there must be room for
+the **polarity marking on the silk** (HARDWARE.md §3 — no internal reverse
+protection, markings are the protection). A standard retainer does not physically
+block a reversed cell, so the marking is not optional.
 
-| P/N | mAh | mm | Clearance left | Runtime |
-|---|---|---|---|---|
-| 258 | 1200 | 34.0 × 62.0 × 5.0 | 6.70 mm | 3.45 yr — 0.9 mm width margin |
-| **1578** | **500** | 29.0 × 36.0 × 4.8 | **6.90 mm** | **2.92 yr — selected** |
-| 4236 | 420 | 35.0 × 24.0 × 5.2 | 6.50 mm | 2.78 yr |
-| 4237 | 350 | 32.5 × 25.4 × 5.0 | 6.70 mm | 2.62 yr |
-| 2750 | 350 | 36.0 × 20.0 × 5.6 | 6.10 mm | 2.62 yr |
-| 1317 | 150 | 19.8 × 26.0 × 3.8 | 7.90 mm | 1.81 yr |
-| 1570 | 100 | 11.5 × 31.0 × 3.8 | 7.90 mm | 1.42 yr |
-
-Ruled out: **2011** (2000 mAh) and **328** (2500 mAh) are 36 mm and 50 mm across,
-over the 34.92 mm interior. **3898** is 8.2 mm thick, which leaves 3.5 mm and
-fouls the connectors. The 18650s and the 4.4/6.6/10 Ah packs are far too big.
-
-258 beats the 503450 this design was sized around — same 5.0 mm thickness and
-34 mm width, but 1200 mAh instead of 1000, and it is a stocked catalogue part.
-
-**Two things to settle before ordering.**
-
-**J2 is a 2-pin JST PH so the cell plugs straight in** — Adafruit's whole range
-ships with a PH plug, and re-crimping a battery lead is a job worth avoiding.
-That drops the pack-NTC pin, which costs nothing: Adafruit cells are 2-wire with
-no thermistor, so the NTC path was always TH1.
-
-**PH is 8 mm tall against 6.90 mm of clearance under the cell**, so J2 has to sit
-outside the cell footprint. The cell covers only 36 mm of the 74 mm board, so the
-y 62–74 band keeps its full 11.70 mm — J2 lives there, at y 66.8–72.3.
-`tools_gen_pcb.py` asserts this: any part in `COMPONENT_HEIGHTS` taller than the
-under-cell gap must not overlap `CELL_RECT`.
+The old Li-ion selection table and its JST PH connector are deleted with the
+architecture change — runtime against the CR2032's budget is in HARDWARE.md §7,
+and the answer is the cell's shelf life, not any fit or capacity trade.
 
 ### Other open selections
 
 | Ref | Requirement | Candidate |
 |---|---|---|
 | L1 | 4.7 µH, ±20 %, DCR ≤ 650 mΩ, published I_sat, 0603 | **TDK MLZ1608M4R7WT000** — selected |
-| L10 | 2.2 µH, I_sat > 350 mA, I_max > 200 mA, DCR ≤ 400 mΩ | **Murata DFE201610P-2R2M** (footprint already set) |
-| D5 | Schottky, low V_f, SOD-323, ~200 mA | **Panjit RB751V-40_R1_00001** — selected |
-| J1 | USB-C receptacle, 16P USB2.0 | **HRO TYPE-C-31-M-12** (footprint already set) |
-| U5 | 5.0 V out, V_IN ≥ 13.9 V, tolerant of a wrong adapter | **TI TPS7A1650DGNR** — selected, see below |
-| Panel | V_OC 6–12 V, external, window-mounted | **Voltaic Systems P126** (Adafruit 5366) — selected |
-| Cell | ≤ 6.5 mm thick, ≤ 34.92 × 74.92 mm | **Adafruit 1578**, 500 mAh, 29 × 36 × 4.8 mm — selected |
-| Enclosure | **Hammond 1551WKBK**, IP68 PC, 80 × 40 × 22 mm | + 4× nylon #2 screws for the antenna-end holes |
+| L10 | 2.2 µH ±20%, I_sat > 550 mA, DCR < 300 mΩ | **Murata DFE201210U-2R2M=P2** — selected, see above |
+| U2 | primary-cell PMIC, boost to 3.3 V, load switch, fuel gauge | **nPM2100-QEAA** (QFN16) — selected |
+| BT1 | CR2032 SMD retainer, 20 mm, Zone B | **MPD BU2032SM-BT-GTR** — open until placement |
+| Cell | CR2032, any major brand | LiMnO₂ 225 mAh, ~10-yr shelf life |
+| Enclosure | **Hammond 1551WKBK**, PC, 80 × 40 × 22 mm | + 4× nylon #2 screws for the antenna-end holes; now IP54, see NEXT-STEPS.md §5 |
 
-**Nothing on this board is open now, and everything is placed.** U5, C30 and C31
-sit in the reserve below J3. No inductor is needed — the LDO wins (below) — so
-the block is just an HVSSOP-8 and two 0603s, 7.3 × 6.0 mm inside the ~8 × 8 mm
-that was set aside.
+**Deleted with the architecture change:** J1 (USB-C), J2 (Li-ion JST), J3 (solar
+JST), D5 (solar Schottky), U5 (TPS7A1650), C30/C31 (solar caps), D3/D4 + R25/R26
+(charge LEDs), TH1 (pack NTC), R20/R21 (VSET straps — the nPM2100's VSET is
+NC and SYSGDEN grounds directly). Their selection notes are preserved in git
+history at commit 1753c18 and belong to board 2 now.
 
-### The solar path is fitted on every board
-
-The panel is external and lives in a window. Most boards ship without it, so
-**J3, D5, U5, C30 and C31 are all populated.** `SOLAR_DNP` at the top of the
-solar block in `tools_gen_sch.py` is the single switch; set it to `False` and
-re-run for a solar-equipped build. The footprints stay on the board either way,
-so a unit can be retrofitted without a respin.
-
-TP5 stays populated — it is a bare pad with nothing to buy.
-
-**The barrel jack is not on the board.** A CUI PJ-102AH is 11.0 mm tall with a
-10.7 × 4.7 mm footprint, against the 6.90 mm of clearance under the cell at J3's
-position (LAYOUT.md §9). Putting it on the board would have forced the whole
-solar block into the y 62–74 end band next to J2. It goes on the panel pigtail
-instead, J3 stays the 4.25 mm JST GH it already is, and **no PCB placement or
-routing changes at all**.
-
-### Panel — Voltaic Systems P126 (Adafruit 5366)
-
-6 V, 2 W ETFE monocrystalline, external, window-mounted. All figures from the
-P126 datasheet (April 2023) at STC, 1000 W/m² 25 °C.
-
-| Symbol | Parameter | Nominal | Expected¹ |
-|---|---|---|---|
-| V_OC | Open-circuit voltage | **8.59 V** | 8.34 V |
-| V_P | Voltage at MPP | **7.09 V** | 6.84 V |
-| I_P | Current at MPP | 0.34 A | 0.29 A |
-| I_SC | Short-circuit current | 0.37 A | 0.33 A |
-| W_P | Max power | 2.38 W | 2.31 W |
-| η | Cell efficiency | 21.5 % (SunPower Maxeon) | — |
-
-¹ Voltaic's "expected" column already accounts for cell cutting, encapsulation
-losses and the worst cell in the series. Design to it.
-
-| | Requirement | P126 |
-|---|---|---|
-| V_OC | 6–12 V | 8.59 V, mid-band |
-| Loaded voltage | > 5.0 V + LDO dropout across the useful light range | 7.09 V at STC, ~5.9 V at ~5 klx |
-| Worst-case V_OC | ≪ 22 V VBUS abs max | 9.23 V at 0 °C |
-| Power | ≫ 69 µW average load (HARDWARE.md §7) | 2.38 W STC, ~119 mW on a dull day |
-| Environment | sunlit windowsill | IPX7, −40…+85 °C, 10+ yr UV tested |
-| Cells in series | — | 12 (8.59 / 12 = 0.716 V/cell) |
-
-Mechanical: **136 × 112 × 3.1 mm**, 79 g, ±0.5 mm, G110 VHB gasket mounting.
-
-**Larger than the enclosure in both axes** — the 1551WK is 80 × 40 mm. The panel
-VHB-mounts to a window and reaches the sensor on its own lead. See HARDWARE.md
-§4 for why that is the right arrangement rather than a compromise.
-
-**Its plug is 3.5 × 1.1 mm, not 5.5 × 2.1 mm.** Build the pigtail with a
-3.5 × 1.1 mm jack, or buy Voltaic's 3.5 → 5.5/2.1 adapter lead if you want the
-larger barrel. Do not fit a 5.5 mm jack and expect the panel to mate.
-
-**Why not the Panasonic Amorton pair this document previously specified.** That
-choice was correct for the problem as originally posed — hold 5 V at 200 lx of
-*room* light, where amorphous silicon's 0.63 V/cell beats crystalline's ~0.4 V.
-Once the panel moved to a window at 5,000–50,000 lx the constraint disappeared
-and c-Si wins on every axis: roughly 2× the power per unit area, a fraction of
-the cost, a laminate built to sit in sunlight, and a low enough V_OC that the
-input-rating rule stops being the deciding factor.
-
-### U5 — TI TPS7A1650DGNR
-
-Fixed 5.0 V, HVSSOP-8 (DGN) with PowerPAD. All figures from SBVS171F.
-
-| | Requirement | TPS7A1650 | Source |
-|---|---|---|---|
-| Output | 5.0 V fixed | 5.0 V, ±2 % | §1 features |
-| V_IN operating | ≥ 13.9 V (1.5 × panel V_OC cold) | **3–60 V** | §6.3 |
-| V_IN absolute max | > 9.23 V | 62 V | §6.1 |
-| Dropout | ≪ the 2.1 V headroom at STC | 60 mV at 20 mA | §6.5, V_DO |
-| Ground current | secondary | 5 µA typ, 15 µA max at I_OUT = 10 µA | §6.5, I_GND |
-| Output current | ≥ the 100 mA VBUS limit | 100 mA; I_LIM 225 mA typ / 101 mA min | §1, §7.3.5 |
-| Thermal | survive a wrong adapter | R_θJA 66.2 °C/W, T_SD 125 °C | §6.4, §6.5 |
-| Enable | tie on, no logic available | EN → IN; V_EN_HI 1.2 V min, I_EN ±1 µA | §7 Pin Functions, §6.5 |
-| Package | fits the 8 × 8 mm reserve | 3 × 3 mm HVSSOP-8 | DGN0008C |
-| Status | orderable | Active / Production, −40…125 °C | Package option addendum |
-
-**Chosen over the TPS62122 buck on input rating, deliberately, after the buck
-qualified.** With the P126 the buck clears the 1.5× rule (1.5 × 9.23 = 13.9 V
-against 15 V recommended operating), so this is not a disqualification the way it
-was with the 16-cell amorphous panel. It loses on judgement:
-
-- The user-facing barrel jack is an unqualified DC input. A 19 V laptop brick
-  destroys a 17 V part; the TPS7A1650 rides it out at T_J ≈ 118 °C, inside its
-  125 °C shutdown, still regulating.
-- The 1.3× harvest advantage buys nothing — the panel already delivers
-  1,700–35,000× the board's average load, and the path is capped at 100 mA.
-- It would add an inductor, two feedback resistors and a C_ff, plus a project
-  footprint: KiCad's `WSON-6-1EP_2x2mm_P0.65mm_EP1x1.6mm` is 0.375 × 0.4 mm pads
-  on ±0.8875 mm against TI's DRV0006 0.45 × 0.3 mm and 1.95 mm span. Same class
-  of mismatch as the 2016 crystal.
-- A second switching node next to a capacitive front end that LAYOUT.md §6
-  already fences off from SW2.
-
-**U5 is a 100 mA part, and that sets a firmware rule.** The nPM1300's VBUS
-current limit defaults to IBUS100MA and reverts there on every reset — which is
-exactly right for this path. **Do not raise it when running from solar.** See
-HARDWARE.md §4; this is the opposite of the USB path's requirement.
-
-Pin handling, from the SBVS171F Pin Functions table:
-
-| Pin | Name | Wired to | Why |
-|---|---|---|---|
-| 1 | OUT | `SOLAR_5V` | — |
-| 2 | FB/DNC | **nothing** | Fixed versions: *"Do not connect to this pin. Do not route this pin to any electrical net, not even GND or IN."* |
-| 3 | PG | open | Open-collector, unused. A pull-up would need a rail and burn current |
-| 4 | GND | GND | — |
-| 5 | EN | `SOLAR_PANEL` | *"If not used, the EN pin can be connected to IN. Make sure that V_EN ≤ V_IN at all times"* — tying them satisfies that identically |
-| 6 | NC | open | Datasheet: open or any voltage between GND and IN |
-| 7 | DELAY | open | PG delay unused |
-| 8 | IN | `SOLAR_PANEL` | — |
-| 9 | PowerPAD | GND | *"TI highly recommends connecting the PowerPAD to the GND plane"* |
-
-**Footprint checked, and this one does not need a project part.** TI DGN0008C
-specifies 8 pads 1.4 × 0.45 mm on 0.65 mm pitch, rows on 4.4 mm centres, thermal
-pad metal ≈ 1.6 × 1.92 mm. KiCad's
-`Package_SO:HVSSOP-8-1EP_3x3mm_P0.65mm_EP1.57x1.89mm` is 1.45 × 0.5 mm on
-±2.15 mm with a 1.57 × 1.89 mm pad — generous on every dimension rather than
-short, unlike the 2016 land pattern that forced a vendor footprint for X2.
-
-### C30, C31 — LDO input and output capacitors
-
-| | Datasheet requirement (SBVS171F §8.2.1.2.1.3) | Fitted |
-|---|---|---|
-| C30, input | ≥ 0.1 µF for stability, 10 µF recommended | **Murata GRM21BR61H475KA12L**, 4.7 µF / 50 V X5R, 0805 |
-| C31, output | ≥ 2.2 µF for stability, 10 µF recommended | **Samsung CL10A106MA8NRNC**, 10 µF / 25 V X5R, 0603 |
-
-**C30 is 50 V because of the barrel jack, not the panel.** The P126 tops out at
-9.23 V, which a 25 V part covers easily — but a user-accessible DC jack is an
-unqualified input, and U5 is good to 60 V. Rating C30 at 50 V moves the ceiling
-off the capacitor and onto U5's thermal limit, which lands at about 19 V at the
-100 mA VBUS current limit. It costs one BOM line; C31 stays the same 10 µF/25 V
-X5R already at C21/C22/C24.
-
-The input capacitor was enlarged from 0603 to 0805 for better DC-bias retention,
-availability and hand assembly. Check the manufacturer's DC-bias curve rather
-than the nameplate; both parts must remain above the stability minimum at their
-actual operating voltage.
+**Nothing on this board is open except the coin-cell retainer, which is a
+placement decision rather than an electrical one.**
 
 ---
 
@@ -510,89 +331,55 @@ actual operating voltage.
 | C11 | 0.3pF C0G | `C_0201_0603Metric` |
 | C12 | 10nF/6.3V X7R | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
 | C13 | 3.9pF C0G | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
-| C20 | 1uF/10V X5R | `C_0603_1608Metric_Pad1.08x0.95mm_HandSolder` |
-| C21 | 10uF/25V X5R | `C_0603_1608Metric_Pad1.08x0.95mm_HandSolder` |
-| C22 | 10uF/25V X5R | `C_0603_1608Metric_Pad1.08x0.95mm_HandSolder` |
-| C23 | 2.2uF/16V X7R | `C_0603_1608Metric_Pad1.08x0.95mm_HandSolder` |
-| C24 | 10uF/25V X5R | `C_0603_1608Metric_Pad1.08x0.95mm_HandSolder` |
-| C25 | 100nF X5R | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
-| C26 | 1uF/10V X7R | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
+| C21 | 10uF/6.3V X5R — VBAT | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
+| C22 | 1nF X5R — VBAT RF | `C_0201_0603Metric` |
+| C23 | 22uF/6.3V X5R — VINT | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
+| C24 | 1nF X5R — VINT RF | `C_0201_0603Metric` |
+| C25 | 2.2uF/6.3V X5R — VOUT | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
+| C26 | 1uF/10V X5R — FDC_VDD | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
 | C27 | 100nF X7R | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
-| C30 | 4.7uF/50V X5R — GRM21BR61H475KA12L | `C_0805_2012Metric_Pad1.18x1.45mm_HandSolder` |
-| C31 | 10uF/25V X5R — CL10A106MA8NRNC | `C_0603_1608Metric_Pad1.08x0.95mm_HandSolder` |
-| D3 | GREEN — LTST-C190KGKT | `LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder` |
-| D4 | RED — LTST-C190KRKT | `LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder` |
-| D5 | RB751V-40 Schottky | `D_SOD-323_HandSoldering` |
+| BT1 | CR2032 retainer — MPD BU2032SM-BT-GTR (open) | `BatteryHolder_MPD_BU2032SM_1x2032` (to build) |
 | FB1 | FB 120R@100MHz — MMZ1005S121CT000 | `L_0402_1005Metric_Pad0.77x0.64mm_HandSolder` |
-| J1 | USB-C receptacle — TYPE-C-31-M-12 / JLC C165948 | `USB_C_Receptacle_HRO_TYPE-C-31-M-12` |
-| J2 | Battery - Adafruit 1578 | `JST_PH_B2B-PH-K_1x02_P2.00mm_Vertical` |
-| J3 | Solar panel | `JST_GH_SM02B-GHS-TB_1x02-1MP_P1.25mm_Horizontal` |
 | J4 | SWD 10p 1.27mm | `Tag-Connect_TC2050-IDC-NL_2x05_P1.27mm_Vertical` |
+| J5 | U.FL antenna | `U.FL_Hirose_U.FL-R-SMT-1_Vertical` |
 | L1 | MLZ1608M4R7WT000 4.7uH | `L_0603_1608Metric_Pad1.05x0.95mm_HandSolder` |
 | L2 | 2.7nH LQP03HQ2N7B02 | `L_0201_0603Metric` |
 | L3 | 3.5nH LQP03HQ3N5B02 | `L_0201_0603Metric` |
 | L4 | 3.5nH LQP03HQ3N5B02 | `L_0201_0603Metric` |
-| L10 | 2.2uH Isat>350mA DCR<400m | `L_Murata_DFE201610P` |
+| L10 | DFE201210U-2R2M=P2 2.2uH | `L_Murata_DFE201210` (to build) |
 | NT1 | GND_PA to GND (under U1, F.Cu) | `NetTie_VSSPA` |
 | NT2 | GND_C9 to GND (B.Cu only) | `NetTie-2_SMD_Pad0.5mm` |
 | R1 | 1k 1% | `R_0402_1005Metric_Pad0.72x0.64mm_HandSolder` |
-| R20 | 470k 1% VSET2=3.3V | `R_0402_1005Metric_Pad0.72x0.64mm_HandSolder` |
-| R21 | 0R disables BUCK1 | `R_0402_1005Metric_Pad0.72x0.64mm_HandSolder` |
-| R22 | 4.7k to +3V3 | `R_0402_1005Metric_Pad0.72x0.64mm_HandSolder` |
-| R23 | 4.7k to +3V3 | `R_0402_1005Metric_Pad0.72x0.64mm_HandSolder` |
-| R25 | 1k | `R_0402_1005Metric_Pad0.72x0.64mm_HandSolder` |
-| R26 | 1k | `R_0402_1005Metric_Pad0.72x0.64mm_HandSolder` |
-| TH1 | Semitec 103JT-025, 10k B3435 - bond to cell | `Thermistor_SEMITEC_103JT_Wired` |
+| R22 | 4.7k to VOUT | `R_0402_1005Metric_Pad0.72x0.64mm_HandSolder` |
+| R23 | 4.7k to VOUT | `R_0402_1005Metric_Pad0.72x0.64mm_HandSolder` |
 | TP1 | SENSE1 | `TestPoint_Pad_D1.0mm` |
 | TP2 | SENSE2 | `TestPoint_Pad_D1.0mm` |
 | TP3 | SHLD | `TestPoint_Pad_D1.0mm` |
 | TP4 | SHPHLD | `TestPoint_Pad_D1.0mm` |
-| TP5 | SOLAR_5V | `TestPoint_Pad_D1.0mm` |
 | U1 | nRF54L15-QFAA | `QFN48_6X6_NOR` |
-| U2 | nPM1300-QEAA | `QFN32_5X5_NOR` |
+| U2 | nPM2100-QEAA | `QFN16_4X4_NOR` (to build, PS Table 24) |
 | U3 | FDC1004 | `MSOP-10_3x3mm_P0.5mm` |
 | U4 | SHT45-AD1F | `Sensirion_DFN-4_1.5x1.5mm_P0.8mm_SHT4x_NoCentralPad` |
-| U5 | TPS7A1650 5V LDO | `HVSSOP-8-1EP_3x3mm_P0.65mm_EP1.57x1.89mm` |
 | X1 | CM8V-T1A 32.768kHz CL=7pF 20ppm | `XTAL_CM8V-T1A_2012` |
 | X2 | FA-128 32MHz CL=8pF | `XTAL_FA-128_2016_4Pin` |
+
+**New footprints to build** (three): `QFN16_4X4_NOR` from the nPM2100 PS
+mechanical drawing (Table 24: 4.0 mm body, 0.5 mm pitch, EP 2.65 mm nominal —
+build from Nordic's reference design files, as was done for QFN48/QFN32);
+`L_Murata_DFE201210` for the boost inductor; the CR2032 retainer once selected.
+The nPM1300's `QFN32_5X5_NOR` stays in the library — board 2 will use it.
 
 ---
 
 ## Notes on specific parts
 
-**TH1** — the pack has no thermistor (DW01P + 8205A only), so this is fitted,
-not DNP. Use the selected Semitec 103JT-025 thin-film NTC bonded to the broad
-face of the pouch with insulating polyimide tape. Its leads solder to the two
-enlarged SMD wire pads; strain-relieve the lead pair before final assembly.
-
 **U4 SHT45-AD1F** — no copper under the sensor except the four pin pads, and the
 die pad must not be soldered. The `_NoCentralPad` footprint handles the pad; the
 copper keepout is yours to draw. See LAYOUT.md §8.
 
-**D3/D4** — fed from VSYS through R25/R26 and sunk by the nPM1300's LED drivers,
-so they only draw when firmware turns them on.
-
-**U5 / C30 / C31** — placed in the reserve below J3: U5 at board
-(24.37–30.63, 50.75–54.25), C31 and C30 in a row above it at y 48.27–49.73.
-0.57 mm clear of J3 at the tightest and 2.85 mm off the board edge. J3 and D5
-did not move. Not yet routed. `SOLAR_5V` now has a real driver (U5 pin 1 is a power output), so
-the PWR_FLAG that used to hold that net up in ERC has been removed — two power
-outputs on one net is an ERC conflict.
-
-**Solar panel and pigtail** — off-board, not in the component table, and only
-needed for a solar-equipped build:
-
-| Item | Part | Note |
-|---|---|---|
-| Panel | Voltaic Systems **P126** / Adafruit **5366** | 6 V 2 W ETFE, VHB-mounts to a window |
-| Barrel jack | 3.5 × 1.1 mm inline socket | **Matches the P126's own plug.** A 5.5 × 2.1 mm jack will not mate |
-| — or — | Voltaic 3.5 → 5.5/2.1 adapter lead | If you want the larger common barrel instead |
-| Housing | JST **SHR-02V-S-B** | Mates J3 |
-| Contacts | JST **SSH-003T-P0.2** ×2 | 26 AWG |
-
-Polarity is set once, when the pigtail is crimped, and centre-positive is the
-convention. J3 has no keying against a reversed panel and U5's IN pin is −0.3 V
-absolute maximum, so mark the housing at build time.
+**TP4 keeps the SHPHLD net testable.** SHPHLD is otherwise unconnected
+(HARDWARE.md §3); the test point gives the bench a place to ground it for
+ship-mode entry tests without holding a probe on a QFN pad.
 
 **J4** — Tag-Connect TC2050-IDC-NL, standard 10-pin Cortex pinout: pin 1 VTref,
 2 SWDIO, 3 GND, 4 SWDCLK, 5 GND, 6 SWO, 7/8 NC, 9 GND, 10 nRESET. Nothing is
@@ -601,15 +388,16 @@ soldered to the board; you need the cable and a retaining clip.
 **NT1 / NT2** — net ties, not real parts (`in_bom no`). They exist so the DRC can
 enforce Nordic's two RF grounding rules, which are otherwise invisible in a
 netlist. **NT1 must be placed under the U1 centre pad on F.Cu; NT2 must be on
-B.Cu.** See LAYOUT.md §2.
+B.Cu.** See LAYOUT.md §2. The nPM1300's NT3 is deleted — Nordic's nPM2100
+reference circuit grounds PVSS directly with no net tie, and the boost loop
+guidance (nwp_058 §4.2) is about placement, not a separate net.
 
-**J5 removed.** There is no test point on the antenna feed. A 1.0 mm pad on a
-2.4 GHz feed is roughly 0.1–0.2 pF of shunt capacitance — the same order as C11
-at 0.3 pF — so it perturbs the impedance it exists to measure. Tuning a PCB IFA
-is done by soldering a coax pigtail directly to the feed trace, shield to the
-adjacent ground pour, and removing it afterwards; that needs no footprint. J5
-also sat 5.8 mm off the feed line, which would have hung a λ/12 stub on the
-match.
+**J5 removed-then-restored history.** There is no test point on the antenna feed.
+A 1.0 mm pad on a 2.4 GHz feed is roughly 0.1–0.2 pF of shunt capacitance — the
+same order as C11 at 0.3 pF — so it perturbs the impedance it exists to measure.
+Tuning a PCB IFA is done by soldering a coax pigtail directly to the feed trace,
+shield to the adjacent ground pour, and removing it afterwards; that needs no
+footprint.
 
 ### J5 — Hirose U.FL-R-SMT-1(10), antenna connector
 
