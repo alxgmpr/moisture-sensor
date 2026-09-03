@@ -66,9 +66,9 @@ HARDWARE.md §2.
 
 ## Connector heights — resolved
 
-With the Li-ion cell deleted from the lid, the height budget opened up: there is
-now **11.70 mm** of clearance to the lid over the whole electronics band, and
-the tallest things on the board are the CR2032 retainer (~6 mm with cell) and
+With the retired rechargeable pack removed, the available internal height is
+**11.70 mm** above the PCB over the electronics band. The tallest items are the
+CR2032 retainer and installed cell (~5.6 mm) and
 the U.FL connector (2.4 mm mated). Only two connectors remain:
 
 | Ref | Part | Height | Note |
@@ -165,9 +165,10 @@ VBAT 2.9 V → VOUT 3.3 V):
 
 **Select the Murata** — it is the efficiency/margin midpoint, it is the same
 2012 size family as the old part, and its 2 A I_sat clears the 550 mA floor by
-3.6×. The old footprint (`L_Murata_DFE201610P`) is a DFE2016-size part; the
-DFE2012 lands on a slightly smaller pad, so the footprint updates with the
-schematic change.
+3.6×. This selection is locked as **Murata `DFE201210U-2R2M=P2`**. Footprint
+`footprints:IND_Murata_DFE201210U` uses the manufacturer-pattern 2.00 × 1.20 mm
+body, two 0.55 × 1.20 mm pads on 1.45 mm centres (0.90 mm inner gap), and a
+2.70 × 1.90 mm courtyard.
 
 ### X2 — Epson FA-128, 32 MHz, C_L 8 pF
 
@@ -275,22 +276,14 @@ gauge's default LiMnO₂ model is the CR2032 (nan_048 §3), so no battery-model
 work is needed. User-replaceable; battery-out is the off switch; the board ships
 without a cell.
 
-**Holder — open until placement, two candidates:**
-
-| Part | Type | Height (with cell) | Note |
-|---|---|---|---|
-| **MPD BU2032SM-BT-GTR** | SMD retainer, 20 mm | ~5.6 mm | the usual coin-cell choice; two retention clips |
-| Keystone 3003 | SMD retainer, low profile | ~5.0 mm | wider footprint |
-
-Selection criteria, in order: it must sit in Zone B clear of the sense escape
-and the RF corridor; nothing taller may sit under it; and there must be room for
-the **polarity marking on the silk** (HARDWARE.md §3 — no internal reverse
-protection, markings are the protection). A standard retainer does not physically
-block a reversed cell, so the marking is not optional.
-
-The old Li-ion selection table and its JST PH connector are deleted with the
-architecture change — runtime against the CR2032's budget is in HARDWARE.md §7,
-and the answer is the cell's shelf life, not any fit or capacity trade.
+**Holder — locked:** MPD **`BU2032SM-BT-GTR`**, top-entry SMT CR2032 retainer.
+Footprint `footprints:BatteryHolder_MPD_BU2032SM-BT-GTR` follows MPD's drawing:
+two 3.20 × 4.20 mm pads on 29.30 mm centres, 32.50 mm total copper span, and a
+31.86 × 22.40 mm installed-cell/assembly envelope. The courtyard adds a marked
+10.50 × 4.00 mm removal-tool access extension. The board silk carries explicit
+`+` and `−` markings because the accepted architecture has no reverse-protection
+FET. BT1 is placed crosswise at board-local (17.0, 42.0), with pad 1/positive
+toward U2.
 
 ### Other open selections
 
@@ -299,18 +292,17 @@ and the answer is the cell's shelf life, not any fit or capacity trade.
 | L1 | 4.7 µH, ±20 %, DCR ≤ 650 mΩ, published I_sat, 0603 | **TDK MLZ1608M4R7WT000** — selected |
 | L10 | 2.2 µH ±20%, I_sat > 550 mA, DCR < 300 mΩ | **Murata DFE201210U-2R2M=P2** — selected, see above |
 | U2 | primary-cell PMIC, boost to 3.3 V, load switch, fuel gauge | **nPM2100-QEAA** (QFN16) — selected |
-| BT1 | CR2032 SMD retainer, 20 mm, Zone B | **MPD BU2032SM-BT-GTR** — open until placement |
+| BT1 | CR2032 SMD retainer, 20 mm, Zone B | **MPD BU2032SM-BT-GTR** — locked |
 | Cell | CR2032, any major brand | LiMnO₂ 225 mAh, ~10-yr shelf life |
 | Enclosure | **Hammond 1551WKBK**, PC, 80 × 40 × 22 mm | + 4× nylon #2 screws for the antenna-end holes; now IP54, see NEXT-STEPS.md §5 |
 
-**Deleted with the architecture change:** J1 (USB-C), J2 (Li-ion JST), J3 (solar
+**Deleted with the architecture change:** J1 (USB-C), J2 (battery JST), J3 (solar
 JST), D5 (solar Schottky), U5 (TPS7A1650), C30/C31 (solar caps), D3/D4 + R25/R26
 (charge LEDs), TH1 (pack NTC), R20/R21 (VSET straps — the nPM2100's VSET is
 NC and SYSGDEN grounds directly). Their selection notes are preserved in git
 history at commit 1753c18 and belong to board 2 now.
 
-**Nothing on this board is open except the coin-cell retainer, which is a
-placement decision rather than an electrical one.**
+The coin-cell retainer and boost inductor are no longer open selections.
 
 ---
 
@@ -331,14 +323,14 @@ placement decision rather than an electrical one.**
 | C11 | 0.3pF C0G | `C_0201_0603Metric` |
 | C12 | 10nF/6.3V X7R | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
 | C13 | 3.9pF C0G | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
-| C21 | 10uF/6.3V X5R — VBAT | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
+| C21 | 10uF/6.3V X5R — VBAT | `C_0402_1005Metric` |
 | C22 | 1nF X5R — VBAT RF | `C_0201_0603Metric` |
-| C23 | 22uF/6.3V X5R — VINT | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
+| C23 | 22uF/6.3V X5R — VINT | `C_0402_1005Metric` |
 | C24 | 1nF X5R — VINT RF | `C_0201_0603Metric` |
-| C25 | 2.2uF/6.3V X5R — VOUT | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
+| C25 | 2.2uF/6.3V X5R — VOUT | `C_0402_1005Metric` |
 | C26 | 1uF/10V X5R — FDC_VDD | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
 | C27 | 100nF X7R | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
-| BT1 | CR2032 retainer — MPD BU2032SM-BT-GTR (open) | `BatteryHolder_MPD_BU2032SM_1x2032` (to build) |
+| BT1 | CR2032 retainer — MPD BU2032SM-BT-GTR | `BatteryHolder_MPD_BU2032SM-BT-GTR` |
 | FB1 | FB 120R@100MHz — MMZ1005S121CT000 | `L_0402_1005Metric_Pad0.77x0.64mm_HandSolder` |
 | J4 | SWD 10p 1.27mm | `Tag-Connect_TC2050-IDC-NL_2x05_P1.27mm_Vertical` |
 | J5 | U.FL antenna | `U.FL_Hirose_U.FL-R-SMT-1_Vertical` |
@@ -346,7 +338,7 @@ placement decision rather than an electrical one.**
 | L2 | 2.7nH LQP03HQ2N7B02 | `L_0201_0603Metric` |
 | L3 | 3.5nH LQP03HQ3N5B02 | `L_0201_0603Metric` |
 | L4 | 3.5nH LQP03HQ3N5B02 | `L_0201_0603Metric` |
-| L10 | DFE201210U-2R2M=P2 2.2uH | `L_Murata_DFE201210` (to build) |
+| L10 | Murata DFE201210U-2R2M=P2 2.2uH | `IND_Murata_DFE201210U` |
 | NT1 | GND_PA to GND (under U1, F.Cu) | `NetTie_VSSPA` |
 | NT2 | GND_C9 to GND (B.Cu only) | `NetTie-2_SMD_Pad0.5mm` |
 | R1 | 1k 1% | `R_0402_1005Metric_Pad0.72x0.64mm_HandSolder` |
@@ -357,17 +349,15 @@ placement decision rather than an electrical one.**
 | TP3 | SHLD | `TestPoint_Pad_D1.0mm` |
 | TP4 | SHPHLD | `TestPoint_Pad_D1.0mm` |
 | U1 | nRF54L15-QFAA | `QFN48_6X6_NOR` |
-| U2 | nPM2100-QEAA | `QFN16_4X4_NOR` (to build, PS Table 24) |
+| U2 | nPM2100-QEAA | `QFN-16-1EP_4x4mm_P0.65mm_EP2.7x2.7mm_ThermalVias` |
 | U3 | FDC1004 | `MSOP-10_3x3mm_P0.5mm` |
 | U4 | SHT45-AD1F | `Sensirion_DFN-4_1.5x1.5mm_P0.8mm_SHT4x_NoCentralPad` |
 | X1 | CM8V-T1A 32.768kHz CL=7pF 20ppm | `XTAL_CM8V-T1A_2012` |
 | X2 | FA-128 32MHz CL=8pF | `XTAL_FA-128_2016_4Pin` |
 
-**New footprints to build** (three): `QFN16_4X4_NOR` from the nPM2100 PS
-mechanical drawing (Table 24: 4.0 mm body, 0.5 mm pitch, EP 2.65 mm nominal —
-build from Nordic's reference design files, as was done for QFN48/QFN32);
-`L_Murata_DFE201210` for the boost inductor; the CR2032 retainer once selected.
-The nPM1300's `QFN32_5X5_NOR` stays in the library — board 2 will use it.
+The nPM2100 QFN, Murata boost-inductor, and MPD holder footprints are now built
+and assigned. The two locked mechanical footprints live in
+`lib/footprints.pretty` and retain the manufacturer drawing dimensions above.
 
 ---
 
@@ -409,7 +399,10 @@ mated height 1.9–2.4 mm nominal (2.5 mm max), **30 mating cycles**, 15.7 mg,
 Mated height is nothing against the 6.70 mm of clearance under the cell, and J5
 sits in the y 0–11.5 band that the cell does not cover anyway.
 
-**Buy an adhesive antenna with a U.FL plug on 1.13 mm or 1.32 mm coax** — Hirose
-specify V.S.W.R. per plug/cable in their catalogue, and the U.FL-LP-068HF
-(φ1.13) is the better of the two at 2.4 GHz (1.4 max vs 1.5 max at 3–6 GHz).
-U.FL is rated for 30 mating cycles, so treat it as mate-once.
+**Production antenna: Molex `2069940100`.** It is a 15.4 × 6.4 mm adhesive
+2.4 GHz flex antenna with 100 mm of 1.13 mm coax and a U.FL-compatible plug.
+Mount it vertically on the inside RF-end short wall, perpendicular to the PCB.
+Maintain at least 25 mm radiator-to-cell spacing, use nylon screws at the RF-end
+holes, and restrain the coax around the enclosure perimeter without sharp bends
+or routing it across the cell or switching loop. U.FL is rated for 30 mating
+cycles, so treat it as mate-once.

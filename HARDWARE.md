@@ -8,7 +8,7 @@ All values below are cited from the source that was checked. Anything marked
 **Revision note.** The requirements changed: this is now board 1 of a two-board
 system, a moisture sensor powered by a single user-replaceable CR2032, with
 the data emitted as BTHome over BLE. The nPM1300 was replaced by the nPM2100, a
-primary-cell PMIC, and USB-C input, solar input and the Li-ion cell are deleted
+primary-cell PMIC, and USB-C input, solar input and the rechargeable pack are deleted
 from this board. Board 2 — the pump controller, battery-or-mains powered —
 inherits the entire nPM1300 charging architecture; the superseded analysis
 lives in this file's git history (commit 1753c18) and in
@@ -26,7 +26,7 @@ CR2032 ──► nPM2100 VBAT ──► BOOST ──► VINT ──► VOUT 3.3 
 ```
 
 One primary cell, no charging path, no reverse-protection FET (§3). The entire
-input section of the old design — USB-C, solar pre-regulator and diode, Li-ion
+input section of the old design — USB-C, solar pre-regulator and diode, rechargeable
 pack, NTC — is deleted with the architecture change.
 
 **VOUT = 3.3 V is a firmware write, not a strap.** The VSET pin selects only the
@@ -233,7 +233,7 @@ radio up.
 | Des | Value | Description | FP | Net |
 |---|---|---|---|---|
 | U2 | nPM2100-QEAA | PMIC | QFN16 4×4 | — |
-| L10 | 2.2 µH | **I_sat > 550 mA, DCR < 300 mΩ, ±20%** — no other inductance permitted (nwp_058 §3.1) | 0806 | SW (2) → VINT |
+| L10 | Murata DFE201210U-2R2M=P2, 2.2 µH | **I_sat 2 A, DCR 228 mΩ max, ±20%** — no other inductance permitted (nwp_058 §3.1) | 2.00 × 1.20 mm | SW (2) → VINT |
 | C21 | 10 µF | X5R 6.3 V ±20% | 0402 | VBAT (3) |
 | C22 | 1 nF | X5R | 0201 | VBAT (3) |
 | C23 | 22 µF | X5R 6.3 V ±20% | 0402 | VINT (14/15) |
@@ -260,6 +260,8 @@ Capacitor notes, from nwp_058 §3.2–3.4 and PS Table 10:
   Candidates with measured efficiency on the EK (nwp_058 Tables 4–5, VBAT
   2.9 V → VOUT 3.3 V): **Murata DFE201210U-2R2M=P2** (2012, 91.9% at 100 µA,
   94.7% at 120 mA), TDK MLP2016H2R2MT0S1 (2016, 91.5%/95.0%).
+  The Murata part is locked. Its board footprint uses two 0.55 × 1.20 mm pads
+  on 1.45 mm centres, a 0.90 mm inner gap, and a 2.70 × 1.90 mm courtyard.
 
 ### Cold start, EOL pulses, and the reservoir question
 
@@ -289,6 +291,13 @@ keyed holder plus a polarity symbol on the silk is the same protection level as
 Nordic's evaluation hardware. The upgrade path if this ever matters is a single
 PMOS (ngl_002 §4.1 — "excellent protection, some efficiency impact"); a series
 diode is disqualified outright (10–20% efficiency loss at 3 V, ngl_002 §6).
+
+The holder is locked as **MPD `BU2032SM-BT-GTR`**. Its footprint follows the
+manufacturer land pattern: two 3.20 × 4.20 mm pads on 29.30 mm centres (32.50 mm
+total copper span), a 31.86 × 22.40 mm assembly envelope, visible polarity, and
+an explicit removal-tool courtyard. It is crosswise at board-local (17.0,42.0),
+positive terminal toward U2. This mechanical/polarity mitigation is the accepted
+architecture; do not add a reverse-protection FET unless that decision is reopened.
 
 ### Hibernate vs System OFF — the wake architecture
 
@@ -603,9 +612,8 @@ the same /PMIC_INT net and pin as before.
 
 **Cell: CR2032 LiMnO₂, 225 mAh nominal** (any major brand — Panasonic, Murata,
 Duracell; the fuel gauge's default LiMnO₂ model is the CR2032, nan_048 §3).
-User-replaceable; battery-out is the off switch. Holder selection is a
-placement-time decision (20 mm SMD retainer, Zone B, away from the sense escape
-and the RF corridor).
+User-replaceable; battery-out is the off switch. The production holder is MPD
+`BU2032SM-BT-GTR`, placed in Zone B away from the sense escape and RF corridor.
 
 | Item | Current | mAh/yr | Scales with capacity? |
 |---|---|---|---|
@@ -620,7 +628,7 @@ and the RF corridor).
 
 Runtime = 0.95 × 225 / 18 ≈ **11.9 years — past the CR2032's own ~10-year shelf
 life.** The cell's chemistry, not the electronics, is the life limit. That was
-the entire point of the architecture change: the old Li-ion budget was 74%
+the entire point of the architecture change: the old rechargeable-cell budget was 74%
 self-discharge at 2%/month; LiMnO₂ self-discharges at ~1%/*year*, a 24×
 improvement no layout decision could buy.
 
@@ -673,10 +681,11 @@ behaviour (§3).
 - **Zephyr driver coverage** — mfd/regulator/gpio/watchdog/vbat drivers exist in
   mainline Zephyr and the nPM2100 EK has an in-tree shield overlay; verify the
   fuel-gauge sample runs against NCS v3.2.2's Zephyr revision.
-- Cell holder selection at placement: 20 mm SMD CR2032 retainer, Zone B, clear
-  of the sense escape and RF corridor; polarity marking on silk (§3 reverse
-  battery).
-- Antenna selection and layout constraints — separate document, unchanged.
+- Cell holder and polarity handling are locked to MPD `BU2032SM-BT-GTR` and the
+  placement described in §3; reverse-protection remains an accepted risk.
+- Production antenna is Molex `2069940100`: vertical on the inside RF-end short
+  wall, perpendicular to the PCB, with at least 25 mm radiator-to-cell spacing,
+  with nylon RF-end screws and restrained perimeter coax routing.
 
 ---
 
@@ -685,7 +694,7 @@ behaviour (§3).
 Recorded so the decision is not relitigated later.
 
 The requirement changed to a single user-replaceable watch battery. The nPM1300
-is a Li-ion *charger* PMIC — its VBAT pin is a charger output and cannot take a
+is a rechargeable-cell charger PMIC — its VBAT pin is a charger output and cannot take a
 primary cell, and its bucks cannot boost, so a CR2032's 2.0–3.0 V discharge
 curve could never have produced a valid 3.3 V rail. This file's previous
 revision said exactly that when it ruled out a coin cell on the old
@@ -698,13 +707,13 @@ CR2032, ship/hibernate states at 35–320 nA, and a load switch to gate the sens
 front end. What carried over unchanged from the nPM1300 design: the FDC1004
 gating topology (LOADSW1 → LDOSW), the always-on-rail I²C pull-up placement with
 its deadlock analysis (§5), and the entire nRF54L15 pin assignment (§6). What
-was deleted outright: USB-C, the solar input chain, the Li-ion pack with its
+was deleted outright: USB-C, the solar input chain, the rechargeable pack with its
 DW01P PCM analysis and NTC, the charge-status LEDs, and every VBUS
 current-limit firmware requirement.
 
 The deleted charging architecture is not dead work — it is board 2's starting
 point. A pump controller that is "battery or plugged in" is exactly the
-USB-C-charged Li-ion device the old power tree described.
+USB-C-charged rechargeable device the old power tree described.
 
 ---
 
@@ -715,6 +724,9 @@ USB-C-charged Li-ion device the old power tree described.
 - [Using the nPM2100 Fuel Gauge, nan_048, July 2025](https://www.nordicsemi.com/Products/nPM2100/Documentation) (local: `doc/datasheets/nan_048.pdf`)
 - [nPM2100 EK Hardware — User Guide v0.9.0](https://www.nordicsemi.com/Products/nPM2100/Documentation) (local: `doc/datasheets/nPM2100_EK_User_Guide.pdf`) — EK wiring, VSET/LDOSW/reservoir jumpers
 - [Reverse battery protection for the nPM2100 PMIC, ngl_002, March 2026](https://www.nordicsemi.com/Products/nPM2100/Documentation) (local: `doc/datasheets/nPM2100_Reverse_Battery_ngl_002.pdf`)
+- [MPD BU2032SM-BT-GTR drawing](https://www.batteryholders.com/uploads/parts/BU2032SM-BT-GTR/datasheets/BU2032SM-BT-GTR-datasheet.pdf) — holder land pattern and assembly envelope
+- [Murata DFE201210U-2R2M=P2](https://www.murata.com/en-global/products/productdetail.aspx?partno=DFE201210U-2R2M%23) — electrical and mechanical selection
+- [Molex 2069940100 product specification](https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/productspecificationpdf/206/206994/2069940100-PS.pdf) — production flex antenna and coax assembly
 - [nRF54L15 reference circuitry, circuit configuration 1 for QFN48 (QFAA)](https://docs.nordicsemi.com/r/bundle/ps_nrf54l15/page/chapters/ref_circuitry.html-concept_refcircuit_config_1) — Tables 1 and 2, grounding notes
 - [nRF54L15/L10/L05 datasheet v1.0](https://www.mouser.lt/datasheet/3/926/1/nRF54L15_nRF54L10_nRF54L05_Datasheet_v1.0.pdf) — System OFF current figures
 - Zephyr nPM2100 drivers and nPM2100 EK shield overlay (zephyrproject-rtos/zephyr: `drivers/mfd/mfd_npm2100.c`, `drivers/regulator/regulator_npm2100.c`, `boards/shields/npm2100_ek/`) — I²C address 0x74, driver availability; Nordic's bare-metal reference (`nordicsemi/npm2100-bm`) for register semantics

@@ -183,7 +183,7 @@
 				)
 			)
 		)
-		(property "Description" "Li-ion cell, straight off J2"
+		(property "Description" "Primary-cell VBAT rail"
 			(at 0 0 0)
 			(show_name no)
 			(do_not_autoplace no)

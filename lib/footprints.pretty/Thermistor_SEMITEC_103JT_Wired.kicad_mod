@@ -2,7 +2,7 @@
 	(version 20240108)
 	(generator "hand")
 	(layer "F.Cu")
-	(descr "Two enlarged SMD wire-termination pads for a remote Semitec 103JT-025 thin-film NTC bonded to the Li-ion pouch; pad centres preserve the former 0603 routing")
+	(descr "Two enlarged SMD wire-termination pads for a legacy remote pack NTC; pad centres preserve the former 0603 routing")
 	(tags "thermistor NTC remote battery Semitec 103JT")
 	(property "Reference" "TH1" (at 0 -2.2 0) (layer "F.Fab")
 		(effects (font (size 1 1) (thickness 0.15))))

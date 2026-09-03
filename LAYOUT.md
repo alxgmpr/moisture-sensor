@@ -182,25 +182,19 @@ them instead of a comment in a markdown file:
 |---|---|---|---|
 | `/GND_PA` | C6.2, U1.32 | **NT1** → GND | under the U1 centre pad, F.Cu |
 | `/GND_C9` | C9.2 | **NT2** → GND | B.Cu |
-| `/GND_PVSS2` | C24.2, U2.6 | **NT3** → GND | at the via to the ground layer |
 
-The third one is the nPM1300's, found in Nordic's own reference schematic
-(datasheet §9.3.2), which annotates PVSS1 **"Net tie"** and **"Via to GND-layer
-on PVSS1"**. Pin 6 is *BUCK2 power ground*, not a general ground pin — it should
-reach the plane at one controlled point rather than merging into the top-layer
-pour. C24 returns to it too, so the high-di/dt loop SW2 → L10 → C24 → PVSS2
-closes locally instead of through the plane. PVSS1 (pin 2) stays on plain GND
-because BUCK1 is disabled and carries nothing.
+The nPM2100 has no third net tie: PVSS (pin 16), AVSS1/exposed pad, AVSS2, and
+the nearby C21–C25 returns join the uninterrupted ground plane locally. Keep
+that return compact beneath U2; do not recreate the retired split power-ground
+scheme.
 
-Both ties are `Device:NetTie_2` / `NetTie:NetTie-2_SMD_Pad0.5mm`. Three DRU rules
+Both RF ties are `Device:NetTie_2` / `NetTie:NetTie-2_SMD_Pad0.5mm`. The DRU rules
 enforce the routing half:
 
 - `C6 ground takes no vias` — a via anywhere on `/GND_PA` defeats rule 1
 - `C6 ground stays on the top layer`
 - `C9 ground never touches an inner plane` — a short stub from C9's pad down to a
   via is unavoidable; reaching In1.Cu or In2.Cu is not
-- `BUCK2 power ground is short and fat` — 0.5 mm minimum on `/GND_PVSS2`, the
-  same as the switch node whose return it carries
 
 The placement half — NT1 under U1, NT2 on B.Cu — is asserted in
 `tools_gen_pcb.py`, because DRC has no way to express it.
@@ -251,6 +245,17 @@ Placed at board **(16.8, 12.0)**, rotated 90° so the signal pad faces the
 matching network. **The RF run from U1 pin 31 to the signal pad is 6.554 mm**,
 against λ/8 = 8.6 mm — 76 % of the limit, where the PCB antenna sat at 99.8 %.
 
+### Production antenna and enclosure placement
+
+The production antenna is **Molex `2069940100`**: a 15.4 × 6.4 mm adhesive
+2.4 GHz flex radiator with 100 mm of 1.13 mm coax and a U.FL-compatible plug.
+Bond it vertically to the inside of the RF-end short wall, perpendicular to the
+PCB. The placed BT1 envelope begins about 30.8 mm from that wall, so the design
+maintains the locked **≥25 mm radiator-to-cell spacing**. Use nylon screws in
+the RF-end mounting holes. Restrain the coax along the enclosure perimeter,
+keep its bend radius gentle, and do not drape it over the cell, matching network,
+or U2/L10 switch loop.
+
 ### What this changed elsewhere
 
 - **Zone A is now ordinary board.** ZoneB_GND floods it. The `AntennaKeepout` and
@@ -270,8 +275,8 @@ along its length:
 
 ```
 ┌──────────────────────────┐
-│  ZONE A - ANTENNA        │  no copper on any layer
-│  (top of stake)          │  In1.Cu ground STOPS at this boundary
+│  ZONE A - RF LAUNCH      │  J5 and Nordic matching network
+│  (top of stake)          │  solid In1.Cu RF reference
 ├──────────────────────────┤
 │  ZONE B - ELECTRONICS    │  solid In1.Cu ground, unbroken
 │  PMIC, MCU, RF, SHT45    │  RF section at the top, adjacent to Zone A
@@ -283,9 +288,9 @@ along its length:
 └──────────────────────────┘
 ```
 
-**Zone A**: ground stops cleanly at the boundary. That boundary edge is the
-IFA's ground reference — its position is part of the antenna design, so copy it
-from the reference layout rather than choosing it.
+**Zone A**: retain the solid In1.Cu reference beneath the Nordic RF launch.
+There is no PCB radiator or IFA keepout; the external Molex radiator is mounted
+on the enclosure wall as specified above.
 
 **Zone B**: solid unbroken In1.Cu. No splits under the RF trace or the MCU.
 Stitch generously.
@@ -367,7 +372,7 @@ temperature compensation in HARDWARE.md §5.
 
 ## 6. Switching nodes vs the measurement
 
-Two aggressors: **nPM1300 SW2** (3.6 MHz in PWM) and the **nRF54L15 DCC** node.
+Two aggressors: the **nPM2100 SW** node and the **nRF54L15 DCC** node.
 Both are in the `SWITCH` net class.
 
 The FDC1004 excites at 25 kHz and detects narrowband, so direct in-band coupling
@@ -387,7 +392,7 @@ Plus, by hand:
 
 - Put the PMIC and the MCU's DC/DC at the **bottom** of Zone B, the RF at the
   **top**, and the FDC1004 near the Zone C boundary but shielded from both.
-- Keep both switching loops physically tiny: SW2 → L10 → C24 and DCC → L1 → C3
+- Keep both switching loops physically tiny: U2.SW → L10 → VINT/C23/C24 and DCC → L1 → C3
   are the loops that radiate. Short and fat, per the DRU's 0.5 mm minimum.
 - Run a ground barrier between the switchers and anything sense-related.
 
@@ -409,12 +414,13 @@ Defined in the project file; the DRU keys off them.
 | **RF** | /ANT, /ANT_FEED, /RF_A, /RF_B, /RF_C | 0.38 mm | 0.30 mm |
 | **SENSE** | /SENSE1, /SENSE2 | 0.25 mm | 0.50 mm |
 | **SHIELD** | /SHLD | 0.30 mm | 0.20 mm |
-| **SWITCH** | /SW2, /DCC | 0.50 mm | 0.30 mm |
-| **Power** | GND, /GND_PA, /GND_C9, /VBAT, /VSYS, /VBUS_IN, /+3V3, /FDC_VDD, /SOLAR_* | 0.50 mm | 0.25 mm |
+| **SWITCH** | /SW, /DCC | 0.50 mm | 0.30 mm |
+| **Power** | GND, /GND_PA, /GND_C9, VBAT, /VINT, +3V3, /FDC_VDD | 0.40 mm | 0.25 mm |
 | Default | everything else | 0.20 mm | 0.20 mm |
 
-`/VBAT`, `/VBUS_IN` and `/VSYS` additionally require **0.8 mm** minimum — they
-carry the 500 mA charge current plus system load.
+The retired external-input rails keep their legacy 0.8 mm rule if reused;
+the low-current CR2032 VBAT rail follows the 0.40 mm Power-class rule so it can
+enter the required 0201 bypass network without manufacturing-rule conflicts.
 
 ---
 
@@ -546,15 +552,10 @@ are already tangent are left untouched.
 ### Height budget — the thing that bit
 
 Board on the 4.00 mm posts: 4.00 + 1.6 (PCB) leaves **11.70 mm** to the lid.
-A 5 mm cell taped to the inside of the lid leaves **6.70 mm** of clear component
-height under it, and 11.70 mm in the two ~12 mm end bands the cell does not cover.
-
-This is why the cell is a 503450 (5 mm, ~1000 mAh) and not the 103450 (10 mm,
-2000 mAh). The runtime penalty is small because self-discharge scales with
-capacity: `runtime = 0.95·C / (0.24·C + 42.8)` in mAh/yr, from HARDWARE.md §7,
-which gives 3.63 yr at 2000 mAh and 3.36 yr at 1000 mAh — a 7 % cost for 5 mm.
-The same formula has an asymptote at 3.96 yr, so no cell that fits this box gets
-meaningfully past 3.6 years anyway.
+The MPD BU2032SM-BT-GTR and installed CR2032 are approximately 5.6 mm above the
+PCB, leaving about **6.1 mm** to the enclosure ceiling. Nothing may occupy the
+31.86 × 22.40 mm assembly envelope above the board, and the removal-tool
+courtyard must remain clear even though it is not occupied during normal use.
 
 **Mounting screws.** The two antenna-end holes are 6 mm from the radiating arm.
 Use **nylon** #2 screws in those two positions; steel there will detune the
@@ -572,14 +573,14 @@ Zone A has been flooded with ground, so the "nothing but AE1 in Zone A" assertio
 no longer matches. The board now carries **58 footprints**; U5, C30 and C31 are
 in the schematic but not yet placed.
 
-| Band | y | Contents |
+| Band | board-local y | Contents |
 |---|---|---|
-| RF | 12.5–19.3 | L2/C6/L3/C9/L4/C11 in a column at x = 16.8 |
-| MCU | 19.4–31 | U1 (rot 90), X2 top-left, X1 below, DECD/DECA/DCC cluster left |
-| Debug / ambient | 33–39 | J4 Tag-Connect, U4 + C27 right, I²C pull-ups |
-| Power in | 40–54 | J1 USB-C left edge, J3 + D5 right, **U5 + C30/C31** below J3 |
-| PMIC | 51–62 | U2, SW2 → L10 → C24 loop, bulk caps |
-| Sense / battery | 63–73 | U3 hard against the Zone C boundary, TP1–TP3, J2, LEDs |
+| RF | 11.6–18.8 | J5 plus L2/C6/L3/C9/L4/C11; Nordic reference placement retained |
+| MCU / debug | 18.2–30.4 | U1 and crystals; J4 at approximately (25.3,25.3), moved only enough to clear BT1 |
+| Battery | 30.8–53.2 | BT1 centred at (17.0,42.0), crosswise; positive contact at left toward U2 |
+| Removal access | 53.2–57.5 | explicit central tool corridor from the holder courtyard |
+| PMIC | 54.4–63.8 | U2 at (8.5,58.6), L10/C21–C25 tightly grouped below the battery |
+| Sense boundary | 66–74 | U3 and test points at the Zone C transition |
 
 **U1 is rotated 90°.** Its original right edge goes to the top, which puts pin 31
 (ANT) pointing straight at Zone A, X2 near pins 34/35, X1 below near pins 1/2,
@@ -587,45 +588,23 @@ and DECD/DECA/DCC on the left. The RF run from pin 31 to the ground boundary is
 about 8.2 mm — λ/8 at 2.4 GHz in FR4 is 8.6 mm, so this is at the limit and
 wants stitching at the full ≤3 mm density.
 
-**J1 overhangs the left board edge.** The HRO footprint mates toward +Y, so it is
-rotated 270° with its origin at x = 3.5, putting the body face 0.2 mm proud of
-the edge. Its courtyard legitimately leaves the board; the script checks its
-*pads* are on copper instead, and moves its silk to F.Fab so the router does not
-clip it.
-
 **Probe electrodes** are filled zones on F.Cu — SENSE1 and SENSE2, each
 16 × 30 mm — with the SHLD guard pouring around them at 0.2 mm and guard on
 In2.Cu and B.Cu beneath. Guard-to-ground overlap is only the 33 mm² where the
 F.Cu guard crosses the Zone B boundary, about 6 pF against the 400 pF shield
 limit.
 
-**LAYOUT.md §6 caveat.** "PMIC and the MCU's DC/DC at the bottom" is only half
-achievable. The nRF's DC/DC is at pin 46 and has to stay tight to U1 at the top;
-pins 31 and 46 are two package edges apart and nothing moves them. What did move
-to the bottom is the nPM1300 SW2 loop, which is the 3.6 MHz aggressor the 3 mm
-SENSE-to-SWITCH rule is written for. U3 ends up 7.6 mm from U2 and 12.2 mm from
-L10.
+**LAYOUT.md §6 caveat.** The nRF's DC/DC remains tight to U1 because its pinout
+fixes that geometry. The nPM2100 loop is now at the bottom of the enclosure
+electronics region: SW exits directly to L10, VINT returns through C23/C24,
+and C21/C22 sit on VBAT beside U2. The local routes are short and stay well away
+from the sensor boundary.
 
 ## 10. Open items
 
-- ~~**USB-C breaks IP68.**~~ — **closed. The IP68 rating is given up
-  deliberately and the target is IP54.** J1 is service-only, reached by opening
-  the lid, so it adds no wall opening at all. The three that do exist - probe
-  slot, SHT45 jut-out slot, solar lead - are sealed with a flexible RTV
-  silicone bead. Any milling voids Hammond's rating regardless of what goes in
-  the slot afterwards, and the probe shoulder is already at R0.5 and cannot
-  take a rigid potting compound. See NEXT-STEPS.md §5.
-- ~~The solar reserve is still empty~~ — **filled.** U5, C30 and C31 are placed
-  in the ~8 × 8 mm block below J3 in the Power-in band; J3 and D5 did not move.
-  All of it is populated on every build. Still to route.
-  **A barrel jack was considered here and rejected on height:** a CUI PJ-102AH
-  is 11.0 mm tall against the 6.90 mm clear under the cell at J3's position, so
-  it would have had to move to the y 62–74 band next to J2. It lives on the
-  panel pigtail instead. See HARDWARE.md §4.
-- ~~**SHT45 in a sealed box measures the box, not the room.**~~ — **stale, and
-  now closed.** U4 left the box entirely when it moved onto the jut-out (§8),
-  so it reads outside air directly. No lid vent is needed; the `-AD1F`
-  membrane is the only protection required.
+- The enclosure target is IP54 after accounting for the probe and SHT45
+  openings. Use a strain-relieved capillary barrier at the probe slot, mask the
+  SHT45 membrane during coating, and use fully cured neutral-cure sealants.
 - Confirm the 1551WK corner-relief geometry and the Ø2.6 hole pattern against
   Hammond's STEP model before fab. The drawing's `62.00 × 22.00` and `R4.42` are
   ambiguous at the resolution published; `55.00 × 25.00` is unambiguous and is
@@ -634,16 +613,15 @@ L10.
   the answer was 0.36 mm on plain 7628, not 7628D.** See §2. Still order with
   impedance control so they re-solve on the real pressed stackup.
 
-### Confirmed against Nordic's nPM1300 EK (PCA10152)
+### Confirmed against Nordic's nPM2100 guidance
 
-Plane-level read of the EK layout, not a coordinate-level copy — it is a large
-multi-function dev board and its PMIC loop geometry is not directly
-transferable. What it confirms:
+The local power block follows the nPM2100 reference topology and placement
+priority rather than copying development-board coordinates. It confirms:
 
 - **solid, unbroken inner ground plane** under the PMIC, with dense via
   stitching throughout and a visibly higher via density around the regulator
 - a **separate inner power plane** carved into regions by routed splits
-- SW2 → inductor → 10 µF output cap, the same topology as our SW2 → L10 → C24
+- SW → L10 → VINT, with C23/C24 beside the VINT pins and C21/C22 beside VBAT
 
 That is the Zone B plan in §4 already: solid In1.Cu, stitch generously, In2.Cu
 as the power/guard layer. No change follows from it.
@@ -675,10 +653,10 @@ around them at 0.2 mm, guard on In2.Cu and B.Cu beneath.
   Nordic's 4x4 grid at 1.2 mm pitch, U2 pad 33 a 3x3 at the same pitch. The
   nearest via sits 0.345 mm from NT1's `/GND_PA` pad and DRC reports no short,
   so the tie is still the only bridge. **Order with vias tented.**
-- **Routing.** 44 unconnected items and 6 isolated-copper warnings. The
-  isolated fills are the sense electrodes and the Zone C guard, which connect
-  once U3's sense pins are routed into the probe. See NEXT-STEPS.md section 1
-  for what is done and what is left.
+- **Routing status (2026-09-03).** The locked mechanical/power pass leaves 22
+  unrouted electrical connections. DRC has no geometry/rule errors and reports
+  13 warnings, primarily intentional footprint-library divergence plus two
+  pre-existing via issues and three silkscreen clearances.
 
 ### Two things worth knowing about the toolchain
 

@@ -122,8 +122,9 @@
 	(constraint track_width (min 0.4mm))
 	(condition "A.NetClass == 'Power'"))
 
-# 500 mA charge path plus system load. 0.8 mm on 1 oz outer copper is roughly
-# a 10 C rise at 1 A - comfortable margin.
+# Legacy external-input/system rails retain the 0.8 mm high-current rule.
+# VBAT is now the low-current CR2032 rail and follows the Power-class 0.4 mm
+# rule so it can enter the nPM2100's required 0201 local bypass network.
 (rule "Charge path width"
 	(constraint track_width (min 0.8mm))
 	# A.Net is NOT a valid property - it parses but evaluates false forever, so
@@ -135,7 +136,7 @@
 	# power symbol is "VBAT". The rule matched neither for a while, which is the
 	# same silent-dead-rule failure the comment above describes. Nets that are
 	# still local labels - GND_PVSS2, GND_PA, GND_C9 - keep the slash.
-	(condition "A.NetName == 'VBAT' || A.NetName == 'VBUS_IN' || A.NetName == 'VSYS'"))
+	(condition "A.NetName == 'VBUS_IN' || A.NetName == 'VSYS'"))
 
 # The buck switching node should be short and fat, never long and thin.
 (rule "Switch node width"

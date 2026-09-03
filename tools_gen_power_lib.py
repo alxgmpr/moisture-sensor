@@ -21,7 +21,7 @@ OUT = os.path.join(PROJ, "lib", "power_local.kicad_sym")
 # name, style, description
 RAILS = [
     ("VSYS",        "bar",   "nPM1300 system rail -- battery or VBUS, whichever is higher"),
-    ("VBAT",        "bar",   "Li-ion cell, straight off J2"),
+    ("VBAT",        "bar",   "Primary-cell VBAT rail"),
     ("VBUS_IN",     "bar",   "USB-C VBUS, OR-ed with the solar pre-regulator through D5"),
     ("SOLAR_PANEL", "arrow", "Raw panel input at J3, ahead of U5"),
     ("SOLAR_5V",    "arrow", "U5 TPS7A1650 output, 5 V, feeds VBUS_IN through D5"),
