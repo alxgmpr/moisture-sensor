@@ -237,7 +237,7 @@
         "min_copper_edge_clearance": 0.3,
         "min_groove_width": 0.0,
         "min_hole_clearance": 0.25,
-        "min_hole_to_hole": 0.5,
+        "min_hole_to_hole": 0.2,
         "min_microvia_diameter": 0.2,
         "min_microvia_drill": 0.1,
         "min_resolved_spokes": 2,
@@ -634,6 +634,82 @@
         "schematic_color": "rgba(0, 0, 0, 0.000)",
         "track_width": 0.2,
         "tuning_profile": "",
+        "via_diameter": 0.5,
+        "via_drill": 0.2,
+        "wire_width": 6
+      },
+      {
+        "bus_width": 12,
+        "clearance": 0.2,
+        "diff_pair_gap": 0.25,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.2,
+        "line_style": 0,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "name": "Control",
+        "pcb_color": "rgb(170, 170, 255)",
+        "priority": 1,
+        "schematic_color": "rgb(170, 170, 255)",
+        "track_width": 0.2,
+        "tuning_profile": "",
+        "via_diameter": 0.5,
+        "via_drill": 0.2,
+        "wire_width": 6
+      },
+      {
+        "bus_width": 12,
+        "clearance": 0.2,
+        "diff_pair_gap": 0.25,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.2,
+        "line_style": 0,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "name": "I2C",
+        "pcb_color": "rgb(110, 210, 255)",
+        "priority": 1,
+        "schematic_color": "rgb(110, 210, 255)",
+        "track_width": 0.2,
+        "tuning_profile": "",
+        "via_diameter": 0.5,
+        "via_drill": 0.2,
+        "wire_width": 6
+      },
+      {
+        "bus_width": 12,
+        "clearance": 0.2,
+        "diff_pair_gap": 0.25,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.2,
+        "line_style": 0,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "name": "Crystal",
+        "pcb_color": "rgb(210, 130, 255)",
+        "priority": 1,
+        "schematic_color": "rgb(210, 130, 255)",
+        "track_width": 0.2,
+        "tuning_profile": "",
+        "via_diameter": 0.5,
+        "via_drill": 0.2,
+        "wire_width": 6
+      },
+      {
+        "bus_width": 12,
+        "clearance": 0.2,
+        "diff_pair_gap": 0.25,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.2,
+        "line_style": 0,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "name": "LocalPower",
+        "pcb_color": "rgb(255, 180, 80)",
+        "priority": 1,
+        "schematic_color": "rgb(255, 180, 80)",
+        "track_width": 0.3,
+        "tuning_profile": "",
         "via_diameter": 0.6,
         "via_drill": 0.3,
         "wire_width": 6
@@ -651,26 +727,7 @@
         "pcb_color": "rgb(255, 220, 0)",
         "priority": 1,
         "schematic_color": "rgb(255, 220, 0)",
-        "track_width": 0.5,
-        "tuning_profile": "",
-        "via_diameter": 0.8,
-        "via_drill": 0.4,
-        "wire_width": 6
-      },
-      {
-        "bus_width": 12,
-        "clearance": 0.3,
-        "diff_pair_gap": 0.25,
-        "diff_pair_via_gap": 0.25,
-        "diff_pair_width": 0.2,
-        "line_style": 0,
-        "microvia_diameter": 0.3,
-        "microvia_drill": 0.1,
-        "name": "RF",
-        "pcb_color": "rgb(255, 0, 0)",
-        "priority": 1,
-        "schematic_color": "rgb(255, 0, 0)",
-        "track_width": 0.38,
+        "track_width": 0.4,
         "tuning_profile": "",
         "via_diameter": 0.6,
         "via_drill": 0.3,
@@ -685,14 +742,33 @@
         "line_style": 0,
         "microvia_diameter": 0.3,
         "microvia_drill": 0.1,
+        "name": "RF",
+        "pcb_color": "rgb(255, 0, 0)",
+        "priority": 1,
+        "schematic_color": "rgb(255, 0, 0)",
+        "track_width": 0.36,
+        "tuning_profile": "",
+        "via_diameter": 0.6,
+        "via_drill": 0.3,
+        "wire_width": 6
+      },
+      {
+        "bus_width": 12,
+        "clearance": 0.6,
+        "diff_pair_gap": 0.25,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.2,
+        "line_style": 0,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
         "name": "SENSE",
         "pcb_color": "rgb(0, 200, 255)",
         "priority": 1,
         "schematic_color": "rgb(0, 200, 255)",
         "track_width": 0.25,
         "tuning_profile": "",
-        "via_diameter": 0.6,
-        "via_drill": 0.3,
+        "via_diameter": 0.5,
+        "via_drill": 0.2,
         "wire_width": 6
       },
       {
@@ -729,8 +805,8 @@
         "schematic_color": "rgb(255, 140, 0)",
         "track_width": 0.5,
         "tuning_profile": "",
-        "via_diameter": 0.8,
-        "via_drill": 0.4,
+        "via_diameter": 0.6,
+        "via_drill": 0.3,
         "wire_width": 6
       }
     ],
@@ -772,7 +848,7 @@
       },
       {
         "netclass": "SWITCH",
-        "pattern": "/SW2"
+        "pattern": "/SW"
       },
       {
         "netclass": "SWITCH",
@@ -787,12 +863,16 @@
         "pattern": "VBAT"
       },
       {
-        "netclass": "Power",
-        "pattern": "VSYS"
+        "netclass": "LocalPower",
+        "pattern": "/VINT"
       },
       {
-        "netclass": "Power",
-        "pattern": "VBUS_IN"
+        "netclass": "LocalPower",
+        "pattern": "/DECA"
+      },
+      {
+        "netclass": "LocalPower",
+        "pattern": "/DECD"
       },
       {
         "netclass": "Power",
@@ -804,14 +884,6 @@
       },
       {
         "netclass": "Power",
-        "pattern": "SOLAR_5V"
-      },
-      {
-        "netclass": "Power",
-        "pattern": "SOLAR_PANEL"
-      },
-      {
-        "netclass": "Power",
         "pattern": "/GND_PA"
       },
       {
@@ -819,8 +891,52 @@
         "pattern": "/GND_C9"
       },
       {
-        "netclass": "Power",
-        "pattern": "/GND_PVSS2"
+        "netclass": "Control",
+        "pattern": "/NRESET"
+      },
+      {
+        "netclass": "Control",
+        "pattern": "/P2.07_SWO"
+      },
+      {
+        "netclass": "Control",
+        "pattern": "/PMIC_INT"
+      },
+      {
+        "netclass": "Control",
+        "pattern": "/SWDCLK"
+      },
+      {
+        "netclass": "Control",
+        "pattern": "/SWDIO"
+      },
+      {
+        "netclass": "Control",
+        "pattern": "/SWD_RST"
+      },
+      {
+        "netclass": "I2C",
+        "pattern": "/SCL"
+      },
+      {
+        "netclass": "I2C",
+        "pattern": "/SDA"
+      },
+      {
+        "netclass": "Crystal",
+        "pattern": "/XC1"
+      },
+      {
+        "netclass": "Crystal",
+        "pattern": "/XC2"
+      },
+      {
+        "netclass": "Crystal",
+        "pattern": "/XL1"
+      },
+      {
+        "netclass": "Crystal",
+        "pattern": "/XL2"
       }
     ]
   },

@@ -74,8 +74,9 @@ Two companion scripts appeared alongside it:
   outline alone.
 - **`tools_place_fixups.py`** — the placement changes made after the generator
   was frozen, with the reasoning attached. Currently L1 and C6.
-- **`tools_stitch_gen.py`** — generates the stitching via list by filtering a
-  2.5 mm grid against the routed board. Run it *after* routing.
+- **Ground stitching** is no longer emitted as a fixed coordinate list. Add it
+  after hand routing with KiCad's via-stitching zone tool so it can be
+  regenerated around the final copper.
 
 **Done.**
 
@@ -83,9 +84,10 @@ Two companion scripts appeared alongside it:
    no vias on any RF net, 0.36 mm. `/GND_PA` is F.Cu-only with no vias and
    `/GND_C9` reaches B.Cu only, so Nordic's two grounding rules hold.
    **C6 moved** — see §1a below, it is the one thing here that changed.
-2. **GND** — a new F.Cu pour (`ZoneB_GND_F`) collects the 51 top-side ground
-   pads and 109 stitching vias tie it to the In1.Cu plane. Only three pads
-   needed routing: U3's, U4's and one J5 ground pad.
+2. **GND** — a new F.Cu pour (`ZoneB_GND_F`) collects the top-side ground
+   pads. The old 109-via fixed grid has been removed; use KiCad's via-stitching
+   zone tool after the hand-routed copper is final. Local return and centre-pad
+   vias remain explicit because their positions are electrically meaningful.
 3. **/+3V3** — a new In2.Cu plane (`ZoneB_3V3`) over the electronics band, one
    via per pad. LAYOUT.md §1 already assigned In2.Cu the role "power / guard
    pour"; this is the power half.

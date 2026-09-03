@@ -13,8 +13,9 @@ WHY EACH ZONE EXISTS
 --------------------
 ZoneB_GND_F      F.Cu ground pour over the electronics band. Zone B previously
                  had ground on In1.Cu only, so all 51 F.Cu ground pads needed a
-                 via each. The pour collects them and the stitching vias tie it
-                 to In1.Cu. Kept OUT of the RF corridor - see RFPourKeepout.
+                 via each. The pour collects them; local return vias tie it to
+                 In1.Cu, and broader stitching can be added after routing with
+                 KiCad's via-stitching zone tool. Kept OUT of the RF corridor.
 
 ZoneB_3V3        In2.Cu +3V3 plane. LAYOUT.md section 1 already assigns In2.Cu
                  the role "power / guard pour"; the guard half exists in Zone C,

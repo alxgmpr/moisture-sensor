@@ -409,8 +409,8 @@ V3 = [
     # Rewritten when L10 was turned round (tools_place_fixups.py). This route
     # used to start at "L10.2" and then head for the literal (64.725, 94.30),
     # which was L10.2's x BEFORE the rotation - so after it, the trace left the
-    # output pad and ran straight onto the pad that is now /SW2. DRC called it
-    # what it was: "Items shorting two nets (/SW2 and +3V3)". Naming a pad and
+    # output pad and ran straight onto the pad that is now /SW. DRC called it
+    # what it was: "Items shorting two nets (/SW and +3V3)". Naming a pad and
     # then hardcoding where that pad used to be is the trap; every waypoint
     # below is now either a pad name or a point that does not move with a part.
     #
@@ -587,11 +587,11 @@ MCU_VIAS = [
 # U2's left pads all span x 66.6933..67.4553, 0.254 mm tall on 0.5 mm pitch:
 #
 #     pad 4  VSYS        y 95.6230..95.8770
-#     pad 5  /SW2        y 96.1230..96.3770
+#     pad 5  /SW         y 96.1230..96.3770
 #     pad 6  /GND_PVSS2  y 96.6230..96.8770
 #
 # A diagonal off pin 5 runs straight up the side of pin 4 - the first attempt
-# did exactly that and DRC returned "Items shorting two nets (VSYS and /SW2)".
+# did exactly that and DRC returned "Items shorting two nets (VSYS and /SW)".
 # Due west, a 0.30 mm track centred on y = 96.25 holds 0.223 mm to both
 # neighbours, against the 0.15 mm the FinePitchFanout window allows.
 #
@@ -600,9 +600,9 @@ MCU_VIAS = [
 # mask. Necking costs about 0.7 mm of length against the straight-line 3.62 mm,
 # which is the price of a 0.5 mm pitch package and is why every other U1 and
 # U2 escape in this file is written the same way.
-SW2 = [
-    ("/SW2",        F, 0.30,   ["U2.5", (66.00, 96.25)]),
-    ("/SW2",        F, 0.60,   [(66.00, 96.25), (64.725, 94.975), "L10.1"]),
+SWITCH = [
+    ("/SW",         F, 0.30,   ["U2.5", (66.00, 96.25)]),
+    ("/SW",         F, 0.60,   [(66.00, 96.25), (64.725, 94.975), "L10.1"]),
 ]
 
 
@@ -665,7 +665,7 @@ SHLD_VIAS = [
 
 
 ROUTES = (RF + GND_PA + GND_C9 + GND_C9_TIE + GND_RF + GND_EXTRA
-          + V3 + SW2 + SENSE + MCU)
+          + V3 + SWITCH + SENSE + MCU)
 
 # Vias to the In2.Cu +3V3 plane, one per escape above.
 V3_VIAS = [
@@ -696,8 +696,8 @@ V3_VIAS = [
 # Audit finding 5: C1's ground pad was 4.87 mm from the nearest ground via, the
 # longest leg of the nRF54L15 DC/DC loop by a wide margin - and C1 is the DECD
 # output cap, so that return carries the switching ripple. The DECA bank was
-# 2.4 to 2.6 mm out for the same reason: the stitching array is a 2.5 mm grid
-# that knows nothing about where the decoupling landed.
+# 2.4 to 2.6 mm out because a generic stitching grid knew nothing about where
+# the decoupling landed.
 #
 # A capacitor's return path is half its job, and a via next to the pad is the
 # whole fix. These four are placed against the ground pads rather than on the
@@ -739,44 +739,8 @@ def _grid(cx, cy, offs):
 CENTRE_PAD = (_grid(77.000, 63.000, (-1.8, -0.6, 0.6, 1.8))     # U1 pad 49
               + _grid(69.500, 96.000, (-1.2, 0.0, 1.2)))         # U2 pad 33
 
-# Stitching. ZoneB_GND_F on F.Cu collects the ground pads; these tie it through
-# to the In1.Cu plane. Generated on a 2.5 mm grid and then filtered against
-# every pad, body and route on the board - see tools_stitch_gen.py, which
-# prints this list.
-STITCH = CENTRE_PAD + [
-    # 109 stitching vias, 2.5 mm grid
-    ( 61.50,  55.00), ( 64.00,  55.00), ( 66.50,  55.00), ( 69.00,  55.00),
-    ( 71.50,  55.00), ( 81.50,  55.00), ( 84.00,  55.00), ( 86.50,  55.00),
-    ( 89.00,  55.00), ( 91.50,  55.00), ( 61.50,  57.50), ( 64.00,  57.50),
-    ( 66.50,  57.50), ( 89.00,  57.50), ( 91.50,  57.50), ( 61.50,  60.00),
-    ( 64.00,  60.00), ( 66.50,  60.00), ( 89.00,  60.00), ( 61.50,  62.50),
-    ( 64.00,  62.50), ( 89.00,  62.50), ( 91.50,  62.50), ( 61.50,  65.00),
-    ( 64.00,  65.00), ( 81.50,  65.00), ( 89.00,  65.00), ( 91.50,  65.00),
-    ( 61.50,  67.50), ( 76.50,  67.50), ( 89.00,  67.50), ( 91.50,  67.50),
-    ( 61.50,  70.00), ( 64.00,  70.00), ( 66.50,  70.00), ( 74.00,  70.00),
-    ( 76.50,  70.00), ( 81.50,  70.00), ( 89.00,  70.00), ( 91.50,  70.00),
-    ( 61.50,  72.50), ( 64.00,  72.50), ( 66.50,  72.50), ( 69.00,  72.50),
-    ( 71.50,  72.50), ( 74.00,  72.50), ( 76.50,  72.50), ( 79.00,  72.50),
-    ( 81.50,  72.50), ( 89.00,  72.50), ( 91.50,  72.50), ( 61.50,  75.00),
-    ( 64.00,  75.00), ( 79.00,  75.00), ( 89.00,  75.00), ( 91.50,  75.00),
-    ( 61.50,  77.50), ( 64.00,  77.50), ( 79.00,  77.50), ( 81.50,  77.50),
-    ( 89.00,  77.50), ( 91.50,  77.50), ( 89.00,  80.00), ( 91.50,  80.00),
-    ( 71.50,  82.50), ( 74.00,  82.50), ( 76.50,  82.50), ( 79.00,  82.50),
-    ( 71.50,  85.00), ( 74.00,  85.00), ( 76.50,  85.00), ( 79.00,  85.00),
-    ( 81.50,  85.00), ( 84.00,  85.00), ( 71.50,  87.50), ( 74.00,  87.50),
-    ( 76.50,  87.50), ( 79.00,  87.50), ( 81.50,  87.50), ( 84.00,  87.50),
-    ( 71.50,  90.00), ( 74.00,  90.00), ( 76.50,  90.00), ( 61.50,  92.50),
-    ( 79.00,  92.50), ( 81.50,  92.50), ( 91.50,  92.50), ( 61.50,  95.00),
-    ( 79.00,  95.00), ( 81.50,  95.00), ( 84.00,  95.00), ( 89.00,  95.00),
-    ( 91.50,  95.00), ( 79.00,  97.50), ( 84.00,  97.50), ( 89.00,  97.50),
-    ( 91.50,  97.50), ( 61.50, 100.00), ( 70.90, 100.00), ( 79.00, 100.00),
-    ( 81.50, 100.00), ( 84.00, 100.00), ( 61.50, 102.50), ( 64.00, 102.50),
-    ( 66.50, 102.50), ( 69.00, 102.50), ( 79.00, 102.50), ( 81.50, 102.50),
-    ( 84.00, 102.50),
-]
-
 ALL_VIAS = (VIAS + V3_VIAS + GND_VIAS + MCU_VIAS + SHLD_VIAS + DECOUPLING_GND_VIAS
-            + [(x, y, "GND", 0.60, 0.30) for x, y in STITCH])
+            + [(x, y, "GND", 0.60, 0.30) for x, y in CENTRE_PAD])
 
 
 # --------------------------------------------------------------------------
