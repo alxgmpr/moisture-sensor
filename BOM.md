@@ -332,22 +332,15 @@ The coin-cell retainer and boost inductor are no longer open selections.
 | C27 | 100nF X7R | `C_0402_1005Metric_Pad0.74x0.62mm_HandSolder` |
 | BT1 | CR2032 retainer — MPD BU2032SM-BT-GTR | `BatteryHolder_MPD_BU2032SM-BT-GTR` |
 | FB1 | FB 120R@100MHz — MMZ1005S121CT000 | `L_0402_1005Metric_Pad0.77x0.64mm_HandSolder` |
-| J4 | SWD 10p 1.27mm | `Tag-Connect_TC2050-IDC-NL_2x05_P1.27mm_Vertical` |
 | J5 | U.FL antenna | `U.FL_Hirose_U.FL-R-SMT-1_Vertical` |
 | L1 | MLZ1608M4R7WT000 4.7uH | `L_0603_1608Metric_Pad1.05x0.95mm_HandSolder` |
 | L2 | 2.7nH LQP03HQ2N7B02 | `L_0201_0603Metric` |
 | L3 | 3.5nH LQP03HQ3N5B02 | `L_0201_0603Metric` |
 | L4 | 3.5nH LQP03HQ3N5B02 | `L_0201_0603Metric` |
 | L10 | Murata DFE201210U-2R2M=P2 2.2uH | `IND_Murata_DFE201210U` |
-| NT1 | GND_PA to GND (under U1, F.Cu) | `NetTie_VSSPA` |
-| NT2 | GND_C9 to GND (B.Cu only) | `NetTie-2_SMD_Pad0.5mm` |
 | R1 | 1k 1% | `R_0402_1005Metric_Pad0.72x0.64mm_HandSolder` |
 | R22 | 4.7k to VOUT | `R_0402_1005Metric_Pad0.72x0.64mm_HandSolder` |
 | R23 | 4.7k to VOUT | `R_0402_1005Metric_Pad0.72x0.64mm_HandSolder` |
-| TP1 | SENSE1 | `TestPoint_Pad_D1.0mm` |
-| TP2 | SENSE2 | `TestPoint_Pad_D1.0mm` |
-| TP3 | SHLD | `TestPoint_Pad_D1.0mm` |
-| TP4 | SHPHLD | `TestPoint_Pad_D1.0mm` |
 | U1 | nRF54L15-QFAA | `QFN48_6X6_NOR` |
 | U2 | nPM2100-QEAA | `QFN-16-1EP_4x4mm_P0.65mm_EP2.7x2.7mm_ThermalVias` |
 | U3 | FDC1004 | `MSOP-10_3x3mm_P0.5mm` |
@@ -358,6 +351,103 @@ The coin-cell retainer and boost inductor are no longer open selections.
 The nPM2100 QFN, Murata boost-inductor, and MPD holder footprints are now built
 and assigned. The two locked mechanical footprints live in
 `lib/footprints.pretty` and retain the manufacturer drawing dimensions above.
+
+### JLCPCB assembly audit — 2026-09-03
+
+This is a live-catalog snapshot, not a lifetime procurement guarantee. It was
+generated from the schematic BOM using the
+[jlcsearch API](https://jlcsearch.tscircuit.com), whose catalog and stock data
+are rebuilt from [jlcparts](https://yaqwsx.github.io/jlcparts/). Re-run the
+search immediately before ordering because JLC stock and Basic/Preferred status
+change.
+
+The assembly BOM now excludes J4 (the bare Tag-Connect land pattern), NT1/NT2,
+and TP1/TP2/TP3. They are copper features, not purchasable placements. Both the
+schematic and placed PCB mark them out of BOM and position-file exports, and the
+board generator reapplies those flags if it is ever revived.
+
+#### Fee-free ordinary passives
+
+These are the preferred assignments for unconstrained passives. Basic and
+Preferred parts have no feeder-loading fee in JLC Economic PCBA. The stock
+figures below are the live values returned by jlcsearch on 2026-09-03.
+
+| Refs | MPN | LCSC | JLC class | Stock | Why |
+|---|---|---:|---|---:|---|
+| C4, C7, C8, C10, C27 | CL05B104KO5NNNC | C1525 | Basic | 16,407,331 | 100 nF, 16 V, X7R, ±10%, 0402 |
+| C5 | 0402B222K500NT | C1531 | Preferred | 722,028 | 2.2 nF, 50 V, X7R, ±10%, 0402 |
+| C12 | CL05B103KB5NNNC | C15195 | Basic | 2,532,413 | 10 nF, 50 V, X7R, ±10%, 0402 |
+| C21 | CL05A106MQ5NUNC | C15525 | Basic | 2,281,323 | 10 µF, 6.3 V, X5R, ±20%, 0402 |
+| C25 | CL05A225MQ5NSNC | C12530 | Basic | 862,626 | 2.2 µF, 6.3 V, X5R, ±20%, 0402 |
+| C26, if X5R is approved | CL05A105KA5NQNC | C52923 | Basic | 4,519,174 | 1 µF, 25 V, X5R, ±10%, 0402; see open decision below |
+| R1 | 0402WGF1001TCE | C11702 | Basic | 2,610,919 | 1 kΩ, ±1%, 62.5 mW, 0402 |
+| R22, R23 | 0402WGF4701TCE | C25900 | Basic | 3,285,378 | 4.7 kΩ, ±1%, 62.5 mW, 0402 |
+
+Using these seven Basic types plus the one Preferred type avoids up to eight
+Economic-PCBA extended-part feeder fees compared with arbitrary extended
+equivalents. At JLC's 2026-08-20 rate of $3.07 per extended type, that is up to
+**$24.56 per order**.
+
+#### Extended parts that match the design
+
+Do not replace the RF network, crystals, ferrite, or converter inductors merely
+to remove feeder fees. Their electrical constraints are worth more than the
+one-time setup saving.
+
+| Refs | Selected / proposed MPN | LCSC | Stock | Notes |
+|---|---|---:|---:|---|
+| C1, C2 | GRM155D80J225KE95D | C907753 | 8,333 | 2.2 µF, 6.3 V, X6T, ±10%, 0402; tighter than the required ±20% |
+| C3 | CL10X106MO8NRNC | C3039688 | 127,997 | 10 µF, 16 V, X6S, ±20%, **0603**; matches the placed footprint, not the stale `0402` text in the value |
+| C6 | GJM0335C1E1R5WB01D | C435397 | 18,347 | Exact 1.5 pF RF part; the orderable suffix is `D` |
+| C9 | GJM0335C1E2R0WB01D | C668326 | 5,874 | Exact 2.0 pF RF part; the orderable suffix is `D` |
+| C11 | GRM0335C1ER30BA01D | C88909 | 13,195 | Exact 0.3 pF RF part |
+| C13 | 0402CG3R9C500NT | C1566 | 33,467 | 3.9 pF, 50 V, C0G, ±0.25 pF, 0402; manufacturer data confirms tolerance code `C` |
+| C22, C24 | 0201B102K500NT | C66942 | 42,968 | 1 nF, 50 V, X7R, ±10%, 0201; X7R exceeds the X5R temperature class |
+| C23 | GRM155R60J226ME11D | C415703 | 159,077 | 22 µF, 6.3 V, X5R, ±20%, 0402; **candidate only until its 3.3 V DC-bias curve proves the required effective capacitance** |
+| FB1 | MMZ1005S121CT000 | C92036 | 13,241 | Exact ferrite |
+| J5 | U.FL-R-SMT-1(10) | C88373 | 11,960 | Exact Hirose connector |
+| L1 | MLZ1608M4R7WT000 | C76799 | 120,881 | Exact nRF DC/DC inductor |
+| L2 | LQP03HQ2N7B02D | C7216765 | 41,904 | Exact 2.7 nH RF part; orderable suffix is `D` |
+| L3, L4 | LQP03HQ3N5B02D | C3911055 | 18,376 | Exact 3.5 nH RF part; orderable suffix is `D` |
+| L10 | DFE201210U-2R2M=P2 | C2049745 | 14,163 | Exact boost inductor |
+| U2 | NPM2100-QEAA-R7 | C46968654 | 1,211 | Exact tape-and-reel order code; catalog package metadata is incomplete, so confirm the JLC footprint preview |
+| U3 | FDC1004DGSR | C2865994 | 5,671 | Exact MSOP-10 device |
+| U4 | SHT45-AD1F-R2 | C5360602 | 1,492 | Exact PTFE-membrane sensor |
+| X1 | CM8V-T1A-32.768KHZ-7PF-20PPM-TA-QC | C5136974 | 38,491 | Exact 7 pF LFXO |
+| X2 | Q22FA12800025 | C187794 | 8,310 | Epson FA-128, 32 MHz, 8 pF, ±10 ppm |
+
+With the fee-free assignments above, this design still has **19 extended part
+types**, or about **$58.33 in feeder fees per Economic PCBA order** at the
+2026-08-20 rate. That dominates a five-board prototype order but amortizes to
+about $0.58/board at 100 boards.
+
+At the one-piece prices returned by jlcsearch, the proposals above—including
+C52923 for C26 and the still-unverified C415703 for C23—cost about **$13.74 per
+board before U1 and BT1**. U4, U3, and U2 account for roughly 54%, 22%, and 12%
+of that subtotal, so cheaper resistors and capacitors will not materially change
+unit cost.
+
+#### Blocking and optional decisions
+
+- **U1 is not in the public JLC catalog.** Use the full order code
+  `nRF54L15-QFAA-R7` and obtain a JLC global-sourcing/consigned-parts quote. Do
+  not substitute the package or an older nRF device.
+- **BT1 exact MPN `BU2032SM-BT-GTR` is not in the public catalog.** The stocked
+  `BU2032SM-JJ-GTR` is not footprint-compatible. Hand-fit BT1 after assembly or
+  consign the locked part.
+- **C3 has a documentation mismatch:** the schematic value says `0402` but its
+  actual footprint is imperial 0603. The C3039688 proposal intentionally follows
+  the copper. Correct the value text when the part is locked.
+- **C26 has a dielectric mismatch:** the schematic says X7R while this document
+  previously said X5R. If X5R is acceptable, Basic part C52923
+  (`CL05A105KA5NQNC`, 1 µF, 25 V, ±10%, 0402) removes one feeder fee. If X7R is
+  mandatory, use an extended X7R part and add $3.07/order.
+- **U4 is the only large unit-cost lever without a PCB or firmware redesign.**
+  SHT41-AD1F-R2 (C7461862) keeps the PTFE membrane and SHT4x interface/land
+  pattern and was $3.987 with 1,190 in stock, saving about **$3.38 per board**,
+  but RH accuracy relaxes from SHT45's ±1.0% typical to ±1.8% typical and
+  temperature accuracy from ±0.1 °C to ±0.2 °C. Make that an explicit product
+  requirement decision, not an assembly substitution.
 
 ---
 

@@ -44,4 +44,15 @@
   (fp_line (start -16.25 11.45) (end -16.25 -11.45) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
   (pad "1" smd roundrect (at -14.65 0) (size 3.2 4.2) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.08))
   (pad "2" smd roundrect (at 14.65 0) (size 3.2 4.2) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.08))
+	(model "${KIPRJMOD}/lib/BU2032SM-BT-GTR.STEP"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz -90 0 0)
+		)
+	)
 )

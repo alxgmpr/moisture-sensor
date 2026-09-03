@@ -398,16 +398,25 @@ so the first pass left GND on pads 1 and 3 — the same defect one corner round.
 The script now states the schematic's pad→net binding explicitly and enforces
 it.
 
-### 3. 3D models — all four missing or misaligned ones fixed
+### 3. 3D models — current fitted parts covered
 
-`tools_3d_models.py`, written to both the board and the library.
+`tools_3d_models.py` is the single model-assignment table used by the repair
+tool and `tools_gen_pcb.py`. Project footprints carry the same assignments, so
+updating footprints from the library does not remove their models.
 
 | | model | rotation | why |
 |---|---|---|---|
-| U1 | `lib/nordic/QFN48_6X6_NOR.step` | none | already on disk, shipped with the vendor footprints, never referenced |
-| U2 | `lib/nordic/QFN32_5X5_NOR.step` | none | same |
-| X1 | `lib/CM8V-T1A/…​.step` | (90, 0, 0) | vendor model, height along +Y |
-| X2 | `lib/FA-128 …​.STEP` | (90, 0, 0) | same |
+| U1 | `lib/nordic/QFN48_6X6_NOR.step` | none | Nordic QFN48 model, already Z-up |
+| U2 | KiCad `Texas_RSA_VQFN-16-1EP_4x4mm….step` | none | matches the selected QEAA QFN16: 4×4 mm, 0.65 mm pitch, 2.7 mm exposed pad |
+| X1 | `lib/CM8V-T1A/…​.step` | (−90, 0, 0) | vendor model, height along +Y |
+| X2 | `lib/FA-128 …​.STEP` | (−90, 0, 90) | height along +Y; Z turn aligns its long axis |
+| U4 | `lib/SHT45_AD1F_R2/SHT45-AD1F-R2.step` | (−90, 0, 0) | local vendor model replaces a missing KiCad-library reference |
+| L10 | `lib/DFE201210U_2R2M_P2/IND_DFE201210U-2R2MP2_MUR.step` | none | supplied Murata model, already Z-up and centred |
+| BT1 | `lib/BU2032SM-BT-GTR.STEP` | (−90, 0, 0) | supplied holder-and-cell model, height along +Y |
+
+The similarly named downloaded nPM2100 bundle contained a 1.9×1.9 mm WLCSP
+model and was removed. The selected `nPM2100-QEAA` is the 4×4 mm QFN; Nordic's
+package code for the WLCSP is `CA`, not `QE`.
 
 **The rule that makes this tractable:** KiCad's 3D frame is X = footprint X,
 **Y = minus footprint Y**, Z = up. A pad at footprint local (lx, ly) sits at
@@ -415,20 +424,21 @@ it.
 (−2.768, **+2.200**) and its pad 1 at local (−2.921, **−2.200**), the same
 corner with y negated — which is why they need no rotation at all.
 
-The two crystal models are vendor exports with the package **height along +Y**
-instead of +Z, measured with cadquery rather than guessed:
+The two crystal models and the holder model are vendor exports with package
+**height along +Y** instead of +Z, measured with cadquery rather than guessed:
 
 ```
 FA-128     x -0.800..0.800 (1.600)   y 0.000..0.500 (0.500)   z -1.000..1.000 (2.000)
 CM8V-T1A   x -1.000..1.000 (2.000)   y 0.000..0.600 (0.600)   z -0.600..0.600 (1.200)
+BU2032     x -15.93..15.93 (31.86)   y 0.000..5.200 (5.200)   z -9.925..9.925 (19.85)
 ```
 
-so both need one 90° turn about X to stand up. Verify with
+so they need one −90° turn about X to stand above the PCB. Verify with
 `kicad-cli pcb render --side top --pivot …` rather than by eye in the GUI — it
 is repeatable and it is how the FA-128 defect surfaced.
 
-Still without models, all legitimately: J4 (Tag-Connect, no body), NT1–NT3 (net
-ties) and TP1–TP5 (bare pads).
+Still without models, all legitimately: J4 (Tag-Connect, no fitted body), NT1
+and NT2 (net ties), and TP1–TP3 (bare pads).
 
 ---
 

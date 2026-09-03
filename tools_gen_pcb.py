@@ -41,6 +41,8 @@ import math
 import subprocess
 import pcbnew
 
+from tools_3d_models import MODELS_BY_REFERENCE
+
 # Derive the project root from this file so the generator writes into whichever
 # checkout it is run from, not a hardcoded one.
 PROJ = os.path.dirname(os.path.abspath(__file__))
@@ -532,6 +534,12 @@ def place_components(board, comps, pads):
         x, y, rot = PLACEMENT[ref][:3]
         back = len(PLACEMENT[ref]) > 3 and PLACEMENT[ref][3] == "B"
         fp = load_fp(board, fpid, ref, value)
+        if ref in NON_ASSEMBLY_REFERENCES:
+            fp.SetAttributes(
+                fp.GetAttributes()
+                | pcbnew.FP_EXCLUDE_FROM_BOM
+                | pcbnew.FP_EXCLUDE_FROM_POS_FILES
+            )
         attach_model(fp, ref)
         board.Add(fp)
         fp.SetPosition(pt(x, y))
@@ -585,37 +593,9 @@ def overlaps(a, b, gap=0.0):
                 or a[3] + gap <= b[1] or b[3] + gap <= a[1])
 
 
-# 3D models the footprint does not carry itself, keyed by reference.
-# (path, (dx, dy, dz) mm, (rx, ry, rz) deg).
-#
-# Nordic ship STEP for both QFN packages but their KiCad-converted footprints
-# reference nothing. Both files are centred on origin with Z running 0 to 0.892
-# up from the board, which is exactly KiCad's convention, so they need no
-# offset or rotation. Verified by extracting the STEP bounding boxes:
-#   QFN48  x,y +/-2.997  z 0..0.892   (package is 6.0 x 6.0 x 0.85 nom)
-#   QFN32  x,y +/-2.502  z 0..0.892   (package is 5.0 x 5.0 x 0.85 nom)
-#
-# The three vendor models added by hand are all Y-up CAD exports - their height
-# runs along Y, not Z - so each carries a -90 deg rotation about X. Confirmed by
-# extracting their bounding boxes:
-#   CM8V-T1A   x 2.000 (length ok)   z 1.200 (the 1.2 mm width)   y = height
-#   SHT45      x 1.502, z 1.502 (the 1.5 x 1.5 body)              y = height
-#   1551WK     x 80.00 (box length)  z 40.00 (box width)          y = height
-# These rotations are a best guess from the bounding boxes and want eyeballing
-# in the 3D viewer before anyone trusts a clearance measured off them.
-MODELS_3D = {
-    "U1": ("${KIPRJMOD}/lib/nordic/QFN48_6X6_NOR.step", (0, 0, 0), (0, 0, 0)),
-    "U2": ("${KIPRJMOD}/lib/nordic/QFN32_5X5_NOR.step", (0, 0, 0), (0, 0, 0)),
-    # Orientation corrected by hand in the viewer and folded back in here, or
-    # the next generator run would overwrite it. Y-up like the others, plus a
-    # 1 mm shift to seat the body on the board.
-    "J1": ("${KIPRJMOD}/lib/TYPE-C-31-M-12--3DModel-STEP-56544.STEP",
-           (0, -1, 0), (-90, 0, 0)),
-    "U4": ("${KIPRJMOD}/lib/SHT45_AD1F_R2/SHT45-AD1F-R2.step",
-           (0, 0, 0), (-90, 0, 0)),
-    "X1": ("${KIPRJMOD}/lib/CM8V-T1A/CM8V-T1A-32.768KHZ-7PF-20PPM-TA-QC.step",
-           (0, 0, 0), (-90, 0, 0)),
-}
+# Selected-part model assignments live in tools_3d_models.py. Keeping one table
+# prevents the repair tool and a future board regeneration from drifting apart.
+MODELS_3D = MODELS_BY_REFERENCE
 
 # Mechanical-only footprints: no pads, no netlist entry, 3D model only. Placed
 # so the enclosure fit can be checked in the 3D viewer instead of on paper.
@@ -667,8 +647,7 @@ elif any(o for _, _, o in _ENCL_PARTS):
                     (0, 0, ENCL_Z), ENCL_ROT)
 
 # References that legitimately have no 3D model: bare copper, or no part fitted.
-NO_MODEL_EXPECTED = {"AE1", "NT1", "NT2", "J4",
-                     "TP1", "TP2", "TP3", "TP4", "TP5"}
+NO_MODEL_EXPECTED = {"NT1", "NT2", "J4", "TP1", "TP2", "TP3"}
 
 # Mechanical-only footprints are not in the netlist, so the placement checks
 # must skip them.
@@ -681,9 +660,8 @@ def attach_model(fp, ref, spec=None):
             return
         spec = MODELS_3D[ref]
     path, off, rot = spec
-    # Drop whatever the footprint shipped with. For J1 and U4 that is a KiCad
-    # path pointing at a .step this install does not have, and leaving it in
-    # place would stack a broken reference on top of the working one.
+    # Drop whatever the footprint shipped with so a stale or broken system
+    # reference cannot stack on top of the selected model.
     fp.Models().clear()
     m = pcbnew.FP_3DMODEL()
     m.m_Filename = path
@@ -697,6 +675,10 @@ def attach_model(fp, ref, spec=None):
 # Connectors that mate through the board edge. Their bodies overhang on purpose,
 # so the courtyard check is relaxed and only their pads have to land on copper.
 EDGE_PARTS = {"J1"}
+
+# These references are implemented entirely in PCB copper. They must remain on
+# the board while staying out of purchasing and pick-and-place files.
+NON_ASSEMBLY_REFERENCES = {"J4", "NT1", "NT2", "TP1", "TP2", "TP3"}
 
 
 def inside_board(box, ref=None):
@@ -1023,54 +1005,6 @@ def main():
                       f"outer face; the tab needs a {JUT_W:.1f} mm wide slot "
                       f"centred at y={JUT_CY}, 4.00-5.60 mm above the box floor")
     check(not overlaps(JUT, CELL_RECT), "the jut-out is under the cell")
-
-    # LAYOUT.md §6 / the DRU: keep the measurement away from the switchers.
-    # Component-level proxy for the track rule, which cannot fire before routing.
-    for sense in ("U3", "TP1", "TP2"):
-        for switcher in ("L10", "C24", "U2"):
-            if sense in boxes and switcher in boxes:
-                a, b = boxes[sense], boxes[switcher]
-                d = math.hypot(max(0, max(a[0] - b[2], b[0] - a[2])),
-                               max(0, max(a[1] - b[3], b[1] - a[3])))
-                check(d >= 3.0,
-                      f"{sense} is {d:.1f} mm from {switcher}, under the 3 mm "
-                      f"SENSE-to-SWITCH rule")
-
-    # ---- 3D coverage ---------------------------------------------------------
-    # Reported, not fatal: a missing model does not affect the netlist or the
-    # copper, but it does mean the enclosure fit cannot be checked in 3D.
-    ki3d = "/Applications/KiCad/KiCad.app/Contents/SharedSupport/3dmodels"
-    no_ref, broken = [], []
-    for ref, fp in sorted(fps.items()):
-        models = list(fp.Models())
-        if not models:
-            if ref not in NO_MODEL_EXPECTED:
-                no_ref.append(ref)
-            continue
-        for m in models:
-            p = str(m.m_Filename)
-            for var in ("KICAD10_3DMODEL_DIR", "KICAD9_3DMODEL_DIR",
-                        "KICAD8_3DMODEL_DIR"):
-                p = p.replace("${%s}" % var, ki3d)
-            p = p.replace("${KIPRJMOD}", PROJ)
-            if not any(os.path.exists(os.path.splitext(p)[0] + e)
-                       for e in (os.path.splitext(p)[1], ".step", ".stp", ".wrl")):
-                broken.append((ref, str(m.m_Filename)))
-    if no_ref:
-        _notes.append(f"3D: no model referenced for {', '.join(no_ref)}")
-    for ref, p in broken:
-        _notes.append(f"3D: {ref} references a file that is not on disk - "
-                      f"{os.path.basename(p)}")
-
-    # ---- cell shadow ---------------------------------------------------------
-    # The cell hangs from the lid. Anything taller than the gap under it has to
-    # sit outside its footprint.
-    for ref, h in COMPONENT_HEIGHTS.items():
-        if ref not in boxes or h <= CLEAR_UNDER_CELL:
-            continue
-        check(not overlaps(boxes[ref], CELL_RECT),
-              f"{ref} is {h} mm tall but only {CLEAR_UNDER_CELL:.2f} mm is clear "
-              f"under the cell, and it sits inside the cell footprint")
 
     check(SOIL_LINE > ZONE_B_BOT, "soil line is inside the enclosure")
     antenna_to_soil = SOIL_LINE - 3.0

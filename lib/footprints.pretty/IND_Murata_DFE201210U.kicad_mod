@@ -16,4 +16,15 @@
   (fp_rect (start -1.35 -0.95) (end 1.35 0.95) (stroke (width 0.05) (type solid)) (fill none) (layer "F.CrtYd"))
   (pad "1" smd rect (at -0.725 0) (size 0.55 1.2) (layers "F.Cu" "F.Paste" "F.Mask"))
   (pad "2" smd rect (at 0.725 0) (size 0.55 1.2) (layers "F.Cu" "F.Paste" "F.Mask"))
+	(model "${KIPRJMOD}/lib/DFE201210U_2R2M_P2/IND_DFE201210U-2R2MP2_MUR.step"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
 )
