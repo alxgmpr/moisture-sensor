@@ -21,14 +21,14 @@ class PrepareFreeroutingTests(unittest.TestCase):
         source = """(pcb demo
   (wiring
     (wire (path F.Cu 200 0 0 10 0)(net /SDA)(type protect))
-    (wire (path F.Cu 360 0 1 10 1)(net /RF_A)(type protect))
+    (wire (path F.Cu 360 0 1 10 1)(net /RF_FILTER_N1)(type protect))
     (via Via[0-3]_600:300_um 5 5 (net /SCL) (type protect))
     (via Via[0-3]_600:300_um 6 6 (net GND) (type protect))
   )
 )"""
         result = prepare_dsn(source, unlock_noncritical=True)
         self.assertIn("(net /SDA))", result)
-        self.assertIn("(net /RF_A)(type protect)", result)
+        self.assertIn("(net /RF_FILTER_N1)(type protect)", result)
         self.assertIn("(net /SCL))", result)
         self.assertIn("(net GND) (type protect)", result)
 

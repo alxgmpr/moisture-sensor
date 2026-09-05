@@ -59,7 +59,7 @@
 				)
 			)
 		)
-		(property "Description" "nPM1300 system rail -- battery or VBUS, whichever is higher"
+		(property "Description" "System rail -- battery or VBUS, whichever is higher"
 			(at 0 0 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -608,7 +608,7 @@
 		)
 		(embedded_fonts no)
 	)
-	(symbol "FDC_VDD"
+	(symbol "+3V3_FDC_SW"
 		(power global)
 		(pin_numbers
 			(hide yes)
@@ -633,7 +633,7 @@
 				)
 			)
 		)
-		(property "Value" "FDC_VDD"
+		(property "Value" "+3V3_FDC_SW"
 			(at 0 3.556 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -665,7 +665,7 @@
 				)
 			)
 		)
-		(property "Description" "Gated FDC1004 supply, off nPM1300 LOADSW1"
+		(property "Description" "Gated FDC1004 supply from nPM2100 LSOUT/VOUTLDO"
 			(at 0 0 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -676,7 +676,7 @@
 				)
 			)
 		)
-		(property "ki_keywords" "global power FDC_VDD"
+		(property "ki_keywords" "global power +3V3_FDC_SW"
 			(at 0 0 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -687,7 +687,7 @@
 				)
 			)
 		)
-		(symbol "FDC_VDD_0_1"
+		(symbol "+3V3_FDC_SW_0_1"
 			(polyline
 				(pts
 					(xy 0 0) (xy 0 1.27)
@@ -703,7 +703,7 @@
 				(fill (type none))
 			)
 		)
-		(symbol "FDC_VDD_1_1"
+		(symbol "+3V3_FDC_SW_1_1"
 			(pin power_in line
 				(at 0 0 90)
 				(length 0)

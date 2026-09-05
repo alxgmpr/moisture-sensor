@@ -57,10 +57,12 @@ class JlcBomTest(unittest.TestCase):
                 }
 
         self.assertTrue(
-            {"J4", "NT1", "NT2", "TP1", "TP2", "TP3"}.isdisjoint(
+            {"AE1", "C29", "J5", "J4", "NT1", "NT2", "TP1", "TP2", "TP3"}.isdisjoint(
                 references
             )
         )
+        self.assertTrue({"U1", "R27", "X2", "L1", "FB1"}.isdisjoint(references))
+        self.assertTrue({"U2", "U3", "U4", "X1", "C3"} <= references)
 
 
 if __name__ == "__main__":

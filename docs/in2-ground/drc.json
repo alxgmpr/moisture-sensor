@@ -1,0 +1,562 @@
+{
+    "$schema": "https://schemas.kicad.org/drc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-09-04T18:08:58",
+    "ignored_checks": [
+        {
+            "description": "Footprint has no courtyard defined",
+            "key": "missing_courtyard"
+        },
+        {
+            "description": "Track endpoint not centered on via",
+            "key": "track_not_centered_on_via"
+        },
+        {
+            "description": "Tuning profile track geometries",
+            "key": "tuning_profile_track_geometries"
+        },
+        {
+            "description": "Footprint doesn't match symbol's footprint filters",
+            "key": "footprint_filters_mismatch"
+        },
+        {
+            "description": "Footprint component type doesn't match footprint pads",
+            "key": "footprint_type_mismatch"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning"
+    ],
+    "kicad_version": "10.99.0",
+    "schematic_parity": [],
+    "source": "moisture-sensor-carrier.kicad_pcb",
+    "unconnected_items": [
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Pad 4 [/P2.07_SWO] of U1 on F.Cu",
+                    "pos": {
+                        "x": 81.497,
+                        "y": 44.45
+                    },
+                    "uuid": "3b80b843-b426-4c88-bf6c-e99aa2647951"
+                },
+                {
+                    "description": "Pad 2 [/P2.07_SWO] of R34 on F.Cu",
+                    "pos": {
+                        "x": 91.51,
+                        "y": 67.8
+                    },
+                    "uuid": "1d908cbf-dea9-4047-b0a9-f1a8d55fbbdf"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Pad 2 [/SWD_RST] of R1 on F.Cu",
+                    "pos": {
+                        "x": 85.01,
+                        "y": 55.5
+                    },
+                    "uuid": "85798202-d1f3-4216-91eb-98405e76214f"
+                },
+                {
+                    "description": "Track [/SWD_RST] on F.Cu, length 2.0640 mm",
+                    "pos": {
+                        "x": 85.0405,
+                        "y": 58.725
+                    },
+                    "uuid": "06dbbd2b-9815-408e-8b69-9e34a825c222"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Pad 1 [/NRESET] of C13 on F.Cu",
+                    "pos": {
+                        "x": 82.8,
+                        "y": 56.98
+                    },
+                    "uuid": "7d238651-f053-42b1-b6c1-511cdb44d19a"
+                },
+                {
+                    "description": "Pad 1 [/NRESET] of R1 on F.Cu",
+                    "pos": {
+                        "x": 83.99,
+                        "y": 55.5
+                    },
+                    "uuid": "de734c82-28b7-4a63-b0aa-a7ec2b912a6e"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Pad 1 [/NRESET] of R1 on F.Cu",
+                    "pos": {
+                        "x": 83.99,
+                        "y": 55.5
+                    },
+                    "uuid": "de734c82-28b7-4a63-b0aa-a7ec2b912a6e"
+                },
+                {
+                    "description": "Pad 7 [/NRESET] of U1 on F.Cu",
+                    "pos": {
+                        "x": 81.497,
+                        "y": 46.7
+                    },
+                    "uuid": "a664be89-cf34-4ef4-9b3e-6afda469e718"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Pad 2 [/SCL] of R23 on F.Cu",
+                    "pos": {
+                        "x": 69.5975,
+                        "y": 61.0
+                    },
+                    "uuid": "bb11703d-9bff-4928-b93c-6cecfada912f"
+                },
+                {
+                    "description": "Track [/SCL] on B.Cu, length 3.1070 mm",
+                    "pos": {
+                        "x": 72.197,
+                        "y": 68.803
+                    },
+                    "uuid": "0e73c09a-97c2-485d-b21f-71e9f49e7d1a"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Pad 2 [/SCL] of R23 on F.Cu",
+                    "pos": {
+                        "x": 69.5975,
+                        "y": 61.0
+                    },
+                    "uuid": "bb11703d-9bff-4928-b93c-6cecfada912f"
+                },
+                {
+                    "description": "Pad 35 [/SCL] of U1 on F.Cu",
+                    "pos": {
+                        "x": 72.503,
+                        "y": 48.2
+                    },
+                    "uuid": "d686331a-f118-4ab5-a283-c3ab884fdc66"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Pad 2 [/SDA] of R22 on F.Cu",
+                    "pos": {
+                        "x": 69.5975,
+                        "y": 60.0
+                    },
+                    "uuid": "b6e6e24a-0d28-45d2-8754-ae3aa019bfec"
+                },
+                {
+                    "description": "Track [/SDA] on B.Cu, length 2.4042 mm",
+                    "pos": {
+                        "x": 71.1,
+                        "y": 68.5
+                    },
+                    "uuid": "90a4d838-74b7-45e1-8f36-8ae0779ab359"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Pad 28 [/SDA] of U1 on F.Cu",
+                    "pos": {
+                        "x": 72.503,
+                        "y": 53.45
+                    },
+                    "uuid": "1b1146c5-2036-48aa-9557-5dc74e439ba9"
+                },
+                {
+                    "description": "Pad 2 [/SDA] of R22 on F.Cu",
+                    "pos": {
+                        "x": 69.5975,
+                        "y": 60.0
+                    },
+                    "uuid": "b6e6e24a-0d28-45d2-8754-ae3aa019bfec"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Pad 2 [/SWDIO] of R32 on F.Cu",
+                    "pos": {
+                        "x": 79.79,
+                        "y": 64.0
+                    },
+                    "uuid": "9c0e7122-97b9-483d-8f47-4bfaa745327b"
+                },
+                {
+                    "description": "Pad 5 [/SWDIO] of U1 on F.Cu",
+                    "pos": {
+                        "x": 81.497,
+                        "y": 45.2
+                    },
+                    "uuid": "08861a1f-4fc7-44ca-8b7b-56f7957a014b"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Pad 2 [/SWDCLK] of R33 on F.Cu",
+                    "pos": {
+                        "x": 79.79,
+                        "y": 66.5
+                    },
+                    "uuid": "a26ab64b-911b-49c2-8ea5-e895622e1664"
+                },
+                {
+                    "description": "Pad 6 [/SWDCLK] of U1 on F.Cu",
+                    "pos": {
+                        "x": 81.497,
+                        "y": 45.95
+                    },
+                    "uuid": "83b31098-52c2-4683-9f53-a6563d82e8f8"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Pad 17 [/PMIC_INT] of U1 on F.Cu",
+                    "pos": {
+                        "x": 80.75,
+                        "y": 53.5
+                    },
+                    "uuid": "6e693bcb-f7a9-4341-8da9-b0368bd5cbfa"
+                },
+                {
+                    "description": "Track [/PMIC_INT] on B.Cu, length 26.3750 mm",
+                    "pos": {
+                        "x": 80.3,
+                        "y": 87.775
+                    },
+                    "uuid": "d8ea4b90-649e-4d38-89c4-d919ded9412c"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        }
+    ],
+    "violations": [
+        {
+            "description": "Track has unconnected end",
+            "items": [
+                {
+                    "description": "Track [/SWD_RST] on F.Cu, length 2.0640 mm",
+                    "pos": {
+                        "x": 85.0405,
+                        "y": 58.725
+                    },
+                    "uuid": "06dbbd2b-9815-408e-8b69-9e34a825c222"
+                }
+            ],
+            "severity": "warning",
+            "type": "track_dangling"
+        },
+        {
+            "description": "Track has unconnected end",
+            "items": [
+                {
+                    "description": "Track [/SCL] on B.Cu, length 3.1070 mm",
+                    "pos": {
+                        "x": 72.197,
+                        "y": 68.803
+                    },
+                    "uuid": "0e73c09a-97c2-485d-b21f-71e9f49e7d1a"
+                }
+            ],
+            "severity": "warning",
+            "type": "track_dangling"
+        },
+        {
+            "description": "Track has unconnected end",
+            "items": [
+                {
+                    "description": "Track [/SDA] on B.Cu, length 2.4042 mm",
+                    "pos": {
+                        "x": 71.1,
+                        "y": 68.5
+                    },
+                    "uuid": "90a4d838-74b7-45e1-8f36-8ae0779ab359"
+                }
+            ],
+            "severity": "warning",
+            "type": "track_dangling"
+        },
+        {
+            "description": "Track has unconnected end",
+            "items": [
+                {
+                    "description": "Track [/PMIC_INT] on B.Cu, length 26.3750 mm",
+                    "pos": {
+                        "x": 80.3,
+                        "y": 87.775
+                    },
+                    "uuid": "d8ea4b90-649e-4d38-89c4-d919ded9412c"
+                }
+            ],
+            "severity": "warning",
+            "type": "track_dangling"
+        },
+        {
+            "description": "Footprint 'C_0402_1005Metric' does not match copy in library 'Capacitor_SMD'",
+            "items": [
+                {
+                    "description": "Footprint C25",
+                    "pos": {
+                        "x": 70.0,
+                        "y": 95.4
+                    },
+                    "uuid": "62ec361d-694c-43b9-b182-36565372d608"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'IND_Murata_DFE201210U' does not match copy in library 'footprints'",
+            "items": [
+                {
+                    "description": "Footprint L10",
+                    "pos": {
+                        "x": 64.9,
+                        "y": 97.6
+                    },
+                    "uuid": "74b02bcf-d6f4-479d-821b-e891032d2e58"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'C_0402_1005Metric_Pad0.74x0.62mm_HandSolder' does not match copy in library 'Capacitor_SMD'",
+            "items": [
+                {
+                    "description": "Footprint C26",
+                    "pos": {
+                        "x": 71.25,
+                        "y": 103.7
+                    },
+                    "uuid": "7f85b84c-a1e5-482a-baec-404819954834"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'C_0402_1005Metric' does not match copy in library 'Capacitor_SMD'",
+            "items": [
+                {
+                    "description": "Footprint C21",
+                    "pos": {
+                        "x": 64.45,
+                        "y": 99.9
+                    },
+                    "uuid": "8e8cf1bd-663c-42bb-a9b2-308a0d896d31"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'C_0201_0603Metric' does not match copy in library 'Capacitor_SMD'",
+            "items": [
+                {
+                    "description": "Footprint C28",
+                    "pos": {
+                        "x": 71.25,
+                        "y": 104.95
+                    },
+                    "uuid": "90423da5-6b58-4fee-89b9-7bed0b901a88"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'QFN-16-1EP_4x4mm_P0.65mm_EP2.7x2.7mm_ThermalVias' does not match copy in library 'Package_DFN_QFN'",
+            "items": [
+                {
+                    "description": "Footprint U2",
+                    "pos": {
+                        "x": 68.5,
+                        "y": 99.0
+                    },
+                    "uuid": "ae90bc02-0545-4bc9-b2a8-ec625e0527fb"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'C_0201_0603Metric' does not match copy in library 'Capacitor_SMD'",
+            "items": [
+                {
+                    "description": "Footprint C27",
+                    "pos": {
+                        "x": 101.38,
+                        "y": 60.6
+                    },
+                    "uuid": "af9651cf-0380-49ba-87ad-4c96462fcbad"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'C_0201_0603Metric' does not match copy in library 'Capacitor_SMD'",
+            "items": [
+                {
+                    "description": "Footprint C22",
+                    "pos": {
+                        "x": 65.4,
+                        "y": 99.7
+                    },
+                    "uuid": "d654f81e-27b8-4fce-8668-8c3963d58b10"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'C_0201_0603Metric' does not match copy in library 'Capacitor_SMD'",
+            "items": [
+                {
+                    "description": "Footprint C24",
+                    "pos": {
+                        "x": 68.475,
+                        "y": 95.675
+                    },
+                    "uuid": "e0b51144-bc7c-4ea7-b679-ea0d16eb1e75"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'Sensirion_DFN-4_1.5x1.5mm_P0.8mm_SHT4x_NoCentralPad' does not match copy in library 'Sensor_Humidity'",
+            "items": [
+                {
+                    "description": "Footprint U4",
+                    "pos": {
+                        "x": 99.8,
+                        "y": 60.6
+                    },
+                    "uuid": "f660d59c-b71d-49a0-b6bb-67ab2a0d06e9"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'C_0402_1005Metric' does not match copy in library 'Capacitor_SMD'",
+            "items": [
+                {
+                    "description": "Footprint C23",
+                    "pos": {
+                        "x": 64.9,
+                        "y": 94.8
+                    },
+                    "uuid": "fb82728e-4410-4d52-86d7-51e88b9ff59d"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.1200 mm)",
+            "items": [
+                {
+                    "description": "Segment of R23 on F.Silkscreen",
+                    "pos": {
+                        "x": 68.832379,
+                        "y": 60.62
+                    },
+                    "uuid": "1e68ab49-d9b7-4a9b-8478-21f0aed0b484"
+                },
+                {
+                    "description": "Segment of R22 on F.Silkscreen",
+                    "pos": {
+                        "x": 68.832379,
+                        "y": 60.38
+                    },
+                    "uuid": "6a8eebb5-59a9-4d3b-b78a-4da8f34cd995"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of C3",
+                    "pos": {
+                        "x": 74.905,
+                        "y": 55.975
+                    },
+                    "uuid": "ad52e01f-9167-4155-9c2a-68d92a65ab0b"
+                },
+                {
+                    "description": "Pad 1 [/XL1] of X1 on F.Cu",
+                    "pos": {
+                        "x": 74.85,
+                        "y": 55.5
+                    },
+                    "uuid": "0ca9f1c8-6e48-4ba6-bb56-efedaa1e6727"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        }
+    ]
+}

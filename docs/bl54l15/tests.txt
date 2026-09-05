@@ -1,0 +1,39 @@
+test_all_referenced_model_files_exist (test_3d_models.ModelCoverageTest.test_all_referenced_model_files_exist) ... ok
+test_custom_footprints_keep_their_models (test_3d_models.ModelCoverageTest.test_custom_footprints_keep_their_models) ... ok
+test_incompatible_downloaded_packages_are_not_kept (test_3d_models.ModelCoverageTest.test_incompatible_downloaded_packages_are_not_kept) ... ok
+test_model_tools_do_not_reference_retired_packages (test_3d_models.ModelCoverageTest.test_model_tools_do_not_reference_retired_packages) ... ok
+test_only_bare_copper_footprints_are_model_less (test_3d_models.ModelCoverageTest.test_only_bare_copper_footprints_are_model_less) ... ok
+test_selected_models_are_on_the_component_side (test_3d_models.ModelCoverageTest.test_selected_models_are_on_the_component_side) ... ok
+test_selected_parts_use_one_expected_model_each (test_3d_models.ModelCoverageTest.test_selected_parts_use_one_expected_model_each) ... ok
+test_symbol_library_table_only_lists_current_project_libraries (test_3d_models.ModelCoverageTest.test_symbol_library_table_only_lists_current_project_libraries) ... ok
+test_all_land_centers_and_antenna_rules (test_bl54l15.BL54L15Test.test_all_land_centers_and_antenna_rules) ... ok
+test_module_pads_preserve_product_signals (test_bl54l15.BL54L15Test.test_module_pads_preserve_product_signals) ... ok
+test_vendor_land_pattern (test_bl54l15.BL54L15Test.test_vendor_land_pattern) ... ok
+test_paste_stages_are_disjoint (test_bl54l15_exports.ModuleAssemblyExportTest.test_paste_stages_are_disjoint) ... ok
+test_product_bom_retains_separately_ordered_module (test_bl54l15_exports.ModuleAssemblyExportTest.test_product_bom_retains_separately_ordered_module) ... ok
+test_leaves_already_clean_segment_unchanged (test_clean_track_angles.CleanTrackAnglesTests.test_leaves_already_clean_segment_unchanged) ... ok
+test_splits_off_angle_segment_into_axial_and_diagonal_legs (test_clean_track_angles.CleanTrackAnglesTests.test_splits_off_angle_segment_into_axial_and_diagonal_legs) ... ok
+test_all_route_legs_are_axial_or_45_degrees (test_finish_routes.FinishRoutesTests.test_all_route_legs_are_axial_or_45_degrees) ... ok
+test_insertion_is_idempotent (test_finish_routes.FinishRoutesTests.test_insertion_is_idempotent) ... ok
+test_retired_board_helpers_exit_without_modifying_the_board (test_generator_safety.GeneratorSafetyTest.test_retired_board_helpers_exit_without_modifying_the_board) ... ok
+test_retired_schematic_generator_exits_without_modifying_schematic (test_generator_safety.GeneratorSafetyTest.test_retired_schematic_generator_exits_without_modifying_schematic) ... ok
+test_generated_bom_omits_non_purchasable_footprints (test_jlc_bom.JlcBomTest.test_generated_bom_omits_non_purchasable_footprints) ... ok
+test_bare_copper_footprints_are_excluded_from_assembly_outputs (test_pcb_assembly_flags.PcbAssemblyFlagsTest.test_bare_copper_footprints_are_excluded_from_assembly_outputs) ... ok
+test_retired_board_generator_exits_without_modifying_the_board (test_pcb_assembly_flags.PcbAssemblyFlagsTest.test_retired_board_generator_exits_without_modifying_the_board) ... ok
+test_every_connected_net_has_an_explicit_class (test_pcb_routing_rules.PcbRoutingRulesTest.test_every_connected_net_has_an_explicit_class) ... ok
+test_hole_spacing_matches_jlcpcb_four_layer_capability (test_pcb_routing_rules.PcbRoutingRulesTest.test_hole_spacing_matches_jlcpcb_four_layer_capability) ... ok
+test_retired_power_nets_are_not_assigned (test_pcb_routing_rules.PcbRoutingRulesTest.test_retired_power_nets_are_not_assigned) ... ok
+test_router_does_not_reference_retired_switch_net (test_pcb_routing_rules.PcbRoutingRulesTest.test_router_does_not_reference_retired_switch_net) ... ok
+test_routing_classes_use_production_safe_dimensions (test_pcb_routing_rules.PcbRoutingRulesTest.test_routing_classes_use_production_safe_dimensions) ... ok
+test_keeps_routes_protected_by_default (test_prepare_freerouting.PrepareFreeroutingTests.test_keeps_routes_protected_by_default) ... ok
+test_removes_exported_polygon_wires (test_prepare_freerouting.PrepareFreeroutingTests.test_removes_exported_polygon_wires) ... ok
+test_unlocks_only_noncritical_routes (test_prepare_freerouting.PrepareFreeroutingTests.test_unlocks_only_noncritical_routes) ... ok
+test_legacy_net_names_are_absent_from_design_sources (test_rf_design.RfDesignTest.test_legacy_net_names_are_absent_from_design_sources) ... ok
+test_new_net_names_observe_kicad_root_sheet_scope (test_rf_design.RfDesignTest.test_new_net_names_observe_kicad_root_sheet_scope) ... ok
+test_orderable_jlc3313_stackup_is_recorded_exactly (test_rf_design.RfDesignTest.test_orderable_jlc3313_stackup_is_recorded_exactly) ... ok
+test_switched_fdc_rail_and_i2c_pullups (test_rf_design.RfDesignTest.test_switched_fdc_rail_and_i2c_pullups) ... ok
+
+----------------------------------------------------------------------
+Ran 34 tests in 0.901s
+
+OK

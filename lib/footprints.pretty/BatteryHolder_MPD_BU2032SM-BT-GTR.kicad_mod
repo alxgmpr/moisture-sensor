@@ -1,6 +1,6 @@
 (footprint "BatteryHolder_MPD_BU2032SM-BT-GTR" (version 20240108) (generator pcbnew)
   (layer "F.Cu")
-  (descr "MPD BU2032SM-BT-GTR SMT CR2032 holder; manufacturer drawing rev G, 2023-08-18. Pads 3.20 x 4.20 mm on 29.30 mm centers. Assembly envelope includes the installed cell, 31.86 x 22.40 mm. Courtyard includes an explicit 10.50 x 4.00 mm removal-tool access extension on the +Y side.")
+  (descr "MPD BU2032SM-BT-GTR SMT CR2032 holder; manufacturer drawing rev G, 2023-08-18. Pads 3.20 x 4.20 mm on 29.30 mm centers. Assembly envelope includes the installed cell, 31.86 x 22.40 mm. Stepped courtyard follows terminal/plastic/round-body envelopes with 0.25 mm margin; includes an explicit 10.50 x 4.00 mm removal-tool access extension on the +Y side.")
   (tags "MPD BU2032SM-BT-GTR CR2032 coin cell holder SMT")
   (attr smd)
   (fp_text reference "REF**" (at 0 -12.7) (layer "F.SilkS")
@@ -34,14 +34,14 @@
   (fp_rect (start -15.93 -11.2) (end 15.93 11.2) (stroke (width 0.1) (type solid)) (fill none) (layer "F.Fab"))
   (fp_circle (center 0 0) (end 11.2 0) (stroke (width 0.1) (type solid)) (fill none) (layer "F.Fab"))
   (fp_rect (start -5.5 -3.5) (end 5.5 3.5) (stroke (width 0.1) (type dash)) (fill none) (layer "F.Fab"))
-  (fp_line (start -16.25 -11.45) (end 16.25 -11.45) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
-  (fp_line (start 16.25 -11.45) (end 16.25 11.45) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
-  (fp_line (start 16.25 11.45) (end 5.25 11.45) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
-  (fp_line (start 5.25 11.45) (end 5.25 15.45) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
-  (fp_line (start 5.25 15.45) (end -5.25 15.45) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
-  (fp_line (start -5.25 15.45) (end -5.25 11.45) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
-  (fp_line (start -5.25 11.45) (end -16.25 11.45) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
-  (fp_line (start -16.25 11.45) (end -16.25 -11.45) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
+  
+  
+  
+  
+  
+  
+  
+  
   (pad "1" smd roundrect (at -14.65 0) (size 3.2 4.2) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.08))
   (pad "2" smd roundrect (at 14.65 0) (size 3.2 4.2) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.08))
 	(model "${KIPRJMOD}/lib/BU2032SM-BT-GTR.STEP"
@@ -55,4 +55,54 @@
 			(xyz -90 0 0)
 		)
 	)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(fp_line (start -16.5 -2.65) (end -14.55 -2.65) (stroke (width .05) (type solid)) (layer "F.CrtYd"))
+(fp_line (start -14.55 -2.65) (end -14.55 -8.25) (stroke (width .05) (type solid)) (layer "F.CrtYd"))
+(fp_line (start -14.55 -8.25) (end -11.45 -8.25) (stroke (width .05) (type solid)) (layer "F.CrtYd"))
+(fp_line (start -11.45 -8.25) (end -11.45 -11.45) (stroke (width .05) (type solid)) (layer "F.CrtYd"))
+(fp_line (start -11.45 -11.45) (end 11.45 -11.45) (stroke (width .05) (type solid)) (layer "F.CrtYd"))
+(fp_line (start 11.45 -11.45) (end 11.45 -8.25) (stroke (width .05) (type solid)) (layer "F.CrtYd"))
+(fp_line (start 11.45 -8.25) (end 14.55 -8.25) (stroke (width .05) (type solid)) (layer "F.CrtYd"))
+(fp_line (start 14.55 -8.25) (end 14.55 -2.65) (stroke (width .05) (type solid)) (layer "F.CrtYd"))
+(fp_line (start 14.55 -2.65) (end 16.5 -2.65) (stroke (width .05) (type solid)) (layer "F.CrtYd"))
+(fp_line (start 16.5 -2.65) (end 16.5 2.65) (stroke (width .05) (type solid)) (layer "F.CrtYd"))
+(fp_line (start 16.5 2.65) (end 14.55 2.65) (stroke (width .05) (type solid)) (layer "F.CrtYd"))
+(fp_line (start 14.55 2.65) (end 14.55 8.25) (stroke (width .05) (type solid)) (layer "F.CrtYd"))
+(fp_line (start 14.55 8.25) (end 11.45 8.25) (stroke (width .05) (type solid)) (layer "F.CrtYd"))
+(fp_line (start 11.45 8.25) (end 11.45 11.45) (stroke (width .05) (type solid)) (layer "F.CrtYd"))
+(fp_line (start 11.45 11.45) (end 5.25 11.45) (stroke (width .05) (type solid)) (layer "F.CrtYd"))
+(fp_line (start 5.25 11.45) (end 5.25 15.45) (stroke (width .05) (type solid)) (layer "F.CrtYd"))
+(fp_line (start 5.25 15.45) (end -5.25 15.45) (stroke (width .05) (type solid)) (layer "F.CrtYd"))
+(fp_line (start -5.25 15.45) (end -5.25 11.45) (stroke (width .05) (type solid)) (layer "F.CrtYd"))
+(fp_line (start -5.25 11.45) (end -11.45 11.45) (stroke (width .05) (type solid)) (layer "F.CrtYd"))
+(fp_line (start -11.45 11.45) (end -11.45 8.25) (stroke (width .05) (type solid)) (layer "F.CrtYd"))
+(fp_line (start -11.45 8.25) (end -14.55 8.25) (stroke (width .05) (type solid)) (layer "F.CrtYd"))
+(fp_line (start -14.55 8.25) (end -14.55 2.65) (stroke (width .05) (type solid)) (layer "F.CrtYd"))
+(fp_line (start -14.55 2.65) (end -16.5 2.65) (stroke (width .05) (type solid)) (layer "F.CrtYd"))
+(fp_line (start -16.5 2.65) (end -16.5 -2.65) (stroke (width .05) (type solid)) (layer "F.CrtYd"))
 )

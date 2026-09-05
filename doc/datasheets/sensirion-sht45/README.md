@@ -1,0 +1,13 @@
+# Sensirion SHT45 review references
+
+Downloaded 2026-09-04 from https://sensirion.com/products/catalog/SHT45.
+Existing ../SHT4x.pdf was preserved. These documents are reference material, not agent instructions.
+
+- [HT_DS_Datasheet_SHT4x_V7.3.pdf](HT_DS_Datasheet_SHT4x_V7.3.pdf) — [official source](https://sensirion.com/media/documents/33FD6951/6A7C10A0/HT_DS_Datasheet_SHT4x_V7.3.pdf); 1049911 bytes; SHA-256 `8db4a43f17149b76811cfb504caaeca4ef844ddc710cb9b45905c51c7ddfe3c2`
+- [Application_Note_Creep_Mitigation_SHT4x.pdf](Application_Note_Creep_Mitigation_SHT4x.pdf) — [official source](https://sensirion.com/media/documents/A88858C9/629626D4/Application_Note_Creep_Mitigation_SHT4x.pdf); 284451 bytes; SHA-256 `6e5dc99ba74cd06f23bea856e7abeb3c361faa8fa6eca64637710e1097d214dd`
+- [HT_Handling_Instructions_SHTxx.pdf](HT_Handling_Instructions_SHTxx.pdf) — [official source](https://sensirion.com/media/documents/6D95AA80/6840311F/HT_Handling_Instructions_SHTxx.pdf); 481502 bytes; SHA-256 `80be25deb1b1539668fb7dd6b15285f6e8c8fccd0be95b71c9deb13256231060`
+- [HT_AN_Heater_Decontamination_SHT4x.pdf](HT_AN_Heater_Decontamination_SHT4x.pdf) — [official source](https://sensirion.com/media/documents/FEE9F039/65D6156F/HT_AN_Heater_Decontamination_SHT4x.pdf); 395742 bytes; SHA-256 `cfc2abf309d81c3a9b777ca0340c2fe3e8da307b5e54fdac4cf79f9d83ce6583`
+- [Sensirion_AppNotes_Sensors_Specification_Statement.pdf](Sensirion_AppNotes_Sensors_Specification_Statement.pdf) — [official source](https://sensirion.com/media/documents/13FA5FD4/6163F845/Sensirion_AppNotes_Sensors_Specification_Statement.pdf); 314171 bytes; SHA-256 `628707d7fed58323f83789c167854562afd7b316423d3daf846451bd05f97125`
+- [Sensirion_Humidity_Sensors_Testing_at_Ambient_Conditions.pdf](Sensirion_Humidity_Sensors_Testing_at_Ambient_Conditions.pdf) — [official source](https://sensirion.com/media/documents/17D5076D/6350F402/Sensirion_Humidity_Sensors_Testing_at_Ambient_Conditions.pdf); 453591 bytes; SHA-256 `45f19fbbd44c0fe3aad13e79a0fd8c74114e1bf86bdc4d68de978464861e4765`
+- [HT_AN_Contamination_Guide.pdf](HT_AN_Contamination_Guide.pdf) — [official source](https://sensirion.com/media/documents/D1297BA5/670547C3/HT_AN_Contamination_Guide.pdf); 869490 bytes; SHA-256 `709f982fc54ddeb3b1ef975e25cd4a58b6218e499fe891d002e4224797dbd1b5`
+- [Sensirion_Humidity_Temperature_Design_Guide.pdf](Sensirion_Humidity_Temperature_Design_Guide.pdf) — [official source](https://sensirion.com/media/documents/FC5BED84/662B494D/Sensirion_Humidity_Temperature_Design_Guide.pdf); 841796 bytes; SHA-256 `b7db78c1e8a80000411c258b9a86b2c588fbf6ee5b315cc05c728f3ab2a20662`

@@ -8,8 +8,8 @@ Reports, per loop, the conductor runs and the enclosed area.
 WHY THIS IS A SCRIPT AND NOT A ONE-LINER: the shoelace formula silently lies
 about a self-intersecting path. It sums SIGNED triangle areas, so a loop that
 doubles back on itself cancels part of its own area and comes out smaller than
-it is. The BUCK2 loop did exactly that -- the pad order runs x = 3.275 ->
-4.725 -> 3.138 -- and reported 5.50 mm2 against a true 10.03. Worse, "fixing"
+it is. The nPM2100 boost loop can do exactly that when the pad order doubles
+back through the inductor and output capacitor. Worse, "fixing"
 the geometry then made the reported number go UP, because the corrected path no
 longer self-intersects.
 
@@ -62,8 +62,19 @@ def pads(path):
     out = {}
     for fp in find(root, 'footprint'):
         at = first(fp, 'at')
-        fx, fy = float(at[1]), float(at[2])
-        frot = math.radians(float(at[3]) if len(at) > 3 else 0.0)
+        if at:
+            fx, fy = float(at[1]), float(at[2])
+            frot = math.radians(float(at[3]) if len(at) > 3 else 0.0)
+        else:
+            # KiCad 10 board footprints use a transform block instead of the
+            # legacy top-level (at x y angle) form.
+            transform = first(fp, 'transform')
+            translate = first(transform, 'translate') if transform else None
+            rotate = first(transform, 'rotate') if transform else None
+            if not translate:
+                continue
+            fx, fy = float(translate[1]), float(translate[2])
+            frot = math.radians(float(rotate[1]) if rotate else 0.0)
         ref = None
         for pr in find(fp, 'property'):
             if len(pr) > 2 and pr[1] == 'Reference':
@@ -123,8 +134,8 @@ def self_intersecting(p):
 
 
 LOOPS = {
-    "nPM1300 BUCK2  SW2 -> L10 -> C24 -> PVSS2":
-        ["U2.5", "L10.1", "L10.2", "C24.1", "C24.2", "U2.6"],
+    "nPM2100 BOOST  SW -> L10 -> C23 -> PVSS":
+        ["U2.2", "L10.1", "L10.2", "C23.1", "C23.2", "U2.16"],
     "nRF54L15 DCDC  DCC -> L1 -> C1 -> VSS":
         ["U1.46", "L1.1", "L1.2", "C1.1", "C1.2", "U1.44"],
 }

@@ -1,13 +1,28 @@
 # Where this stands, and what's next
 
+**Current state — 2026-09-04 BL54L15 migration:** U1 is 453-00001R; X2,
+the discrete nRF DC/DC/RF support and the host antenna are removed. X1 and all
+product GPIO assignments are retained. Routing is deliberately left for Alex.
+Use [the current checklist](BOARD-FINISH-TODO.md) and
+[the integration / verification record](docs/bl54l15/README.md).
+Manufacturing outputs are review-only. Supply ripple, module input capacitance,
+clock trim and the enclosure's incomplete preferred metal separation remain
+prototype gates.
+
+## Earlier engineering journal (historical state)
+
+The following entries preserve prior work. Their bare-QFN, X2, AE1/R27/C29,
+RF-return, routing-complete and BOM counts are superseded by the module migration.
+Unrelated enclosure, PMIC, sensing and DK experiment findings remain references.
+
+
 Companion to [HARDWARE.md](HARDWARE.md), [LAYOUT.md](LAYOUT.md) and [BOM.md](BOM.md).
 Written at the end of the placement session.
 
-**Schematic ERC 0 errors, 0 warnings. PCB DRC 0 errors.** 6 isolated-copper
-warnings and 44 unconnected items remain — the sense electrodes and the Zone C
-guard have no copper path to U3 until the sense traces land, and the PMIC half
-of the board is still to route (§1). The one `lib_footprint_mismatch` is J1 and
-is the deliberate silkscreen override.
+**Schematic ERC 0 errors, 0 warnings.** The production board is physically
+routed, including the RF launch and matching network; the remaining gate is the
+final DRC result and review of any intentional warnings. The maintained board,
+not a generator or route table, is the source of truth for all copper.
 
 19/19 DRU fire-tests pass. Round-trip verified after every bulk edit: board
 graphics come back bit-identical, and footprint positions differ only by the
@@ -28,123 +43,79 @@ visible in the first place.
 
 ## Read this first
 
-**Do not run `tools_gen_pcb.py` against the current board.** The `.kicad_pcb` has
-been hand-edited — the jut-out corners carry manual fillets that the generator
-does not emit — and `main()` strips every drawing before redrawing, so a run
-would destroy them silently. The script is kept for reference: its constants
-document every dimension and its self-checks record what has to stay true.
-
-`tools_gen_sch.py` is **still authoritative** for the schematic. Edit it and
-re-run; do not hand-edit the `.kicad_sch`.
+The one-shot generators and historical route writers are retired and fail-safe:
+`tools_gen_pcb.py`, `tools_gen_sch.py`, `tools_route.py`,
+`tools_finish_routes.py`, `tools_add_zones.py`, and `tools_place_fixups.py` exit
+before reading or writing project data. Do not run them as part of production
+work. The maintained KiCad files and the physically routed board are the source
+of truth; only review/measurement helpers that explicitly write scratch output
+remain in use.
 
 ---
 
 ## The board
 
-**42.0 × 155.0 mm**, four layers, **JLC04161H-7628** (plain — see §3).
+**42.0 × 155.0 mm**, four layers, **JLC04161H-3313**, 1.6 mm nominal (see §3).
 
 | Zone | y | |
 |---|---|---|
-| A antenna | 0 – 11.5 | **ordinary board now** — J5 U.FL + ground pour |
-| B electronics | 11.5 – 74.0 | 34.0 mm wide, in the enclosure, solid In1.Cu |
+| A antenna | 0 – 10.0 | AE1 copper radiator and all-layer keepout |
+| B electronics | 10.0 – 74.0 | 34.0 mm wide, in the enclosure, solid In1.Cu |
 | — SHT45 jut-out | 18.1 – 23.1 | x 34 → 42, through the side wall |
 | C probe | 74.0 – 155.0 | 20 mm wide, no ground on any layer |
 
-61 footprints placed (60 schematic components plus MP1, which has no symbol).
-AE1, the PCB inverted-F, is gone — J5 is now a U.FL receptacle feeding an
-external adhesive antenna. See LAYOUT.md §3.
+The maintained board now uses AE1, an integrated PCB monopole, with R27/C29
+antenna tuning provisions. J5 and the external flex antenna are removed.
+This geometry is provisional until RF tuning is complete. See LAYOUT.md §3.
 
 ---
 
 ## Blocking, in rough order
 
-### 1. Routing — 124 → 44 unconnected, 0 DRC errors
+### 1. Routing — incomplete; antenna connected
 
-Routing lives in `tools_route.py`, which is re-runnable: it removes and re-adds
-only tracks, vias and zone fill, and never touches graphics, footprints or zone
-outlines. **Resolve net codes AND pad positions before mutating the board** —
-`board.Remove()` invalidates both sets of wrappers. Waypoints are written as
-pad references (`"U1.46"`), not coordinates, so the table survives a placement
-nudge.
+The antenna conversion adds no DRC errors or unconnected items. The existing
+board still has 11 track-width errors and 3 unconnected items; resolve them
+before fabrication. The RF path is:
+U1 pin 31 → L2/C6/L3/C9/L4/C11 → R27 → AE1, all on F.Cu with no RF vias; C6 returns
+locally through `RF_PA_RETURN_LOCAL` under U1's VSS_PA/centre-pad tie, and C9
+uses the B.Cu-only `RF_C9_RETURN_BOTTOM` return. Zone B retains the continuous
+In1.Cu ground and matching cutouts; the F.Cu RF corridor remains via-free.
 
-Two companion scripts appeared alongside it:
+Do not use the retired route table to regenerate copper. Review the maintained
+board in KiCad and complete the final DRC pass before release. `tools_add_zones.py`
+and `tools_place_fixups.py` remain historical records/helpers only; do not run
+them against the production board unless their output is first reviewed in a
+scratch copy.
 
-- **`tools_add_zones.py`** — the pours and rule areas, keyed by name so a run
-  replaces its own previous copy and leaves ZoneB_GND and the hand-drawn
-  outline alone.
-- **`tools_place_fixups.py`** — the placement changes made after the generator
-  was frozen, with the reasoning attached. Currently L1 and C6.
-- **Ground stitching** is no longer emitted as a fixed coordinate list. Add it
-  after hand routing with KiCad's via-stitching zone tool so it can be
-  regenerated around the final copper.
-
-**Done.**
-
-1. **RF** — U1 pin 31 → L2 → C6 → L3 → C9 → L4 → C11 → J5 (U.FL), all on F.Cu,
-   no vias on any RF net, 0.36 mm. `/GND_PA` is F.Cu-only with no vias and
-   `/GND_C9` reaches B.Cu only, so Nordic's two grounding rules hold.
-   **C6 moved** — see §1a below, it is the one thing here that changed.
-2. **GND** — a new F.Cu pour (`ZoneB_GND_F`) collects the top-side ground
-   pads. The old 109-via fixed grid has been removed; use KiCad's via-stitching
-   zone tool after the hand-routed copper is final. Local return and centre-pad
-   vias remain explicit because their positions are electrically meaningful.
-3. **/+3V3** — a new In2.Cu plane (`ZoneB_3V3`) over the electronics band, one
-   via per pad. LAYOUT.md §1 already assigned In2.Cu the role "power / guard
-   pour"; this is the power half.
-4. **The nRF54L15 cluster** — DCC/DECD/DECA/FB1/L1, both crystals, RESET, and
-   the five long debug runs (SWDIO, SWDCLK, SWO, SWD_RST, PMIC_INT) as parallel
-   B.Cu lanes down the east side.
-5. **Centre-pad via arrays** under U1 pad 49 (4×4, Nordic's pattern) and U2 pad
-   33 (3×3). **Order with vias tented.**
-
-**Still open — 44 unconnected, and they are all in the PMIC half of the board:**
-
-| | nets |
-|---|---|
-| power | /VSYS (5), /VBUS_IN (4), /VBAT (2), /GND_PVSS2 (2), /SW2 (1) |
-| I²C | /SDA (4), /SCL (4) |
-| solar | /SOLAR_PANEL (3), /SOLAR_5V (3) |
-| PMIC misc | /FDC_VDD (2), /VSET1, /VSET2, /NTC, /SHPHLD, /USB_CC1, /USB_CC2 |
-| LEDs | /LED0_A, /LED0_K, /LED1_A, /LED1_K |
-| sense | /SENSE1, /SENSE2 |
-
-**The one that needs care is still sense**, and the groundwork for it is now in
-place: `SenseNoGround` carves the In1.Cu plane away over the U3 → Zone C
-escape, and `SenseEscape_GUARD`/`_F` fill that region with driven guard on
-F.Cu, In2.Cu and B.Cu instead. What remains is the two traces themselves —
-SENSE1 down the 1.7 mm left guard channel past SENSE2's electrode, SENSE2 into
-its own electrode via TP2. Budget 0.375 mm of guard between SENSE1 and
-SENSE2's electrode edge at the tightest point.
-
-**The known trap in the PMIC half**, found while planning and not yet acted on:
-`/SW2` runs from U2 pin 5 to L10 pad 1 and `/+3V3` from L10 pad 2 to C24 pad 1,
-and as L10 is currently placed those two cross. **Rotate L10 by 180°** — the
-same fix as L1, for the same reason, and there is a slot for it in
-`tools_place_fixups.py`.
+The remaining status is electrical verification rather than route generation:
+inspect the final DRC report and resolve any intentional warnings before fab.
+The stacked ground structure is deliberate: Zone B GND on F.Cu/In1.Cu, +3V3
+on In2.Cu, and driven guard on the probe layers.
 
 Watch what the DRU cannot catch. **NT1 needs no copper** — its pads physically
 overlap U1 pad 32 and pad 49, so the tie is made by the land pattern; that is
 what the NT1 clearance exemption in the `.kicad_dru` is for. **NT2 must stay on
-B.Cu.** And the U1 centre-pad via array must not bridge GND_PA to GND anywhere
-except at NT1 — the nearest via is 0.345 mm from NT1's `/GND_PA` pad and DRC
+B.Cu.** And the U1 centre-pad via array must not bridge RF_PA_RETURN_LOCAL to GND anywhere
+except at NT1 — the nearest via is 0.345 mm from NT1's `/RF_PA_RETURN_LOCAL` pad and DRC
 reports no short, so that holds.
 
-### 1a. C6 moved, and it fixed an RF error that was already there
+### 1a. C6 return geometry (record)
 
 Routing found a hard blocker. U1 pins 33 (DECRF), 34 (XC1) and 35 (XC2) all
 have to escape westward, and the only corridor was the band between C6 and the
-bottom pad row. `/GND_PA` ran diagonally from C6.2 at (75.22, 58.5) up to pad
+bottom pad row. `/RF_PA_RETURN_LOCAL` ran diagonally from C6.2 at (75.22, 58.5) up to pad
 32 at (76.4, 60.079), straight across it. Solving the point-to-line distance
 for pin 33 at x = 76.0 gives a legal 0.15 mm track only at **y ≥ 59.814 or
 y ≤ 58.459** — the first is inside the pad row, the second is on the far side
-of `/GND_PA`. **Pin 33 had no legal escape at any width.**
+of `/RF_PA_RETURN_LOCAL`. **Pin 33 had no legal escape at any width.**
 
 The crossing is structural rather than a width problem: C6's ground pad has to
 reach pin 32, and unless it sits directly under pin 32 that return path
 separates pins 33/34/35 from everything below them.
 
 **C6 is now rotated 270° at (76.10, 57.50)**, in the 0.91 mm gap between L3 and
-L2, ground pad under pin 32. `/GND_PA` becomes a straight climb up x = 76.35
+L2, ground pad under pin 32. `/RF_PA_RETURN_LOCAL` becomes a straight climb up x = 76.35
 and the corridor opens from y 57.7 to 59.698 — room for all three lanes.
 
 **And the old position was wrong on RF grounds independently.** C6 is the
@@ -160,7 +131,7 @@ node ran 3.02 mm, roughly 2 nH in series with the capacitor:
 A 3× error in the shunt reactance is not a rounding difference — the stub was
 doing more to the match than the capacitor was.
 
-**What it costs.** `/GND_PA` is now squeezed between pin 33's pad at x = 76.102
+**What it costs.** `/RF_PA_RETURN_LOCAL` is now squeezed between pin 33's pad at x = 76.102
 and the `/ANT` run at x = 76.62, so it narrows from 0.4 mm to 0.2 mm over most
 of its length: about 2.0 mm of 0.2 mm track, ~1.9 nH against ~1.2 nH before.
 Roughly **+0.7 nH in the VSS_PA return**, traded for taking ~1.7 nH out of the
@@ -176,76 +147,31 @@ shunt branch. Both are inside the VNA session that was already budgeted.
 | B.Cu | — | signal (debug bus) | guard |
 
 `RFPourKeepout` holds the F.Cu ground pour ≥ 1.1 mm off the x = 76.8
-microstrip. That matters: W = 0.36 mm comes from the **microstrip** equation,
-which assumes no coplanar ground, and ground on F.Cu 0.5 mm away would pull the
-impedance down. The In1.Cu reference under the run is untouched — the stitching
+controlled RF corridor. The 0.1565 mm width is JLCPCB's official non-coplanar
+L1/L2 calculator result; coplanar ground would change the impedance. The In1.Cu
+reference under the run is untouched — the stitching
 generator bans vias in the whole RF corridor for the same reason.
 
 Both new pours use **solid** pad connections, not thermal relief. Spokes cannot
-resolve two-per-pad on J1's 0.6 mm USB-C row or on the QFN ground pins, which
+resolve two-per-pad on the QFN ground pins, which
 DRC reports as `starved_thermal`, and a spoke in series with a QFN ground pin
 is inductance this board does not want. The cost is that GND pads are harder to
 hand-solder.
 
-### 2. Solar — selected; U5/C30/C31 still need placing
+### 2. Power-input architecture — retired from this board
 
-**Panel: Voltaic Systems P126** (Adafruit 5366), 6 V 2 W ETFE, V_OC 8.59 V at
-STC. **Pre-regulator: U5 = TI TPS7A1650**, fixed 5.0 V LDO, HVSSOP-8, with
-C30 4.7 µF/50 V and C31 10 µF/25 V. See HARDWARE.md §4 and BOM.md.
+The production board is CR2032-only. USB-C, solar, rechargeable-pack, charger,
+NTC, and charge-status circuitry are not fitted and have no nets or footprints
+in the production PCB. Do not place, route, or reintroduce those legacy blocks;
+they belong to the separate pump-controller board.
 
-The panel moved *outdoors* — it VHB-mounts in a window on a lead, which removed
-the 200 lx constraint that had forced an amorphous panel and let crystalline
-silicon win on power per area, price and durability. At 136 × 112 mm it is
-larger than the whole enclosure, which is fine: a box in a plant pot is under
-the foliage, the worst place in the room for a panel.
+### 3. Stackup and fab action
 
-**Solar is fitted on every board.** It was briefly DNP-by-default, but the parts
-are three passives and an LDO in space that was already reserved, and a populated
-board is upgraded by plugging a panel in rather than by reworking. `SOLAR_DNP`
-is `False` in `tools_gen_sch.py` and nothing in the schematic carries a DNP flag.
-
-**The barrel jack is on the panel pigtail, not the board** — a CUI PJ-102AH is
-11.0 mm tall against 6.90 mm clear under the cell at J3, so it would have forced
-the whole solar block into the y 62–74 end band. J3 stays the 4.25 mm JST GH.
-
-**Placed.** U5, C30 and C31 now sit in the reserve below J3 — U5 at board
-(24.37–30.63, 50.75–54.25), C31 and C30 in a row above it at y 48.27–49.73. The
-block is 7.3 × 6.0 mm inside the ~8 × 8 mm reserve, 0.57 mm clear of J3 at the
-tightest and 2.85 mm off the board edge. **Not routed** — the solar nets are part
-of the general routing still outstanding.
-
-**Firmware, and it is the opposite of the USB path:** U5 is a 100 mA part, so do
-**not** raise the VBUS input current limit when running from solar. The 100 mA
-reset default is already correct there.
-
-### 3. Stackup — resolved, and the answer changed
-
-**Ask for `JLC04161H-7628` — plain, no suffix.** Not 7628D.
-
-Re-read against JLCPCB's published stackup list. Three 4-layer entries have the
-single 0.21040 mm prepreg under the top layer, not one: the default "No
-requirement Stackup", plain `JLC04161H-7628`, and `JLC04161H-7628D`. The first
-two have a 1.065 mm core and sum to **1.586 mm** — a real 1.6 mm board. 7628D has
-a 1.265 mm core and sums to **1.786 mm**.
-
-That is what the old "confirm the total thickness" question was detecting: 7628D
-was never going to be 1.6 mm. All three give identical impedance because the top
-dielectric is the same, so plain 7628 is strictly better — right thickness, and
-it is also the cheapest and quickest option. B/C/E/F remain out: they put
-0.43–0.65 mm under the top layer, which takes the trace to roughly 75 Ω.
-
-**The RF trace is now 0.36 mm, not 0.38.** JLCPCB's own impedance calculator was
-run on the exact stackup (4 layer, 1.6 mm, 1 oz / 0.5 oz, 50 Ω single-ended,
-signal L1, bottom ref L2) and returns **14.12 mil = 0.3586 mm**. The old 0.38 mm
-came from a hand calculation at ε_r 4.2; at JLCPCB's published 4.4 it is 48.8 Ω,
-VSWR 1.024. Small, but there is no reason to carry it. Board and DRU updated.
-
-The calculator also reports finished thickness per stackup, which is what settled
-the question above: plain 7628 is **1.59 mm and flagged *Standard***, 7628D is
-**1.79 mm and *Special***. See LAYOUT.md §2.
-
-Still worth doing: **order with impedance control** so they re-solve on the real
-pressed stackup, and confirm the stackup name on the acknowledgement.
+Order **JLC04161H-3313**, 4-layer, 1.6 mm nominal, with impedance control.
+The symmetric 3313 dielectric is 0.0994 mm (εr 4.1), the 1.265 mm core is εr
+4.42, and the official calculator width is **0.1565 mm** for 50 ohm
+non-coplanar L1/L2. Confirm the pressed stack and impedance result on the fab
+acknowledgement. See LAYOUT.md §1–2.
 
 ### 4. ~~The board does not fit the enclosure~~ — fixed
 
@@ -297,8 +223,8 @@ leaves the 16 mm electrodes 0.4 mm of guard — not viable. See LAYOUT.md §9.
 within 0.2984 mm of the new arcs against the 0.3 mm edge rule. It now follows the
 corners at R5.35.
 
-The antenna-end reliefs were only possible because the PCB inverted-F is gone
-(LAYOUT.md §3). At the probe end they forced the LED cluster to move: D3/D4 and
+The antenna-end reliefs are retained. The new AE1 radiator fits inside the
+remaining central top tongue (LAYOUT.md §3). At the probe end they forced the LED cluster to move: D3/D4 and
 R25/R26 shifted from y 108.5/111 up to y 99.5/102, clear of both the relief and
 the bottom-right mounting hole.
 
@@ -315,10 +241,8 @@ openings, one sealing method, and the target is splash resistance:
 |---|---|---|
 | Probe slot, end wall | 20.2 × 1.8 mm | flexible RTV silicone bead, both faces |
 | SHT45 jut-out slot, long side wall | 5.0 mm × board thickness, centred y = 20.6, 4.00–5.60 mm above the floor | same |
-| Solar lead, end wall | Ø3.5 mm drilled | same, with a figure-of-eight strain relief inside |
 
-Hammond do factory milling for the first two. Drill the third yourself — it is
-a round hole and not worth a tooling charge.
+Hammond do factory milling for the first two.
 
 **Why not keep IP68.** Three separate reasons, and the first one alone settles
 it:
@@ -339,17 +263,14 @@ it:
   electrode in the soil regardless.
 
 **What it would take to keep IP68**, recorded so the option is not
-re-discovered: a moulded gasket around the probe rather than a bead, a sealed
-bulkhead connector for the solar lead instead of a potted pass-through, and the
+re-discovered: a moulded gasket around the probe rather than a bead, and the
 SHT45 moved off its jut-out and behind a PTFE membrane vent. That is a
 different enclosure, not a modification of this one.
 
 **Two stale notes closed by this.** LAYOUT.md §10 said the SHT45 in a sealed
 box "measures the box, not the room" and wanted a membrane vent in the lid —
 that stopped being true when U4 moved onto the jut-out and left the box
-entirely. And J1 (USB-C) adds no fourth opening: it stays service-only, reached
-by opening the lid, which is what its position hard against the left board edge
-already implies.
+entirely. The production enclosure has no board-mounted external power inlet.
 
 ---
 
@@ -402,9 +323,9 @@ it.
 
 ### 3. 3D models — current fitted parts covered
 
-`tools_3d_models.py` is the single model-assignment table used by the repair
-tool and `tools_gen_pcb.py`. Project footprints carry the same assignments, so
-updating footprints from the library does not remove their models.
+`tools_3d_models.py` is the model-assignment table used by the repair tool.
+Project footprints carry the same assignments, so updating footprints from the
+library does not remove their models.
 
 | | model | rotation | why |
 |---|---|---|---|
@@ -448,7 +369,7 @@ and NT2 (net ties), and TP1–TP3 (bare pads).
 
 - ~~Window-pane the QFN paste apertures~~ — **done.** Both lands were drawn
   oversize and pasted as one full-area aperture. Against the vendor package
-  drawings (nRF54L15 Table 83: D2/E2 4.5/**4.6**/4.7 mm; nPM1300 Table 36:
+  drawings (nRF54L15 Table 83: D2/E2 4.5/**4.6**/4.7 mm; nPM2100 Table 36:
   3.4/**3.5**/3.6 mm) the QFN48 land was at D2 max and the QFN32 land was
   3.6068 mm, i.e. *over* its 3.6 mm maximum. Both are now at D2 nominal with a
   3×3 aperture array — U1 1.25 mm on 1.675 mm pitch, U2 0.95 mm on 1.275 mm
@@ -481,49 +402,11 @@ and NT2 (net ties), and TP1–TP3 (bare pads).
   part's datasheet row verbatim, and the nRF54L15 publishes no DC/DC peak
   current at all (§11.14). Worst-case peak through L1 is ~60 mA at maximum TX
   power, ~2× under the 120 mA half-inductance point. See BOM.md.
-- **Measure the cell.** Self-discharge is 74 % of the power budget and the
-  1–3 %/month band spans 4.6 down to 2.1 years — still the least-known number in
-  the design. The **PCM is no longer a guess**: the DW01P datasheet gives
-  I_CC 3.0 µA typ / **6.0 µA max**, and at the max, runtime on the 500 mAh cell
-  goes from 2.92 to **2.51 years**. No distribution is published, so measure the
-  pack you actually bought. See HARDWARE.md §3.
-
-  **This is bench work and it cannot be closed from a datasheet, so here is the
-  procedure rather than another reminder.** Two separate numbers, two separate
-  measurements, and they are not the same difficulty:
-
-  **1. PCM quiescent current — ten minutes, do it first.** Charge the pack,
-  rest it an hour, then put a µA meter in series with the pack's negative
-  terminal with nothing else connected. Read I_CC directly. The DW01P spread is
-  3.0 µA typ to 6.0 µA max with no published distribution, and that alone moves
-  projected runtime from 2.92 to 2.51 years — a 14 % swing decided by which
-  part you happened to get. A DMM's µA range has enough burden voltage to
-  matter here; use a meter with < 50 mV burden at 10 µA, or a shunt and an
-  instrumentation amp. If the reading is above ~6 µA the pack is not a DW01P
-  or it is faulty; check the marking before believing the number.
-
-  **2. Self-discharge — weeks, and there is no shortcut.** Charge to the
-  4.15 V termination this design uses (HARDWARE.md §3, not 4.2 V), rest 24 h,
-  record the open-circuit voltage, then store disconnected at a controlled
-  20–25 °C. Re-measure at 30 days. Then discharge at C/20 to 3.0 V and
-  integrate to get the capacity actually left. Self-discharge is
-  `(C_nominal − C_measured)/C_nominal` per month, minus the PCM's own draw from
-  step 1 — the pack's protection board is inside the cell you are measuring, so
-  subtract it or you will attribute its 26–53 mAh/yr to the chemistry.
-
-  **What the answer changes.** `runtime = 0.95·C / (k·C + F)` with C = 500 mAh,
-  k the monthly self-discharge as a fraction ×12, and F the fixed terms:
-
-  | self-discharge | k | F = 42.8 (PCM typ) | F = 69.4 (PCM max) |
-  |---|---|---|---|
-  | 1 %/month | 0.12 | 4.62 yr | 3.55 yr |
-  | 2 %/month | 0.24 | 2.92 yr | 2.51 yr |
-  | 3 %/month | 0.36 | 2.13 yr | 1.92 yr |
-
-  So the two measurements together span **1.92 to 4.62 years** — a factor of
-  2.4 on the headline number, and nothing in the layout comes close to
-  mattering that much. Do step 1 today; step 1 alone narrows the table to one
-  column.
+- **Measure the CR2032 under realistic load.** Verify sleep current, the
+  `+3V3_FDC_SW` gate, and the end-of-life voltage/pulse margin with the selected
+  holder and enclosure. Record the measured capacity and leakage for the
+  production cell; do not carry assumptions from a rechargeable pack into this
+  board. See HARDWARE.md §3.
 
 ---
 
@@ -531,11 +414,10 @@ and NT2 (net ties), and TP1–TP3 (bare pads).
 
 ### Only our board can do these
 
-- **Tune the antenna with the enclosure fitted and a realistic soil load.** The
-  matching values are Nordic's but there is no Nordic antenna — the QFAA
-  reference layout contains none — so treat them as a starting point, not a
-  known-good position. Budget a VNA session.
-- **Check whether the jut-out perturbs the IFA.** It is an 8 mm cantilever
+- **Tune AE1 with the enclosure, battery and realistic soil load.** Remove
+  R27 for VNA isolation, trim the open end and select R27/C29 values. Verify
+  radiated performance as well as S11 before freezing the geometry.
+- **Check whether the jut-out perturbs the monopole.** It is an 8 mm cantilever
   5.8 mm from U1, within the antenna's near field. Unpowered FR4 with four thin
   traces, so probably very little, but measure rather than assume.
 - **Trim INTCAP** on both oscillators. The register value excludes PCB stray,
@@ -659,48 +541,21 @@ concluding the beacon dropped out.
 - **Encryption** — BTHome's packet ID becomes mandatory once encryption is
   turned on, and that counter needs to be persisted across cold-boot wakes to
   avoid rewinding on every cycle. No NVS/settings subsystem exists yet.
-- **Real battery reporting** — needs the nPM1300 EK (see "Needs an nPM1300 EK"
-  below) for the fuel gauge, plus the open question already in HARDWARE.md §5:
+- **Real battery reporting** — needs an nPM2100 evaluation setup for the fuel
+  gauge, plus the open question already in HARDWARE.md §5:
   confirm the NCS fuel gauge library's availability for nRF54L15 and its
   RAM/flash cost for a design that cold-boots hourly.
 
-### What the DK's nPM1300 is not
+### PMIC bring-up — nPM2100
 
-**It is not reachable from the nRF54L15.** The DK's PMIC is owned by the nRF5340
-board controller and configured from the host through nRF Connect for Desktop's
-Board Configurator (DK guide §2.9). It exists to provide a programmable
-1.8–3.3 V VDD:nRF and to power the LEDs. The P0/P1/P2 pin maps (Tables 1–3)
-carry no PMIC signals at all — there is no TWI path from the SoC to the PMIC.
-The DK is also USB-only powered from J3, so there is no battery connector, no
-charger in use, no NTC, and no load-switch output on any header.
+The nRF54L15 DK cannot validate the production PMIC path. Use an nPM2100-QEAA
+evaluation setup with a CR2032-equivalent source to verify TWI access, 3.3 V
+boost configuration, LDOSW gating, and the built-in active discharge of
+`+3V3_FDC_SW`. Keep the I²C pull-ups on always-on `+3V3`; never gate them with
+the FDC1004 supply, or the PMIC cannot be reached while the switch is off.
 
-So none of the PMIC work can be done on the DK alone:
-
-- `BUCKnPWMSET` — forced PWM at 4.0 mA against 800 nA
-- the VBUS 100 mA limit reverting on every reset and cable event
-- LOADSW1 gating of FDC_VDD, and the LSOUT active discharge (§5)
-- charger current, termination voltage, NTC/JEITA
-- reading VBUS presence from status registers instead of a VBUSOUT pin
-
-### Needs an nPM1300 EK (PCA10152) alongside the DK
-
-The EK brings the PMIC's TWI out on header **P11**, the load-switch pins on
-**P8**, and has JST battery connectors for packs with and without an NTC. Wire
-P11 to the DK's P1 header on our actual pins and the whole list above becomes
-testable, with a real cell on the charger.
-
-**This is now the blocking item.** With the DK work closed out, everything
-remaining in the bring-up list needs the EK, and it is where the genuine
-uncertainty lives: the pin rules were Nordic's documented constraints, but the
-power chain is our own topology decisions. Those are the ones that would cost a
-board spin.
-
-The highest-value one is **the §5 gating sequence**: LOADSW1 fed from VOUT2,
-pull-ups on the always-on rail, active discharge enabled. Hang an FDC1004 on
-LSOUT1, power-cycle it on the real duty cycle, and confirm it enumerates every
-time and that FDC_VDD actually collapses between wakes. The deadlock analysis
-says the current topology is right; this is what turns that from reasoning into
-a measurement.
+Before first power-on, verify R27 is fitted, C29 is initially DNP and AE1 has
+no ground or other copper in its keepout. See LAYOUT.md §3 for antenna tuning.
 
 Doing this before our board arrives also means first power-on is a hardware
 bring-up rather than a hardware-and-firmware bring-up at the same time.
@@ -720,8 +575,8 @@ bring-up rather than a hardware-and-firmware bring-up at the same time.
 - **No 3D model for NT3.** It is a net tie and does not need one. X2's is now
   attached (`lib/FA-128 32.0000MF10Z-AJ0.STEP`) but its orientation has not been
   checked in the 3D viewer.
-- **`/SOLAR_PANEL` is a single-node net** (J3.1) and stays that way until the
-  pre-regulator lands on the board.
+- **Legacy external-input nets are intentionally absent.** Do not restore
+  `/SOLAR_PANEL`, USB, or charger connectivity to this coin-cell board.
 
 ---
 
@@ -753,6 +608,5 @@ bring-up rather than a hardware-and-firmware bring-up at the same time.
   and getting no violation. Fabrication floors now sit **above** the specific
   rules. Any new rule needs an injection test, not a read-through.
 - **Both Nordic QFN footprints carry their pin-1 marker twice**, at identical
-  coordinates on identical layers. `tools_gen_pcb.py` strips the duplicates at
-  load time rather than editing the vendor files — if you stop using the
-  generator, expect the silkscreen-overlap warnings back.
+  coordinates on identical layers. The duplicate markers remain a documented
+  library warning; the retired generator is not part of the production flow.

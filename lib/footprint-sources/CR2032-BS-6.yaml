@@ -1,0 +1,16 @@
+BatteryHolder_LianXin_CR2032-BS-6:
+  library_name: footprints
+  description: "Lian Xin CR2032-BS-6 (C22363833), CR2032 holder; 1.9 x 5 mm lands at +/-15.3 mm, installed cell included in 31.9 x 20.2 mm conservative envelope; height 5.5 mm"
+  datasheet: https://jlcpcb.com/partdetail/C22363833
+  tags: "battery CR2032 SMT C22363833"
+  smd_tht: smd
+  at: [-15.95, 10.1]
+  size: [31.9, 20.2]
+  body_size_tolerance: [0.1, 0.1]
+  automatic_pin1_mark: false
+  extratexts:
+    - [-12, 0, "+", "F.SilkS", 1.5, 1.5]
+    - [12, 0, "-", "F.SilkS", 1.5, 1.5]
+  pins:
+    - ["smd", "1", -15.3, 0, 1.9, 5, 0]
+    - ["smd", "2", 15.3, 0, 1.9, 5, 0]

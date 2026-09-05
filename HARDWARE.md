@@ -1,31 +1,29 @@
 # Indoor Capacitive Soil Moisture Sensor — Hardware Design
 
-nRF54L15-QFAA · nPM2100 (QFN16) · FDC1004 · SHT45 · BTHome v2 over BLE · CR2032
+Ezurio BL54L15 453-00001R · nPM2100 (QFN16) · FDC1004 · SHT45 · BTHome v2 over BLE · CR2032
 
 All values below are cited from the source that was checked. Anything marked
 **[assumed]** has not been verified and needs your sign-off.
 
 **Revision note.** The requirements changed: this is now board 1 of a two-board
 system, a moisture sensor powered by a single user-replaceable CR2032, with
-the data emitted as BTHome over BLE. The nPM1300 was replaced by the nPM2100, a
-primary-cell PMIC, and USB-C input, solar input and the rechargeable pack are deleted
-from this board. Board 2 — the pump controller, battery-or-mains powered —
-inherits the entire nPM1300 charging architecture; the superseded analysis
-lives in this file's git history (commit 1753c18) and in
-`doc/datasheets/nPM1300.pdf`.
+the data emitted as BTHome over BLE. The primary-cell nPM2100 architecture is
+the production design; USB-C input, solar input and the rechargeable pack are
+deleted from this board. The superseded charging analysis is retained only in
+git history for the separate pump-controller board.
 
 ---
 
 ## 1. Power tree
 
 ```
-CR2032 ──► nPM2100 VBAT ──► BOOST ──► VINT ──► VOUT 3.3 V ─┬─► nRF54L15
+CR2032 ──► Q1 reverse PMOS ──► nPM2100 VBAT ──► BOOST ──► VINT ──► VOUT 3.3 V ─┬─► BL54L15
                                    (SW/L1)                ├─► SHT45 (always on)
                                                           └─► I²C pull-ups (always on)
-                    VINT ──► LDOSW ──► FDC_VDD ──► FDC1004 (gated)
+                    VINT ──► LDOSW ──► +3V3_FDC_SW ──► FDC1004 (gated)
 ```
 
-One primary cell, no charging path, no reverse-protection FET (§3). The entire
+One primary cell, no charging path; Q1 provides reverse-polarity protection (§3). The entire
 input section of the old design — USB-C, solar pre-regulator and diode, rechargeable
 pack, NTC — is deleted with the architecture change.
 
@@ -40,7 +38,7 @@ sleeps), so this is one write per battery insertion, not per wake. It must be
 redone after a Hibernate_PT wake or a watchdog power cycle, both of which reset
 the PMIC.
 
-**There is no OTP.** Unlike the nPM1300, the nPM2100 has no factory-programmed
+**There is no OTP.** The nPM2100 has no factory-programmed
 configuration option (PS §10.5 lists only package/build variants), so runtime
 configuration is mandatory and the battery-insert boot path must configure the
 PMIC in a known sequence before any rail-dependent peripheral is enabled.
@@ -64,104 +62,46 @@ capacitance belongs on VINT, not VOUT (nwp_058 §3.2), and CVOUT is capped at
 
 ---
 
-## 2. nRF54L15 support circuitry
+## 2. Ezurio BL54L15 module and external support
 
-From Nordic's **Circuit configuration 1 for QFN48 (QFAA)** — "DCDC: supplied by
-battery or external supply", NFC disabled. Correct config: internal DC/DC on, no NFC.
+U1 is **453-00001R**, the 14 × 10 mm PCB-antenna BL54L15. The µ module
+and MHF4 external-antenna variants are not substitutes. The verified 39-pad
+symbol, footprint coordinates, all-layer keepouts and assembly plan are in
+[the integration record](docs/bl54l15/README.md).
 
-Topology below is **Nordic's QFAA reference layout 0.8**, not a generic
-decoupling scheme. The DC/DC output does *not* return to VDD — it goes
-`DCC → L1 → DECD`, then `DECD → FB1 → DECA`, and **DECA and DECRF are the same
-net**. VDD is fed straight from the 3.3 V rail with no ferrite in the supply path.
+The module integrates the nRF54L15, its DC/DC inductor/filter and internal-rail
+decoupling, 32 MHz crystal, RF matching and PCB antenna. The oscillator load
+banks are inside the SoC and still require firmware configuration. No host
+DCC/DECD/DECA/DECRF, XC1/XC2 or RF feed is exposed.
 
-| Des | Value | Description | FP | Net / pin |
-|---|---|---|---|---|
-| U1 | nRF54L15-QFAA | SoC, QFN48 6×6 mm, 0.4 mm pitch | QFN-48 | — |
-| L1 | 4.7 µH | **MLZ1608M4R7WT000**, I_sat 120 mA, ±20%, DCR 650 mΩ max | 0603 | DCC (46) → DECD (45) |
-| C1 | 2.2 µF | X6T, ±20%, 2.5 V | 0201 | DECD (45) → GND |
-| FB1 | 120 Ω @ 100 MHz | Ferrite bead, 200 mA, 500 mΩ max | 0201 | DECD (45) → DECA (43) |
-| C2 | 2.2 µF | X6T, ±20%, 2.5 V | 0201 | DECA → GND |
-| C12 | 10 nF | X7R, 6.3 V | 0201 | DECA → GND |
-| C5 | 2.2 nF | X7R, ±10%, 10 V | 0201 | DECA → GND |
-| C3 | 10 µF | X6S, ±20%, 6.3 V | 0402 | VDD bulk |
-| C4, C7, C8, C10 | 100 nF | X7R, ±10% | 0201 | one per VDD pin (10, 22, 36, 47, 48) |
-| R1 | 1 kΩ | ±1%, 0.05 W | 0201 | RESET (30) → SWD header |
-| C13 | 3.9 pF | C0G, ±0.25 pF, 50 V | 0201 | RESET (30) → GND |
-| X1 | 32.768 kHz | **CM8V-T1A, C_L = 7 pF, ±20 ppm, drive ≤ 0.5 µW** | 2012 2-pin | XL1 (1) / XL2 (2) |
-| X2 | 32 MHz | **FA-128, C_L = 8 pF, ±40 ppm total, drive ≤ 100 µW** | 2016 4-pad | XC1 (34) / XC2 (35) |
-
-**Things that are easy to get wrong here**, all of which this document got wrong
-before the reference layout was checked:
-
-- **DECRF (33) is not separately decoupled.** It ties to DECA. A 100 nF of its
-  own is not in Nordic's BOM.
-- **FB1 is not in the VDD supply path.** It sits inside the DC/DC filter between
-  DECD and DECA. Putting it in series with VDD is a different circuit.
-- **C13 3.9 pF is the RESET filter, not an RF component.** It appears adjacent to
-  the matching network on Nordic's sheet, which invites exactly that mistake.
-- **C5 2.2 nF is on DECA**, not on RESET.
-
-### Crystal load capacitance — your explicit question
-
-**No discrete load caps on either crystal.** Nordic's reference BOM lists none on
-XC1/XC2 or XL1/XL2, because both oscillators have internal trimmable banks:
-
-- **HFXO:** internal caps **4.0 pF to 17.0 pF in 0.25 pF steps**
-  (`XOSC32M.CONFIG.INTCAP`). X2's C_L = 8 pF is inside that range.
-- **LFXO:** internal caps **3 pF to 18 pF in 0.65 pF steps** (`XOSC32KI.INTCAP`).
-  X1's C_L = 7 pF is inside that range.
-
-You specify the crystal's C_L in part selection and match it in firmware via the
-INTCAP registers. The register value is **not** the capacitance directly — it is
-computed from the desired C_L and per-device factory trim values in `FICR->
-XOSC32MTRIM` / `XOSC32KTRIM`. Note the programmed value is the capacitance seen
-across the crystal terminals **including pin capacitance but excluding PCB
-stray**, so keep the XC1/XC2 and XL1/XL2 traces short and account for stray
-separately. The matching happens in software, not in copper. Budget a
-trim step at bring-up: measure the 32 MHz carrier and adjust INTCAP until the
-frequency error is centred.
-
-**Load capacitance is capped at 9 pF on both oscillators** (§11.9.1/11.9.2:
-C_L 6 pF min, 9 pF max). Most 32.768 kHz crystals ship at 12.5 pF and are simply
-not usable — filter on C_L before anything else. LFXO drive level is also capped
-at **0.5 µW**, which is low. ESR is specified as a curve of max ESR against C0
-for a given C_L (Figure 17), not a single number.
-
-**ppm requirements.** BLE requires ±50 ppm on the active carrier; the datasheet
-states the HFXO requirement as **±40 ppm** for BLE and ±60 ppm for 2.4 GHz
-proprietary. LFXO for BLE is **±500 ppm**, so the ±20 ppm reference part is
-heavily over-specified for our non-connectable advertising — it is just what the
-reference BOM calls for. X2 at ±40 ppm
-*total* (initial + temperature + ageing) leaves 10 ppm margin — tight by design;
-do not substitute a ±50 ppm part. The LFXO's ±20 ppm is far tighter than needed:
-because you advertise **non-connectable only**, there are no connection events, so
-the usual ±500 ppm sleep-clock requirement doesn't bind. Even 250 ppm drifts the
-hourly wake by 0.9 s. The LFXO exists to clock GRTC through System OFF; ±20 ppm is
-over-specified for that, but it is the reference BOM part and the cost delta is nil.
-
-### RF matching network
-
-| Des | Value | Part |
+| Ref | External support retained | Connections |
 |---|---|---|
-| L2 | 2.7 nH | LQP03HQ2N7B02 |
-| L3, L4 | 3.5 nH | LQP03HQ3N5B02 |
-| C6 | 1.5 pF | GJM0335C1E1R5WB01 |
-| C9 | 2.0 pF | GJM0335C1E2R0WB01 |
-| C11 | 0.3 pF | C0G ±0.1 pF, 50 V, 0201 |
+| C3 | Mandatory 10 µF, 16 V X6S, standard 0603 | U1.26 VDD_nRF to GND |
+| X1 | CM8V-T1A, 32.768 kHz, CL 7 pF, ±20 ppm | U1.25 XL1 → X1.1; U1.24 XL2 → X1.2 |
+| R1 / C13 | 1 kΩ series reset / 3.9 pF C0G filter, standard 0402 | SWD_RST → R1 → NRESET; C13 to GND; U1.7 NRESET |
+| R22 / R23 | Existing 4.7 kΩ I²C pull-ups | SDA / SCL to VOUT |
+| J4 | Existing Tag-Connect programming contacts | SWDIO, SWDCLK, reset, SWO, VDD, GND |
 
-Chain: `ANT (31) → L2 → [C6↓] → L3 → [C9↓] → L4 → [C11↓] → antenna`. All three
-shunts go to ground; there is no series element after C11. **C13 is not part of
-this network** — see the RESET note above.
+X1 is retained for timed System OFF/GRTC wake. No discrete crystal load
+capacitors are fitted. **The old claim that the firmware capacitance parameter
+is simply the crystal's 7 pF CL is superseded:** current Nordic guidance defines
+it as the internal capacitor value. Select internal loading, calculate the
+series-equivalent load including module/host parasitics, and measure startup
+and frequency. A 12 pF bank target is an initial estimate for 2 pF additional
+capacitance per leg, not a validated trim. See
+[firmware port notes](firmware/BL54L15-port.md). The old X2 load value must not
+carry over to the module's integrated HFXO.
 
-**Two grounding rules from Nordic, easy to violate and hard to debug:**
-
-1. **C6 ground must connect ONLY to pin 32 (VSS_PA) on the top layer**, and pin 32
-   must connect to pin 49 (centre pad) *only underneath the package*.
-2. **C9 ground must be isolated from all ground layers except the bottom ground
-   layer.**
-
-Nordic notes the antenna filtering components are subject to change — re-check
-against the current reference before ordering.
+**Supply qualification is open.** Ezurio specifies at most 10 mV ripple/noise
+for undisturbed radio operation. nPM2100 LP/ULP ripple is typically 70 mVpp;
+force HP for radio activity as well as FDC measurements and measure at U1.26.
+HP mode alone is not proof of compliance. At nominal values, directly attached
+host VOUT capacitors total 12.3 µF (C3+C25+C27), before module input capacitance;
+verify the nPM2100's 0.7–15 µF effective VOUT range over bias/tolerance including
+the module. Do not add bulk capacitance indiscriminately. Include the switched FDC rail
+capacitance when assessing the enabled load-switch state. Keep the existing
+3.3 V architecture; prototype validation may identify a required supply-filter
+change. This layout is a routing handoff, not a fabrication release.
 
 ---
 
@@ -178,7 +118,7 @@ distributor.
 The design follows Nordic's **reference circuit Configuration 2 — the CR2032
 case** (PS §9.3.2): VSET not connected, CVINT 22 µF, LDOSW fed off VINT. One
 deliberate deviation: Nordic's configuration runs LDOSW as an LDO at reduced
-voltage; we run it as a **load switch passing the boost rail** to FDC_VDD,
+voltage; we run it as a **load switch passing the boost rail** to +3V3_FDC_SW,
 because the FDC1004 wants 3.3 V, not ≤ 3.0 V (§5).
 
 ### Pinout — verified against PS Table 22 (QFN16)
@@ -196,7 +136,7 @@ because the FDC1004 wants 3.3 V, not ≤ 3.0 V (§5).
 | 9 | GPIO1 | — (NC) | spare: boost-force / LDOSW pin-control option |
 | 10 | PG/RESET | /SWD_RST | open-drain, internal pull-up to VINT; watchdog host-reset output — joins the nRF RESET net |
 | 11 | AVSS2 | GND | |
-| 12 | LSOUT/VOUTLDO | /FDC_VDD | load switch output → FDC1004 |
+| 12 | LSOUT/VOUTLDO | /+3V3_FDC_SW | load switch output → FDC1004 |
 | 13 | VOUT | /+3V3 | boost output for the load |
 | 14, 15 | VINT | /VINT | boost decoupling only — no external load |
 | 16 | PVSS | GND | power ground, boost return |
@@ -221,7 +161,7 @@ radio up.
 | Function | Setting | Notes |
 |---|---|---|
 | BOOST VOUT | 3.3 V, TWI-set after startup | VSET NC gives 3.0 V at cold start; see §1 |
-| BOOST mode | Auto (ULP/LP/HP/PT automatic) | forced HP transiently around conversion — §5 |
+| BOOST mode | Auto (ULP/LP/HP/PT automatic) | forced HP around conversion and all radio activity — §§2,5 |
 | LDOSW | **Load switch**, TWI-enabled per wake | OFF by default (PS §6.2); active discharge built in |
 | Watchdog | configurable: host reset or power cycle | covers hangs the SoC's own WDT cannot see |
 | Boot monitor | disabled — SYSGDEN grounded | otherwise arms 10 s after every timer wake (PS §7.2.3) and must be stopped in software; the configurable watchdog replaces it |
@@ -233,13 +173,13 @@ radio up.
 | Des | Value | Description | FP | Net |
 |---|---|---|---|---|
 | U2 | nPM2100-QEAA | PMIC | QFN16 4×4 | — |
-| L10 | Murata DFE201210U-2R2M=P2, 2.2 µH | **I_sat 2 A, DCR 228 mΩ max, ±20%** — no other inductance permitted (nwp_058 §3.1) | 2.00 × 1.20 mm | SW (2) → VINT |
+| L10 | Murata DFE201210U-2R2M=P2, 2.2 µH | **I_sat 2 A, DCR 228 mΩ max, ±20%** — no other inductance permitted (nwp_058 §3.1) | 2.00 × 1.20 mm | SW (2) → protected VBAT (3) |
 | C21 | 10 µF | X5R 6.3 V ±20% | 0402 | VBAT (3) |
 | C22 | 1 nF | X5R | 0201 | VBAT (3) |
 | C23 | 22 µF | X5R 6.3 V ±20% | 0402 | VINT (14/15) |
 | C24 | 1 nF | X5R | 0201 | VINT |
 | C25 | 2.2 µF | X5R 6.3 V ±20% | 0402 | VOUT (13) |
-| C26 | 1 µF | local decoupling at the FDC1004 | 0402 | FDC_VDD (12) |
+| C26 | 1 µF | local decoupling at the FDC1004 | 0402 | +3V3_FDC_SW (12) |
 
 Capacitor notes, from nwp_058 §3.2–3.4 and PS Table 10:
 
@@ -250,7 +190,7 @@ Capacitor notes, from nwp_058 §3.2–3.4 and PS Table 10:
 - **The 1 nF caps are the RF decoupling** Nordic specifies for RF-sensitive
   applications (nwp_058 §3.2/§3.3). This board has a 2.4 GHz radio and a 25 kHz
   capacitive front end; both are fitted.
-- **C26 on FDC_VDD:** load-switch mode needs no output capacitor for the switch
+- **C26 on +3V3_FDC_SW:** load-switch mode needs no output capacitor for the switch
   itself (nwp_058 §3.4), but the FDC1004 still gets local decoupling. 1 µF was
   already the value on the old gated rail (§5); the hourly recharge cost is
   negligible.
@@ -281,23 +221,21 @@ the discharge). Two consequences:
    give firmware the signal to degrade gracefully — shorter wakes, then stop
    advertising — rather than brown-out looping at the cell's knee.
 
-### Reverse battery — accepted risk, documented
+### Reverse battery and ESD — implemented 2026-09-04
 
-The nPM2100 has **no internal reverse-battery protection** (ngl_002 §2): a
-reversed CR2032 forward-biases the ESD structure to ~0.6 V, and the cell's
-10–80 Ω ESR limits the fault current to roughly 30–200 mA. Nordic's own EK
-ships with polarity markings and no protection FET (EK UG, safety notice). A
-keyed holder plus a polarity symbol on the silk is the same protection level as
-Nordic's evaluation hardware. The upgrade path if this ever matters is a single
-PMOS (ngl_002 §4.1 — "excellent protection, some efficiency impact"); a series
-diode is disqualified outright (10–20% efficiency loss at 3 V, ngl_002 §6).
+The former accepted reverse-insertion risk is superseded by Q1 (DMG2305UX-7).
+Drain pin 3 connects to raw BT1 positive, source pin 2 to VBAT, gate pin 1 to GND.
+C21/C22 remain on protected VBAT. D1/D2 clamp raw/protected battery inputs;
+D3–D7 protect the programming interface; D8–D10 cover sense/shield connections.
+R30/R31 add 5.1 kohm sense-input isolation and R32–R35 add 100 ohm debug isolation.
+See [protection implementation and qualification limits](docs/protection/README.md).
 
-The holder is locked as **MPD `BU2032SM-BT-GTR`**. Its footprint follows the
-manufacturer land pattern: two 3.20 × 4.20 mm pads on 29.30 mm centres (32.50 mm
-total copper span), a 31.86 × 22.40 mm assembly envelope, visible polarity, and
-an explicit removal-tool courtyard. It is crosswise at board-local (17.0,42.0),
-positive terminal toward U2. This mechanical/polarity mitigation is the accepted
-architecture; do not add a reverse-protection FET unless that decision is reopened.
+BT1 remains MPD BU2032SM-BT-GTR with its established polarity and removal-tool
+courtyard. Q1 clears the removal-tool area; D1 is on F.Cu beside the positive
+contact. The stepped holder courtyard preserves 0.25 mm body clearance. No PTC or sustained-OVP
+cutoff is fitted. Prototype ESD, leakage, cold-start and sensing validation are
+still required. A single PMOS is not guaranteed reverse-current isolation from
+an externally powered rail into the primary cell; J4 remains a voltage reference.
 
 ### Hibernate vs System OFF — the wake architecture
 
@@ -336,9 +274,8 @@ Board 2 — the pump controller, which is battery *or* mains powered — inherit
 all of it. The superseded analysis (panel selection, pre-regulator comparison,
 the barrel-jack placement argument, the 100 mA VBUS current-limit firmware
 dance) is preserved in this file's git history at commit 1753c18, alongside
-`doc/datasheets/nPM1300.pdf`, `doc/datasheets/TPS7A1650.pdf` and
-`doc/datasheets/RB751V-40.pdf`. Do not carry any of it forward into this
-board's BOM or layout.
+the archived charging-design datasheets. Do not carry any of it forward into
+this board's BOM or layout.
 
 
 ## 5. Sense front end — FDC1004
@@ -348,10 +285,10 @@ board's BOM or layout.
 ```
 VOUT (+3V3, always on) ──┬──[4.7k]── SDA
                          └──[4.7k]── SCL
-(nPM2100 internal: VINT ──► LDOSW ──► FDC_VDD ──► FDC1004 VDD)
+(nPM2100 internal: VINT ──► LDOSW ──► +3V3_FDC_SW ──► FDC1004 VDD)
 ```
 
-**The pullups must be on the always-on VOUT rail, NOT on the switched FDC_VDD.**
+**The pullups must be on the always-on VOUT rail, NOT on the switched +3V3_FDC_SW.**
 
 Gating the pullups from the switched rail is the textbook answer to the
 back-powering trap, and it is what this design originally did. It is a
@@ -376,7 +313,7 @@ not apply to the FDC1004 on its bus pins. Gate the supply, leave the bus alone.
 
 **The LSOUT active discharge is built in.** PS §6.2: *"The LSOUT/VOUTLDO pin is
 actively discharged when LDOSW is disabled"* — pull-down VLDOSWPD = 2 kΩ (PS
-Tables 11–12). No register dance; FDC_VDD is driven to ground between wakes
+Tables 11–12). No register dance; +3V3_FDC_SW is driven to ground between wakes
 rather than floating, which is the exact condition the old design had to
 configure by hand.
 
@@ -406,7 +343,7 @@ VOUTLP_RIPPLE — and note the LP/ULP average sits 50 mV above target, VOUTLP) �
 that injects **0.95 fF** of error against a ±6 fF budget, roughly 16% of it,
 before you have measured anything. Forcing High Power mode for the conversion
 window cuts the ripple to the 2 MHz PWM regime's level, roughly a 10× improvement
-on the nPM1300 equivalent.
+on the nPM2100 boost converter.
 
 HP costs 7.2 mA quiescent (PS Table 4, IQHP), but only for the conversion window:
 20 ms × 8760 wakes ≈ **0.35 mAh/yr** against a ~18 mAh/yr budget (§7). **Force HP
@@ -424,18 +361,18 @@ VOUT droop event or low VBAT (§3) rather than reporting garbage.
 
 | Param | Value | Consequence |
 |---|---|---|
-| Supply | LDOSW is fed from VINT internally | no external feed net; FDC_VDD comes straight off pin 12 |
+| Supply | LDOSW is fed from VINT internally | no external feed net; +3V3_FDC_SW comes straight off pin 12 |
 | R_ON, High Power mode | 500 mΩ | At ~750 µA that is 0.4 mV of droop. Irrelevant |
 | R_ON, Ultra-Low Power mode | 40 Ω | Only relevant in hibernate — we do not convert there |
 | I_out max | 50 mA (HP) / 2 mA (ULP) | 60× headroom in HP mode |
 | IQ, switch mode | 20 nA (ULP) / 50 µA (HP) | Only during the wake window |
 | Default state | **OFF** | Safe: the FDC1004 is unpowered until firmware asks |
-| Active discharge | built in, 2 kΩ | FDC_VDD collapses between wakes; no floating rail |
+| Active discharge | built in, 2 kΩ | +3V3_FDC_SW collapses between wakes; no floating rail |
 | OCP | enabled by default | configurable in `PRGOCP` |
 
-**The LP/ULP average-offset note applies to FDC_VDD.** In load-switch mode LSOUT
+**The LP/ULP average-offset note applies to +3V3_FDC_SW.** In load-switch mode LSOUT
 passes VINT, and in LP/ULP the boost's average output sits at target + 50 mV
-(VOUTLP, PS Table 10) with ±35 mV of ripple around it — so FDC_VDD peaks near
+(VOUTLP, PS Table 10) with ±35 mV of ripple around it — so +3V3_FDC_SW peaks near
 3.385 V at a 3.3 V target, inside the FDC1004's 3.6 V maximum with margin.
 
 ### FDC1004 — pinout verified against TI SNOSCY5 Table 4-1
@@ -453,7 +390,7 @@ and is far easier to hand-assemble for a prototype. Nothing here dissipates.
 | 5 | CIN4 | Analog | open, same |
 | 6 | SHLD2 | Analog | SHLD |
 | 7 | GND | Ground | GND |
-| 8 | VDD | Power | FDC_VDD |
+| 8 | VDD | Power | +3V3_FDC_SW |
 | 9 | SCL | Input | SCL |
 | 10 | SDA | I/O | SDA |
 
@@ -500,7 +437,7 @@ SHT43 is disqualified on this despite sitting in the same price and power class.
 RH accuracy barely matters by comparison — ±1.8 %RH is only ~±0.05 kPa of VPD
 error at 22 °C — so pay for temperature precision, not humidity precision.
 
-**It must sit on the always-on +3V3 rail, not on gated FDC_VDD.** Table 6 rates
+**It must sit on the always-on +3V3 rail, not on gated +3V3_FDC_SW.** Table 6 rates
 every pin at **VSS − 0.3 V … VDD + 0.3 V**, with no independent I/O rating. An
 unpowered SHT4x with the bus pull-ups holding SDA/SCL at 3.3 V would violate
 absolute maximum on every sleep cycle. This is the exact opposite of the
@@ -533,8 +470,8 @@ Decoupling: 100 nF on VDD, per the datasheet's typical application circuit.
 The nPM2100 measures **VBAT, VOUT and die temperature** with an internal 8-bit
 ADC (PS §7.1): VBAT to ±1% typ at 25 °C over 0.7–3.2 V, die temp ±8 °C over
 −10…60 °C, conversion in 100 µs. This still deletes the resistor divider, its
-standing drain, the abs-max hazard and all the SAADC work — same as the nPM1300
-did.
+standing drain, the abs-max hazard and all the SAADC work — there is no external
+divider in the production design.
 
 On top of the measurements, Nordic's **nRF Fuel Gauge** host library (nrfxlib)
 computes state of charge from VBAT + die temperature against a battery model —
@@ -561,18 +498,20 @@ Firmware requirements from nan_048:
 
 ---
 
-## 6. Proposed pin assignment
+## 6. Module pin assignment
 
-Verified against the nRF54L15 datasheet v1.0, QFN48 (QFAA) pin assignment
-table (§10.1.4) and the port capability rules (§8.8.3, Table 40).
+Verified against Ezurio's current BL54L15 pin table. All firmware GPIO numbers
+are preserved; module pad numbers replace the bare-QFN numbers.
 
-| Signal | nRF pin | Port | Why this pin |
-|---|---|---|---|
-| I²C **SCL** | 39 | P1.11/AIN4 | **must be a dedicated clock pin** (Table 77) |
-| I²C **SDA** | 38 | P1.10 | adjacent to the clock pin, same port |
-| PMIC interrupt | 23 | P0.00 | must be wake-capable — see below |
-| SWO (trace) | 18 | P2.07 | dedicated trace pin |
-| SWDIO / SWDCLK / RESET | 25 / 26 / 30 | — | SWD header |
+| Signal | Module pad | SoC function |
+|---|---|---|
+| SCL | 35 | P1.11 / dedicated clock |
+| SDA | 28 | P1.10 |
+| PMIC interrupt | 17 | P0.00 / wake-capable |
+| SWO | 4 | P2.07 |
+| SWDIO / SWDCLK / nRESET | 5 / 6 / 7 | Dedicated debug/reset |
+| XL1 / XL2 | 25 / 24 | P1.00 / P1.01 reserved for X1 |
+| VDD / GND | 26 / 1,16,27,39 | +3V3 / GND |
 
 **Three rules from the datasheet that constrain this, all of which the earlier
 guess violated:**
@@ -588,7 +527,7 @@ guess violated:**
    never wake the MCU from System OFF. It is now on P0.00, in the low-power
    domain, which has all three.
 
-SDA sits physically adjacent to SCL (pins 38 and 39) because the datasheet
+SDA and SCL use adjacent SoC functions inside the module. The datasheet
 requires the data signal to "use pins close to the clock pin" so the internal
 path delays match, and asks for short traces of identical length on the PCB.
 
@@ -607,6 +546,10 @@ the same /PMIC_INT net and pin as before.
 ---
 
 ## 7. Power budget
+
+The estimates below predate the module migration. Re-measure the complete
+BL54L15 board, including HP-mode radio windows; they are not validated module
+battery-life figures.
 
 ### Result
 
@@ -642,8 +585,8 @@ behaviour (§3).
 ### Assumptions — check these
 
 1. **nRF54L15 System OFF ≈ 0.9 µA with GRTC/LFXO running.** The old budget's
-   combined "nPM1300 + nRF System OFF = 1.5 µA" split as 800 nA PMIC + ~700 nA
-   SoC, so this is consistent with what was budgeted before, but it is now the
+   combined PMIC + nRF System OFF estimate split as PMIC + ~700 nA SoC, so this
+   is consistent with what was budgeted before, but it is now the
    single largest electronics term. Measure it — PPK2 on the EK+DK wiring, the
    same session that validates the §5 gating sequence.
 2. **Boost efficiency ~90% at the µA-level sleep load.** nwp_058 Table 5
@@ -682,34 +625,28 @@ behaviour (§3).
   mainline Zephyr and the nPM2100 EK has an in-tree shield overlay; verify the
   fuel-gauge sample runs against NCS v3.2.2's Zephyr revision.
 - Cell holder and polarity handling are locked to MPD `BU2032SM-BT-GTR` and the
-  placement described in §3; reverse-protection remains an accepted risk.
-- Production antenna is Molex `2069940100`: vertical on the inside RF-end short
-  wall, perpendicular to the PCB, with at least 25 mm radiator-to-cell spacing,
-  with nylon RF-end screws and restrained perimeter coax routing.
+  placement described in §3; Q1 reverse protection now requires prototype validation.
+- Validate BL54L15 supply ripple, oscillator trim and closed-enclosure radiated
+  performance. The fixed battery geometry does not meet every preferred metal
+  clearance; see docs/bl54l15/README.md.
 
 ---
 
-## 9. Why the power architecture changed (again)
+## 9. Why the production power architecture is primary-cell
 
 Recorded so the decision is not relitigated later.
 
-The requirement changed to a single user-replaceable watch battery. The nPM1300
-is a rechargeable-cell charger PMIC — its VBAT pin is a charger output and cannot take a
-primary cell, and its bucks cannot boost, so a CR2032's 2.0–3.0 V discharge
-curve could never have produced a valid 3.3 V rail. This file's previous
-revision said exactly that when it ruled out a coin cell on the old
-architecture: *"It needs a different power architecture, not a different part."*
-This is that architecture.
+The product uses a single user-replaceable watch battery. A rechargeable-cell
+charger topology cannot accept a CR2032 or boost its 2.0–3.0 V discharge curve
+to a valid 3.3 V rail, so the production design uses the nPM2100 instead.
 
 The nPM2100 is built for precisely this case: a boost front end regulating
 3.3 V from 0.7–3.4 V, a primary-cell fuel gauge whose default model is the
 CR2032, ship/hibernate states at 35–320 nA, and a load switch to gate the sensor
-front end. What carried over unchanged from the nPM1300 design: the FDC1004
-gating topology (LOADSW1 → LDOSW), the always-on-rail I²C pull-up placement with
-its deadlock analysis (§5), and the entire nRF54L15 pin assignment (§6). What
-was deleted outright: USB-C, the solar input chain, the rechargeable pack with its
-DW01P PCM analysis and NTC, the charge-status LEDs, and every VBUS
-current-limit firmware requirement.
+front end. The FDC1004 gating topology, always-on-rail I²C pull-up placement,
+deadlock analysis (§5), and nRF54L15 pin assignment (§6) are all part of the
+production design. USB-C, solar, rechargeable-pack protection, charge LEDs, and
+VBUS current-limit firmware are absent.
 
 The deleted charging architecture is not dead work — it is board 2's starting
 point. A pump controller that is "battery or plugged in" is exactly the
@@ -719,6 +656,9 @@ USB-C-charged rechargeable device the old power tree described.
 
 ## Sources
 
+- [Ezurio BL54L10/BL54L15 datasheet](https://www.ezurio.com/documentation/datasheet-bl54l10-and-bl54l15-series), accessed 2026-09-04 — current module pinout and host integration.
+- [Nordic LFXO devicetree guidance](https://docs.nordicsemi.com/r/bundle/ngl_001/page/gl/ngl_001/lfxo_devicetree.html) — capacitance parameter semantics.
+
 - [nPM2100 Product Specification v1.0](https://www.nordicsemi.com/Products/nPM2100) (local: `doc/datasheets/nPM2100_Datasheet_v1.0.pdf`) — Tables 4–7, 10–12, 15–18, 20, 22, 25–27, 38; §6.1–6.2, §7.1–7.6, §9.3
 - [nPM2100 Hardware Design Guidelines, nwp_058, March 2025](https://www.nordicsemi.com/Products/nPM2100/Documentation) (local: `doc/datasheets/nPM2100_HW_Design_Guidelines_nwp_058.pdf`) — inductor and capacitor selection, CR2032 reservoir-capacitor test
 - [Using the nPM2100 Fuel Gauge, nan_048, July 2025](https://www.nordicsemi.com/Products/nPM2100/Documentation) (local: `doc/datasheets/nan_048.pdf`)
@@ -726,7 +666,7 @@ USB-C-charged rechargeable device the old power tree described.
 - [Reverse battery protection for the nPM2100 PMIC, ngl_002, March 2026](https://www.nordicsemi.com/Products/nPM2100/Documentation) (local: `doc/datasheets/nPM2100_Reverse_Battery_ngl_002.pdf`)
 - [MPD BU2032SM-BT-GTR drawing](https://www.batteryholders.com/uploads/parts/BU2032SM-BT-GTR/datasheets/BU2032SM-BT-GTR-datasheet.pdf) — holder land pattern and assembly envelope
 - [Murata DFE201210U-2R2M=P2](https://www.murata.com/en-global/products/productdetail.aspx?partno=DFE201210U-2R2M%23) — electrical and mechanical selection
-- [Molex 2069940100 product specification](https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/productspecificationpdf/206/206994/2069940100-PS.pdf) — production flex antenna and coax assembly
+- [Molex 2069940100 product specification](https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/productspecificationpdf/206/206994/2069940100-PS.pdf) — retired external antenna (historical reference)
 - [nRF54L15 reference circuitry, circuit configuration 1 for QFN48 (QFAA)](https://docs.nordicsemi.com/r/bundle/ps_nrf54l15/page/chapters/ref_circuitry.html-concept_refcircuit_config_1) — Tables 1 and 2, grounding notes
 - [nRF54L15/L10/L05 datasheet v1.0](https://www.mouser.lt/datasheet/3/926/1/nRF54L15_nRF54L10_nRF54L05_Datasheet_v1.0.pdf) — System OFF current figures
 - Zephyr nPM2100 drivers and nPM2100 EK shield overlay (zephyrproject-rtos/zephyr: `drivers/mfd/mfd_npm2100.c`, `drivers/regulator/regulator_npm2100.c`, `boards/shields/npm2100_ek/`) — I²C address 0x74, driver availability; Nordic's bare-metal reference (`nordicsemi/npm2100-bm`) for register semantics

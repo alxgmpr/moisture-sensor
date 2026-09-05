@@ -2,13 +2,14 @@
 """PCB-side exclusions for footprints that are not assembled parts."""
 
 import unittest
+import subprocess
 from pathlib import Path
 
 from tools_sexp import find, first, parse
 
 
 ROOT = Path(__file__).resolve().parents[1]
-NON_ASSEMBLY_REFERENCES = {"J4", "NT1", "NT2", "TP1", "TP2", "TP3"}
+NON_ASSEMBLY_REFERENCES = {"J4", "TP1", "TP2", "TP3"}
 REQUIRED_ATTRIBUTES = {"exclude_from_bom", "exclude_from_pos_files"}
 
 
@@ -34,11 +35,18 @@ class PcbAssemblyFlagsTest(unittest.TestCase):
             checked.add(reference)
         self.assertEqual(checked, NON_ASSEMBLY_REFERENCES)
 
-    def test_board_generator_reapplies_non_assembly_flags(self):
-        source = (ROOT / "tools_gen_pcb.py").read_text()
-        self.assertIn("NON_ASSEMBLY_REFERENCES", source)
-        self.assertIn("FP_EXCLUDE_FROM_BOM", source)
-        self.assertIn("FP_EXCLUDE_FROM_POS_FILES", source)
+    def test_retired_board_generator_exits_without_modifying_the_board(self):
+        board_path = ROOT / "moisture-sensor-carrier.kicad_pcb"
+        before = board_path.read_bytes()
+        result = subprocess.run(
+            ["python3", str(ROOT / "tools_gen_pcb.py")],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("retired", (result.stdout + result.stderr).lower())
+        self.assertEqual(board_path.read_bytes(), before)
 
 
 if __name__ == "__main__":

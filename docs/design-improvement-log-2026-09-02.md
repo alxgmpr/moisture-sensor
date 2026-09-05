@@ -53,9 +53,11 @@ Baseline after schematic/PCB synchronization:
   left unrouted until the placement pass.
 - [ ] Connect C11's RF shunt ground directly to the ground plane with an
   immediate via and minimize its branch length.
-- [ ] Keep the RF chain on F.Cu, without RF vias, over uninterrupted In1.Cu.
-- [ ] Set the routed RF nominal width consistently to 0.36 mm in project rules,
-  netclasses, and documentation.
+- [x] Keep the RF chain on F.Cu without RF vias. Preserve the In1.Cu reference
+  beneath the controlled-impedance section and use Nordic's inner-layer cutout
+  beneath the matching/filter network.
+- [x] Set the routed 50-ohm section to the JLCPCB calculator geometry for
+  JLC04161H-3313: 0.1565 mm on F.Cu over the 0.0994 mm 3313 dielectric.
 - [x] Lock Molex 2069940100 on the inside RF-end short wall, perpendicular to
   the PCB, with ≥25 mm radiator-to-cell spacing and restrained perimeter coax.
 - [ ] VNA-test the populated RF path in the final enclosure with the cell and
@@ -140,7 +142,7 @@ and any design decision that affects later work.
 - Corrected nPM2100 VINT pin 15 from power-output to passive in both the library
   and embedded schematic symbol while retaining pin 14 as the rail output.
 - Removed the inappropriate PWR_FLAG from the open-drain PG/RESET net.
-- Assigned valid hidden references to the custom VBAT/FDC_VDD power symbols and
+- Assigned valid hidden references to the custom VBAT/+3V3_FDC_SW power symbols and
   numbered the remaining PWR_FLAG symbols without changing component references.
 - Updated the PCB from the schematic using reference-based relinking, footprint
   replacement, and deletion of unlocked footprints without schematic symbols.
@@ -191,3 +193,18 @@ and any design decision that affects later work.
   warnings; PCB geometry/rules 0 errors and 13 warnings; 22 unrouted electrical
   connections remain. Reports are generated under `tmp/kicad-check/` and the
   remaining items are reported in the implementation handoff.
+
+#### 2026-09-04 — placement audit and local bypass corrections
+
+- Fresh baseline supersedes the stale unrouted count above: 0 unrouted, 0 parity
+  issues, 0 DRC errors / 15 warnings.
+- Moved C27 onto the SHT45 tab with a standard 0201 footprint and direct local
+  supply/ground traces. Supply-pad distance is now 0.884 mm.
+- Added C28 (100 nF / 10 V X7R, 0201) at U3 VDD/GND; repositioned C26 behind it
+  and routed the bypass pair locally.
+- Shortened C11 ground return to an adjacent via (0.355 mm pad-to-via centers).
+- Synchronized through KiCad GUI Update PCB from Schematic; restored 3D models
+  after footprint rotations. All 35 repository checks pass.
+- Final: 0 DRC errors / 18 warnings, 0 unrouted, 0 parity; ERC 0 errors / 23 warnings.
+- Remaining nRF support placement and crystal routing issues are measured in
+  `audit-2026-09-04.md`; this is not a fabrication release.

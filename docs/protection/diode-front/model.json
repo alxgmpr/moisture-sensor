@@ -1,0 +1,43 @@
+{
+  "source_page": "https://e2e.ti.com/support/interface-group/interface/f/interface-forum/1489114/tpd1e01b04-footprint-file",
+  "source_archive": "https://e2e.ti.com/cfs-file/__key/communityserver-discussions-components-files/138/TPD1E01B04DPYR.zip",
+  "archive_sha256": "a0a7a882ebef5e27d8afd675c084bb75ebc4aba6aeeca73179c85288591b7444",
+  "extraction": "Zlib-decompressed Library/Models/0 from TI-supplied TPD1E01B04DPYR.PcbLib; STEP bytes retained unchanged.",
+  "model": "lib/TI_DPY0002A.step",
+  "model_sha256": "433c2b3b548dd88a169421ac038e60bbd21d03a5e83fd682c0e3ef3dca75bbaf",
+  "package": "TI DPY0002A X1SON-2",
+  "dimensions_mm": [
+    1,
+    0.6,
+    0.45
+  ],
+  "solids": 3,
+  "used_by": [
+    "D1",
+    "D2",
+    "D3",
+    "D4",
+    "D5",
+    "D6",
+    "D7",
+    "D8",
+    "D9",
+    "D10"
+  ],
+  "offset_mm": [
+    0,
+    0,
+    0
+  ],
+  "scale": [
+    1,
+    1,
+    1
+  ],
+  "rotation_deg": [
+    0,
+    0,
+    0
+  ],
+  "courtyard_basis": "Existing MPD STEP: plastic \u00b114.3 x \u00b18 mm; terminal \u00b115.93 x \u00b12.4 mm. Retain conservative \u00b111.2 mm round-body envelope and existing removal-tool area. Add 0.25 mm margin; terminal X uses outer copper edge 16.25 + 0.25 mm."
+}

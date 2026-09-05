@@ -1,0 +1,162 @@
+(footprint "BatteryHolder_LianXin_CR2032-BS-6"
+	(version 20260206)
+	(generator "kicad-footprint-generator")
+	(layer "F.Cu")
+	(descr "Lian Xin CR2032-BS-6 (C22363833), CR2032 holder; 1.9 x 5 mm lands at +/-15.3 mm, installed cell included in 31.9 x 20.2 mm conservative envelope; height 5.5 mm, https://jlcpcb.com/partdetail/C22363833")
+	(tags "battery CR2032 SMT C22363833")
+	(property "Reference" "REF**"
+		(at 0 -11.15 0)
+		(layer "F.SilkS")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "BatteryHolder_LianXin_CR2032-BS-6"
+		(at 0 11.15 0)
+		(layer "F.Fab")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "KiLib_Generator" "battery"
+		(at 0 0 0)
+		(layer "F.SilkS")
+		(hide yes)
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr smd)
+	(duplicate_pad_numbers_are_jumpers no)
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	(fp_rect
+		(start -15.95 -10.1)
+		(end 15.95 10.1)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.Fab")
+	)
+	(fp_text user "+"
+		(at -12 0 0)
+		(layer "F.SilkS")
+		(effects
+			(font
+				(size 1.5 1.5)
+				(thickness 0.15)
+			)
+		)
+	)
+	(fp_text user "-"
+		(at 12 0 0)
+		(layer "F.SilkS")
+		(effects
+			(font
+				(size 1.5 1.5)
+				(thickness 0.15)
+			)
+		)
+	)
+	(fp_text user "${REFERENCE}"
+		(at 0 0 0)
+		(layer "F.Fab")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" smd roundrect
+		(at -15.3 0)
+		(size 1.9 5)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.131579)
+	)
+	(pad "2" smd roundrect
+		(at 15.3 0)
+		(size 1.9 5)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.131579)
+	)
+	(embedded_fonts no)
+	
+
+(fp_line (start -16.5 -2.75)(end -14.75 -2.75)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start -14.75 -2.75)(end -14.75 -3.9)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start -14.75 -3.9)(end -11.45 -3.9)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start -11.45 -3.9)(end -11.45 -8.35)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start -11.45 -8.35)(end -10.45 -8.35)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start -10.45 -8.35)(end -10.45 -10.45)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start -10.45 -10.45)(end 10.45 -10.45)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start 10.45 -10.45)(end 10.45 -8.35)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start 10.45 -8.35)(end 11.45 -8.35)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start 11.45 -8.35)(end 11.45 -3.9)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start 11.45 -3.9)(end 14.75 -3.9)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start 14.75 -3.9)(end 14.75 -2.75)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start 14.75 -2.75)(end 16.5 -2.75)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start 16.5 -2.75)(end 16.5 2.75)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start 16.5 2.75)(end 14.75 2.75)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start 14.75 2.75)(end 14.75 3.9)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start 14.75 3.9)(end 11.45 3.9)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start 11.45 3.9)(end 11.45 8.35)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start 11.45 8.35)(end 10.45 8.35)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start 10.45 8.35)(end 10.45 10.45)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start 10.45 10.45)(end -10.45 10.45)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start -10.45 10.45)(end -10.45 8.35)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start -10.45 8.35)(end -11.45 8.35)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start -11.45 8.35)(end -11.45 3.9)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start -11.45 3.9)(end -14.75 3.9)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start -14.75 3.9)(end -14.75 2.75)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start -14.75 2.75)(end -16.5 2.75)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(fp_line (start -16.5 2.75)(end -16.5 -2.75)(stroke(width 0.05)(type solid))(layer "F.CrtYd"))
+(model "${KIPRJMOD}/lib/CR2032-BS-6-1_C70377.step" (offset (xyz 0 0 0.08)) (scale (xyz 1 1 1)) (rotate (xyz 0 0 180)))
+
+(fp_line(start -11.2 -8.1)(end 11.2 -8.1)(stroke(width 0.12)(type solid))(layer "F.SilkS"))
+
+(fp_line(start -11.2 8.1)(end 11.2 8.1)(stroke(width 0.12)(type solid))(layer "F.SilkS"))
+
+(fp_line(start -11.2 -8.1)(end -11.2 -3.7)(stroke(width 0.12)(type solid))(layer "F.SilkS"))
+
+(fp_line(start -11.2 8.1)(end -11.2 3.7)(stroke(width 0.12)(type solid))(layer "F.SilkS"))
+
+(fp_line(start 11.2 -8.1)(end 11.2 -3.7)(stroke(width 0.12)(type solid))(layer "F.SilkS"))
+
+(fp_line(start 11.2 8.1)(end 11.2 3.7)(stroke(width 0.12)(type solid))(layer "F.SilkS"))
+
+(fp_line(start -14.5 -3.7)(end -11.2 -3.7)(stroke(width 0.12)(type solid))(layer "F.SilkS"))
+
+(fp_line(start -14.5 3.7)(end -11.2 3.7)(stroke(width 0.12)(type solid))(layer "F.SilkS"))
+
+(fp_line(start 14.5 -3.7)(end 11.2 -3.7)(stroke(width 0.12)(type solid))(layer "F.SilkS"))
+
+(fp_line(start 14.5 3.7)(end 11.2 3.7)(stroke(width 0.12)(type solid))(layer "F.SilkS"))
+)

@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Add the small set of routes missing from the placed production board.
+"""Historical finish-route helper (retired; production board is authoritative).
 
 Every leg is axial or 45 degrees.  UUIDv5 identifiers make the operation
-idempotent so a route can be adjusted here and safely regenerated.
+idempotent so the historical operation can be audited. The command-line entry
+point is disabled because these coordinates must not overwrite hand-routed
+production copper.
 """
 
 from __future__ import annotations
@@ -26,10 +28,10 @@ ROUTES = [
     ("deca_fb_bank", "/DECA", "F.Cu", 0.30, [(70.9285, 63.1444), (69.596, 63.1444), (69.1675, 62.7159), (69.1675, 61.90)]),
     ("decd_u1", "/DECD", "F.Cu", 0.19, [(74.079, 64.00), (73.60, 64.00), (73.20, 63.60), (72.5291, 63.60), (72.0735, 63.1444)]),
     ("decd_c1", "/DECD", "F.Cu", 0.30, [(69.4325, 66.30), (69.4325, 65.7854), (70.8035, 64.4144)]),
-    ("fdc_u2_c26", "FDC_VDD", "F.Cu", 0.40, [(70.4625, 98.025), (71.00, 98.025), (72.00, 99.025), (72.00, 102.00), (73.00, 103.00), (76.4325, 103.00)]),
-    ("fdc_u3_escape", "FDC_VDD", "F.Cu", 0.20, [(71.00, 106.40), (71.00, 105.50)]),
-    ("fdc_trunk_join", "FDC_VDD", "F.Cu", 0.40, [(72.00, 102.00), (71.00, 103.00)]),
-    ("fdc_escape_join", "FDC_VDD", "F.Cu", 0.20, [(71.00, 103.00), (71.00, 105.50)]),
+    ("fdc_u2_c26", "+3V3_FDC_SW", "F.Cu", 0.40, [(70.4625, 98.025), (71.00, 98.025), (72.00, 99.025), (72.00, 102.00), (73.00, 103.00), (76.4325, 103.00)]),
+    ("fdc_u3_escape", "+3V3_FDC_SW", "F.Cu", 0.20, [(71.00, 106.40), (71.00, 105.50)]),
+    ("fdc_trunk_join", "+3V3_FDC_SW", "F.Cu", 0.40, [(72.00, 102.00), (71.00, 103.00)]),
+    ("fdc_escape_join", "+3V3_FDC_SW", "F.Cu", 0.20, [(71.00, 103.00), (71.00, 105.50)]),
     ("scl_u2", "/SCL", "F.Cu", 0.20, [(68.825, 100.9625), (68.825, 102.40)]),
     ("scl_u3", "/SCL", "F.Cu", 0.20, [(68.825, 102.40), (68.825, 103.975), (70.35, 105.50)]),
     ("scl_bus", "/SCL", "B.Cu", 0.20, [(74.822709, 58.582), (74.400709, 58.16), (62.30, 58.16), (62.30, 102.00), (68.425, 102.00), (68.825, 102.40)]),
@@ -122,6 +124,11 @@ def add_finish_routes(source: str) -> str:
 
 
 def main() -> None:
+    raise SystemExit(
+        "tools_finish_routes.py is retired: no scripted route writes are "
+        "permitted on the production board."
+    )
+
     parser = argparse.ArgumentParser()
     parser.add_argument("input", type=Path)
     parser.add_argument("output", type=Path)

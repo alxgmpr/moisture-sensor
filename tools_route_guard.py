@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
-"""Guard the board's copper against being deleted by tools_route.py.
+"""Guard the board's copper against accidental scripted replacement.
 
     python3 tools_route_guard.py check    # exit 1 if the board has hand edits
     python3 tools_route_guard.py stamp    # record the current copper as ours
 
-WHY THIS EXISTS. tools_route.py deletes EVERY track and via before re-adding
-them from its ROUTES table. That is fine while all routing lives in that table
-and destroys your afternoon the moment any of it is drawn in pcbnew instead -
-which is how tools_gen_pcb.py came to be frozen, except that one only took
-graphics with it.
+WHY THIS EXISTS. The historical route driver deleted every track and via before
+re-adding them from a route table. The production route is now maintained in
+the board itself, and the route driver is retired; this guard remains as a
+read-only copper fingerprint check plus an explicit stamp operation.
 
 So the copper gets fingerprinted into .routed-by-script after each scripted
 run. If the board no longer matches, someone has routed by hand and a run
@@ -65,12 +64,10 @@ def check(quiet=False):
               "    python3 tools_route_guard.py stamp")
         return 1
     if want != have:
-        print("ABORT: the board's copper is not what tools_route.py last wrote.\n"
+        print("ABORT: the board's copper is not what the last stamped baseline recorded.\n"
               "  stamped %s   board %s  (%d copper items)\n"
-              "  Someone has routed by hand, and re-running tools_route.py\n"
-              "  would delete it. Options:\n"
-              "    tools_route.py --check    route into /tmp, leave the board alone\n"
-              "    tools_route.py --force    overwrite anyway, losing hand routing\n"
+              "  The production board is hand-routed and the historical route driver\n"
+              "  is retired, so no scripted overwrite is available. Options:\n"
               "    this script  stamp        accept the board as the new baseline"
               % (want, have, n))
         return 1

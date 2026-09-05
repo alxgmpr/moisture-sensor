@@ -43,14 +43,14 @@ def run(name, items):
 # Net NAMES, not codes. KiCad 10 stores nets by name in the .kicad_pcb and has no
 # net-code table, and codes shift whenever a part is added or removed - which
 # silently re-pointed half these tests at the wrong nets once already.
-ANT,RFA,GNDPA,GND,NRESET   = "/ANT","/RF_A","/GND_PA","GND","/NRESET"
+ANT,RFA,GNDPA,GND,NRESET   = "/ANT","/RF_FILTER_N1","/RF_PA_RETURN_LOCAL","GND","/NRESET"
 # VBAT carries no leading slash: it is a global power symbol, not a local label.
 # The slashed nets below still are local labels. Getting this wrong does not
 # error - the rule simply never matches and the fire-test fails, which is what
 # this harness exists to catch.
-SENSE1,SHLD,SW2,VBAT,PVSS2 = "/SENSE1","/SHLD","/SW2","VBAT","/GND_PVSS2"
+SENSE1,SHLD,SW2,VBAT       = "/SENSE1","/SHLD","/SW","VBAT"
 SENSE2                     = "/SENSE2"
-GNDC9,XC1,XC2              = "/GND_C9","/XC1","/XC2"
+GNDC9,XC1,XC2              = "/RF_C9_RETURN_BOTTOM","/XC1","/XC2"
 Y=90.0   # In2.Cu band in Zone B - now inside ZoneB_3V3, still empty of tracks
 ZA=45.0  # Zone A: no pour on In2.Cu or B.Cu, no rule areas
 # name, items, rule that MUST fire, [rule that must NOT fire]
@@ -63,19 +63,17 @@ ZA=45.0  # Zone A: no pour on In2.Cu or B.Cu, no rule areas
 # track and via on the board.
 CASES=[
  # name, items, rule that MUST appear
- ("rf_clear",   [seg(84,Y,90,Y,0.38,"In2.Cu",ANT),     seg(84,Y+0.64,90,Y+0.64,0.2,"In2.Cu",NRESET)], "RF clearance to other nets"),
+ ("rf_clear",   [seg(84,Y,90,Y,0.1565,"In2.Cu",ANT),  seg(84,Y+0.64,90,Y+0.64,0.2,"In2.Cu",NRESET)], "RF clearance to other nets"),
  ("rf_width",   [seg(84,Y,90,Y,0.20,"In2.Cu",ANT)],                                                    "RF 50R trace width"),
- ("rf_via",     [via(96.0,60.6,ANT,size=0.6,drill=0.3), seg(95.2,60.6,96.0,60.6,0.38,"F.Cu",ANT)],      "No vias in the RF path"),
+ ("rf_via",     [via(96.0,60.6,ANT,size=0.6,drill=0.3), seg(95.2,60.6,96.0,60.6,0.1565,"F.Cu",ANT)],  "No vias in the RF path"),
  ("sense_sw",   [seg(84,Y,90,Y,0.25,"In2.Cu",SENSE1),  seg(84,Y+1.5,90,Y+1.5,0.5,"In2.Cu",SW2)],       "Sense away from switching nodes"),
  ("shield_sw",  [seg(84,Y,90,Y,0.30,"In2.Cu",SHLD),    seg(84,Y+1.0,90,Y+1.0,0.5,"In2.Cu",SW2)],       "Shield away from switching nodes"),
- ("sense_rf",   [seg(84,Y,90,Y,0.25,"In2.Cu",SENSE1),  seg(84,Y+1.0,90,Y+1.0,0.38,"In2.Cu",ANT)],      "Sense away from RF"),
+ ("sense_rf",   [seg(84,Y,90,Y,0.25,"In2.Cu",SENSE1),  seg(84,Y+1.0,90,Y+1.0,0.1565,"In2.Cu",ANT)],   "Sense away from RF"),
  ("sense_gnd",  [seg(84,Y,90,Y,0.25,"In2.Cu",SENSE1),  seg(84,Y+0.6,90,Y+0.6,0.4,"In2.Cu",GND)],       "Sense away from ground"),
  ("sense_shld", [seg(84,Y,90,Y,0.25,"In2.Cu",SENSE1),  seg(84,Y+0.3,90,Y+0.3,0.3,"In2.Cu",SHLD)],      "Sense to shield spacing"),
  ("sense_sense",[seg(84,Y,90,Y,0.25,"In2.Cu",SENSE1),  seg(84,Y+0.4,90,Y+0.4,0.25,"In2.Cu",SENSE2)],  "Sense channel to sense channel"),
  ("pwr_width",  [seg(84,Y,90,Y,0.30,"In2.Cu",GND)],                                                    "Power track width"),
- ("chg_width",  [seg(84,Y,90,Y,0.50,"In2.Cu",VBAT)],                                                   "Charge path width"),
  ("sw_width",   [seg(84,Y,90,Y,0.30,"In2.Cu",SW2)],                                                    "Switch node width"),
- ("pvss2_width",[seg(84,Y,90,Y,0.30,"In2.Cu",PVSS2)],                                                  "BUCK2 power ground is short and fat"),
  # Both of these moved. They used to sit at (96, 62) and on B.Cu at y = 90.
  # The first is inside the SHT45_Jut keepout: KiCad reports one
  # items_not_allowed per item, so the keepout won and masked the rule under

@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """
-Placement changes made after tools_gen_pcb.py was frozen.
-
-The generator is frozen because it redraws graphics, so placement now lives in
-the .kicad_pcb. This script records the edits that were made to it by hand, so
-they are reproducible and so the reason survives. Idempotent: it sets absolute
-positions and orientations, it does not nudge.
-
-    $PY tools_place_fixups.py            # edit the board
-    $PY tools_place_fixups.py --check    # write to /tmp instead
+Historical placement changes made during the routing session. The production
+board already contains the reviewed placement; this script is fail-safe retired
+so it cannot overwrite that board. Keep it as an audit record only.
 """
+
+if __name__ == "__main__":
+    raise SystemExit(
+        "tools_place_fixups.py is retired: the production board already contains "
+        "the reviewed placement; no board writes are permitted."
+    )
 
 import os
 import sys
@@ -53,20 +53,20 @@ FIXUPS = [
     #   width     over C6's x span the band was 0.998 mm, and after 0.15 mm to
     #             C6 and 0.2 mm to the pad row that is two 0.127 mm lanes, not
     #             three
-    #   crossing  worse, /GND_PA ran as a diagonal from C6.2 at (75.22, 58.5)
+    #   crossing  worse, /RF_PA_RETURN_LOCAL ran as a diagonal from C6.2 at (75.22, 58.5)
     #             up to pad 32 at (76.4, 60.079), sweeping through the whole
     #             corridor. Solving the point-to-line distance for pin 33 at
     #             x = 76.0 gives a legal 0.15 mm track only at y >= 59.814 or
     #             y <= 58.459 - the first is inside the pad row, the second is
-    #             on the far side of /GND_PA. Pin 33 had NO legal escape at all.
+    #             on the far side of /RF_PA_RETURN_LOCAL. Pin 33 had NO legal escape at all.
     #
     # The crossing is structural, not a width problem: C6's ground pad has to
     # reach pin 32, and unless it sits directly under pin 32 that return path
     # separates pins 33/34/35 from everything below them.
     #
-    # THE FIX. C6 rotated 270 deg so its pads stack vertically - pad 1 (/RF_A)
-    # low, pad 2 (/GND_PA) high - and placed at (76.10, 57.50), in the 0.91 mm
-    # gap between L3 and L2. /GND_PA becomes a straight 2.0 mm run up x = 76.36
+    # THE FIX. C6 rotated 270 deg so its pads stack vertically - pad 1 (/RF_FILTER_N1)
+    # low, pad 2 (/RF_PA_RETURN_LOCAL) high - and placed at (76.10, 57.50), in the 0.91 mm
+    # gap between L3 and L2. /RF_PA_RETURN_LOCAL becomes a straight 2.0 mm run up x = 76.36
     # instead of a diagonal across the corridor, and the corridor opens from
     # y 57.7 to 59.698 - room for all three lanes plus margin.
     #
@@ -82,7 +82,7 @@ FIXUPS = [
     # was doing more to the match than the capacitor. Now C6 pad 1 lands 0.39 mm
     # from L3 pad 1 and the shunt is nearly at the node.
     #
-    # WHAT IT COSTS. /GND_PA is squeezed between pin 33's pad and the /ANT run,
+    # WHAT IT COSTS. /RF_PA_RETURN_LOCAL is squeezed between pin 33's pad and the /ANT run,
     # so it narrows from 0.4 mm to 0.2 mm over most of its length: about 2.0 mm
     # of 0.2 mm track, ~1.9 nH, against ~1.2 nH before. Roughly +0.7 nH in the
     # VSS_PA return, traded for taking ~1.7 nH out of the shunt branch and for
@@ -289,6 +289,11 @@ FIXUPS = [
 
 
 def main():
+    raise SystemExit(
+        "tools_place_fixups.py is retired: the production board already contains "
+        "the reviewed placement; no board writes are permitted."
+    )
+
     check = "--check" in sys.argv
     board = pcbnew.LoadBoard(BOARD)
 

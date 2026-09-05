@@ -1,0 +1,41 @@
+{
+  "existing_footprint_placement_changes": [
+    "TP2",
+    "TP1"
+  ],
+  "outline_unchanged": true,
+  "added_footprints": [
+    "D1",
+    "D10",
+    "D2",
+    "D3",
+    "D4",
+    "D5",
+    "D6",
+    "D7",
+    "D8",
+    "D9",
+    "Q1",
+    "R30",
+    "R31",
+    "R32",
+    "R33",
+    "R34",
+    "R35"
+  ],
+  "source_sha256": {
+    "moisture-sensor-carrier.kicad_sch": "a8cb1fe0325c5953c523599724253a4f0c6da0d59eadfa80df39f64cd68b9ce0",
+    "moisture-sensor-carrier.kicad_pcb": "9cb8a546ca1e7bce48f2a5ac6c47a4daa6e5175408dd03ffa30741da4aed8dc3",
+    "moisture-sensor-carrier.kicad_dru": "13b4d34163af6f7d18a17dc526b0c8635d689cc20e851187278e5799b2361e3b"
+  },
+  "diode_front_revision": {
+    "D1_position_mm": [
+      61.2,
+      86
+    ],
+    "D1_side": "F.Cu",
+    "BT1_position_unchanged": true,
+    "BT1_courtyard": "stepped 24-segment envelope; removal-tool area preserved",
+    "electrical_netlist_unchanged": true
+  }
+}

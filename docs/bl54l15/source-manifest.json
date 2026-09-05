@@ -1,0 +1,32 @@
+{
+  "accessed": "2026-09-04",
+  "datasheet": "https://www.ezurio.com/documentation/datasheet-bl54l10-and-bl54l15-series",
+  "format": "Living HTML, current content at access date",
+  "selected_mpn": "453-00001R",
+  "sources": [
+    {
+      "purpose": "land-pattern.png",
+      "url": "https://d2g2p0i8cc2bmh.cloudfront.net/documentation/3306618881/7/image-20251222-144253.png",
+      "snapshot": "tmp/bl54l15/vendor/land-pattern.png",
+      "sha256": "966136e4054c497f3925619a895b85427e24fa9616a4481862e360e0debb2154"
+    },
+    {
+      "purpose": "power.png",
+      "url": "https://d2g2p0i8cc2bmh.cloudfront.net/documentation/3306618881/7/image-20251219-202155.png",
+      "snapshot": "tmp/bl54l15/vendor/power.png",
+      "sha256": "4650f2ca0b51e55a51041c9b62c1d81e45c065d98245ad6e21636939b5ccefd0"
+    },
+    {
+      "purpose": "block.png",
+      "url": "https://d2g2p0i8cc2bmh.cloudfront.net/documentation/3306618881/7/image-20251219-200724.png",
+      "snapshot": "tmp/bl54l15/vendor/block.png",
+      "sha256": "08ef3c283df781dd4251742d0e810af9cffeb16b9f98cfdbd394fce3add89481"
+    },
+    {
+      "purpose": "placement.png",
+      "url": "https://d2g2p0i8cc2bmh.cloudfront.net/documentation/3306618881/7/image-20251219-203526.png",
+      "snapshot": "tmp/bl54l15/vendor/placement.png",
+      "sha256": "b33869c69b7cad15fab3d17962864745aee5a39cb69fbf87797e5f21e60bfd7d"
+    }
+  ]
+}

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Assign the selected parts' 3D models to the board and local footprints.
 
-This is the single source of truth used by both this repair tool and
-``tools_gen_pcb.py``.  Reference-specific entries replace models inherited from
-system footprints, while footprint-specific entries are also written back to
-the local library so an Update Footprints operation cannot lose them.
+This is the single source of truth used by the repair tool. Reference-specific
+entries replace models inherited from system footprints, while
+footprint-specific entries are also written back to the local library so an
+Update Footprints operation cannot lose them.
 
     $PY tools_3d_models.py            # edit the board AND the .kicad_mod files
     $PY tools_3d_models.py --check    # write the board to /tmp instead
@@ -47,6 +47,14 @@ LIB = os.path.join(HERE, "lib", "footprints.pretty")
 
 # footprint name -> (model path, offset xyz, rotation xyz)
 MODELS_BY_FOOTPRINT = {
+    # C70377 visualization substitute; positive terminal rotated to local -X.
+    "BatteryHolder_LianXin_CR2032-BS-6": (
+        "${KIPRJMOD}/lib/CR2032-BS-6-1_C70377.step",
+        (0, 0, 0.08), (0, 0, 180)),
+    # Vendor origin: X=0..14, Y=0..10, bottom lands Z=-0.40116 mm.
+    # Translate to footprint upper-left origin; pin 1 becomes (11.8, -9.49681).
+    "Ezurio_BL54L15_453-00001": ("${KIPRJMOD}/lib/BL54L15_453-00001.step",
+                                  (0, -10, 0.40116), (0, 0, 0)),
     # Nordic's QFN48 model is authored in KiCad's coordinate system and needs
     # no transform.
     "QFN48_6X6_NOR":       ("${KIPRJMOD}/lib/nordic/QFN48_6X6_NOR.step",
@@ -78,7 +86,7 @@ MODELS_BY_FOOTPRINT = {
 # The board generator uses reference keys because some selected parts use
 # system footprints whose bundled model is absent or inappropriate.
 MODELS_BY_REFERENCE = {
-    "U1": MODELS_BY_FOOTPRINT["QFN48_6X6_NOR"],
+    "U1": MODELS_BY_FOOTPRINT["Ezurio_BL54L15_453-00001"],
     "U2": (
         "${KICAD10_3DMODEL_DIR}/Package_DFN_QFN.3dshapes/"
         "Texas_RSA_VQFN-16-1EP_4x4mm_P0.65mm_EP2.7x2.7mm.step",
@@ -86,9 +94,8 @@ MODELS_BY_REFERENCE = {
     "U4": ("${KIPRJMOD}/lib/SHT45_AD1F_R2/SHT45-AD1F-R2.step",
            (0, 0, 0), (-90, 0, 0)),
     "X1": MODELS_BY_FOOTPRINT["XTAL_CM8V-T1A_2012"],
-    "X2": MODELS_BY_FOOTPRINT["XTAL_FA-128_2016_4Pin"],
     "L10": MODELS_BY_FOOTPRINT["IND_Murata_DFE201210U"],
-    "BT1": MODELS_BY_FOOTPRINT["BatteryHolder_MPD_BU2032SM-BT-GTR"],
+    "BT1": MODELS_BY_FOOTPRINT["BatteryHolder_LianXin_CR2032-BS-6"],
 }
 
 

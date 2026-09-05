@@ -1,0 +1,37 @@
+{
+  "source_archive": "3D Model (STEP and PDF) - BL54L15 Module, Trace Antenna (453-00001).zip",
+  "model": "lib/BL54L15_453-00001.step",
+  "sha256": "270f93ff88aad0bed89c17aa612669ab2e6f33311c385ea4dfc829e8fe39f6ea",
+  "source_bytes_unchanged": true,
+  "offset_mm": [
+    0,
+    -10,
+    0.40116
+  ],
+  "rotation_deg": [
+    0,
+    0,
+    0
+  ],
+  "scale": [
+    1,
+    1,
+    1
+  ],
+  "model_bounds_mm": [
+    [
+      0,
+      14
+    ],
+    [
+      0,
+      10
+    ],
+    [
+      -0.401159793139,
+      1.2015001
+    ]
+  ],
+  "alignment": "39 underside land centers match footprint centers within 0.0033 mm after translation and KiCad Y inversion. Bottom lands seat at Z=0; height 1.60266 mm.",
+  "coverage": "All 37 component footprints have existing model files. J4 and TP1/TP2/TP3 are bare copper without models. U2 uses a compatible generic Texas RSA QFN16 model; U3, Q1 and passives use generic KiCad package models."
+}

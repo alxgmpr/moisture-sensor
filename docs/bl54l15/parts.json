@@ -1,0 +1,242 @@
+{
+  "U1": {
+    "Manufacturer": "Ezurio",
+    "MPN": "453-00001R",
+    "LCSC": "",
+    "Assembly note": "HAND FIT; DNP at JLC; required in finished product",
+    "DigiKey": "776-453-00001RCT-ND"
+  },
+  "BT1": {
+    "Manufacturer": "Lian Xin Technology",
+    "MPN": "CR2032-BS-6",
+    "LCSC": "C22363833",
+    "Assembly note": "Economic assembly; new footprint per manufacturer drawing 1.9 x 5 mm pads on 30.6 mm centers"
+  },
+  "C3": {
+    "Manufacturer": "Samsung",
+    "MPN": "CL10X106MO8NRNC",
+    "LCSC": "C3039688",
+    "Assembly note": "10uF 16V X6S 0603; verify total effective VOUT capacitance"
+  },
+  "C13": {
+    "Manufacturer": "FH",
+    "MPN": "0402CG3R9C500NT",
+    "LCSC": "C1566",
+    "Assembly note": "3.9pF C0G standard 0402"
+  },
+  "C21": {
+    "Manufacturer": "Samsung",
+    "MPN": "CL05A106MQ5NUNC",
+    "LCSC": "C15525",
+    "Assembly note": "Existing selection"
+  },
+  "C22": {
+    "Manufacturer": "FH",
+    "MPN": "0402B102K500NT",
+    "LCSC": "C1523",
+    "Assembly note": "Basic 1nF 50V X7R 0402; Economic assembly"
+  },
+  "C24": {
+    "Manufacturer": "FH",
+    "MPN": "0402B102K500NT",
+    "LCSC": "C1523",
+    "Assembly note": "Basic 1nF 50V X7R 0402; Economic assembly"
+  },
+  "C23": {
+    "Manufacturer": "Murata",
+    "MPN": "GRM155R60J226ME11D",
+    "LCSC": "C415703",
+    "Assembly note": "CANDIDATE ONLY: effective VINT capacitance at bias unverified"
+  },
+  "C25": {
+    "Manufacturer": "Samsung",
+    "MPN": "CL05A225MQ5NSNC",
+    "LCSC": "C12530",
+    "Assembly note": "Existing selection"
+  },
+  "C26": {
+    "Manufacturer": "Murata",
+    "MPN": "GRM155Z71A105KE01D",
+    "LCSC": "C528974",
+    "Assembly note": "Extended 1uF 10V X7R 0402; Economic assembly"
+  },
+  "C27": {
+    "Manufacturer": "Samsung",
+    "MPN": "CL05B104KO5NNNC",
+    "LCSC": "C1525",
+    "Assembly note": "Basic 100nF 16V X7R 0402; Economic assembly"
+  },
+  "C28": {
+    "Manufacturer": "Samsung",
+    "MPN": "CL05B104KO5NNNC",
+    "LCSC": "C1525",
+    "Assembly note": "Basic 100nF 16V X7R 0402; Economic assembly"
+  },
+  "L10": {
+    "Manufacturer": "Murata",
+    "MPN": "DFE201210U-2R2M=P2",
+    "LCSC": "C2049745",
+    "Assembly note": "Locked 2.2uH boost inductor"
+  },
+  "R1": {
+    "Manufacturer": "UNI-ROYAL",
+    "MPN": "0402WGF1001TCE",
+    "LCSC": "C11702",
+    "Assembly note": "1k 1% standard 0402"
+  },
+  "R22": {
+    "Manufacturer": "UNI-ROYAL",
+    "MPN": "0402WGF4701TCE",
+    "LCSC": "C25900",
+    "Assembly note": "Existing 4.7k 1% selection"
+  },
+  "R23": {
+    "Manufacturer": "UNI-ROYAL",
+    "MPN": "0402WGF4701TCE",
+    "LCSC": "C25900",
+    "Assembly note": "Existing 4.7k 1% selection"
+  },
+  "U2": {
+    "Manufacturer": "Nordic Semiconductor",
+    "MPN": "NPM2100-QEAA-R7",
+    "LCSC": "C46968654",
+    "Assembly note": "Confirm JLC footprint preview"
+  },
+  "U3": {
+    "Manufacturer": "Texas Instruments",
+    "MPN": "FDC1004DGSR",
+    "LCSC": "C2865994",
+    "Assembly note": "Existing MSOP10 selection"
+  },
+  "U4": {
+    "Manufacturer": "Sensirion",
+    "MPN": "SHT45-AD1F-R2",
+    "LCSC": "C5360602",
+    "Assembly note": "PTFE membrane; no substitution"
+  },
+  "X1": {
+    "Manufacturer": "Micro Crystal",
+    "MPN": "CM8V-T1A-32.768KHZ-7PF-20PPM-TA-QC",
+    "LCSC": "C5136974",
+    "Assembly note": "7pF 20ppm retained external LFXO"
+  },
+  "Q1": {
+    "MPN": "DMG2305UX-7",
+    "Manufacturer": "Diodes Incorporated",
+    "Datasheet": "https://www.diodes.com/datasheet/download/DMG2305UX.pdf",
+    "LCSC": "C150470",
+    "Assembly note": "Retain exact protection MOSFET; Economic assembly"
+  },
+  "D1": {
+    "MPN": "TPD1E1B04DPYR",
+    "Manufacturer": "Texas Instruments",
+    "Datasheet": "https://www.ti.com/lit/ds/symlink/tpd1e1b04.pdf",
+    "LCSC": "C779408",
+    "Assembly note": "Retain exact protection diode; Economic assembly"
+  },
+  "D2": {
+    "MPN": "TPD1E1B04DPYR",
+    "Manufacturer": "Texas Instruments",
+    "Datasheet": "https://www.ti.com/lit/ds/symlink/tpd1e1b04.pdf",
+    "LCSC": "C779408",
+    "Assembly note": "Retain exact protection diode; Economic assembly"
+  },
+  "D3": {
+    "MPN": "TPD1E1B04DPYR",
+    "Manufacturer": "Texas Instruments",
+    "Datasheet": "https://www.ti.com/lit/ds/symlink/tpd1e1b04.pdf",
+    "LCSC": "C779408",
+    "Assembly note": "Retain exact protection diode; Economic assembly"
+  },
+  "D4": {
+    "MPN": "TPD1E01B04DPYR",
+    "Manufacturer": "Texas Instruments",
+    "Datasheet": "https://www.ti.com/lit/ds/symlink/tpd1e01b04.pdf",
+    "LCSC": "C779389",
+    "Assembly note": "Retain exact protection diode; Economic assembly"
+  },
+  "D5": {
+    "MPN": "TPD1E01B04DPYR",
+    "Manufacturer": "Texas Instruments",
+    "Datasheet": "https://www.ti.com/lit/ds/symlink/tpd1e01b04.pdf",
+    "LCSC": "C779389",
+    "Assembly note": "Retain exact protection diode; Economic assembly"
+  },
+  "D6": {
+    "MPN": "TPD1E01B04DPYR",
+    "Manufacturer": "Texas Instruments",
+    "Datasheet": "https://www.ti.com/lit/ds/symlink/tpd1e01b04.pdf",
+    "LCSC": "C779389",
+    "Assembly note": "Retain exact protection diode; Economic assembly"
+  },
+  "D7": {
+    "MPN": "TPD1E01B04DPYR",
+    "Manufacturer": "Texas Instruments",
+    "Datasheet": "https://www.ti.com/lit/ds/symlink/tpd1e01b04.pdf",
+    "LCSC": "C779389",
+    "Assembly note": "Retain exact protection diode; Economic assembly"
+  },
+  "D8": {
+    "MPN": "TPD1E01B04DPYR",
+    "Manufacturer": "Texas Instruments",
+    "Datasheet": "https://www.ti.com/lit/ds/symlink/tpd1e01b04.pdf",
+    "LCSC": "C779389",
+    "Assembly note": "Retain exact protection diode; Economic assembly"
+  },
+  "D9": {
+    "MPN": "TPD1E01B04DPYR",
+    "Manufacturer": "Texas Instruments",
+    "Datasheet": "https://www.ti.com/lit/ds/symlink/tpd1e01b04.pdf",
+    "LCSC": "C779389",
+    "Assembly note": "Retain exact protection diode; Economic assembly"
+  },
+  "D10": {
+    "MPN": "TPD1E01B04DPYR",
+    "Manufacturer": "Texas Instruments",
+    "Datasheet": "https://www.ti.com/lit/ds/symlink/tpd1e01b04.pdf",
+    "LCSC": "C779389",
+    "Assembly note": "Retain exact protection diode; Economic assembly"
+  },
+  "R30": {
+    "MPN": "0402WGF5101TCE",
+    "Manufacturer": "UNI-ROYAL",
+    "Datasheet": "",
+    "LCSC": "C25905",
+    "Assembly note": "Basic 5.1k 1% 0402"
+  },
+  "R31": {
+    "MPN": "0402WGF5101TCE",
+    "Manufacturer": "UNI-ROYAL",
+    "Datasheet": "",
+    "LCSC": "C25905",
+    "Assembly note": "Basic 5.1k 1% 0402"
+  },
+  "R32": {
+    "MPN": "0402WGF1000TCE",
+    "Manufacturer": "UNI-ROYAL",
+    "Datasheet": "",
+    "LCSC": "C25076",
+    "Assembly note": "Basic 100 ohm 1% 0402"
+  },
+  "R33": {
+    "MPN": "0402WGF1000TCE",
+    "Manufacturer": "UNI-ROYAL",
+    "Datasheet": "",
+    "LCSC": "C25076",
+    "Assembly note": "Basic 100 ohm 1% 0402"
+  },
+  "R34": {
+    "MPN": "0402WGF1000TCE",
+    "Manufacturer": "UNI-ROYAL",
+    "Datasheet": "",
+    "LCSC": "C25076",
+    "Assembly note": "Basic 100 ohm 1% 0402"
+  },
+  "R35": {
+    "MPN": "0402WGF1000TCE",
+    "Manufacturer": "UNI-ROYAL",
+    "Datasheet": "",
+    "LCSC": "C25076",
+    "Assembly note": "Basic 100 ohm 1% 0402"
+  }
+}

@@ -1,13 +1,16 @@
 # Firmware — DK fire-tests
 
+The carrier now uses BL54L15 453-00001R. See [the carrier port requirements](BL54L15-port.md); these DK test targets remain unchanged.
+
+
 Bench tests that run on an **nRF54L15 DK (PCA10156)**, not on our board. They
 exist to settle the pin assignment in [HARDWARE.md](../HARDWARE.md) §6 before
 the board is fabricated, because those three claims are datasheet readings and
 each one moves pins if it is wrong.
 
-Nothing else in the bring-up list can be tested on the DK. The DK's nPM1300 is
-owned by the nRF5340 board controller and is not on the nRF54L15's bus — see
-[NEXT-STEPS.md](../NEXT-STEPS.md) under "What the DK's nPM1300 is not".
+Nothing else in the bring-up list can be tested on the DK. Its board-controller
+PMIC is not the production nPM2100 and is not on the nRF54L15's bus — see
+[NEXT-STEPS.md](../NEXT-STEPS.md) for the DK limitations.
 
 For the BTHome BLE beacon firmware (also DK-only, not a fire-test), see
 [bthome-sensor/](bthome-sensor/README.md).
@@ -218,9 +221,10 @@ working container build, flash and console path plus `pin-probe`, all of which
 real bring-up needs and all cheaper to debug against a known answer; two bench
 traps are documented; and the clock-pin margin turns out to be large.
 
-The untested risk is entirely in the power chain — `BUCKnPWMSET`, the VBUS
-limit reverting, the §5 LOADSW1 gating. Those are our own topology decisions
-rather than Nordic's documented constraints, and they need the nPM1300 EK.
+The untested risk is entirely in the power chain — boost configuration and the
+LDOSW gate for `+3V3_FDC_SW`. Those are our topology decisions rather than
+claims established by these DK tests, and they need the production PMIC on the
+bench (or the nPM2100 evaluation hardware).
 
 ### Bench traps that cost time
 

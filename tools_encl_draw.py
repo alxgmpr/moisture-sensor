@@ -38,7 +38,7 @@ OX, OY = 60.0, 40.0          # board (0,0) is KiCad page (60,40)
 BCX, BCY = 17.0, 37.0        # board centre = cavity centre
 
 Y_FLOOR, Y_POST_TOP = 2.20, 6.20      # measured cavity floor and post top
-BOARD_T = 1.59                        # JLC04161H-7628 finished thickness
+BOARD_T = 1.60                        # JLC04161H-3313 nominal thickness
 Y_BOARD_TOP = Y_POST_TOP + BOARD_T
 CAV_TOP = 16.90                       # top of the bottom moulding
 
@@ -187,7 +187,7 @@ def draw_plan():
                             zorder=6))
 
     for ref, px, py in parts:
-        if ref in ("U1", "U2", "U3", "U4", "J1", "J2", "J3", "J4", "J5",
+        if ref in ("U1", "U2", "U3", "U4", "J4", "J5",
                    "X1", "X2", "L10"):
             ax.plot(px, py, "o", ms=2.6, color=GREY, zorder=7)
             ax.annotate(ref, (px, py), textcoords="offset points",

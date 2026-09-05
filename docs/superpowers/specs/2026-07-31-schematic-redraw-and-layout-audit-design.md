@@ -210,9 +210,10 @@ Board size confirms at 42.00 × 155.00 mm.
 Order: power/PMIC → MCU+RF → sense → debug/test. Each block completes
 schematic-fix → placement-fix → route → DRC before the next begins.
 
-**Preserved, not touched:**
-- The tuned 0.36 mm RF microstrip (`ANT_FEED`, `RF_A`, `RF_B`) and its guard —
-  impedance work from LAYOUT.md §2.
+**Historical instruction, now superseded:**
+- The former 0.36 mm RF routing was subsequently replaced. The production
+  design uses the JLC04161H-3313 controlled-impedance geometry documented in
+  LAYOUT.md §2; do not reuse the dimension from this archived plan.
 - QFN centre-pad via arrays, both QFNs.
 - Ground stitching vias.
 

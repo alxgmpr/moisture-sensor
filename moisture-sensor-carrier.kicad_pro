@@ -154,7 +154,13 @@
           "thermal_relief_spoke_width": 0.5
         }
       },
-      "diff_pair_dimensions": [],
+      "diff_pair_dimensions": [
+        {
+          "gap": 0.0,
+          "via_gap": 0.0,
+          "width": 0.0
+        }
+      ],
       "drc_exclusions": [],
       "meta": {
         "version": 3
@@ -297,10 +303,13 @@
       ],
       "track_widths": [
         0.0,
+        0.1,
+        0.15,
         0.2,
         0.25,
         0.3,
         0.38,
+        0.4,
         0.5,
         0.8,
         1.2
@@ -666,10 +675,10 @@
         "line_style": 0,
         "microvia_diameter": 0.3,
         "microvia_drill": 0.1,
-        "name": "I2C",
-        "pcb_color": "rgb(110, 210, 255)",
+        "name": "Crystal",
+        "pcb_color": "rgb(210, 130, 255)",
         "priority": 1,
-        "schematic_color": "rgb(110, 210, 255)",
+        "schematic_color": "rgb(210, 130, 255)",
         "track_width": 0.2,
         "tuning_profile": "",
         "via_diameter": 0.5,
@@ -685,10 +694,10 @@
         "line_style": 0,
         "microvia_diameter": 0.3,
         "microvia_drill": 0.1,
-        "name": "Crystal",
-        "pcb_color": "rgb(210, 130, 255)",
+        "name": "I2C",
+        "pcb_color": "rgb(110, 210, 255)",
         "priority": 1,
-        "schematic_color": "rgb(210, 130, 255)",
+        "schematic_color": "rgb(110, 210, 255)",
         "track_width": 0.2,
         "tuning_profile": "",
         "via_diameter": 0.5,
@@ -746,7 +755,7 @@
         "pcb_color": "rgb(255, 0, 0)",
         "priority": 1,
         "schematic_color": "rgb(255, 0, 0)",
-        "track_width": 0.36,
+        "track_width": 0.1565,
         "tuning_profile": "",
         "via_diameter": 0.6,
         "via_drill": 0.3,
@@ -824,15 +833,15 @@
       },
       {
         "netclass": "RF",
-        "pattern": "/ANT_FEED"
+        "pattern": "/RF_50R"
       },
       {
         "netclass": "RF",
-        "pattern": "/RF_A"
+        "pattern": "/RF_FILTER_N1"
       },
       {
         "netclass": "RF",
-        "pattern": "/RF_B"
+        "pattern": "/RF_FILTER_N2"
       },
       {
         "netclass": "SENSE",
@@ -880,15 +889,15 @@
       },
       {
         "netclass": "Power",
-        "pattern": "FDC_VDD"
+        "pattern": "+3V3_FDC_SW"
       },
       {
         "netclass": "Power",
-        "pattern": "/GND_PA"
+        "pattern": "/RF_PA_RETURN_LOCAL"
       },
       {
         "netclass": "Power",
-        "pattern": "/GND_C9"
+        "pattern": "/RF_C9_RETURN_BOTTOM"
       },
       {
         "netclass": "Control",
@@ -1023,13 +1032,37 @@
           "label": "Datasheet",
           "name": "Datasheet",
           "show": true
+        },
+        {
+          "group_by": false,
+          "label": "Manufacturer",
+          "name": "Manufacturer",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "MPN",
+          "name": "MPN",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Description",
+          "name": "Description",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "#",
+          "name": "${ITEM_NUMBER}",
+          "show": false
         }
       ],
       "filter_scope": "reference",
-      "filter_string": "",
-      "group_symbols": true,
+      "filter_string": "L1",
+      "group_symbols": false,
       "include_excluded_from_bom": true,
-      "name": "Default Editing",
+      "name": "",
       "sort_asc": true,
       "sort_field": "Reference"
     },
@@ -1088,7 +1121,7 @@
         "uuid": "29551000-a13a-494c-a3a3-b85b9fc11a3c"
       }
     ],
-    "used_designators": "U$9-12,FAULT1,VBAT1,#FLG1-3,IC1-2,1,#FLG_SOLAR_PANEL1,TH1,D1-6,#PWR1-19,SJ1,C1-11,011,J1-3,#FLG_VBAT1,JP3,#FLG_GND_PA1,U1-3,#SUPPLY1-8,#FLG_SWD_RST1,#P+1-6,#FLG_3V3_MCU1,FID1-5,CHG1,R1-14,R16,R19-20,#FLG_VBUS_IN1,#FLG_GND1,LED3,#U$1,#U$5-8,#U$13-16,#U$20,#U$23-24,#U$28,#U$31-33,#U$36-38,#U$41,#U$46,#U$50-51,#U$55-56,#U$58-60,#U$69-71,#FLG_VSYS1,L1-2,X1-2,#FLG_SOLAR_5V1",
+    "used_designators": "VBAT1,#FLG1-3,U1-3,IC1-2,1,FAULT1,SJ1,#PWR1-19,D1-6,#FLG_SOLAR_PANEL1,TH1,C1-11,011,JP3,#FLG_VBAT1,J1-3,#SUPPLY1-8,#FLG_SWD_RST1,#P+1-6,#FLG_3V3_MCU1,FID1-5,CHG1,R1-14,R16,R19-20,#FLG_VBUS_IN1,LED3,#FLG_GND1,#FLG_RF_PA_RETURN_LOCAL1,U$9-12,#U$1,#U$5-8,#U$13-16,#U$20,#U$23-24,#U$28,#U$31-33,#U$36-38,#U$41,#U$46,#U$50-51,#U$55-56,#U$58-60,#U$69-71,L1-2,X1-2,#FLG_VSYS1,#FLG_SOLAR_5V1",
     "variants": []
   },
   "sheets": [

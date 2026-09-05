@@ -1,23 +1,24 @@
 #!/usr/bin/env python3
 """
-Routing for the moisture sensor carrier.
+Historical routing table for the moisture sensor carrier (retired).
 
-Why this exists as a script when tools_gen_pcb.py is frozen: the generator is
-frozen because it redraws *graphics and placement*, and the board's jut-out
-fillets are hand-drawn. This script never touches graphics, footprints or zone
-outlines. It only removes and re-adds copper tracks and vias, then refills the
-zones - so it is safe to re-run, and the routing stays reviewable as text
-instead of as a binary diff.
-
-    python3 tools_route.py            # route
-    python3 tools_route.py --check    # route into /tmp and report, leave board alone
+This historical route table targets the superseded PMIC layout and must not be
+run against the production board. It is retained as an audit record only. The
+production board's copper is the source of truth; final DRC review is the only
+remaining release gate.
 
 Coordinates are KiCad page mm. The board sits at x 60..102, y 40..195, so
 board (0,0) is page (60,40).
 
-Order follows NEXT-STEPS.md: RF first while there is freedom, then the SW2
-loop, then sense into the probe, then everything else.
+Order follows the historical routing session: RF first, then the switch-node
+loop, sense into the probe, and remaining signals.
 """
+
+if __name__ == "__main__":
+    raise SystemExit(
+        "tools_route.py is retired: its historical route table cannot modify "
+        "the production board."
+    )
 
 import os
 import sys
@@ -177,39 +178,40 @@ class Escape:
 #
 #     U1.31  60.079   /ANT
 #     L2.1   58.82
-#     L2.2   58.18   /RF_A   C6.1  76.25,57.18  shunt, /RF_A - 0.39 mm to L3.1
-#     L3.1   57.22   /RF_A   C6.2  76.25,57.82  -> U1.32, top layer only
-#     L3.2   56.58   /RF_B   C9.1  78.38,56.9   shunt, /RF_B
-#     L4.1   55.62   /RF_B   C9.2  79.02,56.9   -> via -> B.Cu -> NT2
-#     L4.2   54.98   /ANT_FEED
-#     AE1.1  51.5..43.5      C11.1 74.58,55.3   shunt, /ANT_FEED
+#     L2.2   58.18   /RF_FILTER_N1   C6.1  76.25,57.18  shunt, /RF_FILTER_N1 - 0.39 mm to L3.1
+#     L3.1   57.22   /RF_FILTER_N1   C6.2  76.25,57.82  -> U1.32, top layer only
+#     L3.2   56.58   /RF_FILTER_N2   C9.1  78.38,56.9   shunt, /RF_FILTER_N2
+#     L4.1   55.62   /RF_FILTER_N2   C9.2  79.02,56.9   -> via -> B.Cu -> NT2
+#     L4.2   54.98   /RF_50R
+#     J5.1  51.5..43.5       C11.1 74.58,55.3   shunt, /RF_50R
 #                            C11.2 75.22,55.3   -> via -> In1.Cu plane
 #
 # U1.31 to the ground-plane edge at y = 51.5 is 8.579 mm, against lambda/8 =
 # 8.6 mm at 2.4 GHz in FR4. No vias anywhere on the RF nets.
 #
-# The trace leaves pin 31 at pad width and flares to 0.36 mm past the pad row:
+# The historical trace left pin 31 at pad width and flared to the then-selected
+# width past the pad row. The production nominal is 0.1565 mm; this table is
+# retired and is not a source for new copper.
 # a wide trace on 0.4 mm pitch would sit ~0.11 mm from pins 30 and 32, under the
 # fab floor. See the QFNEscape rules in the .kicad_dru.
 #
-# 0.36 mm is JLCPCB's OWN solver output - 14.12 mil for 50 ohm single-ended on
-# L1 referenced to L2 in the JLC04161H-7628 stackup, read off their impedance
-# calculator, not derived here. See LAYOUT.md section 2.
+# The production 0.1565 mm width comes from JLCPCB's official 50 ohm
+# non-coplanar L1/L2 calculator result for JLC04161H-3313. See LAYOUT.md §2.
 # --------------------------------------------------------------------------
 RF = [
     # net,          layer, width,  points
     ("/ANT",        F, 0.2032, [(76.80, 60.079), (76.80, 59.30)]),   # neck out of the pad row
-    ("/ANT",        F, 0.36,   [(76.80, 59.30),  (76.80, 58.82)]),   # flare, into L2.1
+    ("/ANT",        F, 0.1565, [(76.80, 59.30),  (76.80, 58.82)]),   # flare, into L2.1
 
-    ("/RF_A",       F, 0.36,   [(76.80, 58.18),  (76.80, 57.22)]),   # L2.2 -> L3.1
-    ("/RF_A",       F, 0.36,   [(76.10, 57.18),  (76.65, 57.20)]),   # C6.1 shunt, 0.39 mm to L3.1
+    ("/RF_FILTER_N1",       F, 0.1565, [(76.80, 58.18),  (76.80, 57.22)]),   # L2.2 -> L3.1
+    ("/RF_FILTER_N1",       F, 0.1565, [(76.10, 57.18),  (76.65, 57.20)]),   # C6.1 shunt, 0.39 mm to L3.1
 
-    ("/RF_B",       F, 0.36,   [(76.80, 56.58),  (76.80, 55.62)]),   # L3.2 -> L4.1
-    ("/RF_B",       F, 0.36,   [(78.38, 56.90),  (78.38, 56.10),
+    ("/RF_FILTER_N2",       F, 0.1565, [(76.80, 56.58),  (76.80, 55.62)]),   # L3.2 -> L4.1
+    ("/RF_FILTER_N2",       F, 0.1565, [(78.38, 56.90),  (78.38, 56.10),
                                 (76.80, 56.10)]),                    # C9.1 shunt into the node
 
-    ("/ANT_FEED",   F, 0.36,   [(76.80, 54.98),  (76.80, 53.70)]),   # L4.2 -> J5 U.FL signal pad
-    ("/ANT_FEED",   F, 0.36,   [(74.58, 55.30),  (74.58, 54.50),
+    ("/RF_50R",   F, 0.1565, [(76.80, 54.98),  (76.80, 53.70)]),   # L4.2 -> J5 U.FL signal pad
+    ("/RF_50R",   F, 0.1565, [(74.58, 55.30),  (74.58, 54.50),
                                 (76.80, 54.50)]),                    # C11.1 shunt into the node
 ]
 
@@ -228,44 +230,28 @@ RF = [
 # 0.168 mm to the pad and 0.16 mm to /ANT, against the 0.15 mm that QFNEscape
 # and MatchingNetwork allow there. The last 0.25 mm necks to 0.18 mm to drop
 # onto pad 32 below the RF flare.
-GND_PA = [
-    ("/GND_PA",     F, 0.18,   [(76.10, 57.82),  (76.35, 58.40)]),
-    ("/GND_PA",     F, 0.18,   [(76.35, 58.40),  (76.35, 59.55)]),
-    ("/GND_PA",     F, 0.18,   [(76.35, 59.55),  (76.36, 59.80)]),
+RF_PA_RETURN_LOCAL = [
+    ("/RF_PA_RETURN_LOCAL",     F, 0.18,   [(76.10, 57.82),  (76.35, 58.40)]),
+    ("/RF_PA_RETURN_LOCAL",     F, 0.18,   [(76.35, 58.40),  (76.35, 59.55)]),
+    ("/RF_PA_RETURN_LOCAL",     F, 0.18,   [(76.35, 59.55),  (76.36, 59.80)]),
 ]
 
 # C9's ground reaches the BOTTOM layer only - Nordic rule 2 - where NT2 ties it
 # to GND. The short F.Cu stub down to the via is the unavoidable part.
 #
-# NT2's GND side had nothing to connect to and DRC listed it as unconnected.
-# The arrangement assumed a B.Cu ground pour for the net tie to land in, and
-# this board has none: Zone B's B.Cu is bare copper-free, and the only B.Cu
-# zones anywhere are Zone C's SHLD guard and two keepouts. So C9's return
-# stopped at the net tie and went nowhere.
-#
-# Nordic's rule reads "isolated from ALL ground layers except the bottom ground
-# layer", which presumes their stackup where the bottom IS a ground layer. Here
-# the ground plane is In1.Cu - and In1.Cu is the microstrip reference sitting
-# directly beneath the RF trace, which is the plane the rule exists to keep
-# C9's return current out of near the trace.
-#
-# So the return stays on B.Cu, as intended, and lands at the GND stitching via
-# at (81.50, 55.00) - a through via that reaches In1.Cu. That puts C9's ground
-# into the plane 4.70 mm east of the /ANT run at x = 76.80, rather than
-# immediately under it. Pouring B.Cu ground across Zone B instead would give
-# the tie somewhere to land, but it would also put a second plane 1.065 mm
-# under the RF trace and change the 50 ohm geometry that LAYOUT.md section 2
-# had JLCPCB's calculator solve.
-GND_C9 = [
-    ("/GND_C9",     F, 0.40,   [(79.02, 56.90),  (79.60, 56.30)]),
-    ("/GND_C9",     B, 0.40,   [(79.60, 56.30),  (80.30, 55.20)]),
+# NT2 lands in the Zone B B.Cu ground pour. C9's return remains on B.Cu and is
+# isolated from both inner planes, preserving Nordic's bottom-only grounding
+# rule and the controlled L1/L2 impedance geometry.
+RF_C9_RETURN_BOTTOM = [
+    ("/RF_C9_RETURN_BOTTOM",     F, 0.40,   [(79.02, 56.90),  (79.60, 56.30)]),
+    ("/RF_C9_RETURN_BOTTOM",     B, 0.40,   [(79.60, 56.30),  (80.30, 55.20)]),
 ]
 
 # NT2's GND side needs no track any more. It sits in ZoneB_GND_B, the local
 # B.Cu ground pour added for exactly this - see tools_add_zones.py. The 4.20 mm
 # detour that used to be here was 1.68 nH of the 5.18 nH that made C9's shunt
 # branch inductive.
-GND_C9_TIE = []
+RF_C9_RETURN_BOTTOM_TIE = []
 
 # C11's ground goes straight down to the In1.Cu plane. J5's two ground pads sit
 # on the Zone A ground pour, which now floods the whole area, so they need no
@@ -284,18 +270,19 @@ GND_RF = [
 # stitching via connects to In1.Cu and nothing else. Four were tried and KiCad
 # reported all four as via_dangling - connected on only one layer.
 #
-# That is consistent with the rest of the design: the 0.38 mm width in
-# LAYOUT.md section 2 is derived from the MICROSTRIP equation, and for microstrip
-# the return current flows in the reference plane directly under the trace. The
+# That is consistent with the rest of the design: the 0.1565 mm width in
+# LAYOUT.md §2 is the official non-coplanar calculator result, and the return
+# current flows in the reference plane directly under the line. For this
+# geometry, the return path
 # thing that actually has to hold is "unbroken In1.Cu beneath the entire run",
 # and ZoneB_GND is continuous from y = 51.5 all the way past U1.
 #
 # Going CPWG instead would need F.Cu ground either side at a controlled gap, and
-# would make 0.38 mm the wrong width. See the note in NEXT-STEPS.md.
+# would make 0.1565 mm the wrong width. See the note in NEXT-STEPS.md.
 
 VIAS = [
     # x,     y,      net,        size, drill
-    (79.60, 56.30, "/GND_C9",    0.60, 0.30),   # C9 ground down to B.Cu / NT2
+    (79.60, 56.30, "/RF_C9_RETURN_BOTTOM",    0.60, 0.30),   # C9 ground down to B.Cu / NT2
     (75.22, 56.20, "GND",        0.60, 0.30),   # C11 ground into the plane
     (74.60, 52.00, "GND",        0.60, 0.30),   # J5 ground pads -> In1.Cu plane
     (79.00, 52.00, "GND",        0.60, 0.30),
@@ -341,7 +328,7 @@ GND_EXTRA = [
 
 # +3V3 down to the In2.Cu plane. One entry per pad; the plane does the rest.
 #
-# No leading slash on this one, unlike /DECA or /GND_PA below. +3V3 is drawn as
+# No leading slash on this one, unlike /DECA or /RF_PA_RETURN_LOCAL below. +3V3 is drawn as
 # a power SYMBOL in the schematic, which makes it a global net named "+3V3";
 # a local label on the root sheet would have made it "/+3V3". net_map() turns a
 # name that does not resolve into a hard abort rather than a skipped route, so
@@ -401,7 +388,7 @@ V3 = [
     ("+3V3",       F, 0.40,   ["J4.1",   (68.46, 77.40), (66.90, 78.00)]),
     ("+3V3",       F, 0.40,   ["C25.1",  (71.93, 102.50)]),
 
-    # BUCK2 output. L10 -> C24 is the second half of the SW2 loop and stays a
+# Boost output. L10 -> C23 is the second half of the /SW loop and stays a
     # direct fat trace; the plane is tapped at C24, the output cap, not at the
     # inductor. Out of the jut-out, U4 pin 3 leaves NORTH before turning west,
     # for the same NoCopperSHT45 reason as pin 4.
@@ -458,7 +445,7 @@ MCU = [
     # the bottom row. Pin 33 is the one C6 had to move for.
     ("/DECA",   F, 0.19, ["U1.43", (73.35, 63.20)]),
     ("/DECA",   F, 0.25, [(73.35, 63.20), (72.85, 62.70), (71.50, 62.70), "FB1.2"]),
-    # Pin 33 has to clear /GND_PA's climb before it turns, so it runs west at
+    # Pin 33 has to clear /RF_PA_RETURN_LOCAL's climb before it turns, so it runs west at
     # y = 58.55 for the first millimetre and only then drops to its own lane.
     ("/DECA",   F, 0.19, ["U1.33", (76.00, 58.45)]),
     ("/DECA",   F, 0.20, [(76.00, 58.45), (75.65, 58.10),
@@ -568,7 +555,7 @@ MCU_VIAS = [
 ]
 
 # --------------------------------------------------------------------------
-# The BUCK2 switch node. This is the first half of the loop whose second half
+# The boost switch node. This is the first half of the loop whose second half
 # is the L10 -> C24 run in V3, and it is the highest-dv/dt net on the board, so
 # it gets the shortest path that 45-degree routing allows and the SWITCH class
 # width of 0.5 mm (0.6 here, matching the output side).
@@ -577,7 +564,7 @@ MCU_VIAS = [
 # the run from 4.69 mm to 3.62 mm; without the rotation this trace would have
 # had to travel the length of the inductor body to reach its own pad.
 #
-#     U2.5   (67.074, 96.250)
+#     U2.2   (66.5375, 98.675)
 #     L10.1  (64.725, 93.500)      dx -2.349, dy -2.750
 #
 # One 45 covers the diagonal, then a short vertical closes the remaining
@@ -588,7 +575,7 @@ MCU_VIAS = [
 #
 #     pad 4  VSYS        y 95.6230..95.8770
 #     pad 5  /SW         y 96.1230..96.3770
-#     pad 6  /GND_PVSS2  y 96.6230..96.8770
+#     pad 11  GND       (AVSS2)
 #
 # A diagonal off pin 5 runs straight up the side of pin 4 - the first attempt
 # did exactly that and DRC returned "Items shorting two nets (VSYS and /SW)".
@@ -664,7 +651,7 @@ SHLD_VIAS = [
 ]
 
 
-ROUTES = (RF + GND_PA + GND_C9 + GND_C9_TIE + GND_RF + GND_EXTRA
+ROUTES = (RF + RF_PA_RETURN_LOCAL + RF_C9_RETURN_BOTTOM + RF_C9_RETURN_BOTTOM_TIE + GND_RF + GND_EXTRA
           + V3 + SWITCH + SENSE + MCU)
 
 # Vias to the In2.Cu +3V3 plane, one per escape above.
@@ -730,9 +717,9 @@ GND_VIAS = [
 # thermal pad wick solder out of the joint.
 #
 # NT1 is the thing to watch. Its GND pad sits at (76.400, 60.705), overlapping
-# pad 49's top edge, and its /GND_PA pad at (76.400, 60.405) is 0.345 mm from
+# pad 49's top edge, and its /RF_PA_RETURN_LOCAL pad at (76.400, 60.405) is 0.345 mm from
 # the nearest via in the array. The array is GND throughout and touches
-# /GND_PA nowhere, so the tie stays the only bridge between them.
+# /RF_PA_RETURN_LOCAL nowhere, so the tie stays the only bridge between them.
 def _grid(cx, cy, offs):
     return [(round(cx + dx, 3), round(cy + dy, 3)) for dy in offs for dx in offs]
 
@@ -976,6 +963,11 @@ def guard_hand_routing(check):
 
 
 def main():
+    raise SystemExit(
+        "tools_route.py is retired: its historical route table is not valid for "
+        "the production nPM2100 board. Route remaining connections in KiCad."
+    )
+
     check = "--check" in sys.argv
     guard_hand_routing(check)
     board = pcbnew.LoadBoard(BOARD)

@@ -8,6 +8,23 @@ revisions, and vendors renumber between revisions.
 
 To rebuild the directory on a fresh checkout, see [Refetching](#refetching).
 
+## BL54L15 module migration — 2026-09-04
+
+U1 is now Ezurio **453-00001R**, the 14 × 10 mm integrated PCB-antenna module.
+Use the current [BL54L10/BL54L15 HTML datasheet](https://www.ezurio.com/documentation/datasheet-bl54l10-and-bl54l15-series),
+accessed 2026-09-04. Pin-out, power diagram and host land/keepout drawing were
+checked directly. [Source manifest](../../docs/bl54l15/source-manifest.json)
+records image URLs/hashes and local snapshot locations for refetching.
+The module symbol, land dimensions and assembly process are documented in
+[the integration record](../../docs/bl54l15/README.md).
+
+The nRF54L15 PDF below remains the underlying SoC reference, but its bare-QFN
+host support circuit has been retired. X2, L1–L4, FB1, C6/C9/C11 and the host
+antenna are deleted; their PDFs below are historical. X1 remains external.
+Current [Nordic LFXO configuration guidance](https://docs.nordicsemi.com/r/bundle/ngl_001/page/gl/ngl_001/lfxo_devicetree.html)
+supersedes the old interpretation that crystal CL directly equals the internal
+bank setting. See [firmware port notes](../../firmware/BL54L15-port.md).
+
 ## Semiconductors
 
 | File | Ref | Part | Manufacturer | Revision | Pages |
@@ -17,8 +34,8 @@ To rebuild the directory on a fresh checkout, see [Refetching](#refetching).
 | `FDC1004.pdf` | U3 | FDC1004 capacitance-to-digital converter | TI | Rev. C | 35 |
 | `SHT4x.pdf` | U4 | SHT45-AD1F humidity/temperature sensor | Sensirion | version 5 | 24 |
 
-The nRF54L15 document covers nRF54L15/L10/L05 as a family; only the L15-QFAA
-columns apply.
+The nRF54L15 document covers nRF54L15/L10/L05 as a family; the L15-QFAA columns describe the silicon inside the module; module
+pad numbers must come from Ezurio.
 
 ### nPM2100 application documents
 
@@ -89,8 +106,9 @@ No datasheet on file, because the BOM does not name a manufacturer part number:
 | C13 | 3.9 pF C0G 0402 |
 | — | bulk R and C values (see BOM.md component list) |
 
-C13 is the nRF54L15 RESET filter rather than part of the RF match, but it still
-needs a real part number before a production BOM is released.
+C13 now has a proposed order code in BOM.md. Existing open sourcing/bias
+items are C23, C26/C27/C28 and the exact BT1 assembly source; follow the current
+BOM rather than this historical PDF inventory.
 
 ## Refetching
 
@@ -109,3 +127,10 @@ Fetched by hand, and not reproducible that way:
 - `CM8V-T1A.pdf`, `FA-128.pdf`, `MLZ1608.pdf`, `DW01-P.pdf` — vendor sites
 - `1551WK.pdf` — `https://www.hammfg.com/files/parts/pdf/1551WKBK.pdf`
   (DigiKey's link for this one 404s)
+
+### Protection revision sources (2026-09-04)
+
+- DMG2305UX.pdf — selected Q1, Diodes manufacturer datasheet.
+- TPD1E01B04.pdf — selected signal clamps, TI manufacturer datasheet.
+- TPD1E1B04.pdf — selected power clamps, TI manufacturer datasheet.
+- AM2305PE.pdf — evaluated Nordic-reference alternative, not fitted (higher gate-leakage bound).

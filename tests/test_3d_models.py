@@ -14,18 +14,17 @@ KICAD_MODELS = Path(
 )
 
 EXPECTED_PROJECT_MODELS = {
-    "BT1": "${KIPRJMOD}/lib/BU2032SM-BT-GTR.STEP",
+    "BT1": "${KIPRJMOD}/lib/CR2032-BS-6-1_C70377.step",
     "L10": "${KIPRJMOD}/lib/DFE201210U_2R2M_P2/IND_DFE201210U-2R2MP2_MUR.step",
-    "U1": "${KIPRJMOD}/lib/nordic/QFN48_6X6_NOR.step",
+    "U1": "${KIPRJMOD}/lib/BL54L15_453-00001.step",
     "U4": "${KIPRJMOD}/lib/SHT45_AD1F_R2/SHT45-AD1F-R2.step",
     "X1": "${KIPRJMOD}/lib/CM8V-T1A/CM8V-T1A-32.768KHZ-7PF-20PPM-TA-QC.step",
-    "X2": "${KIPRJMOD}/lib/FA-128 32.0000MF10Z-AJ0.STEP",
 }
 EXPECTED_U2_MODEL = (
     "${KICAD10_3DMODEL_DIR}/Package_DFN_QFN.3dshapes/"
     "Texas_RSA_VQFN-16-1EP_4x4mm_P0.65mm_EP2.7x2.7mm.step"
 )
-NO_MODEL_EXPECTED = {"J4", "NT1", "NT2", "TP1", "TP2", "TP3"}
+NO_MODEL_EXPECTED = {"J4", "TP1", "TP2", "TP3"}
 
 
 def board_footprints():
@@ -68,15 +67,22 @@ class ModelCoverageTest(unittest.TestCase):
             with self.subTest(reference=reference):
                 self.assertEqual(model_paths(self.footprints[reference]), [path])
 
+    def test_ezurio_library_and_board_share_vendor_alignment(self):
+        library = parse((ROOT / "lib/footprints.pretty/Ezurio_BL54L15_453-00001.kicad_mod").read_text())
+        for footprint in (library, self.footprints["U1"]):
+            self.assertEqual(model_paths(footprint), [EXPECTED_PROJECT_MODELS["U1"]])
+            model = find(footprint, "model")[0]
+            self.assertEqual(tuple(float(v) for v in first(first(model, "offset"), "xyz")[1:]),
+                             (0, -10, 0.40116))
+
     def test_selected_models_are_on_the_component_side(self):
         expected_rotations = {
-            "BT1": (-90.0, 0.0, 0.0),
+            "BT1": (0.0, 0.0, 180.0),
             "L10": (0.0, 0.0, 0.0),
             "U1": (0.0, 0.0, 0.0),
             "U2": (0.0, 0.0, 0.0),
             "U4": (-90.0, 0.0, 0.0),
             "X1": (-90.0, 0.0, 0.0),
-            "X2": (-90.0, 0.0, 90.0),
         }
         for reference, rotation in expected_rotations.items():
             with self.subTest(reference=reference):
@@ -111,14 +117,14 @@ class ModelCoverageTest(unittest.TestCase):
 
     def test_custom_footprints_keep_their_models(self):
         expected = {
-            "BatteryHolder_MPD_BU2032SM-BT-GTR.kicad_mod": (
-                EXPECTED_PROJECT_MODELS["BT1"], (-90.0, 0.0, 0.0)),
+            "BatteryHolder_LianXin_CR2032-BS-6.kicad_mod": (
+                EXPECTED_PROJECT_MODELS["BT1"], (0.0, 0.0, 180.0)),
             "IND_Murata_DFE201210U.kicad_mod": (
                 EXPECTED_PROJECT_MODELS["L10"], (0.0, 0.0, 0.0)),
             "XTAL_CM8V-T1A_2012.kicad_mod": (
                 EXPECTED_PROJECT_MODELS["X1"], (-90.0, 0.0, 0.0)),
             "XTAL_FA-128_2016_4Pin.kicad_mod": (
-                EXPECTED_PROJECT_MODELS["X2"], (-90.0, 0.0, 90.0)),
+                "${KIPRJMOD}/lib/FA-128 32.0000MF10Z-AJ0.STEP", (-90.0, 0.0, 90.0)),
         }
         for filename, (path, rotation) in expected.items():
             with self.subTest(filename=filename):
@@ -137,11 +143,12 @@ class ModelCoverageTest(unittest.TestCase):
         self.assertEqual(
             libraries,
             {
-                "nordic": "${KIPRJMOD}/lib/nordic/NRF54L15-QFAA-R.kicad_sym",
+                "ezurio": "${KIPRJMOD}/lib/ezurio.kicad_sym",
                 "npm2100": "${KIPRJMOD}/lib/nordic/NPM2100-QEAA.kicad_sym",
                 "fdc": "${KIPRJMOD}/lib/FDC1004.kicad_sym",
                 "sht4x": "${KIPRJMOD}/lib/SHT4x.kicad_sym",
                 "power_local": "${KIPRJMOD}/lib/power_local.kicad_sym",
+                "protection": "${KIPRJMOD}/lib/protection.kicad_sym",
             },
         )
         for uri in libraries.values():
