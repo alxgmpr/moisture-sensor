@@ -14,7 +14,7 @@ import pcbnew
 
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-BOARD_PATH = os.path.join(HERE, "moisture-sensor-carrier.kicad_pcb")
+BOARD_PATH = os.path.join(HERE, "nrf-moisture-sensor.kicad_pcb")
 KICAD_FP = "/Applications/KiCad/KiCad.app/Contents/SharedSupport/footprints"
 
 REPLACEMENTS = {

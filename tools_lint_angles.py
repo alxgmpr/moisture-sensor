@@ -60,5 +60,5 @@ def check(path):
 
 
 if __name__ == '__main__':
-    board = sys.argv[1] if len(sys.argv) > 1 else 'moisture-sensor-carrier.kicad_pcb'
+    board = sys.argv[1] if len(sys.argv) > 1 else 'nrf-moisture-sensor.kicad_pcb'
     sys.exit(check(board))

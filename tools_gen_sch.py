@@ -10,7 +10,7 @@ it can never overwrite the authoritative KiCad source.
 def main() -> int:
     raise SystemExit(
         "Retired: tools_gen_sch.py cannot reproduce the current nPM2100 design "
-        "and will not modify moisture-sensor-carrier.kicad_sch."
+        "and will not modify nrf-moisture-sensor.kicad_sch."
     )
 
 

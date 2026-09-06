@@ -17,7 +17,7 @@ import tempfile
 
 KICAD_CLI = "/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli"
 SCH = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                   "moisture-sensor-carrier.kicad_sch")
+                   "nrf-moisture-sensor.kicad_sch")
 
 
 def tokenize(text):

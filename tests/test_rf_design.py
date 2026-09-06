@@ -11,8 +11,8 @@ from tools_sexp import find, first, parse
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PCB = ROOT / "moisture-sensor-carrier.kicad_pcb"
-PROJECT = ROOT / "moisture-sensor-carrier.kicad_pro"
+PCB = ROOT / "nrf-moisture-sensor.kicad_pcb"
+PROJECT = ROOT / "nrf-moisture-sensor.kicad_pro"
 
 LEGACY_NETS = (
     "FDC_VDD",
@@ -64,10 +64,10 @@ class RfDesignTest(unittest.TestCase):
 
     def test_legacy_net_names_are_absent_from_design_sources(self):
         sources = [
-            "moisture-sensor-carrier.kicad_sch",
-            "moisture-sensor-carrier.kicad_pcb",
-            "moisture-sensor-carrier.kicad_dru",
-            "moisture-sensor-carrier.kicad_pro",
+            "nrf-moisture-sensor.kicad_sch",
+            "nrf-moisture-sensor.kicad_pcb",
+            "nrf-moisture-sensor.kicad_dru",
+            "nrf-moisture-sensor.kicad_pro",
             "netlist-fingerprint.json",
             "tools_add_zones.py",
             "tools_dru_test.py",

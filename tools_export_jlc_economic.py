@@ -12,7 +12,7 @@ from tools_sexp import parse, first
 
 ROOT = Path(__file__).resolve().parent
 CLI = '/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli'
-STEM = 'moisture-sensor-carrier'
+STEM = 'nrf-moisture-sensor'
 OUT = ROOT / 'production/jlc-economic-quote'
 
 def main():

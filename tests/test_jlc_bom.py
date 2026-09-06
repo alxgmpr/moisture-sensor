@@ -8,7 +8,7 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SCHEMATIC = ROOT / "moisture-sensor-carrier.kicad_sch"
+SCHEMATIC = ROOT / "nrf-moisture-sensor.kicad_sch"
 MACOS_KICAD_CLI = Path(
     "/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli"
 )

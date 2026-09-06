@@ -8,7 +8,7 @@ from tools_sexp import find, first, parse
 
 
 ROOT = Path(__file__).resolve().parents[1]
-BOARD = ROOT / "moisture-sensor-carrier.kicad_pcb"
+BOARD = ROOT / "nrf-moisture-sensor.kicad_pcb"
 KICAD_MODELS = Path(
     "/Applications/KiCad/KiCad.app/Contents/SharedSupport/3dmodels"
 )
@@ -24,7 +24,7 @@ EXPECTED_U2_MODEL = (
     "${KICAD10_3DMODEL_DIR}/Package_DFN_QFN.3dshapes/"
     "Texas_RSA_VQFN-16-1EP_4x4mm_P0.65mm_EP2.7x2.7mm.step"
 )
-NO_MODEL_EXPECTED = {"J4", "TP1", "TP2", "TP3"}
+NO_MODEL_EXPECTED = {"J4", "TP1", "TP2", "TP3", "FID1", "FID2", "FID3", "FID4", "REF**"}
 
 
 def board_footprints():

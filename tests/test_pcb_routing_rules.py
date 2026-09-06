@@ -7,7 +7,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PROJECT = ROOT / "moisture-sensor-carrier.kicad_pro"
+PROJECT = ROOT / "nrf-moisture-sensor.kicad_pro"
 
 
 class PcbRoutingRulesTest(unittest.TestCase):

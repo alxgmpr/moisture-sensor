@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class InductorFootprintTest(unittest.TestCase):
     def test_l10_pad_rectangles_follow_footprint_rotation(self):
-        board = parse((ROOT / 'moisture-sensor-carrier.kicad_pcb').read_text())
+        board = parse((ROOT / 'nrf-moisture-sensor.kicad_pcb').read_text())
         fp = next(f for f in find(board, 'footprint')
                   if any(p[1:3] == ['Reference', 'L10'] for p in find(f, 'property')))
         rotation = float(first(first(fp, 'transform'), 'rotate')[1])

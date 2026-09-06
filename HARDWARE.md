@@ -1,4 +1,4 @@
-# Indoor Capacitive Soil Moisture Sensor — Hardware Design
+# nRF Moisture Sensor — Hardware Design
 
 Ezurio BL54L15 453-00001R · nPM2100 (QFN16) · FDC1004 · SHT45 · BTHome v2 over BLE · CR2032
 

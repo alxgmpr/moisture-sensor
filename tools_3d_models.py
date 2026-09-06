@@ -42,7 +42,7 @@ import sys
 import pcbnew
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-BOARD = os.path.join(HERE, "moisture-sensor-carrier.kicad_pcb")
+BOARD = os.path.join(HERE, "nrf-moisture-sensor.kicad_pcb")
 LIB = os.path.join(HERE, "lib", "footprints.pretty")
 
 # footprint name -> (model path, offset xyz, rotation xyz)

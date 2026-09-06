@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Historical routing table for the moisture sensor carrier (retired).
+Historical routing table for the nRF Moisture Sensor (retired).
 
 This historical route table targets the superseded PMIC layout and must not be
 run against the production board. It is retained as an audit record only. The
@@ -26,7 +26,7 @@ import sys
 import pcbnew
 
 BOARD = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                     "moisture-sensor-carrier.kicad_pcb")
+                     "nrf-moisture-sensor.kicad_pcb")
 
 F, B, IN1, IN2 = "F.Cu", "B.Cu", "In1.Cu", "In2.Cu"
 

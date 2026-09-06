@@ -55,8 +55,8 @@ Direct host VOUT capacitance is 12.3 µF nominal; at +20% that is 14.76 µF befo
 module capacitance. Effective capacitance includes bias loss and tolerance;
 verify the converter's 0.7–15 µF range with the complete load. The published
 module block diagram does not specify every component's capacitance, so this
-upper-limit check is explicitly unresolved. Include C26/C28 and load-switch
-coupling when assessing the enabled FDC rail, as well as the off state. Extra capacitors are not a safe
+upper-limit check is explicitly unresolved. LDOSW is supplied from VINT, so C26/C28 are not directly part of
+the VOUT capacitance sum; assess their startup load separately on VINT. Extra capacitors are not a safe
 assumed fix. C23's separate VINT bias qualification remains open from before.
 
 ## Pin audit

@@ -623,7 +623,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "moisture-sensor-carrier.kicad_pro",
+    "filename": "nrf-moisture-sensor.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -744,25 +744,6 @@
       },
       {
         "bus_width": 12,
-        "clearance": 0.5,
-        "diff_pair_gap": 0.25,
-        "diff_pair_via_gap": 0.25,
-        "diff_pair_width": 0.2,
-        "line_style": 0,
-        "microvia_diameter": 0.3,
-        "microvia_drill": 0.1,
-        "name": "RF",
-        "pcb_color": "rgb(255, 0, 0)",
-        "priority": 1,
-        "schematic_color": "rgb(255, 0, 0)",
-        "track_width": 0.1565,
-        "tuning_profile": "",
-        "via_diameter": 0.6,
-        "via_drill": 0.3,
-        "wire_width": 6
-      },
-      {
-        "bus_width": 12,
         "clearance": 0.6,
         "diff_pair_gap": 0.25,
         "diff_pair_via_gap": 0.25,
@@ -828,22 +809,6 @@
     "netclass_assignments": null,
     "netclass_patterns": [
       {
-        "netclass": "RF",
-        "pattern": "/ANT"
-      },
-      {
-        "netclass": "RF",
-        "pattern": "/RF_50R"
-      },
-      {
-        "netclass": "RF",
-        "pattern": "/RF_FILTER_N1"
-      },
-      {
-        "netclass": "RF",
-        "pattern": "/RF_FILTER_N2"
-      },
-      {
         "netclass": "SENSE",
         "pattern": "/SENSE1"
       },
@@ -860,10 +825,6 @@
         "pattern": "/SW"
       },
       {
-        "netclass": "SWITCH",
-        "pattern": "/DCC"
-      },
-      {
         "netclass": "Power",
         "pattern": "GND"
       },
@@ -876,28 +837,12 @@
         "pattern": "/VINT"
       },
       {
-        "netclass": "LocalPower",
-        "pattern": "/DECA"
-      },
-      {
-        "netclass": "LocalPower",
-        "pattern": "/DECD"
-      },
-      {
         "netclass": "Power",
         "pattern": "+3V3"
       },
       {
         "netclass": "Power",
         "pattern": "+3V3_FDC_SW"
-      },
-      {
-        "netclass": "Power",
-        "pattern": "/RF_PA_RETURN_LOCAL"
-      },
-      {
-        "netclass": "Power",
-        "pattern": "/RF_C9_RETURN_BOTTOM"
       },
       {
         "netclass": "Control",
@@ -933,19 +878,39 @@
       },
       {
         "netclass": "Crystal",
-        "pattern": "/XC1"
-      },
-      {
-        "netclass": "Crystal",
-        "pattern": "/XC2"
-      },
-      {
-        "netclass": "Crystal",
         "pattern": "/XL1"
       },
       {
         "netclass": "Crystal",
         "pattern": "/XL2"
+      },
+      {
+        "netclass": "Power",
+        "pattern": "/VBAT_RAW"
+      },
+      {
+        "netclass": "SENSE",
+        "pattern": "/CIN1_PROTECTED"
+      },
+      {
+        "netclass": "SENSE",
+        "pattern": "/CIN2_PROTECTED"
+      },
+      {
+        "netclass": "Control",
+        "pattern": "/SWDIO_EXT"
+      },
+      {
+        "netclass": "Control",
+        "pattern": "/SWDCLK_EXT"
+      },
+      {
+        "netclass": "Control",
+        "pattern": "/SWO_EXT"
+      },
+      {
+        "netclass": "Control",
+        "pattern": "/RESET_EXT"
       }
     ]
   },
@@ -1116,7 +1081,7 @@
     "subpart_id_separator": 0,
     "top_level_sheets": [
       {
-        "filename": "moisture-sensor-carrier.kicad_sch",
+        "filename": "nrf-moisture-sensor.kicad_sch",
         "name": "Root",
         "uuid": "29551000-a13a-494c-a3a3-b85b9fc11a3c"
       }

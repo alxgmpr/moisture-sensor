@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class ProtectionTest(unittest.TestCase):
     def test_all_protection_diodes_are_front_side_for_pcba(self):
-        board = parse((ROOT / 'moisture-sensor-carrier.kicad_pcb').read_text())
+        board = parse((ROOT / 'nrf-moisture-sensor.kicad_pcb').read_text())
         for fp in find(board, 'footprint'):
             ref = next(p[2] for p in find(fp, 'property') if p[1] == 'Reference')
             if ref in {f'D{i}' for i in range(1, 11)}:
@@ -19,7 +19,7 @@ class ProtectionTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        board = parse((ROOT / 'moisture-sensor-carrier.kicad_pcb').read_text())
+        board = parse((ROOT / 'nrf-moisture-sensor.kicad_pcb').read_text())
         cls.pads = {}
         for fp in find(board, 'footprint'):
             ref = next(p[2] for p in find(fp, 'property') if p[1] == 'Reference')

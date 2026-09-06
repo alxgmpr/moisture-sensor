@@ -1,4 +1,4 @@
-# BL54L15 carrier: 4-layer JLC04161H-3313, nominal 1.6 mm.
+# nRF Moisture Sensor: 4-layer JLC04161H-3313, nominal 1.6 mm.
 (version 1)
 
 (rule "Fab minimum track"
@@ -51,9 +51,7 @@
 (rule "Edge clearance"
 	(constraint edge_clearance (min 0.3mm)))
 
-(rule "FDC1004 adjacent pins are package geometry"
-	(constraint clearance (min 0mm))
-	(condition "A.Type == 'Pad' && B.Type == 'Pad' && A.memberOfFootprint('U3') && B.memberOfFootprint('U3')"))
+
 
 # Deliberate ground-referenced ESD terminations: TI DPY lands have 0.4 mm gap.
 # Only the two short clamp fanouts use fabrication clearance; long sense routes
@@ -61,3 +59,21 @@
 (rule "Probe ESD clamp terminal spacing"
  (constraint clearance (min 0.127mm))
  (condition "(A.insideArea('ESD_SENSE1') && B.insideArea('ESD_SENSE1')) || (A.insideArea('ESD_SENSE2') && B.insideArea('ESD_SENSE2'))"))
+
+# The nets on either side of each input series resistor are the same sensing
+# channel. Its 0402 land gap is 0.48 mm; this is not inter-channel isolation.
+(rule "Input resistor same channel terminals"
+ (constraint clearance (min 0.2mm))
+ (condition "(A.NetName == '/SENSE1' && B.NetName == '/CIN1_PROTECTED') || (A.NetName == '/CIN1_PROTECTED' && B.NetName == '/SENSE1') || (A.NetName == '/SENSE2' && B.NetName == '/CIN2_PROTECTED') || (A.NetName == '/CIN2_PROTECTED' && B.NetName == '/SENSE2')"))
+
+# U3's 0.5 mm pitch leaves 0.225 mm between a pad and its neighbour's escape.
+# Limit the 0.2 mm inter-channel escape rule to this 3.35 x 3.3 mm front area.
+# Long electrode routes retain 0.6 mm separation and switching/ground rules.
+(rule "FDC local input fanout"
+ (constraint clearance (min 0.2mm))
+ (condition "A.NetClass == 'SENSE' && B.NetClass == 'SENSE' && A.insideArea('FDC_InputFanout') && B.insideArea('FDC_InputFanout')"))
+
+# Keep the package-pad exemption last so local escape rules cannot override it.
+(rule "FDC1004 adjacent pins are package geometry"
+	(constraint clearance (min 0mm))
+	(condition "A.Type == 'Pad' && B.Type == 'Pad' && A.memberOfFootprint('U3') && B.memberOfFootprint('U3')"))

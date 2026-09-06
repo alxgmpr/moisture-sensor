@@ -27,7 +27,7 @@ import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-BOARD = os.path.join(HERE, "moisture-sensor-carrier.kicad_pcb")
+BOARD = os.path.join(HERE, "nrf-moisture-sensor.kicad_pcb")
 STAMP = os.path.join(HERE, ".routed-by-script")
 
 # Tracks and vias only. Zone fills are derived, footprints and graphics are not

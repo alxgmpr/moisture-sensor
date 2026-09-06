@@ -9965,7 +9965,7 @@
 			(uuid "a69c18ba-bd7f-493f-9e30-e22d1ec9fa9b")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR009")
 					(unit 1)
@@ -10042,7 +10042,7 @@
 			(uuid "3441443f-16ba-447f-a63e-9c221913c285")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWRPR1")
 					(unit 1)
@@ -10119,7 +10119,7 @@
 			(uuid "676d1043-3726-4dc2-a05f-6080886b69e2")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#FLG_VBAT01")
 					(unit 1)
@@ -10223,7 +10223,7 @@
 			(uuid "ce7ecbf7-f52d-4835-9058-22164116c8ca")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "J4")
 					(unit 1)
@@ -10360,7 +10360,7 @@
 			(uuid "5897665a-3670-4e75-9b8c-7119b9e4bc55")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "U3")
 					(unit 1)
@@ -10437,7 +10437,7 @@
 			(uuid "80a17855-91ce-4df4-ad3a-a806ee1dcf01")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWRPR3")
 					(unit 1)
@@ -10514,7 +10514,7 @@
 			(uuid "269cf57c-c4b4-4eb4-bfb8-85196113a906")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWRPR5")
 					(unit 1)
@@ -10589,7 +10589,7 @@
 			(uuid "6e159b24-76b9-410b-92ad-acc6c3c63d92")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR081")
 					(unit 1)
@@ -10664,7 +10664,7 @@
 			(uuid "94200092-d21f-42cb-91f1-3497ac8b391f")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR076")
 					(unit 1)
@@ -10777,7 +10777,7 @@
 			(uuid "630a49fd-0e5d-458c-a1c0-e8df08e2ae7f")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "C3")
 					(unit 1)
@@ -10854,7 +10854,7 @@
 			(uuid "3edbe88f-948d-417c-b753-d50ec9c15a04")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWRPR13")
 					(unit 1)
@@ -10929,7 +10929,7 @@
 			(uuid "b89618c8-593b-46a5-913b-2bd2e31101b5")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR083")
 					(unit 1)
@@ -11004,7 +11004,7 @@
 			(uuid "34f1f9fd-5e01-47c9-9b1e-a715f562046f")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR082")
 					(unit 1)
@@ -11081,7 +11081,7 @@
 			(uuid "66559f35-eafa-4490-9675-f6bad9b60105")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR013")
 					(unit 1)
@@ -11158,7 +11158,7 @@
 			(uuid "dbf56daf-0f7e-42ea-95c1-a897ec8ebf8b")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "TP2")
 					(unit 1)
@@ -11233,7 +11233,7 @@
 			(uuid "ad2eb739-6ad3-4490-bef7-6b6b280d29d1")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR077")
 					(unit 1)
@@ -11308,7 +11308,7 @@
 			(uuid "e603bcbe-1fdc-419c-8583-d6977f95b2c9")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR101")
 					(unit 1)
@@ -11421,7 +11421,7 @@
 			(uuid "7e08a052-866e-438f-8bca-cf2f4ecc8c80")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "R31")
 					(unit 1)
@@ -11496,7 +11496,7 @@
 			(uuid "9f7415b5-b61d-4355-8d34-8cefd2ce488a")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR079")
 					(unit 1)
@@ -11571,7 +11571,7 @@
 			(uuid "02f5a9e8-f9e0-4fd1-b682-34a0b265e187")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR074")
 					(unit 1)
@@ -11648,7 +11648,7 @@
 			(uuid "4ea66e8d-3a51-4532-9997-54f6445e4874")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR004")
 					(unit 1)
@@ -11724,7 +11724,7 @@
 			)
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "FID3")
 					(unit 1)
@@ -11837,7 +11837,7 @@
 			(uuid "dce9022f-ecfa-48a7-8528-ebe2888f1eef")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "C26")
 					(unit 1)
@@ -11913,7 +11913,7 @@
 			)
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "FID1")
 					(unit 1)
@@ -11989,7 +11989,7 @@
 			(uuid "57e40df9-70ba-4756-ae8b-65f97b418718")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR096")
 					(unit 1)
@@ -12066,7 +12066,7 @@
 			(uuid "d633a103-573f-46cb-8f49-887e2cdcd509")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "TP3")
 					(unit 1)
@@ -12143,7 +12143,7 @@
 			(uuid "c0f9399e-a826-4f1d-920f-f23c6d61d30a")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWRPR14")
 					(unit 1)
@@ -12220,7 +12220,7 @@
 			(uuid "ae24ade0-9b42-4ad8-ba9a-4bdcf7bcb2f0")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR007")
 					(unit 1)
@@ -12294,7 +12294,7 @@
 			(uuid "579cd97c-7aec-46d5-a50a-987b60eba1dc")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWRPR6")
 					(unit 1)
@@ -12369,7 +12369,7 @@
 			(uuid "3dff51c5-c8cd-4bbc-92d0-7de33b351fbe")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR086")
 					(unit 1)
@@ -12482,7 +12482,7 @@
 			(uuid "38415854-14d0-4d59-9865-1250c67b3293")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "C27")
 					(unit 1)
@@ -12558,7 +12558,7 @@
 			)
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "FID2")
 					(unit 1)
@@ -12635,7 +12635,7 @@
 			(uuid "7a6ac6c8-c0fa-4893-a710-2a14852e3729")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR005")
 					(unit 1)
@@ -12879,7 +12879,7 @@
 			(uuid "9dd24310-c237-4544-9278-b86ecc8c6abc")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "U1")
 					(unit 1)
@@ -12993,7 +12993,7 @@
 			(uuid "03777c33-d9e0-4e28-9b9a-ea009871cf52")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "C24")
 					(unit 1)
@@ -13106,7 +13106,7 @@
 			(uuid "590ed1be-05b6-4563-833f-b6614fa502ae")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "R22")
 					(unit 1)
@@ -13183,7 +13183,7 @@
 			(uuid "de2d2276-1823-4851-b50a-a4acdf0135af")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWRPR10")
 					(unit 1)
@@ -13260,7 +13260,7 @@
 			(uuid "8166105f-a673-4442-bfcd-7357a2a26c5a")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWRPR9")
 					(unit 1)
@@ -13337,7 +13337,7 @@
 			(uuid "c0e24653-e39e-45bb-8411-6b9398176c55")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWRL10")
 					(unit 1)
@@ -13450,7 +13450,7 @@
 			(uuid "d0813516-f086-42dd-a847-3500ec5aec80")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "C28")
 					(unit 1)
@@ -13563,7 +13563,7 @@
 			(uuid "7735f392-fcc1-4087-b5e0-5d5079fcda9d")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "R32")
 					(unit 1)
@@ -13674,7 +13674,7 @@
 			(uuid "176cd38c-7718-4746-aa6d-f6b26ce3dd7b")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "D6")
 					(unit 1)
@@ -13751,7 +13751,7 @@
 			(uuid "97ae2c82-2ece-4256-9b50-fea546aefd3c")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR001")
 					(unit 1)
@@ -13864,7 +13864,7 @@
 			(uuid "d733c1f0-436d-4d3b-a01e-be1ba8073034")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "R30")
 					(unit 1)
@@ -13940,7 +13940,7 @@
 			(uuid "c1b80e1c-fbe4-416c-8350-95cc8f059694")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR099")
 					(unit 1)
@@ -14059,7 +14059,7 @@
 			(uuid "363a37a8-6ba7-4b4d-8de9-5c9033faab20")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "U4")
 					(unit 1)
@@ -14173,7 +14173,7 @@
 			(uuid "b9af8604-8894-489f-b86e-dff0924d3aae")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "C23")
 					(unit 1)
@@ -14284,7 +14284,7 @@
 			(uuid "aa5db2bf-67b9-405c-95e0-183d305c2a54")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "D9")
 					(unit 1)
@@ -14395,7 +14395,7 @@
 			(uuid "a19b28ca-8f58-4750-a1cf-05433755aa1e")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "D4")
 					(unit 1)
@@ -14552,7 +14552,7 @@
 			(uuid "6178af1b-c388-4a95-9eca-5282f2c37dfc")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "U2")
 					(unit 1)
@@ -14627,7 +14627,7 @@
 			(uuid "cfd508b0-2e9c-407f-a381-b0d04ae741cb")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR102")
 					(unit 1)
@@ -14741,7 +14741,7 @@
 			(uuid "41d30335-91fd-4f5a-a979-ae18aab57f1f")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "L10")
 					(unit 1)
@@ -14816,7 +14816,7 @@
 			(uuid "cb3a5c46-272c-4cb8-987c-8c91955a302c")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR057")
 					(unit 1)
@@ -14891,7 +14891,7 @@
 			(uuid "4ca933a4-f755-48b4-a825-16a1e5d25a89")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR080")
 					(unit 1)
@@ -15004,7 +15004,7 @@
 			(uuid "02c25636-efbe-4b4e-be61-c8c8d99c495c")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "R23")
 					(unit 1)
@@ -15078,7 +15078,7 @@
 			(uuid "d5eb3097-3fc5-49ae-9008-f3c899615361")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWRBL26")
 					(unit 1)
@@ -15153,7 +15153,7 @@
 			(uuid "0fcef433-7380-4726-ad99-7db5e3ba45e9")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR078")
 					(unit 1)
@@ -15267,7 +15267,7 @@
 			(uuid "b5e96cbf-1a57-4e9e-b7ec-fc19ee44591a")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "Q1")
 					(unit 1)
@@ -15344,7 +15344,7 @@
 			(uuid "a247e49d-445e-4d6e-a6e5-968157a996e5")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR010")
 					(unit 1)
@@ -15455,7 +15455,7 @@
 			(uuid "a1fa117e-4992-4d34-a4a2-0381bbc340fd")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "D2")
 					(unit 1)
@@ -15568,7 +15568,7 @@
 			(uuid "aa67c803-90ab-44cc-93ff-7f92734aa59b")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "R35")
 					(unit 1)
@@ -15682,7 +15682,7 @@
 			(uuid "4f65b58e-cda2-4243-aceb-1ba1036941e8")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "C22")
 					(unit 1)
@@ -15759,7 +15759,7 @@
 			(uuid "f2201989-3f31-4e7d-aaf4-552b2fd5ec52")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWRPR12")
 					(unit 1)
@@ -15872,7 +15872,7 @@
 			(uuid "0c36339f-dc18-4686-8422-15fbff117fe1")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "R34")
 					(unit 1)
@@ -15986,7 +15986,7 @@
 			(uuid "76f5cd77-e51e-4872-b422-91910e6f8009")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "C25")
 					(unit 1)
@@ -16100,7 +16100,7 @@
 			(uuid "6fc2bd48-c88c-4ff1-bf87-239758aa8c10")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "C21")
 					(unit 1)
@@ -16211,7 +16211,7 @@
 			(uuid "3f2763f3-7596-4404-be99-8ad9d84de9e3")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "D10")
 					(unit 1)
@@ -16322,7 +16322,7 @@
 			(uuid "8ab1a6c1-cc81-4dbe-8f05-1fb7e026db34")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "D8")
 					(unit 1)
@@ -16399,7 +16399,7 @@
 			(uuid "5087ffff-3e22-49d3-9ffb-0e46c5214861")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR012")
 					(unit 1)
@@ -16512,7 +16512,7 @@
 			(uuid "ec8d2a76-c18a-4ed0-8642-c3083616e572")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "X1")
 					(unit 1)
@@ -16589,7 +16589,7 @@
 			(uuid "45e05575-187c-4c7b-86f5-b900da47e718")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR002")
 					(unit 1)
@@ -16666,7 +16666,7 @@
 			(uuid "482040fe-d2cf-4183-8acc-208e4c341f45")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR003")
 					(unit 1)
@@ -16779,7 +16779,7 @@
 			(uuid "4bef27c6-2268-479d-a8d1-2e0159e02650")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "R1")
 					(unit 1)
@@ -16855,7 +16855,7 @@
 			(uuid "ea42cc7a-5fde-4365-aa86-2baf27aa4dc8")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR097")
 					(unit 1)
@@ -16932,7 +16932,7 @@
 			(uuid "ad210eea-0a1b-437c-a6a1-4b94a61c1732")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR006")
 					(unit 1)
@@ -17009,7 +17009,7 @@
 			(uuid "30b0b9df-ec56-46f4-b8cb-b11786abc893")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR011")
 					(unit 1)
@@ -17086,7 +17086,7 @@
 			(uuid "ecc9e68d-a607-46fa-8345-e80b3d010df9")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR008")
 					(unit 1)
@@ -17162,7 +17162,7 @@
 			(uuid "8c050553-41de-4ec0-ba1b-19234fdc9973")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR098")
 					(unit 1)
@@ -17276,7 +17276,7 @@
 			(uuid "77dbbb14-4cac-41c4-a55e-eb6dfa9efa1c")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "BT1")
 					(unit 1)
@@ -17353,7 +17353,7 @@
 			(uuid "c993b22e-074b-4926-a9ee-cd9d6b47bfe4")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "TP1")
 					(unit 1)
@@ -17427,7 +17427,7 @@
 			(uuid "aa1e5117-8972-4e69-9e00-d286cf7e73eb")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWRPR2")
 					(unit 1)
@@ -17501,7 +17501,7 @@
 			(uuid "2d12675b-4605-4dba-b538-a961b8f99ae5")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWRPR4")
 					(unit 1)
@@ -17578,7 +17578,7 @@
 			(uuid "b8a4c084-de90-439f-bc0e-1c7d8b07f77c")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWRPR7")
 					(unit 1)
@@ -17689,7 +17689,7 @@
 			(uuid "5f483ae1-1ae8-45c8-91df-1d719b4aa391")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "D5")
 					(unit 1)
@@ -17800,7 +17800,7 @@
 			(uuid "72ada868-527e-4235-80b9-ec674bced0e1")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "D3")
 					(unit 1)
@@ -17911,7 +17911,7 @@
 			(uuid "3e6d985e-e00f-4bad-abf4-459fe195bc55")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "D7")
 					(unit 1)
@@ -17986,7 +17986,7 @@
 			(uuid "4885758a-52c3-401c-939f-4c92405384f3")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR067")
 					(unit 1)
@@ -18061,7 +18061,7 @@
 			(uuid "7597a813-f534-45a8-ade5-79a2cd3590c8")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR095")
 					(unit 1)
@@ -18174,7 +18174,7 @@
 			(uuid "40a14174-1056-4177-80ec-dd2ef930cebf")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "R33")
 					(unit 1)
@@ -18285,7 +18285,7 @@
 			(uuid "cb568679-0109-4c98-8576-48b59b872cb0")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "D1")
 					(unit 1)
@@ -18398,7 +18398,7 @@
 			(uuid "88dc947f-f741-47c1-ac50-dfa73e13f981")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "C13")
 					(unit 1)
@@ -18475,7 +18475,7 @@
 			(uuid "2f9bc125-ac9b-456b-933a-395b8142026a")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWRPR11")
 					(unit 1)
@@ -18550,7 +18550,7 @@
 			(uuid "47345fc3-d509-456b-becf-cbdb155306ef")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR058")
 					(unit 1)
@@ -18627,7 +18627,7 @@
 			(uuid "ec87e1cb-3439-42be-802b-a1ff85e3392a")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWRPR8")
 					(unit 1)
@@ -18702,7 +18702,7 @@
 			(uuid "af6fd60f-dad1-4d92-9746-559dcae4de09")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR073")
 					(unit 1)
@@ -18777,7 +18777,7 @@
 			(uuid "e5fe00fd-4027-4fbe-bcda-fa857b7094f9")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR075")
 					(unit 1)
@@ -18852,7 +18852,7 @@
 			(uuid "ab0a869d-0d19-4f82-a438-85a22c7517cd")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR084")
 					(unit 1)
@@ -18929,7 +18929,7 @@
 			(uuid "8b08a11d-8676-4960-b8b1-d44a1f0974f1")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWRBL39")
 					(unit 1)
@@ -19004,7 +19004,7 @@
 			(uuid "fe2845d8-2d0e-43b9-bb07-10cd48206a86")
 		)
 		(instances
-			(project "moisture-sensor-carrier"
+			(project "nrf-moisture-sensor"
 				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
 					(reference "#PWR085")
 					(unit 1)

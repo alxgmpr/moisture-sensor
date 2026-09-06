@@ -33,7 +33,7 @@ from OCP.TopExp import TopExp_Explorer
 from OCP.TopoDS import TopoDS
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-PCB = os.path.join(HERE, "moisture-sensor-carrier.kicad_pcb")
+PCB = os.path.join(HERE, "nrf-moisture-sensor.kicad_pcb")
 
 # Per-corner fillet radius, keyed by BOARD coordinates (page minus (60,40)).
 # The two shoulder vertices get a small radius because the flat they sit on is

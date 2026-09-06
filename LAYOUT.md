@@ -5,8 +5,8 @@
 geometry and RF completion claims below. The board is not ready for fabrication.
 
 Companion to [HARDWARE.md](HARDWARE.md). Everything here is encoded where it can
-be: stackup in `moisture-sensor-carrier.kicad_pcb`, rules in
-`moisture-sensor-carrier.kicad_dru`, net classes in the project file.
+be: stackup in `nrf-moisture-sensor.kicad_pcb`, rules in
+`nrf-moisture-sensor.kicad_dru`, net classes in the project file.
 
 ---
 
@@ -438,7 +438,7 @@ priority rather than copying development-board coordinates. It confirms:
 - SW → L10 → protected VBAT, with C23/C24 on VINT and C21/C22 on VBAT. L10 pad 2 was corrected from VINT to VBAT on 2026-09-04; copper routing still needs updating.
 
 The current Zone B implementation uses both inner layers for ground and routed
-power on the outer layers. This carrier-specific choice replaces the earlier
+power on the outer layers. This board-specific choice replaces the earlier
 In2 power plane. Broader stitching remains part of final routing review.
 
 ### Confirmed against TI's FDC1004EVM (SV601093B)

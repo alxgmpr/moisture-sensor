@@ -1,3 +1,5 @@
+> Current nRF Moisture Sensor work: [2026-09-05 review and remaining tasks](docs/design-review-2026-09-05/README.md). This supersedes older routing and unresolved-order-code notes below.
+
 # Where this stands, and what's next
 
 **Current state — 2026-09-04 BL54L15 migration:** U1 is 453-00001R; X2,

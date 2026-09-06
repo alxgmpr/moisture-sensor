@@ -15,7 +15,7 @@ REQUIRED_ATTRIBUTES = {"exclude_from_bom", "exclude_from_pos_files"}
 
 class PcbAssemblyFlagsTest(unittest.TestCase):
     def test_bare_copper_footprints_are_excluded_from_assembly_outputs(self):
-        board = parse((ROOT / "moisture-sensor-carrier.kicad_pcb").read_text())
+        board = parse((ROOT / "nrf-moisture-sensor.kicad_pcb").read_text())
         checked = set()
         for footprint in find(board, "footprint"):
             properties = {
@@ -36,7 +36,7 @@ class PcbAssemblyFlagsTest(unittest.TestCase):
         self.assertEqual(checked, NON_ASSEMBLY_REFERENCES)
 
     def test_retired_board_generator_exits_without_modifying_the_board(self):
-        board_path = ROOT / "moisture-sensor-carrier.kicad_pcb"
+        board_path = ROOT / "nrf-moisture-sensor.kicad_pcb"
         before = board_path.read_bytes()
         result = subprocess.run(
             ["python3", str(ROOT / "tools_gen_pcb.py")],

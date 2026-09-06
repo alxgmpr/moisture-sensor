@@ -17,7 +17,7 @@ class Npm2100TopologyTest(unittest.TestCase):
         self.assertEqual(set(nets['VINT']), {'U2.14', 'U2.15', 'C23.1', 'C24.1'})
 
     def test_board_inductor_pad_nets_match_reference(self):
-        board = parse((ROOT / 'moisture-sensor-carrier.kicad_pcb').read_text())
+        board = parse((ROOT / 'nrf-moisture-sensor.kicad_pcb').read_text())
         pads = {}
         for fp in find(board, 'footprint'):
             ref = next(p[2] for p in find(fp, 'property') if p[1] == 'Reference')

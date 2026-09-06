@@ -1,0 +1,7 @@
+{
+  "net_connectivity_equal": true,
+  "symbol_pin_definitions_equal": true,
+  "component_values_and_footprints_equal": true,
+  "nets": 58,
+  "components": 44
+}

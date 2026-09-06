@@ -16,7 +16,7 @@ import subprocess
 from tools_sexp import parse, find, first
 
 ROOT = Path(__file__).resolve().parent
-STEM = 'moisture-sensor-carrier'
+STEM = 'nrf-moisture-sensor'
 
 
 def blocks(source):

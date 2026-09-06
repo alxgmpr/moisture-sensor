@@ -1,0 +1,1160 @@
+[
+  {
+    "ref": "C13",
+    "value": "3.9pF C0G",
+    "pos": null,
+    "pads": [
+      {
+        "pad": "1",
+        "net": [
+          "net",
+          "/NRESET"
+        ],
+        "function": null
+      },
+      {
+        "pad": "2",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": null
+      }
+    ]
+  },
+  {
+    "ref": "C3",
+    "value": "10uF/16V X6S",
+    "pos": null,
+    "pads": [
+      {
+        "pad": "1",
+        "net": [
+          "net",
+          "+3V3"
+        ],
+        "function": null
+      },
+      {
+        "pad": "2",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": null
+      }
+    ]
+  },
+  {
+    "ref": "U3",
+    "value": "FDC1004",
+    "pos": null,
+    "pads": [
+      {
+        "pad": "1",
+        "net": [
+          "net",
+          "/SHLD"
+        ],
+        "function": [
+          "pinfunction",
+          "SHLD1_1"
+        ]
+      },
+      {
+        "pad": "2",
+        "net": [
+          "net",
+          "/CIN1_PROTECTED"
+        ],
+        "function": [
+          "pinfunction",
+          "CIN1_2"
+        ]
+      },
+      {
+        "pad": "3",
+        "net": [
+          "net",
+          "/CIN2_PROTECTED"
+        ],
+        "function": [
+          "pinfunction",
+          "CIN2_3"
+        ]
+      },
+      {
+        "pad": "4",
+        "net": [
+          "net",
+          "unconnected-(U3-CIN3-Pad4)"
+        ],
+        "function": [
+          "pinfunction",
+          "CIN3_4"
+        ]
+      },
+      {
+        "pad": "5",
+        "net": [
+          "net",
+          "unconnected-(U3-CIN4-Pad5)"
+        ],
+        "function": [
+          "pinfunction",
+          "CIN4_5"
+        ]
+      },
+      {
+        "pad": "6",
+        "net": [
+          "net",
+          "/SHLD"
+        ],
+        "function": [
+          "pinfunction",
+          "SHLD2_6"
+        ]
+      },
+      {
+        "pad": "7",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": [
+          "pinfunction",
+          "GND_7"
+        ]
+      },
+      {
+        "pad": "8",
+        "net": [
+          "net",
+          "+3V3_FDC_SW"
+        ],
+        "function": [
+          "pinfunction",
+          "VDD_8"
+        ]
+      },
+      {
+        "pad": "9",
+        "net": [
+          "net",
+          "/SCL"
+        ],
+        "function": [
+          "pinfunction",
+          "SCL_9"
+        ]
+      },
+      {
+        "pad": "10",
+        "net": [
+          "net",
+          "/SDA"
+        ],
+        "function": [
+          "pinfunction",
+          "SDA_10"
+        ]
+      }
+    ]
+  },
+  {
+    "ref": "C25",
+    "value": "2.2uF/6.3V X5R",
+    "pos": null,
+    "pads": [
+      {
+        "pad": "1",
+        "net": [
+          "net",
+          "+3V3"
+        ],
+        "function": null
+      },
+      {
+        "pad": "2",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": null
+      }
+    ]
+  },
+  {
+    "ref": "C26",
+    "value": "1uF 10V X7R",
+    "pos": null,
+    "pads": [
+      {
+        "pad": "1",
+        "net": [
+          "net",
+          "+3V3_FDC_SW"
+        ],
+        "function": null
+      },
+      {
+        "pad": "2",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": null
+      }
+    ]
+  },
+  {
+    "ref": "C21",
+    "value": "10uF/6.3V X5R",
+    "pos": null,
+    "pads": [
+      {
+        "pad": "1",
+        "net": [
+          "net",
+          "VBAT"
+        ],
+        "function": null
+      },
+      {
+        "pad": "2",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": null
+      }
+    ]
+  },
+  {
+    "ref": "C28",
+    "value": "100nF 16V X7R",
+    "pos": null,
+    "pads": [
+      {
+        "pad": "1",
+        "net": [
+          "net",
+          "+3V3_FDC_SW"
+        ],
+        "function": null
+      },
+      {
+        "pad": "2",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": null
+      }
+    ]
+  },
+  {
+    "ref": "U2",
+    "value": "nPM2100-QEAA",
+    "pos": null,
+    "pads": [
+      {
+        "pad": "",
+        "net": null,
+        "function": null
+      },
+      {
+        "pad": "",
+        "net": null,
+        "function": null
+      },
+      {
+        "pad": "",
+        "net": null,
+        "function": null
+      },
+      {
+        "pad": "",
+        "net": null,
+        "function": null
+      },
+      {
+        "pad": "1",
+        "net": [
+          "net",
+          "unconnected-(U2-VSET-Pad1)"
+        ],
+        "function": [
+          "pinfunction",
+          "VSET_1"
+        ]
+      },
+      {
+        "pad": "2",
+        "net": [
+          "net",
+          "/SW"
+        ],
+        "function": [
+          "pinfunction",
+          "SW_2"
+        ]
+      },
+      {
+        "pad": "3",
+        "net": [
+          "net",
+          "VBAT"
+        ],
+        "function": [
+          "pinfunction",
+          "VBAT_3"
+        ]
+      },
+      {
+        "pad": "4",
+        "net": [
+          "net",
+          "unconnected-(U2-SHPHLD-Pad4)"
+        ],
+        "function": [
+          "pinfunction",
+          "SHPHLD_4"
+        ]
+      },
+      {
+        "pad": "5",
+        "net": [
+          "net",
+          "/PMIC_INT"
+        ],
+        "function": [
+          "pinfunction",
+          "GPIO0_5"
+        ]
+      },
+      {
+        "pad": "6",
+        "net": [
+          "net",
+          "/SDA"
+        ],
+        "function": [
+          "pinfunction",
+          "SDA_6"
+        ]
+      },
+      {
+        "pad": "7",
+        "net": [
+          "net",
+          "/SCL"
+        ],
+        "function": [
+          "pinfunction",
+          "SCL_7"
+        ]
+      },
+      {
+        "pad": "8",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": [
+          "pinfunction",
+          "SYSGDEN_8"
+        ]
+      },
+      {
+        "pad": "9",
+        "net": [
+          "net",
+          "unconnected-(U2-GPIO1-Pad9)"
+        ],
+        "function": [
+          "pinfunction",
+          "GPIO1_9"
+        ]
+      },
+      {
+        "pad": "10",
+        "net": [
+          "net",
+          "/SWD_RST"
+        ],
+        "function": [
+          "pinfunction",
+          "PG/RESET_10"
+        ]
+      },
+      {
+        "pad": "11",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": [
+          "pinfunction",
+          "AVSS2_11"
+        ]
+      },
+      {
+        "pad": "12",
+        "net": [
+          "net",
+          "+3V3_FDC_SW"
+        ],
+        "function": [
+          "pinfunction",
+          "LSOUT/VOUTLDO_12"
+        ]
+      },
+      {
+        "pad": "13",
+        "net": [
+          "net",
+          "+3V3"
+        ],
+        "function": [
+          "pinfunction",
+          "VOUT_13"
+        ]
+      },
+      {
+        "pad": "14",
+        "net": [
+          "net",
+          "/VINT"
+        ],
+        "function": [
+          "pinfunction",
+          "VINT_14"
+        ]
+      },
+      {
+        "pad": "15",
+        "net": [
+          "net",
+          "/VINT"
+        ],
+        "function": [
+          "pinfunction",
+          "VINT_15"
+        ]
+      },
+      {
+        "pad": "16",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": [
+          "pinfunction",
+          "PVSS_16"
+        ]
+      },
+      {
+        "pad": "17",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": [
+          "pinfunction",
+          "AVSS1_17"
+        ]
+      },
+      {
+        "pad": "17",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": [
+          "pinfunction",
+          "AVSS1_17"
+        ]
+      },
+      {
+        "pad": "17",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": [
+          "pinfunction",
+          "AVSS1_17"
+        ]
+      },
+      {
+        "pad": "17",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": [
+          "pinfunction",
+          "AVSS1_17"
+        ]
+      },
+      {
+        "pad": "17",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": [
+          "pinfunction",
+          "AVSS1_17"
+        ]
+      },
+      {
+        "pad": "17",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": [
+          "pinfunction",
+          "AVSS1_17"
+        ]
+      },
+      {
+        "pad": "17",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": [
+          "pinfunction",
+          "AVSS1_17"
+        ]
+      },
+      {
+        "pad": "17",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": [
+          "pinfunction",
+          "AVSS1_17"
+        ]
+      },
+      {
+        "pad": "17",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": [
+          "pinfunction",
+          "AVSS1_17"
+        ]
+      },
+      {
+        "pad": "17",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": [
+          "pinfunction",
+          "AVSS1_17"
+        ]
+      },
+      {
+        "pad": "17",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": [
+          "pinfunction",
+          "AVSS1_17"
+        ]
+      }
+    ]
+  },
+  {
+    "ref": "C27",
+    "value": "100nF 16V X7R",
+    "pos": null,
+    "pads": [
+      {
+        "pad": "1",
+        "net": [
+          "net",
+          "+3V3"
+        ],
+        "function": null
+      },
+      {
+        "pad": "2",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": null
+      }
+    ]
+  },
+  {
+    "ref": "U1",
+    "value": "453-00001R BL54L15",
+    "pos": null,
+    "pads": [
+      {
+        "pad": "1",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": [
+          "pinfunction",
+          "GND_1"
+        ]
+      },
+      {
+        "pad": "2",
+        "net": [
+          "net",
+          "unconnected-(U1-P2.09-Pad2)"
+        ],
+        "function": [
+          "pinfunction",
+          "P2.09_2"
+        ]
+      },
+      {
+        "pad": "3",
+        "net": [
+          "net",
+          "unconnected-(U1-P2.08-Pad3)"
+        ],
+        "function": [
+          "pinfunction",
+          "P2.08_3"
+        ]
+      },
+      {
+        "pad": "4",
+        "net": [
+          "net",
+          "/P2.07_SWO"
+        ],
+        "function": [
+          "pinfunction",
+          "P2.07/SWO_4"
+        ]
+      },
+      {
+        "pad": "5",
+        "net": [
+          "net",
+          "/SWDIO"
+        ],
+        "function": [
+          "pinfunction",
+          "SWDIO_5"
+        ]
+      },
+      {
+        "pad": "6",
+        "net": [
+          "net",
+          "/SWDCLK"
+        ],
+        "function": [
+          "pinfunction",
+          "SWDCLK_6"
+        ]
+      },
+      {
+        "pad": "7",
+        "net": [
+          "net",
+          "/NRESET"
+        ],
+        "function": [
+          "pinfunction",
+          "nRESET_7"
+        ]
+      },
+      {
+        "pad": "8",
+        "net": [
+          "net",
+          "unconnected-(U1-P2.02-Pad8)"
+        ],
+        "function": [
+          "pinfunction",
+          "P2.02_8"
+        ]
+      },
+      {
+        "pad": "9",
+        "net": [
+          "net",
+          "unconnected-(U1-P2.00-Pad9)"
+        ],
+        "function": [
+          "pinfunction",
+          "P2.00_9"
+        ]
+      },
+      {
+        "pad": "10",
+        "net": [
+          "net",
+          "unconnected-(U1-P2.01-Pad10)"
+        ],
+        "function": [
+          "pinfunction",
+          "P2.01_10"
+        ]
+      },
+      {
+        "pad": "11",
+        "net": [
+          "net",
+          "unconnected-(U1-P2.04-Pad11)"
+        ],
+        "function": [
+          "pinfunction",
+          "P2.04_11"
+        ]
+      },
+      {
+        "pad": "12",
+        "net": [
+          "net",
+          "unconnected-(U1-P2.05-Pad12)"
+        ],
+        "function": [
+          "pinfunction",
+          "P2.05_12"
+        ]
+      },
+      {
+        "pad": "13",
+        "net": [
+          "net",
+          "unconnected-(U1-P2.03-Pad13)"
+        ],
+        "function": [
+          "pinfunction",
+          "P2.03_13"
+        ]
+      },
+      {
+        "pad": "14",
+        "net": [
+          "net",
+          "unconnected-(U1-P1.03{slash}NFC2-Pad14)"
+        ],
+        "function": [
+          "pinfunction",
+          "P1.03/NFC2_14"
+        ]
+      },
+      {
+        "pad": "15",
+        "net": [
+          "net",
+          "unconnected-(U1-P1.02{slash}NFC1-Pad15)"
+        ],
+        "function": [
+          "pinfunction",
+          "P1.02/NFC1_15"
+        ]
+      },
+      {
+        "pad": "16",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": [
+          "pinfunction",
+          "GND_16"
+        ]
+      },
+      {
+        "pad": "17",
+        "net": [
+          "net",
+          "/PMIC_INT"
+        ],
+        "function": [
+          "pinfunction",
+          "P0.00_17"
+        ]
+      },
+      {
+        "pad": "18",
+        "net": [
+          "net",
+          "unconnected-(U1-P0.01-Pad18)"
+        ],
+        "function": [
+          "pinfunction",
+          "P0.01_18"
+        ]
+      },
+      {
+        "pad": "19",
+        "net": [
+          "net",
+          "unconnected-(U1-P0.02-Pad19)"
+        ],
+        "function": [
+          "pinfunction",
+          "P0.02_19"
+        ]
+      },
+      {
+        "pad": "20",
+        "net": [
+          "net",
+          "unconnected-(U1-P1.07-Pad20)"
+        ],
+        "function": [
+          "pinfunction",
+          "P1.07_20"
+        ]
+      },
+      {
+        "pad": "21",
+        "net": [
+          "net",
+          "unconnected-(U1-P1.06-Pad21)"
+        ],
+        "function": [
+          "pinfunction",
+          "P1.06_21"
+        ]
+      },
+      {
+        "pad": "22",
+        "net": [
+          "net",
+          "unconnected-(U1-P1.05-Pad22)"
+        ],
+        "function": [
+          "pinfunction",
+          "P1.05_22"
+        ]
+      },
+      {
+        "pad": "23",
+        "net": [
+          "net",
+          "unconnected-(U1-P1.04-Pad23)"
+        ],
+        "function": [
+          "pinfunction",
+          "P1.04_23"
+        ]
+      },
+      {
+        "pad": "24",
+        "net": [
+          "net",
+          "/XL2"
+        ],
+        "function": [
+          "pinfunction",
+          "P1.01/XL2_24"
+        ]
+      },
+      {
+        "pad": "25",
+        "net": [
+          "net",
+          "/XL1"
+        ],
+        "function": [
+          "pinfunction",
+          "P1.00/XL1_25"
+        ]
+      },
+      {
+        "pad": "26",
+        "net": [
+          "net",
+          "+3V3"
+        ],
+        "function": [
+          "pinfunction",
+          "VDD_nRF_26"
+        ]
+      },
+      {
+        "pad": "27",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": [
+          "pinfunction",
+          "GND_27"
+        ]
+      },
+      {
+        "pad": "28",
+        "net": [
+          "net",
+          "/SDA"
+        ],
+        "function": [
+          "pinfunction",
+          "P1.10_28"
+        ]
+      },
+      {
+        "pad": "29",
+        "net": [
+          "net",
+          "unconnected-(U1-P1.09-Pad29)"
+        ],
+        "function": [
+          "pinfunction",
+          "P1.09_29"
+        ]
+      },
+      {
+        "pad": "30",
+        "net": [
+          "net",
+          "unconnected-(U1-P1.08-Pad30)"
+        ],
+        "function": [
+          "pinfunction",
+          "P1.08_30"
+        ]
+      },
+      {
+        "pad": "31",
+        "net": [
+          "net",
+          "unconnected-(U1-P0.04-Pad31)"
+        ],
+        "function": [
+          "pinfunction",
+          "P0.04_31"
+        ]
+      },
+      {
+        "pad": "32",
+        "net": [
+          "net",
+          "unconnected-(U1-P1.14-Pad32)"
+        ],
+        "function": [
+          "pinfunction",
+          "P1.14_32"
+        ]
+      },
+      {
+        "pad": "33",
+        "net": [
+          "net",
+          "unconnected-(U1-P1.13-Pad33)"
+        ],
+        "function": [
+          "pinfunction",
+          "P1.13_33"
+        ]
+      },
+      {
+        "pad": "34",
+        "net": [
+          "net",
+          "unconnected-(U1-P1.12-Pad34)"
+        ],
+        "function": [
+          "pinfunction",
+          "P1.12_34"
+        ]
+      },
+      {
+        "pad": "35",
+        "net": [
+          "net",
+          "/SCL"
+        ],
+        "function": [
+          "pinfunction",
+          "P1.11_35"
+        ]
+      },
+      {
+        "pad": "36",
+        "net": [
+          "net",
+          "unconnected-(U1-P0.03-Pad36)"
+        ],
+        "function": [
+          "pinfunction",
+          "P0.03_36"
+        ]
+      },
+      {
+        "pad": "37",
+        "net": [
+          "net",
+          "unconnected-(U1-P2.10-Pad37)"
+        ],
+        "function": [
+          "pinfunction",
+          "P2.10_37"
+        ]
+      },
+      {
+        "pad": "38",
+        "net": [
+          "net",
+          "unconnected-(U1-P2.06-Pad38)"
+        ],
+        "function": [
+          "pinfunction",
+          "P2.06_38"
+        ]
+      },
+      {
+        "pad": "39",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": [
+          "pinfunction",
+          "GND_39"
+        ]
+      }
+    ]
+  },
+  {
+    "ref": "C22",
+    "value": "1nF 50V X7R",
+    "pos": null,
+    "pads": [
+      {
+        "pad": "1",
+        "net": [
+          "net",
+          "VBAT"
+        ],
+        "function": null
+      },
+      {
+        "pad": "2",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": null
+      }
+    ]
+  },
+  {
+    "ref": "C24",
+    "value": "1nF 50V X7R",
+    "pos": null,
+    "pads": [
+      {
+        "pad": "1",
+        "net": [
+          "net",
+          "/VINT"
+        ],
+        "function": null
+      },
+      {
+        "pad": "2",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": null
+      }
+    ]
+  },
+  {
+    "ref": "U4",
+    "value": "SHT45-AD1F",
+    "pos": null,
+    "pads": [
+      {
+        "pad": "1",
+        "net": [
+          "net",
+          "/SDA"
+        ],
+        "function": [
+          "pinfunction",
+          "SDA_1"
+        ]
+      },
+      {
+        "pad": "2",
+        "net": [
+          "net",
+          "/SCL"
+        ],
+        "function": [
+          "pinfunction",
+          "SCL_2"
+        ]
+      },
+      {
+        "pad": "3",
+        "net": [
+          "net",
+          "+3V3"
+        ],
+        "function": [
+          "pinfunction",
+          "VDD_3"
+        ]
+      },
+      {
+        "pad": "4",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": [
+          "pinfunction",
+          "VSS_4"
+        ]
+      }
+    ]
+  },
+  {
+    "ref": "C23",
+    "value": "22uF/6.3V X5R",
+    "pos": null,
+    "pads": [
+      {
+        "pad": "1",
+        "net": [
+          "net",
+          "/VINT"
+        ],
+        "function": null
+      },
+      {
+        "pad": "2",
+        "net": [
+          "net",
+          "GND"
+        ],
+        "function": null
+      }
+    ]
+  }
+]

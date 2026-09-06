@@ -17,7 +17,7 @@ import sys
 import pcbnew
 
 BOARD = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                     "moisture-sensor-carrier.kicad_pcb")
+                     "nrf-moisture-sensor.kicad_pcb")
 
 # ref -> (library, footprint) to swap in before positioning. The generator is
 # frozen, so a footprint change has to happen here or not at all.

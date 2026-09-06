@@ -17,7 +17,7 @@ Writes scratch boards next to itself; does not touch the real board.
 """
 
 import re, subprocess, sys, uuid, shutil, os
-BASE="/Users/alex/moisture-sensor-carrier/moisture-sensor-carrier"
+BASE=os.path.join(os.path.dirname(os.path.abspath(__file__)), "nrf-moisture-sensor")
 SCR=os.environ.get("DRUTEST_SCRATCH", os.path.dirname(os.path.abspath(__file__))+"/.drutest")
 os.makedirs(SCR, exist_ok=True)
 KC="/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli"

@@ -1,3 +1,10 @@
+# nRF Moisture Sensor — completion checklist
+
+Current review: [2026-09-05 findings and validation](docs/design-review-2026-09-05/README.md).
+Routing now has zero unconnected items, zero physical DRC errors and zero parity issues.
+C26–C28 order codes are populated; C21/C23 effective-capacitance qualification remains open.
+The older routing handoff below is retained as history; the current review takes precedence.
+
 # Board completion checklist — BL54L15 routing handoff
 
 Current source is the actual KiCad schematic/PCB. Use CLI or GUI as appropriate,
@@ -12,11 +19,11 @@ Preserve unrelated edits. The previous checklist is preserved in
 - [x] Separate complete-product BOM from JLC DNP/position/paste outputs.
 - [x] Run ERC, physical DRC, parity, repository checks and visual review; see
       [the current results](docs/bl54l15/verification.md).
-- [ ] Alex: finish remaining digital/power routing and remove abandoned anchors.
+- [x] Finish remaining digital/power routing and remove abandoned anchors.
       Preserve X1/C3 local routes and antenna keepouts. Refill; require zero
       unconnected items and no new physical DRC errors.
 - [ ] Reconcile existing library mismatch warnings and R22/R23 silk overlap.
-- [ ] Lock C23 effective capacitance and C26/C27/C28 order codes; arrange exact BT1.
+- [ ] Qualify C21/C23 effective capacitance and module VOUT loading. C26–C28 and BT1 now have source selections.
 - [ ] Implement production firmware clock configuration and HP-mode radio windows.
 - [ ] Qualify ≤10 mV module VDD ripple/noise, total effective VOUT capacitance,
       cold start, low-battery bursts, clock startup/trim and timed System OFF wake.

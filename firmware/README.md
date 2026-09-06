@@ -1,6 +1,6 @@
 # Firmware — DK fire-tests
 
-The carrier now uses BL54L15 453-00001R. See [the carrier port requirements](BL54L15-port.md); these DK test targets remain unchanged.
+The nRF Moisture Sensor uses BL54L15 453-00001R. See [the module port requirements](BL54L15-port.md); these DK test targets remain unchanged.
 
 
 Bench tests that run on an **nRF54L15 DK (PCA10156)**, not on our board. They

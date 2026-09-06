@@ -142,7 +142,7 @@ LOOPS = {
 
 
 def main():
-    board = sys.argv[1] if len(sys.argv) > 1 else 'moisture-sensor-carrier.kicad_pcb'
+    board = sys.argv[1] if len(sys.argv) > 1 else 'nrf-moisture-sensor.kicad_pcb'
     P = pads(board)
     rc = 0
     for name, keys in LOOPS.items():

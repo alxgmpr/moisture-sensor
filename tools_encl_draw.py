@@ -30,7 +30,7 @@ from matplotlib.patches import Circle, Rectangle, FancyArrow
 import cadquery as cq
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-PCB = os.path.join(HERE, "moisture-sensor-carrier.kicad_pcb")
+PCB = os.path.join(HERE, "nrf-moisture-sensor.kicad_pcb")
 STEP = os.path.join(HERE, "lib", "enclosure", "1551WK_Bottom.stp")
 OUT = os.path.join(HERE, "doc")
 

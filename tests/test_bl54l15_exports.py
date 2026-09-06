@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class ModuleAssemblyExportTest(unittest.TestCase):
     def test_paste_stages_are_disjoint(self):
-        source = (ROOT / 'moisture-sensor-carrier.kicad_pcb').read_text()
+        source = (ROOT / 'nrf-moisture-sensor.kicad_pcb').read_text()
         refs = []
         for module_only in (False, True):
             board = parse(paste_board(source, module_only))

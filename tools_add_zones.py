@@ -48,7 +48,7 @@ import sys
 import pcbnew
 
 BOARD = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                     "moisture-sensor-carrier.kicad_pcb")
+                     "nrf-moisture-sensor.kicad_pcb")
 
 # name, net (None = rule area), layers, priority, rect (x1,y1,x2,y2), keepout flags
 ZONES = [

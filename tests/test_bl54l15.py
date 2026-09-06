@@ -5,7 +5,7 @@ from tools_sexp import parse, find, first
 ROOT=Path(__file__).resolve().parents[1]
 class BL54L15Test(unittest.TestCase):
  def test_module_pads_preserve_product_signals(self):
-  b=parse((ROOT/'moisture-sensor-carrier.kicad_pcb').read_text())
+  b=parse((ROOT/'nrf-moisture-sensor.kicad_pcb').read_text())
   fps={dict((p[1],p[2]) for p in find(f,'property')).get('Reference'):f for f in find(b,'footprint')}
   u=fps['U1']
   self.assertEqual(u[1],'footprints:Ezurio_BL54L15_453-00001')
@@ -32,7 +32,7 @@ class BL54L15Test(unittest.TestCase):
    elif n<=27:expected=(.5,8.75-.75*(n-17))
    else:expected=(.55+.75*(n-28),.503)
    for actual,wanted in zip(map(float,at[1:3]),expected):self.assertAlmostEqual(actual,wanted,places=6)
-  b=parse((ROOT/'moisture-sensor-carrier.kicad_pcb').read_text())
+  b=parse((ROOT/'nrf-moisture-sensor.kicad_pcb').read_text())
   keepouts=[z for z in find(b,'zone') if first(z,'name') and first(z,'name')[1].startswith('BL54L15_AntennaKeepout')]
   self.assertEqual(len(keepouts),1)  # One rule area for the manufacturer hatched region.
   for z in keepouts:

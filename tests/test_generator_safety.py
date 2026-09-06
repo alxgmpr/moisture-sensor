@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class GeneratorSafetyTest(unittest.TestCase):
     def test_retired_schematic_generator_exits_without_modifying_schematic(self):
-        schematic = ROOT / "moisture-sensor-carrier.kicad_sch"
+        schematic = ROOT / "nrf-moisture-sensor.kicad_sch"
         before = schematic.read_bytes()
         result = subprocess.run(
             ["python3", str(ROOT / "tools_gen_sch.py")],
@@ -24,7 +24,7 @@ class GeneratorSafetyTest(unittest.TestCase):
         self.assertEqual(schematic.read_bytes(), before)
 
     def test_retired_board_helpers_exit_without_modifying_the_board(self):
-        board = ROOT / "moisture-sensor-carrier.kicad_pcb"
+        board = ROOT / "nrf-moisture-sensor.kicad_pcb"
         before = board.read_bytes()
         for script in (
             "tools_gen_pcb.py",
