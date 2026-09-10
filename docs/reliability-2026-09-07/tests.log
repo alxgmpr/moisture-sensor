@@ -1,0 +1,8 @@
+........................../Users/alex/moisture-sensor-carrier/tools_netcmp.py:58: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/zw/cgylqvm121j60373883z5k200000gn/T/tmp5dt6b6_8.net' mode='r' encoding='UTF-8'>
+  root = parse(open(tmp).read())
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+.....................
+----------------------------------------------------------------------
+Ran 47 tests in 2.252s
+
+OK

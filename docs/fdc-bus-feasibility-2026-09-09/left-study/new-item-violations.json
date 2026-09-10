@@ -1,0 +1,32 @@
+[
+  {
+    "description": "Track has unconnected end",
+    "items": [
+      {
+        "description": "Track [unconnected-(U1-P1.09-Pad29)] on B.Cu, length 1.0000 mm",
+        "pos": {
+          "x": 71.4,
+          "y": 52.7
+        },
+        "uuid": "2a008197-c5a0-4284-abf3-2300890775cd"
+      }
+    ],
+    "severity": "warning",
+    "type": "track_dangling"
+  },
+  {
+    "description": "Track has unconnected end",
+    "items": [
+      {
+        "description": "Track [unconnected-(U1-P1.08-Pad30)] on B.Cu, length 1.0000 mm",
+        "pos": {
+          "x": 71.4,
+          "y": 51.95
+        },
+        "uuid": "16ca0f08-40e7-4ddf-bb97-031dd701f2b2"
+      }
+    ],
+    "severity": "warning",
+    "type": "track_dangling"
+  }
+]

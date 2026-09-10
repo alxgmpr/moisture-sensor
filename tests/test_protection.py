@@ -37,7 +37,7 @@ class ProtectionTest(unittest.TestCase):
         expected = {'D1': '/VBAT_RAW', 'D2': 'VBAT', 'D3': '+3V3',
                     'D4': '/SWDIO_EXT', 'D5': '/SWDCLK_EXT',
                     'D6': '/SWO_EXT', 'D7': '/RESET_EXT',
-                    'D8': '/SENSE1', 'D9': '/SENSE2', 'D10': '/SHLD'}
+                    'D8': '/CIN1_PROTECTED', 'D9': '/CIN2_PROTECTED', 'D10': '/SHLD'}
         for ref, net in expected.items():
             with self.subTest(ref=ref):
                 self.assertIn(ref, self.pads, 'ESD clamp missing')

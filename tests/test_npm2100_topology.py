@@ -14,7 +14,7 @@ class Npm2100TopologyTest(unittest.TestCase):
         self.assertEqual(set(nets['SW']), {'U2.2', 'L10.1'})
         self.assertIn('L10.2', nets['VBAT'])
         self.assertTrue({'U2.3', 'Q1.2', 'C21.1', 'C22.1'} <= set(nets['VBAT']))
-        self.assertEqual(set(nets['VINT']), {'U2.14', 'U2.15', 'C23.1', 'C24.1'})
+        self.assertEqual(set(nets['VINT']), {'U2.14', 'U2.15', 'C23.1', 'C24.1', 'TP10.1'})
 
     def test_board_inductor_pad_nets_match_reference(self):
         board = parse((ROOT / 'nrf-moisture-sensor.kicad_pcb').read_text())

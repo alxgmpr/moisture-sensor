@@ -1,0 +1,5 @@
+{
+  "undersized_ring_rejected": true,
+  "tight_via_gap_rejected": true,
+  "ordinary_pad_keeps_stricter_gap": true
+}

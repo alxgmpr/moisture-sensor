@@ -1,0 +1,16 @@
+{
+  "changed_footprints": [
+    "C3",
+    "Q1",
+    "R22",
+    "R23",
+    "R36",
+    "R37",
+    "U4"
+  ],
+  "geometry_preserved": true,
+  "source_hashes_match": true,
+  "bom_rows": 20,
+  "bom_export_tests_passed": 4,
+  "firmware_host_tests_passed": true
+}

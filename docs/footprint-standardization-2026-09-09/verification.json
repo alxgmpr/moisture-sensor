@@ -1,0 +1,48 @@
+{
+  "standard_pad_geometry_verified": [
+    "C13",
+    "C21",
+    "C22",
+    "C23",
+    "C24",
+    "C25",
+    "C26",
+    "C27",
+    "C28",
+    "C3",
+    "D1",
+    "D10",
+    "D2",
+    "D3",
+    "D4",
+    "D5",
+    "D6",
+    "D7",
+    "D8",
+    "D9",
+    "R1",
+    "R22",
+    "R23",
+    "R30",
+    "R31",
+    "R32",
+    "R33",
+    "R34",
+    "R35",
+    "R36",
+    "R37"
+  ],
+  "placements_preserved": true,
+  "purchasing_fields_and_pad_nets_preserved": true,
+  "all_vias_and_keepouts_unchanged": true,
+  "only_user_accepted_drc_errors": [
+    "0c92937a-92ec-40d8-8988-a4f1037265c0",
+    "e7de8e73-6c93-4c86-a512-ca4be7dd1ff3"
+  ],
+  "unconnected_items": 0,
+  "schematic_parity": 0,
+  "source_sha256": {
+    "nrf-moisture-sensor.kicad_pcb": "98d072b3fff9602afad61e6ae5bc0484a67321bd6e8922e176422d07ecfda116",
+    "nrf-moisture-sensor.kicad_sch": "40b1140512935f1cdb1a47dbdc78e0a9e2e424239a6a917112ced686960eb4a9"
+  }
+}

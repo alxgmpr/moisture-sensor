@@ -1,3 +1,5 @@
+> Superseded for D8/D9: the [9 September probe revision](../probe-review-2026-09-09/README.md) moves these clamps onto the protected CIN nets. The electrode-side topology below is historical.
+
 # Protection implementation — 2026-09-04
 
 Implemented in the maintained schematic and PCB at Alex's request. This is an

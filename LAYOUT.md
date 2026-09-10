@@ -1,3 +1,5 @@
+> 2026-09-09 cost revision: U4 is now Sensirion SHT40-AD1F-R2. The existing SHT4x footprint, membrane handling, geometry, and legacy SHT45-named model/rule areas are retained. See [cost revision](docs/cost-reduction-2026-09-09/README.md).
+
 # Layout & RF Constraints
 
 **2026-09-04: BL54L15 routing handoff.** Sections 2–3 and
@@ -22,11 +24,11 @@ controlled-impedance fabrication requirement.
 |---|---|---|---|---|
 | F.Cu | copper | 0.035 mm | — | signal, sense electrodes, ground outside antenna keepout |
 | dielectric 1 | prepreg 3313 | **0.0994 mm** | **4.1** | top signal-to-ground dielectric |
-| In1.Cu | copper | 0.0152 mm | — | **GND** (zoned — see §4) |
+| In1.Cu | copper | 0.0152 mm | — | **GND** under electronics; sense/SHLD on probe |
 | dielectric 2 | core | **1.265 mm** | **4.6** | |
-| In2.Cu (`GND-SHLD`) | copper | 0.0152 mm | — | **GND** beneath electronics / driven **guard** beneath probe |
+| In2.Cu (`GND-SHLD`) | copper | 0.0152 mm | — | **GND** beneath electronics; sense/SHLD on probe |
 | dielectric 3 | prepreg 3313 | **0.0994 mm** | **4.1** | symmetric bottom dielectric |
-| B.Cu | copper | 0.035 mm | — | signal / guard |
+| B.Cu | copper | 0.035 mm | — | signal / sense electrodes / guard |
 
 ### Order note
 
@@ -122,13 +124,13 @@ along its length:
 manufacturer land-row strip and asymmetric keepouts specified in §3.
 
 **Zone B**: In1.Cu (`GND`) and In2.Cu (`GND-SHLD`) provide ground references
-for the front and bottom routes. The shared outer/In2 ground rectangle ends at y=106.7, before the driven
+for the front and bottom routes. The shared outer/In2 ground rectangle ends at y=106.9, before the driven
 shield escape at y=107.1; it follows the antenna keepouts at the top. Existing ground vias
 join both planes. Add local return stitching as final signal routing is completed.
 +3V3 uses a 0.4 mm bottom trunk with front-layer load connections. See the
 [ground-plane routing handoff](docs/in2-ground/README.md).
 
-**Zone C**: no ground, and the reason is quantitative — see §5.
+**Zone C**: no ground beneath the electrodes. Two 0.9 mm wide In1 ground fingers extend to y=112.55 for D8/D9 ESD returns, above the first electrode. Their additional adjacent-layer shield overlap is approximately 3.5 pF; fringing is additional. See §5.
 
 ---
 
@@ -148,11 +150,11 @@ Parallel-plate estimate, `C/A = ε₀ε_r/d`:
 
 A probe 2 cm wide by 10 cm long is 20 cm² of guard — **right at the limit** if
 there is ground plane under it. Delete the ground from Zone C and the guard's
-capacitance collapses to edge fringing, which is negligible.
+capacitance is dominated by fringing and coupling to the environment. Wet conductive soil across a thin coating can still produce a large load.
 
 Ground near a *sense* trace is worse still: it is measured capacitance, so it
-directly consumes CAPDAC range and couples in noise. The DRU enforces 1 mm
-minimum sense-to-Power clearance for this reason.
+directly consumes CAPDAC range and couples in noise. Keep ground away from the active electrodes where practical. The DRU permits
+0.2 mm sense-to-Power clearance so deliberate ESD return routing is possible.
 
 ### Electrode design targets
 
@@ -190,8 +192,7 @@ temperature compensation in HARDWARE.md §5.
 
 ### Guard geometry
 
-- **SHLD1 and SHLD2 are internally shorted** (SNOSCY5 §7.2.2), so tying them
-  together in the schematic is correct, not a shortcut.
+- **SHLD1 and SHLD2 share the single-ended excitation** in the selected measurement mode. The shared SHLD net requires single-ended measurements; do not configure hardware differential CIN1–CIN2 measurements with the outputs tied together.
 - Guard trace on **both sides** of every sense trace, gap **0.2 mm** — tight
   coupling is the entire point, so this is a minimum-clearance rule, not a
   keep-away.
@@ -384,10 +385,12 @@ are already tangent are left untouched.
 ### Height budget — the thing that bit
 
 Board on the 4.00 mm posts: 4.00 + 1.6 (PCB) leaves **11.70 mm** to the lid.
-The MPD BU2032SM-BT-GTR and installed CR2032 are approximately 5.6 mm above the
-PCB, leaving about **6.1 mm** to the enclosure ceiling. Nothing may occupy the
-31.86 × 22.40 mm assembly envelope above the board, and the removal-tool
-courtyard must remain clear even though it is not occupied during normal use.
+The selected Lian Xin CR2032-BS-6 holder has a 5.5 mm height, leaving about
+**6.2 mm** to the enclosure ceiling. Preserve its part-specific stepped courtyard
+and installed-cell clearance: 31.9 mm overall terminal span, 22.2 × 16 mm central
+plastic region, and 20.2 mm cell diameter. See the [selected-holder drawing and
+model limitations](lib/footprint-sources/CR2032-BS-6.md); the detailed Q&J model
+is a visualization substitute, not the purchasing specification.
 
 **Mounting screws.** Use nylon #2 fasteners at the antenna end. Keep metal
 out of the antenna region and validate the actual enclosure configuration (§3).
@@ -406,11 +409,8 @@ SHT45 and probe geometry was preserved during migration.
 | R1 / C13 | (84.5,55.5) / (82.8,56.5) |
 | Battery / PMIC / sensors | Existing placements retained |
 
-**Probe electrodes** are filled zones on F.Cu — SENSE1 and SENSE2, each
-16 × 30 mm — with the SHLD guard pouring around them at 0.2 mm and guard on
-In2.Cu and B.Cu beneath. Guard-to-ground overlap is only the 33 mm² where the
-F.Cu guard crosses the Zone B boundary, about 6 pF against the 400 pF shield
-limit.
+**Probe electrodes** are filled zones on all four copper layers — SENSE1 and SENSE2, each
+16 × 30 mm per layer. Four solid-connected through vias per electrode join its layers. SHLD surrounds both electrodes on every layer, including a closed guard across the lower electrode’s tip end. No shield or ground plane lies between the stacked sense areas. The new ESD ground fingers add 8.721 mm² of F.Cu-to-In1 overlap and 8.902 mm² of In2-to-In1 overlap, about 3.5 pF combined before fringing. External soil/coating coupling must be included against the 400 pF driver limit.
 
 The nPM2100 local power layout and sensing constraints below remain applicable.
 
@@ -435,24 +435,21 @@ priority rather than copying development-board coordinates. It confirms:
   at the regulator and post-route stitching generated by KiCad's via-stitching
   zone tool
 - local power distribution that preserves the signal reference planes
-- SW → L10 → protected VBAT, with C23/C24 on VINT and C21/C22 on VBAT. L10 pad 2 was corrected from VINT to VBAT on 2026-09-04; copper routing still needs updating.
+- SW → L10 → protected VBAT, with C23/C24 on VINT and C21/C22 on VBAT. L10 pad 2 and copper routing are connected to VBAT; current connectivity and DRC pass.
 
 The current Zone B implementation uses both inner layers for ground and routed
 power on the outer layers. This board-specific choice replaces the earlier
 In2 power plane. Broader stitching remains part of final routing review.
 
-### Confirmed against TI's FDC1004EVM (SV601093B)
+### Comparison with TI's FDC1004EVM (SV601093B)
 
-TI's own evaluation board builds the sense front end exactly the way §5
-specifies, which is worth recording as independent confirmation rather than a
-change:
+TI's evaluation board uses a different backing geometry:
 
 - the sense electrode is a **solid filled area on the top layer**
 - the **guard is a solid plane directly beneath it on the opposite layer**
 - guard copper also **rings the electrode on its own layer** across a narrow gap
 
-That is the Zone C construction as drawn — F.Cu electrodes, SHLD guard pouring
-around them at 0.2 mm, guard on In2.Cu and B.Cu beneath.
+The current board differs from that EVM: it uses connected sense copper on all four layers and a surrounding SHLD guard on every layer. Both external faces sense the environment; the inner copies do not multiply sensitivity by four. See [the 9 September review](docs/probe-review-2026-09-09/README.md) for coating, range and protection limits.
 - Electrode geometry: simulate or prototype for 10–30 pF dry with a swing inside
   ±15 pF.
 - The module has no QFN exposed-pad paste array. Its 39 LGA lands use the
@@ -478,3 +475,29 @@ around them at 0.2 mm, guard on In2.Cu and B.Cu beneath.
 - The retired bare-SoC library and audit notes remain historical references.
   Current warning counts and affected footprints are listed in
   docs/bl54l15/verification.md.
+
+## Test-point additions — 7 September 2026
+
+Fourteen 1 mm front-side pads, TP4–TP17, provide labeled power, bus, interrupt, reset and GPIO access. The new diagnostic branches use front and In2 copper; seven ground stitches moved locally, with existing functional tracks and antenna/probe keepouts retained. [Map, coordinates and verification](docs/testpoints-2026-09-07/README.md).
+
+## Probe revision — 9 September 2026
+
+D8/D9 now clamp CIN1_PROTECTED/CIN2_PROTECTED to GND, on the chip side of R30/R31. The existing 5.1 kohm resistors remain provisional: TI recommends input RC much less than 1 µs. Four-layer electrodes and the closed tip guard need fresh wet/dry calibration and coating qualification; the previous front-only simulation and coating target do not qualify this geometry. See [review and verification](docs/probe-review-2026-09-09/README.md).
+
+
+### Dedicated FDC bus routing handoff — 2026-09-09
+
+U1.22 (P1.05) is /FDC_SDA; U1.23 (P1.04) is /FDC_SCL. Route to U3.10 and
+U3.9 respectively and to R36.2/R37.2. R36.1/R37.1 need +3V3_FDC_SW. The two
+0402 pull-ups are initially placed at (75.0, 103.7) and (77.0, 103.7) mm;
+adjust placement for the final route. The old five FDC-only shared-bus spur
+segments have been removed. No new tracks or vias were added.
+
+Consider escaping **upward (decreasing board Y) from pads 22/23 into the
+module footprint** and changing layers there to avoid X1 and XL1/XL2 below
+the module. Check module underside clearance and land-pattern restrictions,
+retain the inner ground planes, and stay outside the antenna keepout. This
+is an alternative to the previously DRC-tested downward escape; the upward
+route has not been validated or selected for you. Avoid running digital
+edges alongside crystal traces. Keep the FDC trunk away from /SW and the
+sensitive CIN inputs. Refill zones and complete DRC after routing.

@@ -1,6 +1,10 @@
+> 2026-09-09: D8/D9 clamp the protected CIN nets after R30/R31. Both electrodes now occupy all four copper layers, with all-layer SHLD rings closed at the tip. See [probe revision and electrical limits](docs/probe-review-2026-09-09/README.md).
+
+> 2026-09-07: C21/C23 use GRM158R60J226ME01D; D8/D9 have dedicated In1 ground returns. Real carrier qualification firmware is in `firmware/carrier-bringup`. See [implemented reliability changes](docs/reliability-2026-09-07/README.md) for current limits and required measurements.
+
 # nRF Moisture Sensor — Hardware Design
 
-Ezurio BL54L15 453-00001R · nPM2100 (QFN16) · FDC1004 · SHT45 · BTHome v2 over BLE · CR2032
+Ezurio BL54L15 453-00001R · nPM2100 (QFN16) · FDC1004 · SHT40 · BTHome v2 over BLE · CR2032
 
 All values below are cited from the source that was checked. Anything marked
 **[assumed]** has not been verified and needs your sign-off.
@@ -18,7 +22,7 @@ git history for the separate pump-controller board.
 
 ```
 CR2032 ──► Q1 reverse PMOS ──► nPM2100 VBAT ──► BOOST ──► VINT ──► VOUT 3.3 V ─┬─► BL54L15
-                                   (SW/L1)                ├─► SHT45 (always on)
+                                   (SW/L1)                ├─► SHT40 (always on)
                                                           └─► I²C pull-ups (always on)
                     VINT ──► LDOSW ──► +3V3_FDC_SW ──► FDC1004 (gated)
 ```
@@ -76,7 +80,7 @@ DCC/DECD/DECA/DECRF, XC1/XC2 or RF feed is exposed.
 
 | Ref | External support retained | Connections |
 |---|---|---|
-| C3 | Mandatory 10 µF, 16 V X6S, standard 0603 | U1.26 VDD_nRF to GND |
+| C3 | 10 µF nominal, 25 V X5R, standard 0603 (C96446) | U1.26 VDD_nRF to GND |
 | X1 | CM8V-T1A, 32.768 kHz, CL 7 pF, ±20 ppm | U1.25 XL1 → X1.1; U1.24 XL2 → X1.2 |
 | R1 / C13 | 1 kΩ series reset / 3.9 pF C0G filter, standard 0402 | SWD_RST → R1 → NRESET; C13 to GND; U1.7 NRESET |
 | R22 / R23 | Existing 4.7 kΩ I²C pull-ups | SDA / SCL to VOUT |
@@ -174,10 +178,10 @@ radio up.
 |---|---|---|---|---|
 | U2 | nPM2100-QEAA | PMIC | QFN16 4×4 | — |
 | L10 | Murata DFE201210U-2R2M=P2, 2.2 µH | **I_sat 2 A, DCR 228 mΩ max, ±20%** — no other inductance permitted (nwp_058 §3.1) | 2.00 × 1.20 mm | SW (2) → protected VBAT (3) |
-| C21 | 10 µF | X5R 6.3 V ±20% | 0402 | VBAT (3) |
-| C22 | 1 nF | X5R | 0201 | VBAT (3) |
+| C21 | 22 µF | X5R 6.3 V ±20% | 0402 | VBAT (3) |
+| C22 | 1 nF | X7R 50 V, FH 0402B102K500NT | standard 0402 | VBAT (3) |
 | C23 | 22 µF | X5R 6.3 V ±20% | 0402 | VINT (14/15) |
-| C24 | 1 nF | X5R | 0201 | VINT |
+| C24 | 1 nF | X7R 50 V, FH 0402B102K500NT | standard 0402 | VINT |
 | C25 | 2.2 µF | X5R 6.3 V ±20% | 0402 | VOUT (13) |
 | C26 | 1 µF | local decoupling at the FDC1004 | 0402 | +3V3_FDC_SW (12) |
 
@@ -230,9 +234,10 @@ D3–D7 protect the programming interface; D8–D10 cover sense/shield connectio
 R30/R31 add 5.1 kohm sense-input isolation and R32–R35 add 100 ohm debug isolation.
 See [protection implementation and qualification limits](docs/protection/README.md).
 
-BT1 remains MPD BU2032SM-BT-GTR with its established polarity and removal-tool
-courtyard. Q1 clears the removal-tool area; D1 is on F.Cu beside the positive
-contact. The stepped holder courtyard preserves 0.25 mm body clearance. No PTC or sustained-OVP
+BT1 is Lian Xin CR2032-BS-6, LCSC C22363833, with positive pad 1 on the left
+and negative pad 2 on the right in the footprint's unrotated top view. D1 is
+on F.Cu beside the positive contact. The part-specific stepped courtyard
+preserves at least 0.25 mm body clearance; Q1 clears that courtyard. No PTC or sustained-OVP
 cutoff is fitted. Prototype ESD, leakage, cold-start and sensing validation are
 still required. A single PMOS is not guaranteed reverse-current isolation from
 an externally powered rail into the primary cell; J4 remains a voltage reference.
@@ -249,7 +254,7 @@ This design keeps the **SoC System OFF + GRTC wake** architecture:
 
 | | System OFF + GRTC (chosen) | PMIC Hibernate timer |
 |---|---|---|
-| Battery draw between wakes | ~1.5 µA (nRF SO + GRTC/LFXO, PMIC 300 nA, SHT45 80 nA) | 320 nA typ, PMIC only |
+| Battery draw between wakes | ~1.5 µA (nRF SO + GRTC/LFXO, PMIC 300 nA, SHT40 80 nA) | 320 nA typ, PMIC only |
 | Wake timing accuracy | ±20 ppm (LFXO) | ±3% typ, ±20% over temperature |
 | Fuel gauge state | survives in retained RAM | lost with VOUT — persist to RRAM/flash every wake (nan_048 §4.1) |
 | PMIC configuration | written once per battery insert | re-written after every Hibernate_PT wake |
@@ -280,36 +285,29 @@ this board's BOM or layout.
 
 ## 5. Sense front end — FDC1004
 
-### Power gating, the back-powering trap, and a deadlock to avoid
+### Dedicated FDC bus and power gating
 
 ```
-VOUT (+3V3, always on) ──┬──[4.7k]── SDA
-                         └──[4.7k]── SCL
-(nPM2100 internal: VINT ──► LDOSW ──► +3V3_FDC_SW ──► FDC1004 VDD)
++3V3 ── R22/R23 ── SDA/SCL ── TWIM22 (P1.10/P1.11), nPM2100, SHT40
++3V3_FDC_SW ── R36/R37 ── FDC_SDA/FDC_SCL ── TWIM20 (P1.05/P1.04), FDC1004
 ```
 
-**The pullups must be on the always-on VOUT rail, NOT on the switched +3V3_FDC_SW.**
+The FDC now has a separate hardware I²C bus: U1.22/P1.05 is FDC_SDA and
+U1.23/P1.04 is FDC_SCL. R36/R37 are 4.7 kΩ pull-ups to its switched supply.
+R22/R23 remain on always-on +3V3 so the PMIC can enable LDOSW at cold boot.
+Switching the PMIC's own pull-ups would prevent that command from reaching it.
 
-Gating the pullups from the switched rail is the textbook answer to the
-back-powering trap, and it is what this design originally did. It is a
-**deadlock** here:
+The dedicated pins must have no internal pull-ups and must be disconnected
+while FDC power is off. The carrier firmware starts TWIM20 suspended, resumes
+it for each transfer after power-up, and returns it to its sleep pinctrl state
+after each transfer, including failures. It verifies the bus is suspended
+before disabling LDOSW and entering System OFF. SPI20/UART20 remain disabled.
 
-1. LDOSW is commanded over TWI (PS §6.2 — the load switch is OFF by default and
-   is enabled in register `LDOSW.LDOSW`).
-2. With the switch off, the pullups are unpowered.
-3. I²C is open-drain, so with no pullups the bus can never go high.
-4. The PMIC is therefore unreachable, and the load switch can never be turned on.
-
-Cold boot never recovers. The board would be dead on arrival.
-
-**Why putting them on +3V3 is safe here.** FDC1004 absolute maximum ratings
-(§5.1) list **SCL and SDA at 6 V, independently of VDD**, in a row separate from
-*"at any other pin: VDD + 0.3 V"*. A 6 V rating on a part whose VDD maxes at
-3.6 V means there is **no ESD diode from SDA/SCL to VDD**. Holding those pins at
-3.3 V while the device is unpowered does not back-power it.
-
-So the trap you flagged in the brief is real for I²C slaves in general, and does
-not apply to the FDC1004 on its bus pins. Gate the supply, leave the bus alone.
+This removes the shared bus's always-on pull-up path into the unpowered FDC.
+FDC1004's independent 6 V SDA/SCL absolute maximum rating does not establish
+powered-off leakage. Measure rail voltage and battery current with FDC power
+off, including main-bus activity, reset and sleep/wake transitions.
+See [wiring update and routing handoff](docs/fdc-bus-update-2026-09-09/README.md).
 
 **The LSOUT active discharge is built in.** PS §6.2: *"The LSOUT/VOUTLDO pin is
 actively discharged when LDOSW is disabled"* — pull-down VLDOSWPD = 2 kΩ (PS
@@ -317,9 +315,9 @@ Tables 11–12). No register dance; +3V3_FDC_SW is driven to ground between wake
 rather than floating, which is the exact condition the old design had to
 configure by hand.
 
-4.7 kΩ rather than 10 kΩ: at 400 kHz 10 k is marginal. These draw from VOUT
-continuously whenever the bus is idle-low, but an idle I²C bus sits high, so the
-standing cost is only leakage.
+Both buses use 4.7 kΩ pull-ups and the qualification firmware runs them at
+100 kHz. Verify rise time after routing; low-state current comes from each
+bus's respective supply, while idle-high current is leakage only.
 
 ### FDC1004 electrical — verified against SNOSCY5
 
@@ -391,23 +389,22 @@ and is far easier to hand-assemble for a prototype. Nothing here dissipates.
 | 6 | SHLD2 | Analog | SHLD |
 | 7 | GND | Ground | GND |
 | 8 | VDD | Power | +3V3_FDC_SW |
-| 9 | SCL | Input | SCL |
-| 10 | SDA | I/O | SDA |
+| 9 | SCL | Input | FDC_SCL |
+| 10 | SDA | I/O | FDC_SDA |
 
-There is **no address pin** — the I²C address is fixed, so the FDC1004, the
-SHT45 and the nPM2100 coexist on one bus only because their fixed addresses
-differ. All three are now confirmed distinct — see §8.
+There is **no address pin**: FDC1004 uses fixed address 0x50 on its dedicated
+bus. SHT40 and nPM2100 remain together on the main bus — see §8.
 
 Supply current and voltage range are now verified — see the electrical table above.
 
-### Ambient RH/T — SHT45-AD1F
+### Ambient RH/T — SHT40-AD1F
 
 Added primarily as a **compensation input**, not a feature. Verified against the
-SHT4x datasheet v7.1.
+SHT4x datasheet v7.3; cost revision approved 2026-09-09.
 
 | Param | Value |
 |---|---|
-| Part | **SHT45-AD1F** — ±1.0 %RH, **±0.1 °C**, PTFE membrane |
+| Part | **SHT40-AD1F** — typical ±1.8 %RH, **±0.2 °C**, integrated filter membrane |
 | Supply | 1.08–3.6 V (keeps working after the FDC1004 has dropped out) |
 | I_DD idle | **80 nA** typ, 1.0 µA max @ 25 °C |
 | I_DD measuring | 320 µA typ, 500 µA max |
@@ -417,25 +414,21 @@ SHT4x datasheet v7.1.
 | Package | DFN-4 1.5×1.5×0.5 mm, 0.8 mm pitch |
 | Footprint | `Sensor_Humidity:Sensirion_DFN-4_1.5x1.5mm_P0.8mm_SHT4x_NoCentralPad` |
 
-**Why temperature accuracy is the spec that matters.** Two error terms feed the
-moisture reading:
+**Reference accuracy and compensation.** SHT40 is accepted as an ambient
+temperature/humidity reference. It has the same 0x44 address, pin assignment,
+measurement commands and conversion formulae as SHT45. The existing bring-up
+firmware needs no protocol change. Typical ±0.2 °C and ±1.8 %RH values apply
+under the datasheet's stated conditions; they are not full-range guarantees.
 
-- FDC1004's own offset drift: 46 fF over 165 °C = **0.28 fF/°C**
-- Water's relative permittivity: falls ~0.4 %/°C, so on a 5–15 pF soil reading
-  that is **20–60 fF/°C** — roughly 100× larger
+If ambient temperature is used for soil compensation, the earlier illustrative
+20–60 fF/°C soil coefficient implies 4–12 fF uncertainty from ±0.2 °C, versus
+2–6 fF for SHT45. That is a design estimate, not measured moisture accuracy.
+Ambient temperature can differ from soil temperature; calibrate the assembled
+probe over its actual conditions before using this compensation model.
 
-The soil term dominates completely, so sensor temperature accuracy sets the
-residual:
-
-| T accuracy | Residual moisture error | vs the ±6 fF calibrated floor |
-|---|---|---|
-| ±0.1 °C (SHT45) | 2–6 fF | at or below the floor |
-| ±0.2 °C (SHT40/41) | 4–12 fF | comparable |
-| ±0.48 °C (SHT43) | 10–29 fF | temperature becomes the dominant error |
-
-SHT43 is disqualified on this despite sitting in the same price and power class.
-RH accuracy barely matters by comparison — ±1.8 %RH is only ~±0.05 kPa of VPD
-error at 22 °C — so pay for temperature precision, not humidity precision.
+The AD1F integrated membrane is retained. Sensirion's v7.3 datasheet describes
+it as polyimide; older product pages describe PTFE. Procurement is locked to
+the exact Sensirion SHT40-AD1F-R2 code, not an unfiltered AD1B or another brand.
 
 **It must sit on the always-on +3V3 rail, not on gated +3V3_FDC_SW.** Table 6 rates
 every pin at **VSS − 0.3 V … VDD + 0.3 V**, with no independent I/O rating. An
@@ -506,7 +499,9 @@ are preserved; module pad numbers replace the bare-QFN numbers.
 | Signal | Module pad | SoC function |
 |---|---|---|
 | SCL | 35 | P1.11 / dedicated clock |
-| SDA | 28 | P1.10 |
+| SDA (PMIC/SHT) | 28 | P1.10 |
+| FDC_SDA | 22 | P1.05 |
+| FDC_SCL | 23 | P1.04 |
 | PMIC interrupt | 17 | P0.00 / wake-capable |
 | SWO | 4 | P2.07 |
 | SWDIO / SWDCLK / nRESET | 5 / 6 / 7 | Dedicated debug/reset |
@@ -555,15 +550,15 @@ battery-life figures.
 
 **Cell: CR2032 LiMnO₂, 225 mAh nominal** (any major brand — Panasonic, Murata,
 Duracell; the fuel gauge's default LiMnO₂ model is the CR2032, nan_048 §3).
-User-replaceable; battery-out is the off switch. The production holder is MPD
-`BU2032SM-BT-GTR`, placed in Zone B away from the sense escape and RF corridor.
+User-replaceable; battery-out is the off switch. The production holder is Lian Xin
+`CR2032-BS-6` (LCSC C22363833), placed in Zone B away from the sense escape and RF corridor.
 
 | Item | Current | mAh/yr | Scales with capacity? |
 |---|---|---|---|
 | CR2032 self-discharge | ~1%/yr | 2.3 | **yes** |
 | nRF54L15 System OFF + GRTC/LFXO | ~0.9 µA **[assumed]** | 7.9 | no |
 | nPM2100 quiescent, boost ULP | 0.3 µA (PS Table 4) | 2.6 | no |
-| SHT45 idle (always powered) | 80 nA | 0.7 | no |
+| SHT40 idle (always powered) | 80 nA | 0.7 | no |
 | Boost inefficiency on the above | ~10% | ~1.1 | no |
 | Hourly wake cycles (300 ms @ ~4 mA battery-side) | — | ~3.5 | no |
 | Fuel gauge iterations | < 4 µC each | ~0 | no |
@@ -612,7 +607,7 @@ behaviour (§3).
 ## 8. Open items
 
 - I²C addresses all confirmed distinct: **FDC1004 0x50** (SNOSCY5 §6.5.1),
-  **SHT45-AD1F 0x44**, **nPM2100 0x74** (PS §7.6). One bus, no split needed.
+  **SHT40-AD1F 0x44**, **nPM2100 0x74** (PS §7.6). One bus, no split needed.
 - **Fuel gauge library availability**: nrfxlib nRF Fuel Gauge for nRF54L15 on our
   NCS v3.2.2 — confirm, and decide the state-persistence route (retained RAM
   through System OFF vs RRAM/flash per wake, nan_048 §4.1; check write endurance
@@ -624,7 +619,7 @@ behaviour (§3).
 - **Zephyr driver coverage** — mfd/regulator/gpio/watchdog/vbat drivers exist in
   mainline Zephyr and the nPM2100 EK has an in-tree shield overlay; verify the
   fuel-gauge sample runs against NCS v3.2.2's Zephyr revision.
-- Cell holder and polarity handling are locked to MPD `BU2032SM-BT-GTR` and the
+- Cell holder and polarity handling are locked to Lian Xin `CR2032-BS-6` (C22363833) and the
   placement described in §3; Q1 reverse protection now requires prototype validation.
 - Validate BL54L15 supply ripple, oscillator trim and closed-enclosure radiated
   performance. The fixed battery geometry does not meet every preferred metal
@@ -664,9 +659,29 @@ USB-C-charged rechargeable device the old power tree described.
 - [Using the nPM2100 Fuel Gauge, nan_048, July 2025](https://www.nordicsemi.com/Products/nPM2100/Documentation) (local: `doc/datasheets/nan_048.pdf`)
 - [nPM2100 EK Hardware — User Guide v0.9.0](https://www.nordicsemi.com/Products/nPM2100/Documentation) (local: `doc/datasheets/nPM2100_EK_User_Guide.pdf`) — EK wiring, VSET/LDOSW/reservoir jumpers
 - [Reverse battery protection for the nPM2100 PMIC, ngl_002, March 2026](https://www.nordicsemi.com/Products/nPM2100/Documentation) (local: `doc/datasheets/nPM2100_Reverse_Battery_ngl_002.pdf`)
-- [MPD BU2032SM-BT-GTR drawing](https://www.batteryholders.com/uploads/parts/BU2032SM-BT-GTR/datasheets/BU2032SM-BT-GTR-datasheet.pdf) — holder land pattern and assembly envelope
+- [Lian Xin CR2032-BS-6 drawing](doc/datasheets/lianxin-cr2032-bs6/CR2032-BS-6.pdf) — selected holder land pattern and assembly dimensions; [source and model notes](lib/footprint-sources/CR2032-BS-6.md)
 - [Murata DFE201210U-2R2M=P2](https://www.murata.com/en-global/products/productdetail.aspx?partno=DFE201210U-2R2M%23) — electrical and mechanical selection
 - [Molex 2069940100 product specification](https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/productspecificationpdf/206/206994/2069940100-PS.pdf) — retired external antenna (historical reference)
 - [nRF54L15 reference circuitry, circuit configuration 1 for QFN48 (QFAA)](https://docs.nordicsemi.com/r/bundle/ps_nrf54l15/page/chapters/ref_circuitry.html-concept_refcircuit_config_1) — Tables 1 and 2, grounding notes
 - [nRF54L15/L10/L05 datasheet v1.0](https://www.mouser.lt/datasheet/3/926/1/nRF54L15_nRF54L10_nRF54L05_Datasheet_v1.0.pdf) — System OFF current figures
 - Zephyr nPM2100 drivers and nPM2100 EK shield overlay (zephyrproject-rtos/zephyr: `drivers/mfd/mfd_npm2100.c`, `drivers/regulator/regulator_npm2100.c`, `boards/shields/npm2100_ek/`) — I²C address 0x74, driver availability; Nordic's bare-metal reference (`nordicsemi/npm2100-bm`) for register semantics
+
+## Test access
+
+TP4–TP17 add main-rail/FDC/VINT voltage and ground pairs, protected/raw battery, I²C, PMIC interrupt, filtered NRESET and two timing-marker GPIOs. **TP16 = P1.09 (U1.29); TP17 = P1.08 (U1.30).** See the [test-point map and verification](docs/testpoints-2026-09-07/README.md).
+
+## Cost revision — 2026-09-09
+
+Q1 uses DMG2305UX-13 / C144153, the same Diodes device with a different reel
+size. C3 uses CL10A106MA8NRNC / C96446 in the existing 0603 footprint.
+Samsung's typical DC-bias data gives 6.60 µF at 3.3 V versus 6.85 µF for the
+previous C3. X5R is rated −55 to +85 °C, consistent with the other retained
+X5R capacitors; this is not a board temperature qualification. Total nominal
+VOUT capacitance remains 12.3 µF. Existing module ripple, transient and total
+effective output-capacitance qualification remains required.
+
+C26 retains GRM155Z71A105KE01D. The screened Basic 1 µF alternative loses
+about 42% at 3.3 V and has not been qualified against the FDC rail requirements.
+R22/R23/R36/R37 now share the value `4.7k 1%` and C25900 so the BOM groups
+all four without changing their two separate supply nets.
+See [part evidence and checks](docs/cost-reduction-2026-09-09/README.md).

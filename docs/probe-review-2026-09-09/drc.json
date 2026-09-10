@@ -1,0 +1,993 @@
+{
+    "$schema": "https://schemas.kicad.org/drc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-09-09T08:56:37",
+    "ignored_checks": [
+        {
+            "description": "Footprint has no courtyard defined",
+            "key": "missing_courtyard"
+        },
+        {
+            "description": "Track endpoint not centered on via",
+            "key": "track_not_centered_on_via"
+        },
+        {
+            "description": "Tuning profile track geometries",
+            "key": "tuning_profile_track_geometries"
+        },
+        {
+            "description": "Footprint doesn't match symbol's footprint filters",
+            "key": "footprint_filters_mismatch"
+        },
+        {
+            "description": "Footprint component type doesn't match footprint pads",
+            "key": "footprint_type_mismatch"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning"
+    ],
+    "kicad_version": "10.99.0",
+    "schematic_parity": [],
+    "source": "nrf-moisture-sensor.kicad_pcb",
+    "unconnected_items": [
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Zone [GND] on F.Cu, B.Cu and GND-SHLD, priority 0",
+                    "pos": {
+                        "x": 93.6,
+                        "y": 106.9
+                    },
+                    "uuid": "735197ea-db5e-4da5-9155-ce88af25f92f"
+                },
+                {
+                    "description": "Zone [GND] on F.Cu, B.Cu and GND-SHLD, priority 0",
+                    "pos": {
+                        "x": 93.6,
+                        "y": 106.9
+                    },
+                    "uuid": "735197ea-db5e-4da5-9155-ce88af25f92f"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Pad 1 [/MARK2] of TP17 on F.Cu",
+                    "pos": {
+                        "x": 66.0,
+                        "y": 57.0
+                    },
+                    "uuid": "fdb87667-ebdc-4073-9d2c-f59cd4d5a348"
+                },
+                {
+                    "description": "Pad 30 [/MARK2] of U1 on F.Cu",
+                    "pos": {
+                        "x": 72.503,
+                        "y": 51.95
+                    },
+                    "uuid": "ae30dba0-9f34-432b-992b-36baa24b0179"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        }
+    ],
+    "violations": [
+        {
+            "description": "Silkscreen clipped by board edge (board setup constraints silk clearance 0.1500 mm; actual 0.1188 mm)",
+            "items": [
+                {
+                    "description": "Arc on Edge.Cuts",
+                    "pos": {
+                        "x": 66.5002,
+                        "y": 114.4998
+                    },
+                    "uuid": "d39c2a6b-6456-4728-a58d-86e50c148f18"
+                },
+                {
+                    "description": "Reference field of TP1",
+                    "pos": {
+                        "x": 68.17,
+                        "y": 114.042
+                    },
+                    "uuid": "77bff84d-143d-46e4-b3d1-ed1d87b59c51"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_edge_clearance"
+        },
+        {
+            "description": "Silkscreen clipped by board edge (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Arc on Edge.Cuts",
+                    "pos": {
+                        "x": 95.0,
+                        "y": 64.1
+                    },
+                    "uuid": "f05605ad-f9da-4c1e-b5a9-56b5bd973260"
+                },
+                {
+                    "description": "Reference field of TP13",
+                    "pos": {
+                        "x": 93.0,
+                        "y": 63.048
+                    },
+                    "uuid": "11211aed-117e-48f5-ab42-985e9ab4f31a"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_edge_clearance"
+        },
+        {
+            "description": "Footprint 'C_0402_1005Metric' does not match copy in library 'Capacitor_SMD'",
+            "items": [
+                {
+                    "description": "Footprint C13",
+                    "pos": {
+                        "x": 83.43,
+                        "y": 47.45
+                    },
+                    "uuid": "317d8142-81f4-4a8e-89dd-31dc26a41c34"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'C_0402_1005Metric' does not match copy in library 'Capacitor_SMD'",
+            "items": [
+                {
+                    "description": "Footprint C25",
+                    "pos": {
+                        "x": 69.6,
+                        "y": 95.45
+                    },
+                    "uuid": "62ec361d-694c-43b9-b182-36565372d608"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'C_0402_1005Metric_Pad0.74x0.62mm_HandSolder' does not match copy in library 'Capacitor_SMD'",
+            "items": [
+                {
+                    "description": "Footprint C26",
+                    "pos": {
+                        "x": 71.575,
+                        "y": 104.02
+                    },
+                    "uuid": "7f85b84c-a1e5-482a-baec-404819954834"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'C_0402_1005Metric' does not match copy in library 'Capacitor_SMD'",
+            "items": [
+                {
+                    "description": "Footprint C21",
+                    "pos": {
+                        "x": 65.12,
+                        "y": 101.27
+                    },
+                    "uuid": "8e8cf1bd-663c-42bb-a9b2-308a0d896d31"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'QFN-16-1EP_4x4mm_P0.65mm_EP2.7x2.7mm_ThermalVias' does not match copy in library 'Package_DFN_QFN'",
+            "items": [
+                {
+                    "description": "Footprint U2",
+                    "pos": {
+                        "x": 68.5,
+                        "y": 99.0
+                    },
+                    "uuid": "ae90bc02-0545-4bc9-b2a8-ec625e0527fb"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'C_0402_1005Metric' does not match copy in library 'Capacitor_SMD'",
+            "items": [
+                {
+                    "description": "Footprint C27",
+                    "pos": {
+                        "x": 101.38,
+                        "y": 60.6
+                    },
+                    "uuid": "af9651cf-0380-49ba-87ad-4c96462fcbad"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'C_0402_1005Metric' does not match copy in library 'Capacitor_SMD'",
+            "items": [
+                {
+                    "description": "Footprint C22",
+                    "pos": {
+                        "x": 63.9,
+                        "y": 101.26
+                    },
+                    "uuid": "d654f81e-27b8-4fce-8668-8c3963d58b10"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'C_0402_1005Metric' does not match copy in library 'Capacitor_SMD'",
+            "items": [
+                {
+                    "description": "Footprint C24",
+                    "pos": {
+                        "x": 68.6,
+                        "y": 95.45
+                    },
+                    "uuid": "e0b51144-bc7c-4ea7-b679-ea0d16eb1e75"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'Sensirion_DFN-4_1.5x1.5mm_P0.8mm_SHT4x_NoCentralPad' does not match copy in library 'Sensor_Humidity'",
+            "items": [
+                {
+                    "description": "Footprint U4",
+                    "pos": {
+                        "x": 99.7,
+                        "y": 60.6
+                    },
+                    "uuid": "f660d59c-b71d-49a0-b6bb-67ab2a0d06e9"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'C_0402_1005Metric' does not match copy in library 'Capacitor_SMD'",
+            "items": [
+                {
+                    "description": "Footprint C23",
+                    "pos": {
+                        "x": 67.6,
+                        "y": 95.45
+                    },
+                    "uuid": "fb82728e-4410-4d52-86d7-51e88b9ff59d"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP17",
+                    "pos": {
+                        "x": 66.0,
+                        "y": 55.552
+                    },
+                    "uuid": "2a0661b1-c2e9-4239-9dd3-88cabcb7e06d"
+                },
+                {
+                    "description": "Reference field of TP16",
+                    "pos": {
+                        "x": 68.45,
+                        "y": 55.552
+                    },
+                    "uuid": "a964151a-2fd2-41d1-a50d-54020a180ff8"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP5",
+                    "pos": {
+                        "x": 67.2,
+                        "y": 57.552
+                    },
+                    "uuid": "1f6d44d4-13ba-46ff-9d80-6937b73d6e63"
+                },
+                {
+                    "description": "Circle of TP17 on F.Silkscreen",
+                    "pos": {
+                        "x": 66.0,
+                        "y": 57.0
+                    },
+                    "uuid": "560cf238-374b-4889-90f8-b53189eb756e"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0768 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP5",
+                    "pos": {
+                        "x": 67.2,
+                        "y": 57.552
+                    },
+                    "uuid": "1f6d44d4-13ba-46ff-9d80-6937b73d6e63"
+                },
+                {
+                    "description": "PCB text 'M2' on F.Silkscreen",
+                    "pos": {
+                        "x": 66.0,
+                        "y": 58.45
+                    },
+                    "uuid": "63baf082-8960-4f4f-acab-b1c537827858"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP5 on F.Silkscreen",
+                    "pos": {
+                        "x": 67.2,
+                        "y": 59.0
+                    },
+                    "uuid": "60bc7335-0750-41a8-8e9c-b4e6d8326732"
+                },
+                {
+                    "description": "PCB text 'M2' on F.Silkscreen",
+                    "pos": {
+                        "x": 66.0,
+                        "y": 58.45
+                    },
+                    "uuid": "63baf082-8960-4f4f-acab-b1c537827858"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP5 on F.Silkscreen",
+                    "pos": {
+                        "x": 67.2,
+                        "y": 59.0
+                    },
+                    "uuid": "60bc7335-0750-41a8-8e9c-b4e6d8326732"
+                },
+                {
+                    "description": "PCB text 'M1' on F.Silkscreen",
+                    "pos": {
+                        "x": 68.45,
+                        "y": 58.45
+                    },
+                    "uuid": "fb012eef-1b0e-4806-839a-27a895494c98"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0009 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP5",
+                    "pos": {
+                        "x": 67.2,
+                        "y": 57.552
+                    },
+                    "uuid": "1f6d44d4-13ba-46ff-9d80-6937b73d6e63"
+                },
+                {
+                    "description": "PCB text 'M1' on F.Silkscreen",
+                    "pos": {
+                        "x": 68.45,
+                        "y": 58.45
+                    },
+                    "uuid": "fb012eef-1b0e-4806-839a-27a895494c98"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP5",
+                    "pos": {
+                        "x": 67.2,
+                        "y": 57.552
+                    },
+                    "uuid": "1f6d44d4-13ba-46ff-9d80-6937b73d6e63"
+                },
+                {
+                    "description": "Circle of TP16 on F.Silkscreen",
+                    "pos": {
+                        "x": 68.45,
+                        "y": 57.0
+                    },
+                    "uuid": "adc0c58b-c37e-4067-8a3b-ada8bb56d748"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.1118 mm)",
+            "items": [
+                {
+                    "description": "Segment of C3 on F.Silkscreen",
+                    "pos": {
+                        "x": 73.14058,
+                        "y": 55.76
+                    },
+                    "uuid": "8093ad99-1613-4e61-bd1c-34bd66461700"
+                },
+                {
+                    "description": "Reference field of TP4",
+                    "pos": {
+                        "x": 73.775,
+                        "y": 56.552
+                    },
+                    "uuid": "9d778ddd-52e3-4273-897e-7513582105a4"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0397 mm)",
+            "items": [
+                {
+                    "description": "PCB text 'GND' on F.Silkscreen",
+                    "pos": {
+                        "x": 71.575,
+                        "y": 56.55
+                    },
+                    "uuid": "3bd5d47e-29c1-446e-81ef-0e95221ad77c"
+                },
+                {
+                    "description": "Reference field of TP4",
+                    "pos": {
+                        "x": 73.775,
+                        "y": 56.552
+                    },
+                    "uuid": "9d778ddd-52e3-4273-897e-7513582105a4"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Segment of BT1 on F.Silkscreen",
+                    "pos": {
+                        "x": 62.5,
+                        "y": 86.1
+                    },
+                    "uuid": "831623e4-19a7-4b64-8e74-f6b4fe096ba5"
+                },
+                {
+                    "description": "Reference field of TP9",
+                    "pos": {
+                        "x": 62.8,
+                        "y": 85.952
+                    },
+                    "uuid": "c8458361-ad0d-4831-939b-1a5097e42e46"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.1033 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP10",
+                    "pos": {
+                        "x": 68.1,
+                        "y": 92.352
+                    },
+                    "uuid": "68fe3dbb-271b-440f-bb18-58c402bb2406"
+                },
+                {
+                    "description": "Reference field of TP7",
+                    "pos": {
+                        "x": 66.085,
+                        "y": 92.362
+                    },
+                    "uuid": "72b4fee7-7274-4a2c-823f-ce3d92ee0a18"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.1030 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP8",
+                    "pos": {
+                        "x": 63.3,
+                        "y": 97.552
+                    },
+                    "uuid": "5078a132-69d9-42b6-b262-c05c03f28a4a"
+                },
+                {
+                    "description": "PCB text 'VBAT' on F.Silkscreen",
+                    "pos": {
+                        "x": 62.2,
+                        "y": 97.95
+                    },
+                    "uuid": "996a755b-7e3f-4140-b3b2-09aeb32a21ac"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0318 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP8 on F.Silkscreen",
+                    "pos": {
+                        "x": 63.3,
+                        "y": 99.0
+                    },
+                    "uuid": "63324a18-e865-4c95-946f-6419bdb965a7"
+                },
+                {
+                    "description": "PCB text 'VBAT' on F.Silkscreen",
+                    "pos": {
+                        "x": 62.2,
+                        "y": 97.95
+                    },
+                    "uuid": "996a755b-7e3f-4140-b3b2-09aeb32a21ac"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.1469 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP14",
+                    "pos": {
+                        "x": 67.5,
+                        "y": 101.772
+                    },
+                    "uuid": "0e03567e-1c8d-4a7a-871b-768d6b13360f"
+                },
+                {
+                    "description": "Segment of C21 on F.Silkscreen",
+                    "pos": {
+                        "x": 65.48,
+                        "y": 101.162164
+                    },
+                    "uuid": "78d8af35-5a3b-4be6-b893-3af6104048f5"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0318 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP14",
+                    "pos": {
+                        "x": 67.5,
+                        "y": 101.772
+                    },
+                    "uuid": "0e03567e-1c8d-4a7a-871b-768d6b13360f"
+                },
+                {
+                    "description": "Segment of U2 on F.Silkscreen",
+                    "pos": {
+                        "x": 67.115,
+                        "y": 101.11
+                    },
+                    "uuid": "ed890716-b6ea-4a3b-9e7d-6ad89778e8c0"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP14",
+                    "pos": {
+                        "x": 67.5,
+                        "y": 101.772
+                    },
+                    "uuid": "0e03567e-1c8d-4a7a-871b-768d6b13360f"
+                },
+                {
+                    "description": "Segment of U2 on F.Silkscreen",
+                    "pos": {
+                        "x": 66.39,
+                        "y": 101.11
+                    },
+                    "uuid": "1003ee2b-a30c-4c7e-bb16-b500dca68cfc"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0847 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP11",
+                    "pos": {
+                        "x": 73.52,
+                        "y": 101.012
+                    },
+                    "uuid": "95bfd8dd-fb70-49f9-be27-001050ccde38"
+                },
+                {
+                    "description": "Reference field of TP6",
+                    "pos": {
+                        "x": 73.438,
+                        "y": 102.46
+                    },
+                    "uuid": "9dc1d638-cfca-4b0e-94bf-063e5722f783"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.1348 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP11 on F.Silkscreen",
+                    "pos": {
+                        "x": 73.52,
+                        "y": 102.46
+                    },
+                    "uuid": "8cc546f2-3189-441b-9d81-55ba5c6be746"
+                },
+                {
+                    "description": "Reference field of TP6",
+                    "pos": {
+                        "x": 73.438,
+                        "y": 102.46
+                    },
+                    "uuid": "9dc1d638-cfca-4b0e-94bf-063e5722f783"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0100 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP6 on F.Silkscreen",
+                    "pos": {
+                        "x": 71.99,
+                        "y": 102.46
+                    },
+                    "uuid": "72369534-40e9-4a29-9a0a-20995ed46af1"
+                },
+                {
+                    "description": "Circle of TP11 on F.Silkscreen",
+                    "pos": {
+                        "x": 73.52,
+                        "y": 102.46
+                    },
+                    "uuid": "8cc546f2-3189-441b-9d81-55ba5c6be746"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.1281 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP6 on F.Silkscreen",
+                    "pos": {
+                        "x": 71.99,
+                        "y": 102.46
+                    },
+                    "uuid": "72369534-40e9-4a29-9a0a-20995ed46af1"
+                },
+                {
+                    "description": "Reference field of TP6",
+                    "pos": {
+                        "x": 73.438,
+                        "y": 102.46
+                    },
+                    "uuid": "9dc1d638-cfca-4b0e-94bf-063e5722f783"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0850 mm)",
+            "items": [
+                {
+                    "description": "Segment of C28 on F.Silkscreen",
+                    "pos": {
+                        "x": 71.287164,
+                        "y": 104.585
+                    },
+                    "uuid": "1060b6c7-e81d-42fe-a606-5ddd243b5a79"
+                },
+                {
+                    "description": "Segment of C26 on F.Silkscreen",
+                    "pos": {
+                        "x": 71.459165,
+                        "y": 104.38
+                    },
+                    "uuid": "1e73e6c8-c9cf-4889-8acd-81ccb0136394"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP13 on F.Silkscreen",
+                    "pos": {
+                        "x": 93.0,
+                        "y": 61.6
+                    },
+                    "uuid": "0777e796-cecf-438d-bcd3-bae9234d9f5d"
+                },
+                {
+                    "description": "Reference field of TP12",
+                    "pos": {
+                        "x": 91.2,
+                        "y": 61.648
+                    },
+                    "uuid": "43905675-6f47-4fcf-beed-43c91252d9bf"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP17",
+                    "pos": {
+                        "x": 66.0,
+                        "y": 55.552
+                    },
+                    "uuid": "2a0661b1-c2e9-4239-9dd3-88cabcb7e06d"
+                },
+                {
+                    "description": "Pad [<no net>] of FID4 on F.Cu",
+                    "pos": {
+                        "x": 64.5,
+                        "y": 54.95
+                    },
+                    "uuid": "cbed708e-ce83-4ebf-a676-467c827edf6e"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP5",
+                    "pos": {
+                        "x": 67.2,
+                        "y": 57.552
+                    },
+                    "uuid": "1f6d44d4-13ba-46ff-9d80-6937b73d6e63"
+                },
+                {
+                    "description": "Pad 1 [/MARK2] of TP17 on F.Cu",
+                    "pos": {
+                        "x": 66.0,
+                        "y": 57.0
+                    },
+                    "uuid": "fdb87667-ebdc-4073-9d2c-f59cd4d5a348"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "PCB text 'M2' on F.Silkscreen",
+                    "pos": {
+                        "x": 66.0,
+                        "y": 58.45
+                    },
+                    "uuid": "63baf082-8960-4f4f-acab-b1c537827858"
+                },
+                {
+                    "description": "Pad 1 [GND] of TP5 on F.Cu",
+                    "pos": {
+                        "x": 67.2,
+                        "y": 59.0
+                    },
+                    "uuid": "47d5e026-4648-4209-a0ca-6dff7e8b6781"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP5",
+                    "pos": {
+                        "x": 67.2,
+                        "y": 57.552
+                    },
+                    "uuid": "1f6d44d4-13ba-46ff-9d80-6937b73d6e63"
+                },
+                {
+                    "description": "Pad 1 [/MARK1] of TP16 on F.Cu",
+                    "pos": {
+                        "x": 68.45,
+                        "y": 57.0
+                    },
+                    "uuid": "835ad8ed-1ea4-4d9c-a6bb-e1436e6dc4ee"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP9",
+                    "pos": {
+                        "x": 62.8,
+                        "y": 85.952
+                    },
+                    "uuid": "c8458361-ad0d-4831-939b-1a5097e42e46"
+                },
+                {
+                    "description": "Pad 1 [/VBAT_RAW] of D1 on F.Cu",
+                    "pos": {
+                        "x": 61.8,
+                        "y": 85.75
+                    },
+                    "uuid": "31c69626-7eee-4e7c-bbfa-3f69bc571a7b"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP8",
+                    "pos": {
+                        "x": 63.3,
+                        "y": 97.552
+                    },
+                    "uuid": "5078a132-69d9-42b6-b262-c05c03f28a4a"
+                },
+                {
+                    "description": "Pad 1 [/SW] of L10 on F.Cu",
+                    "pos": {
+                        "x": 64.9,
+                        "y": 98.275
+                    },
+                    "uuid": "dc86e008-57f6-4768-88dc-2f6ade0b2f13"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP14",
+                    "pos": {
+                        "x": 67.5,
+                        "y": 101.772
+                    },
+                    "uuid": "0e03567e-1c8d-4a7a-871b-768d6b13360f"
+                },
+                {
+                    "description": "Pad 7 [/SCL] of U2 on F.Cu",
+                    "pos": {
+                        "x": 68.825,
+                        "y": 100.9625
+                    },
+                    "uuid": "ca8872c9-9b7f-49c4-b743-de1bce0551cc"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP6",
+                    "pos": {
+                        "x": 73.438,
+                        "y": 102.46
+                    },
+                    "uuid": "9dc1d638-cfca-4b0e-94bf-063e5722f783"
+                },
+                {
+                    "description": "Pad 1 [GND] of TP11 on F.Cu",
+                    "pos": {
+                        "x": 73.52,
+                        "y": 102.46
+                    },
+                    "uuid": "408d4d90-b14e-4f10-a2fe-c117dde59da6"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP12",
+                    "pos": {
+                        "x": 91.2,
+                        "y": 61.648
+                    },
+                    "uuid": "43905675-6f47-4fcf-beed-43c91252d9bf"
+                },
+                {
+                    "description": "Pad 1 [/SCL] of TP13 on F.Cu",
+                    "pos": {
+                        "x": 93.0,
+                        "y": 61.6
+                    },
+                    "uuid": "1e28a4cc-0014-4d38-9cf5-0d65ed255278"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        }
+    ]
+}

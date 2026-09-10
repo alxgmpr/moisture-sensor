@@ -1,0 +1,5135 @@
+{
+    "$schema": "https://schemas.kicad.org/drc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-09-09T12:47:25",
+    "ignored_checks": [
+        {
+            "description": "Footprint has no courtyard defined",
+            "key": "missing_courtyard"
+        },
+        {
+            "description": "Track endpoint not centered on via",
+            "key": "track_not_centered_on_via"
+        },
+        {
+            "description": "Tuning profile track geometries",
+            "key": "tuning_profile_track_geometries"
+        },
+        {
+            "description": "Footprint doesn't match symbol's footprint filters",
+            "key": "footprint_filters_mismatch"
+        },
+        {
+            "description": "Footprint component type doesn't match footprint pads",
+            "key": "footprint_type_mismatch"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning",
+        "exclusion"
+    ],
+    "kicad_version": "10.99.0",
+    "schematic_parity": [],
+    "source": "nrf-moisture-sensor.kicad_pcb",
+    "unconnected_items": [],
+    "violations": [
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [/PMIC_INT] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 67.52,
+                        "y": 102.69
+                    },
+                    "uuid": "2728878b-a7cc-4541-829c-f10a89de9e58"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [/PMIC_INT] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 76.19,
+                        "y": 58.54
+                    },
+                    "uuid": "c364e9d7-2e22-4e9e-a106-e1ca54e1f753"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 61.0,
+                        "y": 106.0
+                    },
+                    "uuid": "002e92a4-2027-4029-a483-ba5974eeeb58"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 68.0,
+                        "y": 52.0
+                    },
+                    "uuid": "01d7992f-1852-4f6e-a2e4-4d810704ee0b"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 90.0,
+                        "y": 92.0
+                    },
+                    "uuid": "020a4abc-923f-4369-ac38-80fc6464654e"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 62.0,
+                        "y": 56.0
+                    },
+                    "uuid": "02782117-d7f6-47c3-9ee5-10aac540acd9"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 89.0,
+                        "y": 46.0
+                    },
+                    "uuid": "028ddac9-1dd9-47c0-92a2-03d5760afeab"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 62.0,
+                        "y": 72.0
+                    },
+                    "uuid": "03bd8eaf-619f-4ca4-b4ba-a4a3a1a0fecb"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 83.0,
+                        "y": 106.0
+                    },
+                    "uuid": "0480b270-f85a-491a-afce-eb51a67b7ddd"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 71.0,
+                        "y": 46.0
+                    },
+                    "uuid": "048e5218-c089-4b42-b819-9846b0c60775"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 88.0,
+                        "y": 84.0
+                    },
+                    "uuid": "04e75f4d-0f6a-4f07-b6e5-adae65e51936"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 68.0,
+                        "y": 92.0
+                    },
+                    "uuid": "062ae88b-c9f2-4dd4-9447-96d19c29ef22"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 91.0,
+                        "y": 70.0
+                    },
+                    "uuid": "065f3610-f432-4bc7-b401-950323ee9545"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 84.0,
+                        "y": 76.0
+                    },
+                    "uuid": "073871a4-8857-43d8-9eb9-ed0b6927977e"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 63.0,
+                        "y": 98.0
+                    },
+                    "uuid": "07715b35-12c4-44f3-bd23-110b18ca17de"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 76.0,
+                        "y": 104.0
+                    },
+                    "uuid": "07a8c2dc-e6c5-471a-87e3-233cf7f2b277"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 85.0,
+                        "y": 102.0
+                    },
+                    "uuid": "08d28d90-8fe3-4318-91a0-1b0b2842327b"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 62.0,
+                        "y": 48.0
+                    },
+                    "uuid": "0930a610-7845-4cb9-92a3-6b44eceb6a7a"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 86.0,
+                        "y": 96.0
+                    },
+                    "uuid": "0a5cbf44-880a-4e97-81fd-49217e7507dd"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 76.0,
+                        "y": 72.0
+                    },
+                    "uuid": "0bbe50c7-3aba-40e1-b51e-468b5931ecfa"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 79.0,
+                        "y": 46.0
+                    },
+                    "uuid": "0c34e802-967f-4970-a9c6-5a57534c827c"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 74.0,
+                        "y": 76.0
+                    },
+                    "uuid": "0dafce9f-0f49-4156-a28d-a5f8dbcffbc4"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 69.0,
+                        "y": 62.0
+                    },
+                    "uuid": "0dc8ad67-82c2-45ef-b9cc-98fcbde8505a"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 78.0,
+                        "y": 60.0
+                    },
+                    "uuid": "0e0cbf5f-2f8a-42f0-8f33-96fa4b68f338"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 81.0,
+                        "y": 74.0
+                    },
+                    "uuid": "0e16f139-a3eb-4765-b492-baf91d521264"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 74.0,
+                        "y": 92.0
+                    },
+                    "uuid": "0fcf5de6-cecc-4d99-bc52-996b5a5ef0c4"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 85.0,
+                        "y": 46.0
+                    },
+                    "uuid": "1221d6ea-af85-4689-88ea-35c30fe5b448"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 69.0,
+                        "y": 82.0
+                    },
+                    "uuid": "1259cc54-7a8e-4441-84a4-3a2c7e3bb1e4"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 91.0,
+                        "y": 66.0
+                    },
+                    "uuid": "126511ee-4d2a-4e0c-a7f1-d20ac99fb6c4"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 85.0,
+                        "y": 78.0
+                    },
+                    "uuid": "1305286e-f75a-4ebd-962e-8a5d30940e3e"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 91.0,
+                        "y": 78.0
+                    },
+                    "uuid": "149b505a-7ae2-47ef-ac31-eb3adb5d15db"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 93.0,
+                        "y": 102.0
+                    },
+                    "uuid": "14fe5581-6ca9-4a64-bf48-13ae6b120dca"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 86.0,
+                        "y": 84.0
+                    },
+                    "uuid": "1557bd7e-2f70-4a38-a003-431bd081deb9"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 90.0,
+                        "y": 60.0
+                    },
+                    "uuid": "15b0cd1d-b4b2-46a6-97dc-48ef0e0c2bdb"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 80.0,
+                        "y": 92.0
+                    },
+                    "uuid": "17cf177e-9cb0-430e-a855-96a37474b4dc"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 91.0,
+                        "y": 106.0
+                    },
+                    "uuid": "181f339a-c4b2-400d-81f4-17deedeea0a9"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 82.95,
+                        "y": 46.49
+                    },
+                    "uuid": "186a2586-11d0-4d79-af18-5714afcecd42"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 66.0,
+                        "y": 96.0
+                    },
+                    "uuid": "198c813b-4aac-42e7-98d8-4510345e6071"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 86.46,
+                        "y": 54.87
+                    },
+                    "uuid": "1c651aaf-74aa-47e2-a623-651a2e00f80d"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 63.0,
+                        "y": 102.0
+                    },
+                    "uuid": "1cda76b0-c9e5-43d7-a1f1-f6cc5aa800f1"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 74.0,
+                        "y": 104.0
+                    },
+                    "uuid": "1ce388c7-6a18-4c54-ba4c-1805d16f1fd7"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 84.0,
+                        "y": 92.0
+                    },
+                    "uuid": "1d255c93-d751-42be-a97c-3e836d225a2d"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 76.0,
+                        "y": 68.0
+                    },
+                    "uuid": "1f1b6051-6125-4ccb-b16d-c2d37f6c4faa"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 85.3,
+                        "y": 65.85
+                    },
+                    "uuid": "1fe70c59-e872-4dcf-a7f8-04f003d590ae"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 68.0,
+                        "y": 48.0
+                    },
+                    "uuid": "1ff15eeb-a510-4c23-a1e7-ec79a0e69ac8"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 87.0,
+                        "y": 90.0
+                    },
+                    "uuid": "2117a284-3d72-45db-ade7-6da6e75a61fa"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 61.0,
+                        "y": 98.0
+                    },
+                    "uuid": "212aefc4-ae59-40a0-9e23-e7513bc22617"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 68.0,
+                        "y": 84.0
+                    },
+                    "uuid": "22b87a33-88d5-4436-a3a0-394bfb2bc5ee"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 66.0,
+                        "y": 72.0
+                    },
+                    "uuid": "24eb4a6c-60ef-4fe5-bf30-9a52d8a1c153"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 85.0,
+                        "y": 86.0
+                    },
+                    "uuid": "25bafd0c-5b86-4dbf-bebc-5062dbcbc146"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 79.0,
+                        "y": 78.0
+                    },
+                    "uuid": "2613aa9a-4130-47ec-afd1-5c5be6682004"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 91.0,
+                        "y": 90.0
+                    },
+                    "uuid": "294d45f8-932a-492a-9cbb-b99e7080a57a"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 85.0,
+                        "y": 74.0
+                    },
+                    "uuid": "29d54da3-7e46-41e5-8736-a2876b997ba1"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 85.0,
+                        "y": 70.0
+                    },
+                    "uuid": "2b6b2c46-f90d-476c-a13c-c7057575c8f3"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 83.0,
+                        "y": 70.0
+                    },
+                    "uuid": "2b815eb4-5426-4ed5-9e98-c5d1d38556ad"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 61.0,
+                        "y": 62.0
+                    },
+                    "uuid": "2cfe1333-679f-4b46-bed2-a7a280ce5400"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 78.0,
+                        "y": 72.0
+                    },
+                    "uuid": "2d1ec95a-44d3-43e4-9cc4-89d9341da049"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 87.0,
+                        "y": 86.0
+                    },
+                    "uuid": "2d278a24-30ef-4a1f-8ea8-50c8ec500721"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 61.0,
+                        "y": 54.0
+                    },
+                    "uuid": "2e00b15b-7415-43b0-9406-6ebc183ef18e"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 76.0,
+                        "y": 92.0
+                    },
+                    "uuid": "2e18bf36-4095-4288-8597-4eb28718a0da"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 77.0,
+                        "y": 98.0
+                    },
+                    "uuid": "2f71365a-6511-4e33-aaaa-ace0693933f9"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 63.0,
+                        "y": 62.0
+                    },
+                    "uuid": "2feb5bdf-7f0f-4296-9d09-8bdc4c368d80"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 75.0,
+                        "y": 86.0
+                    },
+                    "uuid": "315c6f10-f8e1-4654-9302-3e3feebfae0a"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 80.0,
+                        "y": 96.0
+                    },
+                    "uuid": "316984a7-82e4-42d0-9e55-5bd50b1017fd"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 89.0,
+                        "y": 94.0
+                    },
+                    "uuid": "31ca6c12-953f-45b7-b3d5-d4fbb27f5b12"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 88.0,
+                        "y": 96.0
+                    },
+                    "uuid": "320c5ad3-400f-4f84-bc7c-1dddb121a7d6"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 92.0,
+                        "y": 96.0
+                    },
+                    "uuid": "32478c2f-0266-4d9d-91b9-ae7d4c033598"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 63.0,
+                        "y": 86.0
+                    },
+                    "uuid": "33bcc2e9-e40b-42cf-933d-02e93e796741"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 78.0,
+                        "y": 96.0
+                    },
+                    "uuid": "3495d1df-683c-4358-9f00-c297de0306db"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 65.0,
+                        "y": 54.0
+                    },
+                    "uuid": "34c9e684-4f22-49e7-8a14-f8a595c1a473"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 73.0,
+                        "y": 106.0
+                    },
+                    "uuid": "34da86a5-fcb7-46ad-a843-801517d5077a"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 67.0,
+                        "y": 62.0
+                    },
+                    "uuid": "34fcab4d-6327-4199-9750-5f7ed0282614"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 80.0,
+                        "y": 68.0
+                    },
+                    "uuid": "3501188d-cef5-42b5-a010-7ffb577214d3"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 75.0,
+                        "y": 82.0
+                    },
+                    "uuid": "356f7b41-6b15-49cf-92c3-3cf49b078328"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 66.0,
+                        "y": 80.0
+                    },
+                    "uuid": "35ddc85f-6f6c-40be-abc5-ab91699ff233"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 79.0,
+                        "y": 66.0
+                    },
+                    "uuid": "38d7db3b-e68b-47ce-8249-ab93ae7950b6"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 67.0,
+                        "y": 86.0
+                    },
+                    "uuid": "39eb3100-bac6-4c83-9eb9-4e6e6eaf75a5"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 87.0,
+                        "y": 74.0
+                    },
+                    "uuid": "3a405108-ab1a-418c-abe3-f5d4bba1a96f"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 81.0,
+                        "y": 78.0
+                    },
+                    "uuid": "3b1ffc70-89ad-4f72-b345-ea88c4e83a2e"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 92.0,
+                        "y": 56.0
+                    },
+                    "uuid": "3bce3e99-045e-4e22-90c9-f394bbabc4df"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 85.0,
+                        "y": 106.0
+                    },
+                    "uuid": "3c9982d5-c358-495b-8f5c-a19ee1f40df0"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 87.0,
+                        "y": 82.0
+                    },
+                    "uuid": "3cd5fb6b-e1ec-42c5-962e-e52997df026c"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 74.0,
+                        "y": 52.0
+                    },
+                    "uuid": "3cdea79b-acd7-4d3d-b7f4-6037e5df069f"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 76.0,
+                        "y": 52.0
+                    },
+                    "uuid": "3dd07f37-f5f2-4729-b614-8aa12f45dc77"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 83.0,
+                        "y": 90.0
+                    },
+                    "uuid": "3de0d7ab-20ea-4ccf-bb9c-1253daf8f077"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 62.0,
+                        "y": 104.0
+                    },
+                    "uuid": "3de62428-f1c6-41d6-b88b-a9370669e7ba"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 63.0,
+                        "y": 70.0
+                    },
+                    "uuid": "3e0946d2-6bbd-4308-a8c9-f058a2994d5b"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 93.0,
+                        "y": 94.0
+                    },
+                    "uuid": "3edf07af-f33f-4514-bcaf-6ad576a0a752"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 74.0,
+                        "y": 60.0
+                    },
+                    "uuid": "3fb68fb1-9be7-4c61-8630-edb99dd549e7"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 69.0,
+                        "y": 90.0
+                    },
+                    "uuid": "3fd4c204-cd97-41da-aa3f-632f4aef14d7"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 87.0,
+                        "y": 78.0
+                    },
+                    "uuid": "411f2fbb-5e08-41cc-925d-774ec782ffbe"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 73.0,
+                        "y": 94.0
+                    },
+                    "uuid": "4267df01-6c73-4bb4-86f7-2204b3e6dd8c"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 93.0,
+                        "y": 74.0
+                    },
+                    "uuid": "44877b3a-4ed5-4c62-b176-aff18258b0a2"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 63.0,
+                        "y": 74.0
+                    },
+                    "uuid": "45ff439d-438c-470b-8001-ce1c629be8ad"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 75.0,
+                        "y": 90.0
+                    },
+                    "uuid": "46ece06f-564d-48f8-a694-1977a86fc2f1"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 87.01,
+                        "y": 50.5
+                    },
+                    "uuid": "472cf3e3-6303-4a1d-93b1-e9fc40aca5ea"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 84.0,
+                        "y": 104.0
+                    },
+                    "uuid": "47389451-81e5-4183-a54b-c49eb9fe2323"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 74.0,
+                        "y": 100.0
+                    },
+                    "uuid": "47a2d6f1-fed8-416c-bc80-a5de3f26a01d"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 76.0,
+                        "y": 88.0
+                    },
+                    "uuid": "484467f1-5717-41ca-aa61-53dc93bec4fc"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 61.0,
+                        "y": 78.0
+                    },
+                    "uuid": "4844a6f2-935f-492e-b8ac-720ec3095a32"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 89.0,
+                        "y": 66.0
+                    },
+                    "uuid": "4a5be17d-f1ce-4e44-a24a-52b73a942a8a"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 65.0,
+                        "y": 46.0
+                    },
+                    "uuid": "4ad2ec0a-1248-4117-8935-7e867b985503"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 79.0,
+                        "y": 62.0
+                    },
+                    "uuid": "4bec2c19-4f96-48a6-8776-a39e6a6ed2a8"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 80.0,
+                        "y": 84.0
+                    },
+                    "uuid": "4c3a24a5-5512-4293-ae8f-4190144b03fa"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 74.0,
+                        "y": 80.0
+                    },
+                    "uuid": "4c69d1bf-03b2-4aca-9aef-53fb573d3aae"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 89.0,
+                        "y": 98.0
+                    },
+                    "uuid": "4e2578a7-41d1-42e1-8bcb-da55993965a6"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 73.0,
+                        "y": 58.0
+                    },
+                    "uuid": "4f8d8db5-3ebe-4165-a019-866f440bfe8c"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 73.93,
+                        "y": 49.49
+                    },
+                    "uuid": "4ffb3291-bafc-48fb-af92-69904c364e03"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 68.0,
+                        "y": 76.0
+                    },
+                    "uuid": "50eacb2b-bc76-444b-ad77-c9c6670be73c"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 90.0,
+                        "y": 52.0
+                    },
+                    "uuid": "514f3105-600e-45c9-9962-95cff84f1fd0"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 72.0,
+                        "y": 96.0
+                    },
+                    "uuid": "5193a40e-3b68-4dfd-a55e-e8094a31e81a"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 63.0,
+                        "y": 90.0
+                    },
+                    "uuid": "51d0777c-bb08-479f-8ea1-1ef4bca90a85"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 84.0,
+                        "y": 88.0
+                    },
+                    "uuid": "52bf8664-d0a1-40fd-a800-c5302743a934"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 66.0,
+                        "y": 76.0
+                    },
+                    "uuid": "52dc64d8-3d01-4566-96d2-aeb71173c707"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 62.0,
+                        "y": 68.0
+                    },
+                    "uuid": "52fa8d70-b56d-4440-bdeb-4c8646a54484"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 75.0,
+                        "y": 62.0
+                    },
+                    "uuid": "534a2120-f074-489e-8e42-aa6577a4fd6a"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 79.0,
+                        "y": 86.0
+                    },
+                    "uuid": "54537fd4-3c4d-406f-93f9-2f0fd3609f4c"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 80.0,
+                        "y": 72.0
+                    },
+                    "uuid": "55d3b091-3d0a-43cd-83db-30ae51c496d8"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 65.0,
+                        "y": 58.0
+                    },
+                    "uuid": "567e2cdf-7568-4db1-9dd9-33128a203031"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 74.0,
+                        "y": 64.0
+                    },
+                    "uuid": "568e6f73-2462-43fa-8183-11b5204d3184"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 79.0,
+                        "y": 74.0
+                    },
+                    "uuid": "56b35427-40e7-4bfa-8e78-54fc24f2b971"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 82.0,
+                        "y": 68.0
+                    },
+                    "uuid": "56f25336-046b-4c5c-bc3a-534f489e164d"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 67.0,
+                        "y": 66.0
+                    },
+                    "uuid": "5748580a-9cfb-4176-ab05-390ad169023f"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 83.0,
+                        "y": 42.0
+                    },
+                    "uuid": "57ae469c-dea6-460f-bd42-c511935f4b4d"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 80.0,
+                        "y": 52.0
+                    },
+                    "uuid": "58850608-3db6-45d6-b6c0-e107dccb7ea9"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 66.0,
+                        "y": 48.0
+                    },
+                    "uuid": "59a448ba-d2bb-4273-a681-b8a3a6482b88"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 66.0,
+                        "y": 64.0
+                    },
+                    "uuid": "59b977e8-95a3-46ab-84ee-a046320bd1ee"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 89.0,
+                        "y": 78.0
+                    },
+                    "uuid": "5a2c8399-43fc-4641-a78a-ff1d54fc1d62"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 71.0,
+                        "y": 58.0
+                    },
+                    "uuid": "5b7676f9-0c44-47c9-bf4c-f12ef6a319ab"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 80.0,
+                        "y": 100.0
+                    },
+                    "uuid": "5c643f1a-6dda-47fa-aab8-424732aaac20"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 72.0,
+                        "y": 92.0
+                    },
+                    "uuid": "5c8b5865-e51c-4cd1-b2ee-5ca225f109bb"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 82.0,
+                        "y": 88.0
+                    },
+                    "uuid": "5d434430-cd1f-4705-9901-a67de07ef5f3"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 76.0,
+                        "y": 64.0
+                    },
+                    "uuid": "5de9867a-eb1d-478f-bb39-b9263f685001"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 91.0,
+                        "y": 62.0
+                    },
+                    "uuid": "5ef8ca0e-a29f-49ee-8204-841bd3f72836"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 85.0,
+                        "y": 98.0
+                    },
+                    "uuid": "6067726f-1d45-4d15-8ad3-f2e6a881229e"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 89.0,
+                        "y": 90.0
+                    },
+                    "uuid": "610989ac-2154-4757-bc98-f7fa9efcf52e"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 88.0,
+                        "y": 64.0
+                    },
+                    "uuid": "6120136d-8bed-4b47-bc88-7c02e09a76f1"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 68.0,
+                        "y": 64.0
+                    },
+                    "uuid": "624564fe-b090-49f4-a1f4-31aa066d23e5"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 76.0,
+                        "y": 80.0
+                    },
+                    "uuid": "62943048-f99a-4b87-a3c2-7d76d302fc6f"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 74.0,
+                        "y": 88.0
+                    },
+                    "uuid": "62e695d4-deeb-4fa1-a0f1-600f61aafda8"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 65.0,
+                        "y": 62.0
+                    },
+                    "uuid": "632be585-cbbc-4c91-b06b-5a11b8ec22f8"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 84.0,
+                        "y": 72.0
+                    },
+                    "uuid": "6351ec50-15e4-4685-81e2-7b0d763eb58a"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 67.0,
+                        "y": 54.0
+                    },
+                    "uuid": "63ba83b1-3bd8-4f51-9665-617e56627a2f"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 93.0,
+                        "y": 66.0
+                    },
+                    "uuid": "63ddecce-a88f-4734-b54e-dbb9db88fc97"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 78.0,
+                        "y": 84.0
+                    },
+                    "uuid": "63ea3553-6811-4e1e-b4a0-35bc28afd11b"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 88.0,
+                        "y": 80.0
+                    },
+                    "uuid": "63fc9646-4fd6-426b-8987-7f122649d4ac"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 64.0,
+                        "y": 96.0
+                    },
+                    "uuid": "6406619d-6749-409b-b7f9-42c3adff86f9"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 86.0,
+                        "y": 44.0
+                    },
+                    "uuid": "64a23478-431f-4878-96eb-796ccd72efad"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 76.0,
+                        "y": 84.0
+                    },
+                    "uuid": "6565da7f-870a-46e5-87de-bc511d62d418"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 81.0,
+                        "y": 102.0
+                    },
+                    "uuid": "6617e4ab-bf9f-4404-a21b-71e4de6ff414"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 75.0,
+                        "y": 70.0
+                    },
+                    "uuid": "66e29d42-c231-46d4-997a-f455a3083fbd"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 93.0,
+                        "y": 78.0
+                    },
+                    "uuid": "68632aaf-b4f5-4842-aef2-7a9fda951756"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 88.0,
+                        "y": 72.0
+                    },
+                    "uuid": "698d3783-3d49-4fd3-b9ed-b7f3ab1dea9d"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 86.0,
+                        "y": 104.0
+                    },
+                    "uuid": "69c524f2-f499-479d-b6f2-99ed7933fef1"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 79.0,
+                        "y": 94.0
+                    },
+                    "uuid": "69cd4483-63ea-43b3-b1f3-db2fb2802a6e"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 62.0,
+                        "y": 64.0
+                    },
+                    "uuid": "6a743864-a23e-48ea-b7fe-7fd292059ba1"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 89.0,
+                        "y": 74.0
+                    },
+                    "uuid": "6b078ea5-6135-42d3-857c-6a435648624f"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 67.0,
+                        "y": 94.0
+                    },
+                    "uuid": "6bc862b0-2468-4b67-85c2-77b3c1eefbde"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 63.0,
+                        "y": 66.0
+                    },
+                    "uuid": "6c01d9af-07a3-4ef1-8c92-48ce5ba0fdda"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 66.0,
+                        "y": 68.0
+                    },
+                    "uuid": "6d1d4f2d-943a-435a-bec2-2a4968ad3102"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 78.0,
+                        "y": 64.0
+                    },
+                    "uuid": "6d25b7bb-7dca-4009-92cc-1c1fe11b36f4"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 61.0,
+                        "y": 90.0
+                    },
+                    "uuid": "6d79e361-bc00-46a9-a57b-5d04d8a7f8e1"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 89.79,
+                        "y": 58.17
+                    },
+                    "uuid": "6e11719e-c4ad-41c6-a54c-33c5ba27156a"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 80.0,
+                        "y": 104.0
+                    },
+                    "uuid": "6eb79d3c-8b8f-4350-8396-fbe4851ecf80"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 75.0,
+                        "y": 102.0
+                    },
+                    "uuid": "6f8d522c-ea93-45bb-94c5-e81d0c0c5320"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 87.0,
+                        "y": 98.0
+                    },
+                    "uuid": "717e3727-84bf-46d7-acb8-0fec719cfff0"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 75.0,
+                        "y": 58.0
+                    },
+                    "uuid": "72ae1694-2abd-432d-a381-67f2772ff308"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 72.0,
+                        "y": 72.0
+                    },
+                    "uuid": "72b93a71-968a-4b7c-a2d9-ee34ccdbe6c3"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 61.0,
+                        "y": 74.0
+                    },
+                    "uuid": "730ecb5f-0e1f-49d4-94bd-7e4e382e2546"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 93.0,
+                        "y": 58.0
+                    },
+                    "uuid": "739eedee-d494-468d-867f-ac3511b6e4c5"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 65.0,
+                        "y": 94.0
+                    },
+                    "uuid": "73e71c73-d5af-4398-bf64-cfd24e00aa87"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 68.0,
+                        "y": 104.0
+                    },
+                    "uuid": "749ad765-a743-4382-87c5-905c154eca7e"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 84.0,
+                        "y": 100.0
+                    },
+                    "uuid": "749de12e-3ef6-473f-a22d-cf751302be75"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 77.0,
+                        "y": 106.0
+                    },
+                    "uuid": "7537d07c-e821-4278-80ba-dadb92a8653c"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 87.0,
+                        "y": 66.0
+                    },
+                    "uuid": "7562c3ec-dee1-4230-b9f7-797f86b35062"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 84.0,
+                        "y": 56.0
+                    },
+                    "uuid": "75b6a627-f231-420d-bf8c-a3e04e19ae36"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 77.0,
+                        "y": 50.0
+                    },
+                    "uuid": "766b8cd2-4874-484d-b0f5-d63c954ecfa9"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 72.0,
+                        "y": 60.0
+                    },
+                    "uuid": "76bfb889-c9ad-4c8e-ba71-f80ddb140c98"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 72.0,
+                        "y": 76.0
+                    },
+                    "uuid": "77d2d39a-5af5-4a43-854e-193d5710d4ac"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 81.0,
+                        "y": 82.0
+                    },
+                    "uuid": "782befb6-5b40-474b-852c-99b8f8490e8e"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 63.0,
+                        "y": 58.0
+                    },
+                    "uuid": "78833e7b-b153-42c6-ac2d-ab413710f37c"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 92.0,
+                        "y": 72.0
+                    },
+                    "uuid": "793ec52e-f47b-4822-ba7b-ad9b994ca771"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 65.0,
+                        "y": 86.0
+                    },
+                    "uuid": "7956e419-07c3-4b3f-a611-f555afb08cf3"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 93.0,
+                        "y": 98.0
+                    },
+                    "uuid": "7cba5ac7-a084-49ee-b79f-5a9df1b52f48"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 65.0,
+                        "y": 90.0
+                    },
+                    "uuid": "7cd943dc-cb3a-49eb-821f-e1a97847f0c7"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 67.0,
+                        "y": 50.0
+                    },
+                    "uuid": "81154393-724a-4aba-9987-765e1f2b1791"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 67.0,
+                        "y": 106.0
+                    },
+                    "uuid": "8189e467-1535-42e6-9ac0-92d1f0dc4784"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 91.0,
+                        "y": 102.0
+                    },
+                    "uuid": "81bf46b7-bd07-4e1c-bc58-f51b3794f640"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 64.0,
+                        "y": 76.0
+                    },
+                    "uuid": "81df3f46-1873-4ca4-819c-540e2bb5c538"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 84.0,
+                        "y": 96.0
+                    },
+                    "uuid": "8204d0c2-e446-4b33-aef4-2c230e415d15"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 89.0,
+                        "y": 102.0
+                    },
+                    "uuid": "828e0b04-f293-423c-83c3-c78e73a5d176"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 85.0,
+                        "y": 42.0
+                    },
+                    "uuid": "830a041f-765d-446d-ac30-e0910b6daff0"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 69.0,
+                        "y": 54.0
+                    },
+                    "uuid": "83629680-e426-483d-b44d-ee806e704d85"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 72.0,
+                        "y": 64.0
+                    },
+                    "uuid": "83afedb7-8360-4f66-9e69-58d032b4f68b"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 76.0,
+                        "y": 96.0
+                    },
+                    "uuid": "83c466b7-6480-4f46-9616-32fbf8e4883b"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 69.0,
+                        "y": 74.0
+                    },
+                    "uuid": "83dd4a66-8732-493d-8d6f-813de0ab3909"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 88.66,
+                        "y": 57.07
+                    },
+                    "uuid": "857baaa6-0d2f-40ec-b4dc-cdf26d8de18d"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 73.0,
+                        "y": 66.0
+                    },
+                    "uuid": "86c74cfd-0458-4199-ba8b-130b2fb4f41f"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Annular width (rule 'Fab minimum annular ring' min annular width 0.1300 mm; actual 0.1000 mm)",
+            "items": [
+                {
+                    "description": "Via [GND] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 86.0,
+                        "y": 76.0
+                    },
+                    "uuid": "871c0dff-e2b5-4069-8b06-2039f2ce2868"
+                }
+            ],
+            "severity": "error",
+            "type": "annular_width"
+        },
+        {
+            "description": "Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.2400 mm)",
+            "items": [
+                {
+                    "description": "Track [/PMIC_INT] on B.Cu, length 1.7700 mm",
+                    "pos": {
+                        "x": 69.29,
+                        "y": 102.69
+                    },
+                    "uuid": "405a1fe4-b761-4205-8737-eda755cd271a"
+                },
+                {
+                    "description": "Via [/SDA] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 68.175,
+                        "y": 102.2
+                    },
+                    "uuid": "864d9beb-9388-432c-8e09-cad2270010da"
+                }
+            ],
+            "severity": "error",
+            "type": "hole_clearance"
+        },
+        {
+            "description": "Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.2270 mm)",
+            "items": [
+                {
+                    "description": "Track [/PMIC_INT] on B.Cu, length 37.2300 mm",
+                    "pos": {
+                        "x": 70.933,
+                        "y": 63.817
+                    },
+                    "uuid": "15c9c91f-797f-4003-a180-edd1620084c1"
+                },
+                {
+                    "description": "Via [/SWD_RST] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 71.41,
+                        "y": 99.325
+                    },
+                    "uuid": "c5394fc6-1fc8-4825-8272-8e86bc314799"
+                }
+            ],
+            "severity": "error",
+            "type": "hole_clearance"
+        },
+        {
+            "description": "Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.2270 mm)",
+            "items": [
+                {
+                    "description": "Track [+3V3_FDC_SW] on F.Cu, length 2.4645 mm",
+                    "pos": {
+                        "x": 71.987,
+                        "y": 101.5505
+                    },
+                    "uuid": "6d6318fe-e734-4090-90c9-93d12d35f83a"
+                },
+                {
+                    "description": "Via [/SWD_RST] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 71.41,
+                        "y": 99.325
+                    },
+                    "uuid": "c5394fc6-1fc8-4825-8272-8e86bc314799"
+                }
+            ],
+            "severity": "error",
+            "type": "hole_clearance"
+        },
+        {
+            "description": "Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.2270 mm)",
+            "items": [
+                {
+                    "description": "Track [+3V3_FDC_SW] on F.Cu, length 1.5005 mm",
+                    "pos": {
+                        "x": 70.926002,
+                        "y": 98.025
+                    },
+                    "uuid": "14600151-8774-47af-9c22-9c3bc00152d4"
+                },
+                {
+                    "description": "Via [/SWD_RST] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 71.41,
+                        "y": 99.325
+                    },
+                    "uuid": "c5394fc6-1fc8-4825-8272-8e86bc314799"
+                }
+            ],
+            "severity": "error",
+            "type": "hole_clearance"
+        },
+        {
+            "description": "Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.2270 mm)",
+            "items": [
+                {
+                    "description": "Track [/SDA] on B.Cu, length 0.7706 mm",
+                    "pos": {
+                        "x": 68.252,
+                        "y": 102.277
+                    },
+                    "uuid": "6acb71de-463d-4268-b0c1-045ba7a99a71"
+                },
+                {
+                    "description": "Via [/SCL] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 68.825,
+                        "y": 101.8
+                    },
+                    "uuid": "321faa43-b269-43be-9a8c-b75c0b145d71"
+                }
+            ],
+            "severity": "error",
+            "type": "hole_clearance"
+        },
+        {
+            "description": "Hole clearance violation (board setup constraints hole clearance 0.2500 mm; actual 0.2270 mm)",
+            "items": [
+                {
+                    "description": "Track [/SDA] on B.Cu, length 1.9536 mm",
+                    "pos": {
+                        "x": 69.02258,
+                        "y": 102.277
+                    },
+                    "uuid": "258041ba-faff-46db-8694-d5ca2b2b83a9"
+                },
+                {
+                    "description": "Via [/SCL] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 68.825,
+                        "y": 101.8
+                    },
+                    "uuid": "321faa43-b269-43be-9a8c-b75c0b145d71"
+                }
+            ],
+            "severity": "error",
+            "type": "hole_clearance"
+        },
+        {
+            "description": "Track has unconnected end",
+            "items": [
+                {
+                    "description": "Track [+3V3] on F.Cu, length 0.6650 mm",
+                    "pos": {
+                        "x": 84.0,
+                        "y": 62.76
+                    },
+                    "uuid": "0c40ca7d-f19f-4efb-810e-dc25f37043fa"
+                }
+            ],
+            "severity": "warning",
+            "type": "track_dangling"
+        },
+        {
+            "description": "Via is not connected or connected on only one layer",
+            "items": [
+                {
+                    "description": "Via [/NRESET] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 82.4,
+                        "y": 47.45
+                    },
+                    "uuid": "4f0526a3-a563-4d43-aa4e-c79a9a6eb9a3"
+                }
+            ],
+            "severity": "warning",
+            "type": "via_dangling"
+        },
+        {
+            "description": "Silkscreen clipped by board edge (board setup constraints silk clearance 0.1500 mm; actual 0.0706 mm)",
+            "items": [
+                {
+                    "description": "Polygon on Edge.Cuts",
+                    "pos": {
+                        "x": 92.9583,
+                        "y": 107.7544
+                    },
+                    "uuid": "5e1ea7b8-e6dc-436a-a8f4-99a5eb1ff7e4"
+                },
+                {
+                    "description": "Reference field of TP13",
+                    "pos": {
+                        "x": 93.0,
+                        "y": 63.048
+                    },
+                    "uuid": "11211aed-117e-48f5-ab42-985e9ab4f31a"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_edge_clearance"
+        },
+        {
+            "description": "Footprint 'C_0402_1005Metric' does not match copy in library 'Capacitor_SMD'",
+            "items": [
+                {
+                    "description": "Footprint C13",
+                    "pos": {
+                        "x": 83.43,
+                        "y": 47.45
+                    },
+                    "uuid": "317d8142-81f4-4a8e-89dd-31dc26a41c34"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'C_0402_1005Metric' does not match copy in library 'Capacitor_SMD'",
+            "items": [
+                {
+                    "description": "Footprint C25",
+                    "pos": {
+                        "x": 69.6,
+                        "y": 95.45
+                    },
+                    "uuid": "62ec361d-694c-43b9-b182-36565372d608"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'C_0402_1005Metric_Pad0.74x0.62mm_HandSolder' does not match copy in library 'Capacitor_SMD'",
+            "items": [
+                {
+                    "description": "Footprint C26",
+                    "pos": {
+                        "x": 71.575,
+                        "y": 102.53
+                    },
+                    "uuid": "7f85b84c-a1e5-482a-baec-404819954834"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'C_0402_1005Metric' does not match copy in library 'Capacitor_SMD'",
+            "items": [
+                {
+                    "description": "Footprint C21",
+                    "pos": {
+                        "x": 65.12,
+                        "y": 101.27
+                    },
+                    "uuid": "8e8cf1bd-663c-42bb-a9b2-308a0d896d31"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'QFN-16-1EP_4x4mm_P0.65mm_EP2.7x2.7mm_ThermalVias' does not match copy in library 'Package_DFN_QFN'",
+            "items": [
+                {
+                    "description": "Footprint U2",
+                    "pos": {
+                        "x": 68.5,
+                        "y": 99.0
+                    },
+                    "uuid": "ae90bc02-0545-4bc9-b2a8-ec625e0527fb"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'C_0402_1005Metric' does not match copy in library 'Capacitor_SMD'",
+            "items": [
+                {
+                    "description": "Footprint C27",
+                    "pos": {
+                        "x": 101.38,
+                        "y": 60.6
+                    },
+                    "uuid": "af9651cf-0380-49ba-87ad-4c96462fcbad"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'C_0402_1005Metric' does not match copy in library 'Capacitor_SMD'",
+            "items": [
+                {
+                    "description": "Footprint C22",
+                    "pos": {
+                        "x": 63.9,
+                        "y": 101.26
+                    },
+                    "uuid": "d654f81e-27b8-4fce-8668-8c3963d58b10"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'C_0402_1005Metric' does not match copy in library 'Capacitor_SMD'",
+            "items": [
+                {
+                    "description": "Footprint C24",
+                    "pos": {
+                        "x": 68.6,
+                        "y": 95.45
+                    },
+                    "uuid": "e0b51144-bc7c-4ea7-b679-ea0d16eb1e75"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'Sensirion_DFN-4_1.5x1.5mm_P0.8mm_SHT4x_NoCentralPad' does not match copy in library 'Sensor_Humidity'",
+            "items": [
+                {
+                    "description": "Footprint U4",
+                    "pos": {
+                        "x": 99.7,
+                        "y": 60.6
+                    },
+                    "uuid": "f660d59c-b71d-49a0-b6bb-67ab2a0d06e9"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'C_0402_1005Metric' does not match copy in library 'Capacitor_SMD'",
+            "items": [
+                {
+                    "description": "Footprint C23",
+                    "pos": {
+                        "x": 67.6,
+                        "y": 95.45
+                    },
+                    "uuid": "fb82728e-4410-4d52-86d7-51e88b9ff59d"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0888 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP5",
+                    "pos": {
+                        "x": 67.2,
+                        "y": 57.552
+                    },
+                    "uuid": "1f6d44d4-13ba-46ff-9d80-6937b73d6e63"
+                },
+                {
+                    "description": "PCB text 'M2' on F.Silkscreen",
+                    "pos": {
+                        "x": 66.0,
+                        "y": 58.45
+                    },
+                    "uuid": "63baf082-8960-4f4f-acab-b1c537827858"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP5 on F.Silkscreen",
+                    "pos": {
+                        "x": 67.2,
+                        "y": 59.0
+                    },
+                    "uuid": "60bc7335-0750-41a8-8e9c-b4e6d8326732"
+                },
+                {
+                    "description": "PCB text 'M2' on F.Silkscreen",
+                    "pos": {
+                        "x": 66.0,
+                        "y": 58.45
+                    },
+                    "uuid": "63baf082-8960-4f4f-acab-b1c537827858"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP5 on F.Silkscreen",
+                    "pos": {
+                        "x": 67.2,
+                        "y": 59.0
+                    },
+                    "uuid": "60bc7335-0750-41a8-8e9c-b4e6d8326732"
+                },
+                {
+                    "description": "PCB text 'M1' on F.Silkscreen",
+                    "pos": {
+                        "x": 68.45,
+                        "y": 58.45
+                    },
+                    "uuid": "fb012eef-1b0e-4806-839a-27a895494c98"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0125 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP5",
+                    "pos": {
+                        "x": 67.2,
+                        "y": 57.552
+                    },
+                    "uuid": "1f6d44d4-13ba-46ff-9d80-6937b73d6e63"
+                },
+                {
+                    "description": "PCB text 'M1' on F.Silkscreen",
+                    "pos": {
+                        "x": 68.45,
+                        "y": 58.45
+                    },
+                    "uuid": "fb012eef-1b0e-4806-839a-27a895494c98"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0848 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP17",
+                    "pos": {
+                        "x": 77.96,
+                        "y": 53.702
+                    },
+                    "uuid": "2a0661b1-c2e9-4239-9dd3-88cabcb7e06d"
+                },
+                {
+                    "description": "Reference field of TP16",
+                    "pos": {
+                        "x": 79.29,
+                        "y": 53.702
+                    },
+                    "uuid": "a964151a-2fd2-41d1-a50d-54020a180ff8"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP17 on F.Silkscreen",
+                    "pos": {
+                        "x": 77.96,
+                        "y": 55.15
+                    },
+                    "uuid": "560cf238-374b-4889-90f8-b53189eb756e"
+                },
+                {
+                    "description": "Circle of TP16 on F.Silkscreen",
+                    "pos": {
+                        "x": 79.29,
+                        "y": 55.15
+                    },
+                    "uuid": "adc0c58b-c37e-4067-8a3b-ada8bb56d748"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0912 mm)",
+            "items": [
+                {
+                    "description": "Segment of C3 on F.Silkscreen",
+                    "pos": {
+                        "x": 73.14058,
+                        "y": 54.74
+                    },
+                    "uuid": "7e70e7fa-b113-4fae-80bc-5ebd939ec2a7"
+                },
+                {
+                    "description": "Reference field of TP4",
+                    "pos": {
+                        "x": 73.01,
+                        "y": 55.162
+                    },
+                    "uuid": "9d778ddd-52e3-4273-897e-7513582105a4"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.1163 mm)",
+            "items": [
+                {
+                    "description": "Segment of C3 on F.Silkscreen",
+                    "pos": {
+                        "x": 73.14058,
+                        "y": 55.76
+                    },
+                    "uuid": "8093ad99-1613-4e61-bd1c-34bd66461700"
+                },
+                {
+                    "description": "Reference field of TP4",
+                    "pos": {
+                        "x": 73.01,
+                        "y": 55.162
+                    },
+                    "uuid": "9d778ddd-52e3-4273-897e-7513582105a4"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0458 mm)",
+            "items": [
+                {
+                    "description": "PCB text 'GND' on F.Silkscreen",
+                    "pos": {
+                        "x": 71.575,
+                        "y": 56.55
+                    },
+                    "uuid": "3bd5d47e-29c1-446e-81ef-0e95221ad77c"
+                },
+                {
+                    "description": "Circle of TP4 on F.Silkscreen",
+                    "pos": {
+                        "x": 73.01,
+                        "y": 56.61
+                    },
+                    "uuid": "484f4384-fdc0-449b-9551-239e74ac770f"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0900 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP4 on F.Silkscreen",
+                    "pos": {
+                        "x": 73.01,
+                        "y": 56.61
+                    },
+                    "uuid": "484f4384-fdc0-449b-9551-239e74ac770f"
+                },
+                {
+                    "description": "Segment of C3 on F.Silkscreen",
+                    "pos": {
+                        "x": 73.14058,
+                        "y": 55.76
+                    },
+                    "uuid": "8093ad99-1613-4e61-bd1c-34bd66461700"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Segment of BT1 on F.Silkscreen",
+                    "pos": {
+                        "x": 62.5,
+                        "y": 86.1
+                    },
+                    "uuid": "831623e4-19a7-4b64-8e74-f6b4fe096ba5"
+                },
+                {
+                    "description": "Reference field of TP9",
+                    "pos": {
+                        "x": 62.8,
+                        "y": 85.952
+                    },
+                    "uuid": "c8458361-ad0d-4831-939b-1a5097e42e46"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.1421 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP8",
+                    "pos": {
+                        "x": 63.32,
+                        "y": 97.552
+                    },
+                    "uuid": "5078a132-69d9-42b6-b262-c05c03f28a4a"
+                },
+                {
+                    "description": "PCB text 'VBAT' on F.Silkscreen",
+                    "pos": {
+                        "x": 62.2,
+                        "y": 97.95
+                    },
+                    "uuid": "996a755b-7e3f-4140-b3b2-09aeb32a21ac"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0420 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP8 on F.Silkscreen",
+                    "pos": {
+                        "x": 63.32,
+                        "y": 99.0
+                    },
+                    "uuid": "63324a18-e865-4c95-946f-6419bdb965a7"
+                },
+                {
+                    "description": "PCB text 'VBAT' on F.Silkscreen",
+                    "pos": {
+                        "x": 62.2,
+                        "y": 97.95
+                    },
+                    "uuid": "996a755b-7e3f-4140-b3b2-09aeb32a21ac"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.1469 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP14",
+                    "pos": {
+                        "x": 67.5,
+                        "y": 101.772
+                    },
+                    "uuid": "0e03567e-1c8d-4a7a-871b-768d6b13360f"
+                },
+                {
+                    "description": "Segment of C21 on F.Silkscreen",
+                    "pos": {
+                        "x": 65.48,
+                        "y": 101.162164
+                    },
+                    "uuid": "78d8af35-5a3b-4be6-b893-3af6104048f5"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP2",
+                    "pos": {
+                        "x": 71.48,
+                        "y": 111.102
+                    },
+                    "uuid": "4e64a851-08fb-426d-8e99-3c190f22c5c3"
+                },
+                {
+                    "description": "Reference field of TP1",
+                    "pos": {
+                        "x": 70.14,
+                        "y": 111.112
+                    },
+                    "uuid": "77bff84d-143d-46e4-b3d1-ed1d87b59c51"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Segment of R30 on F.Silkscreen",
+                    "pos": {
+                        "x": 69.775,
+                        "y": 111.223641
+                    },
+                    "uuid": "4cf22053-7a75-4788-b334-cb3f1f80c612"
+                },
+                {
+                    "description": "Reference field of TP1",
+                    "pos": {
+                        "x": 70.14,
+                        "y": 111.112
+                    },
+                    "uuid": "77bff84d-143d-46e4-b3d1-ed1d87b59c51"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP2 on F.Silkscreen",
+                    "pos": {
+                        "x": 71.48,
+                        "y": 112.55
+                    },
+                    "uuid": "a1c57c63-739a-4974-a860-fde92c0c5596"
+                },
+                {
+                    "description": "Circle of TP1 on F.Silkscreen",
+                    "pos": {
+                        "x": 70.14,
+                        "y": 112.56
+                    },
+                    "uuid": "c2bc67b2-d40c-4a3b-b5ae-4422c6933e44"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.1410 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP1",
+                    "pos": {
+                        "x": 70.14,
+                        "y": 111.112
+                    },
+                    "uuid": "77bff84d-143d-46e4-b3d1-ed1d87b59c51"
+                },
+                {
+                    "description": "Segment of R30 on F.Silkscreen",
+                    "pos": {
+                        "x": 70.535,
+                        "y": 111.223641
+                    },
+                    "uuid": "ee50bbb1-b8ef-41e1-867b-66b72323d256"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP2",
+                    "pos": {
+                        "x": 71.48,
+                        "y": 111.102
+                    },
+                    "uuid": "4e64a851-08fb-426d-8e99-3c190f22c5c3"
+                },
+                {
+                    "description": "Segment of R30 on F.Silkscreen",
+                    "pos": {
+                        "x": 70.535,
+                        "y": 111.223641
+                    },
+                    "uuid": "ee50bbb1-b8ef-41e1-867b-66b72323d256"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0892 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP1",
+                    "pos": {
+                        "x": 70.14,
+                        "y": 111.112
+                    },
+                    "uuid": "77bff84d-143d-46e4-b3d1-ed1d87b59c51"
+                },
+                {
+                    "description": "Segment of R31 on F.Silkscreen",
+                    "pos": {
+                        "x": 71.025,
+                        "y": 111.223641
+                    },
+                    "uuid": "a0264577-596d-49f5-a911-60ea4e294293"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP14",
+                    "pos": {
+                        "x": 67.5,
+                        "y": 101.772
+                    },
+                    "uuid": "0e03567e-1c8d-4a7a-871b-768d6b13360f"
+                },
+                {
+                    "description": "Segment of U2 on F.Silkscreen",
+                    "pos": {
+                        "x": 67.115,
+                        "y": 101.11
+                    },
+                    "uuid": "ed890716-b6ea-4a3b-9e7d-6ad89778e8c0"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP14",
+                    "pos": {
+                        "x": 67.5,
+                        "y": 101.772
+                    },
+                    "uuid": "0e03567e-1c8d-4a7a-871b-768d6b13360f"
+                },
+                {
+                    "description": "Segment of U2 on F.Silkscreen",
+                    "pos": {
+                        "x": 66.39,
+                        "y": 101.11
+                    },
+                    "uuid": "1003ee2b-a30c-4c7e-bb16-b500dca68cfc"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP11",
+                    "pos": {
+                        "x": 73.4,
+                        "y": 99.992
+                    },
+                    "uuid": "95bfd8dd-fb70-49f9-be27-001050ccde38"
+                },
+                {
+                    "description": "Reference field of TP6",
+                    "pos": {
+                        "x": 73.418,
+                        "y": 101.44
+                    },
+                    "uuid": "9dc1d638-cfca-4b0e-94bf-063e5722f783"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP11 on F.Silkscreen",
+                    "pos": {
+                        "x": 73.4,
+                        "y": 101.44
+                    },
+                    "uuid": "8cc546f2-3189-441b-9d81-55ba5c6be746"
+                },
+                {
+                    "description": "Reference field of TP6",
+                    "pos": {
+                        "x": 73.418,
+                        "y": 101.44
+                    },
+                    "uuid": "9dc1d638-cfca-4b0e-94bf-063e5722f783"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.1278 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP6 on F.Silkscreen",
+                    "pos": {
+                        "x": 71.97,
+                        "y": 101.44
+                    },
+                    "uuid": "72369534-40e9-4a29-9a0a-20995ed46af1"
+                },
+                {
+                    "description": "Reference field of TP6",
+                    "pos": {
+                        "x": 73.418,
+                        "y": 101.44
+                    },
+                    "uuid": "9dc1d638-cfca-4b0e-94bf-063e5722f783"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP6 on F.Silkscreen",
+                    "pos": {
+                        "x": 71.97,
+                        "y": 101.44
+                    },
+                    "uuid": "72369534-40e9-4a29-9a0a-20995ed46af1"
+                },
+                {
+                    "description": "Circle of TP11 on F.Silkscreen",
+                    "pos": {
+                        "x": 73.4,
+                        "y": 101.44
+                    },
+                    "uuid": "8cc546f2-3189-441b-9d81-55ba5c6be746"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0216 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP6 on F.Silkscreen",
+                    "pos": {
+                        "x": 71.97,
+                        "y": 101.44
+                    },
+                    "uuid": "72369534-40e9-4a29-9a0a-20995ed46af1"
+                },
+                {
+                    "description": "Segment of C26 on F.Silkscreen",
+                    "pos": {
+                        "x": 71.459166,
+                        "y": 102.17
+                    },
+                    "uuid": "959ab331-d186-4cc8-a6a2-bbbf11ad587b"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0850 mm)",
+            "items": [
+                {
+                    "description": "Segment of C28 on F.Silkscreen",
+                    "pos": {
+                        "x": 71.287164,
+                        "y": 103.095
+                    },
+                    "uuid": "1060b6c7-e81d-42fe-a606-5ddd243b5a79"
+                },
+                {
+                    "description": "Segment of C26 on F.Silkscreen",
+                    "pos": {
+                        "x": 71.459165,
+                        "y": 102.89
+                    },
+                    "uuid": "1e73e6c8-c9cf-4889-8acd-81ccb0136394"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP2",
+                    "pos": {
+                        "x": 71.48,
+                        "y": 111.102
+                    },
+                    "uuid": "4e64a851-08fb-426d-8e99-3c190f22c5c3"
+                },
+                {
+                    "description": "Reference field of TP3",
+                    "pos": {
+                        "x": 72.85,
+                        "y": 111.102
+                    },
+                    "uuid": "5d178727-3ac2-4f81-859e-cb8180e9f58a"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP2",
+                    "pos": {
+                        "x": 71.48,
+                        "y": 111.102
+                    },
+                    "uuid": "4e64a851-08fb-426d-8e99-3c190f22c5c3"
+                },
+                {
+                    "description": "Segment of R31 on F.Silkscreen",
+                    "pos": {
+                        "x": 71.025,
+                        "y": 111.223641
+                    },
+                    "uuid": "a0264577-596d-49f5-a911-60ea4e294293"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.1462 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP2",
+                    "pos": {
+                        "x": 71.48,
+                        "y": 111.102
+                    },
+                    "uuid": "4e64a851-08fb-426d-8e99-3c190f22c5c3"
+                },
+                {
+                    "description": "Segment of R31 on F.Silkscreen",
+                    "pos": {
+                        "x": 71.785,
+                        "y": 111.223641
+                    },
+                    "uuid": "a4e6eafe-0e1b-4337-a24d-42ff5fc170bc"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP3 on F.Silkscreen",
+                    "pos": {
+                        "x": 72.85,
+                        "y": 112.55
+                    },
+                    "uuid": "3f0175aa-f1ca-4662-a36e-40f77a309a58"
+                },
+                {
+                    "description": "Circle of TP2 on F.Silkscreen",
+                    "pos": {
+                        "x": 71.48,
+                        "y": 112.55
+                    },
+                    "uuid": "a1c57c63-739a-4974-a860-fde92c0c5596"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP3",
+                    "pos": {
+                        "x": 72.85,
+                        "y": 111.102
+                    },
+                    "uuid": "5d178727-3ac2-4f81-859e-cb8180e9f58a"
+                },
+                {
+                    "description": "Segment of R31 on F.Silkscreen",
+                    "pos": {
+                        "x": 71.785,
+                        "y": 111.223641
+                    },
+                    "uuid": "a4e6eafe-0e1b-4337-a24d-42ff5fc170bc"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP13 on F.Silkscreen",
+                    "pos": {
+                        "x": 93.0,
+                        "y": 61.6
+                    },
+                    "uuid": "0777e796-cecf-438d-bcd3-bae9234d9f5d"
+                },
+                {
+                    "description": "Reference field of TP12",
+                    "pos": {
+                        "x": 91.2,
+                        "y": 61.648
+                    },
+                    "uuid": "43905675-6f47-4fcf-beed-43c91252d9bf"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.1372 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP15",
+                    "pos": {
+                        "x": 83.14,
+                        "y": 48.072
+                    },
+                    "uuid": "26b9ab25-5fc0-433f-9cb2-91762ca43936"
+                },
+                {
+                    "description": "PCB text 'RST' on F.Silkscreen",
+                    "pos": {
+                        "x": 85.8,
+                        "y": 46.95
+                    },
+                    "uuid": "76f57772-ab08-4e00-918b-1c7847321308"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Segment of R1 on F.Silkscreen",
+                    "pos": {
+                        "x": 83.276359,
+                        "y": 48.78
+                    },
+                    "uuid": "4323fc05-5ce4-4d10-9ca8-77cf8f8b9ae6"
+                },
+                {
+                    "description": "Circle of TP15 on F.Silkscreen",
+                    "pos": {
+                        "x": 83.14,
+                        "y": 49.52
+                    },
+                    "uuid": "9a408e7b-4256-4e52-b40d-99e3f9dc1a27"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0732 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP15",
+                    "pos": {
+                        "x": 83.14,
+                        "y": 48.072
+                    },
+                    "uuid": "26b9ab25-5fc0-433f-9cb2-91762ca43936"
+                },
+                {
+                    "description": "Segment of R1 on F.Silkscreen",
+                    "pos": {
+                        "x": 83.276359,
+                        "y": 48.02
+                    },
+                    "uuid": "e0a55115-c961-4000-99f5-fbf630101b53"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.1182 mm)",
+            "items": [
+                {
+                    "description": "Reference field of TP15",
+                    "pos": {
+                        "x": 83.14,
+                        "y": 48.072
+                    },
+                    "uuid": "26b9ab25-5fc0-433f-9cb2-91762ca43936"
+                },
+                {
+                    "description": "Segment of R1 on F.Silkscreen",
+                    "pos": {
+                        "x": 83.276359,
+                        "y": 48.78
+                    },
+                    "uuid": "4323fc05-5ce4-4d10-9ca8-77cf8f8b9ae6"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "PCB text 'M2' on F.Silkscreen",
+                    "pos": {
+                        "x": 66.0,
+                        "y": 58.45
+                    },
+                    "uuid": "63baf082-8960-4f4f-acab-b1c537827858"
+                },
+                {
+                    "description": "Pad 1 [GND] of TP5 on F.Cu",
+                    "pos": {
+                        "x": 67.2,
+                        "y": 59.0
+                    },
+                    "uuid": "47d5e026-4648-4209-a0ca-6dff7e8b6781"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP17",
+                    "pos": {
+                        "x": 77.96,
+                        "y": 53.702
+                    },
+                    "uuid": "2a0661b1-c2e9-4239-9dd3-88cabcb7e06d"
+                },
+                {
+                    "description": "Pad 22 [unconnected-(U1-P1.05-Pad22)] of U1 on F.Cu",
+                    "pos": {
+                        "x": 77.0,
+                        "y": 53.5
+                    },
+                    "uuid": "5f7d2dd9-9366-432f-ace8-a4483184d66b"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP17",
+                    "pos": {
+                        "x": 77.96,
+                        "y": 53.702
+                    },
+                    "uuid": "2a0661b1-c2e9-4239-9dd3-88cabcb7e06d"
+                },
+                {
+                    "description": "Pad 23 [unconnected-(U1-P1.04-Pad23)] of U1 on F.Cu",
+                    "pos": {
+                        "x": 76.25,
+                        "y": 53.5
+                    },
+                    "uuid": "c3d6ec0e-972d-48d6-9990-a9fb67f3ac08"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP17",
+                    "pos": {
+                        "x": 77.96,
+                        "y": 53.702
+                    },
+                    "uuid": "2a0661b1-c2e9-4239-9dd3-88cabcb7e06d"
+                },
+                {
+                    "description": "Pad 21 [/MARK2] of U1 on F.Cu",
+                    "pos": {
+                        "x": 77.75,
+                        "y": 53.5
+                    },
+                    "uuid": "35892b66-5591-4219-96ff-14db54c953d0"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP16",
+                    "pos": {
+                        "x": 79.29,
+                        "y": 53.702
+                    },
+                    "uuid": "a964151a-2fd2-41d1-a50d-54020a180ff8"
+                },
+                {
+                    "description": "Pad 21 [/MARK2] of U1 on F.Cu",
+                    "pos": {
+                        "x": 77.75,
+                        "y": 53.5
+                    },
+                    "uuid": "35892b66-5591-4219-96ff-14db54c953d0"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP17",
+                    "pos": {
+                        "x": 77.96,
+                        "y": 53.702
+                    },
+                    "uuid": "2a0661b1-c2e9-4239-9dd3-88cabcb7e06d"
+                },
+                {
+                    "description": "Pad 20 [/MARK1] of U1 on F.Cu",
+                    "pos": {
+                        "x": 78.5,
+                        "y": 53.5
+                    },
+                    "uuid": "f7ad2f22-28e4-4ded-b489-c9d78c6939d6"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP16",
+                    "pos": {
+                        "x": 79.29,
+                        "y": 53.702
+                    },
+                    "uuid": "a964151a-2fd2-41d1-a50d-54020a180ff8"
+                },
+                {
+                    "description": "Pad 20 [/MARK1] of U1 on F.Cu",
+                    "pos": {
+                        "x": 78.5,
+                        "y": 53.5
+                    },
+                    "uuid": "f7ad2f22-28e4-4ded-b489-c9d78c6939d6"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP17",
+                    "pos": {
+                        "x": 77.96,
+                        "y": 53.702
+                    },
+                    "uuid": "2a0661b1-c2e9-4239-9dd3-88cabcb7e06d"
+                },
+                {
+                    "description": "Pad 19 [unconnected-(U1-P0.02-Pad19)] of U1 on F.Cu",
+                    "pos": {
+                        "x": 79.25,
+                        "y": 53.5
+                    },
+                    "uuid": "7d0646bf-de1e-4da7-9217-4eebc827f5ff"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP16",
+                    "pos": {
+                        "x": 79.29,
+                        "y": 53.702
+                    },
+                    "uuid": "a964151a-2fd2-41d1-a50d-54020a180ff8"
+                },
+                {
+                    "description": "Pad 17 [/PMIC_INT] of U1 on F.Cu",
+                    "pos": {
+                        "x": 80.75,
+                        "y": 53.5
+                    },
+                    "uuid": "6e693bcb-f7a9-4341-8da9-b0368bd5cbfa"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP16",
+                    "pos": {
+                        "x": 79.29,
+                        "y": 53.702
+                    },
+                    "uuid": "a964151a-2fd2-41d1-a50d-54020a180ff8"
+                },
+                {
+                    "description": "Pad 19 [unconnected-(U1-P0.02-Pad19)] of U1 on F.Cu",
+                    "pos": {
+                        "x": 79.25,
+                        "y": 53.5
+                    },
+                    "uuid": "7d0646bf-de1e-4da7-9217-4eebc827f5ff"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP4",
+                    "pos": {
+                        "x": 73.01,
+                        "y": 55.162
+                    },
+                    "uuid": "9d778ddd-52e3-4273-897e-7513582105a4"
+                },
+                {
+                    "description": "Pad 1 [+3V3] of C3 on F.Cu",
+                    "pos": {
+                        "x": 73.775,
+                        "y": 55.25
+                    },
+                    "uuid": "5c30bec8-d0ad-4f8d-bbc8-0a3576ba2f69"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP4",
+                    "pos": {
+                        "x": 73.01,
+                        "y": 55.162
+                    },
+                    "uuid": "9d778ddd-52e3-4273-897e-7513582105a4"
+                },
+                {
+                    "description": "Pad 2 [GND] of C3 on F.Cu",
+                    "pos": {
+                        "x": 72.225,
+                        "y": 55.25
+                    },
+                    "uuid": "41e20991-ec6c-4938-bd33-5ea0626899b7"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "PCB text 'GND' on F.Silkscreen",
+                    "pos": {
+                        "x": 71.575,
+                        "y": 56.55
+                    },
+                    "uuid": "3bd5d47e-29c1-446e-81ef-0e95221ad77c"
+                },
+                {
+                    "description": "Pad 1 [+3V3] of TP4 on F.Cu",
+                    "pos": {
+                        "x": 73.01,
+                        "y": 56.61
+                    },
+                    "uuid": "700ed83e-33b7-4e38-a7b4-27c0680ad631"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP9",
+                    "pos": {
+                        "x": 62.8,
+                        "y": 85.952
+                    },
+                    "uuid": "c8458361-ad0d-4831-939b-1a5097e42e46"
+                },
+                {
+                    "description": "Pad 1 [/VBAT_RAW] of D1 on F.Cu",
+                    "pos": {
+                        "x": 61.8,
+                        "y": 85.75
+                    },
+                    "uuid": "31c69626-7eee-4e7c-bbfa-3f69bc571a7b"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP8",
+                    "pos": {
+                        "x": 63.32,
+                        "y": 97.552
+                    },
+                    "uuid": "5078a132-69d9-42b6-b262-c05c03f28a4a"
+                },
+                {
+                    "description": "Pad 1 [/SW] of L10 on F.Cu",
+                    "pos": {
+                        "x": 64.9,
+                        "y": 98.275
+                    },
+                    "uuid": "dc86e008-57f6-4768-88dc-2f6ade0b2f13"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP1",
+                    "pos": {
+                        "x": 70.14,
+                        "y": 111.112
+                    },
+                    "uuid": "77bff84d-143d-46e4-b3d1-ed1d87b59c51"
+                },
+                {
+                    "description": "Pad 2 [GND] of D8 on F.Cu",
+                    "pos": {
+                        "x": 69.08,
+                        "y": 111.29
+                    },
+                    "uuid": "7b43b1ac-2057-4e4e-805a-54613e3567c1"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP1",
+                    "pos": {
+                        "x": 70.14,
+                        "y": 111.112
+                    },
+                    "uuid": "77bff84d-143d-46e4-b3d1-ed1d87b59c51"
+                },
+                {
+                    "description": "Pad 1 [/CIN1_PROTECTED] of D8 on F.Cu",
+                    "pos": {
+                        "x": 69.08,
+                        "y": 110.59
+                    },
+                    "uuid": "30b8083f-017a-448f-a2d1-c5aaeb7b576f"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP1",
+                    "pos": {
+                        "x": 70.14,
+                        "y": 111.112
+                    },
+                    "uuid": "77bff84d-143d-46e4-b3d1-ed1d87b59c51"
+                },
+                {
+                    "description": "Pad 2 [/CIN1_PROTECTED] of R30 on F.Cu",
+                    "pos": {
+                        "x": 70.155,
+                        "y": 110.56
+                    },
+                    "uuid": "e9cf6b11-c4cb-40d9-8cce-d294e1a74dbf"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP1",
+                    "pos": {
+                        "x": 70.14,
+                        "y": 111.112
+                    },
+                    "uuid": "77bff84d-143d-46e4-b3d1-ed1d87b59c51"
+                },
+                {
+                    "description": "Pad 1 [/SENSE1] of R30 on F.Cu",
+                    "pos": {
+                        "x": 70.155,
+                        "y": 111.58
+                    },
+                    "uuid": "65e9a6d4-67d4-4a6e-92ad-39a0480fe7eb"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP2",
+                    "pos": {
+                        "x": 71.48,
+                        "y": 111.102
+                    },
+                    "uuid": "4e64a851-08fb-426d-8e99-3c190f22c5c3"
+                },
+                {
+                    "description": "Pad 1 [/SENSE1] of R30 on F.Cu",
+                    "pos": {
+                        "x": 70.155,
+                        "y": 111.58
+                    },
+                    "uuid": "65e9a6d4-67d4-4a6e-92ad-39a0480fe7eb"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP2",
+                    "pos": {
+                        "x": 71.48,
+                        "y": 111.102
+                    },
+                    "uuid": "4e64a851-08fb-426d-8e99-3c190f22c5c3"
+                },
+                {
+                    "description": "Pad 2 [/CIN1_PROTECTED] of R30 on F.Cu",
+                    "pos": {
+                        "x": 70.155,
+                        "y": 110.56
+                    },
+                    "uuid": "e9cf6b11-c4cb-40d9-8cce-d294e1a74dbf"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP14",
+                    "pos": {
+                        "x": 67.5,
+                        "y": 101.772
+                    },
+                    "uuid": "0e03567e-1c8d-4a7a-871b-768d6b13360f"
+                },
+                {
+                    "description": "Pad 7 [/SCL] of U2 on F.Cu",
+                    "pos": {
+                        "x": 68.825,
+                        "y": 100.9625
+                    },
+                    "uuid": "ca8872c9-9b7f-49c4-b743-de1bce0551cc"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP6",
+                    "pos": {
+                        "x": 73.418,
+                        "y": 101.44
+                    },
+                    "uuid": "9dc1d638-cfca-4b0e-94bf-063e5722f783"
+                },
+                {
+                    "description": "Pad 1 [GND] of TP11 on F.Cu",
+                    "pos": {
+                        "x": 73.4,
+                        "y": 101.44
+                    },
+                    "uuid": "408d4d90-b14e-4f10-a2fe-c117dde59da6"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP1",
+                    "pos": {
+                        "x": 70.14,
+                        "y": 111.112
+                    },
+                    "uuid": "77bff84d-143d-46e4-b3d1-ed1d87b59c51"
+                },
+                {
+                    "description": "Pad 2 [/CIN2_PROTECTED] of R31 on F.Cu",
+                    "pos": {
+                        "x": 71.405,
+                        "y": 110.56
+                    },
+                    "uuid": "8a859c1b-a9f4-4331-b36a-27b61a4887da"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP2",
+                    "pos": {
+                        "x": 71.48,
+                        "y": 111.102
+                    },
+                    "uuid": "4e64a851-08fb-426d-8e99-3c190f22c5c3"
+                },
+                {
+                    "description": "Pad 2 [/CIN2_PROTECTED] of R31 on F.Cu",
+                    "pos": {
+                        "x": 71.405,
+                        "y": 110.56
+                    },
+                    "uuid": "8a859c1b-a9f4-4331-b36a-27b61a4887da"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP2",
+                    "pos": {
+                        "x": 71.48,
+                        "y": 111.102
+                    },
+                    "uuid": "4e64a851-08fb-426d-8e99-3c190f22c5c3"
+                },
+                {
+                    "description": "Pad 1 [/SENSE2] of R31 on F.Cu",
+                    "pos": {
+                        "x": 71.405,
+                        "y": 111.58
+                    },
+                    "uuid": "f3060dd2-50fc-4dfb-aa7c-08ea32b50716"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP1",
+                    "pos": {
+                        "x": 70.14,
+                        "y": 111.112
+                    },
+                    "uuid": "77bff84d-143d-46e4-b3d1-ed1d87b59c51"
+                },
+                {
+                    "description": "Pad 1 [/SENSE2] of R31 on F.Cu",
+                    "pos": {
+                        "x": 71.405,
+                        "y": 111.58
+                    },
+                    "uuid": "f3060dd2-50fc-4dfb-aa7c-08ea32b50716"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP3",
+                    "pos": {
+                        "x": 72.85,
+                        "y": 111.102
+                    },
+                    "uuid": "5d178727-3ac2-4f81-859e-cb8180e9f58a"
+                },
+                {
+                    "description": "Pad 2 [/CIN2_PROTECTED] of R31 on F.Cu",
+                    "pos": {
+                        "x": 71.405,
+                        "y": 110.56
+                    },
+                    "uuid": "8a859c1b-a9f4-4331-b36a-27b61a4887da"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP3",
+                    "pos": {
+                        "x": 72.85,
+                        "y": 111.102
+                    },
+                    "uuid": "5d178727-3ac2-4f81-859e-cb8180e9f58a"
+                },
+                {
+                    "description": "Pad 1 [/CIN2_PROTECTED] of D9 on F.Cu",
+                    "pos": {
+                        "x": 72.48,
+                        "y": 110.59
+                    },
+                    "uuid": "1eba20a5-76a9-4813-bf35-76b3c648d6d4"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP2",
+                    "pos": {
+                        "x": 71.48,
+                        "y": 111.102
+                    },
+                    "uuid": "4e64a851-08fb-426d-8e99-3c190f22c5c3"
+                },
+                {
+                    "description": "Pad 1 [/CIN2_PROTECTED] of D9 on F.Cu",
+                    "pos": {
+                        "x": 72.48,
+                        "y": 110.59
+                    },
+                    "uuid": "1eba20a5-76a9-4813-bf35-76b3c648d6d4"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP3",
+                    "pos": {
+                        "x": 72.85,
+                        "y": 111.102
+                    },
+                    "uuid": "5d178727-3ac2-4f81-859e-cb8180e9f58a"
+                },
+                {
+                    "description": "Pad 2 [GND] of D9 on F.Cu",
+                    "pos": {
+                        "x": 72.48,
+                        "y": 111.29
+                    },
+                    "uuid": "7b78133e-bbf5-4abd-9ae2-f43fbc7252d1"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP2",
+                    "pos": {
+                        "x": 71.48,
+                        "y": 111.102
+                    },
+                    "uuid": "4e64a851-08fb-426d-8e99-3c190f22c5c3"
+                },
+                {
+                    "description": "Pad 2 [GND] of D9 on F.Cu",
+                    "pos": {
+                        "x": 72.48,
+                        "y": 111.29
+                    },
+                    "uuid": "7b78133e-bbf5-4abd-9ae2-f43fbc7252d1"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP12",
+                    "pos": {
+                        "x": 91.2,
+                        "y": 61.648
+                    },
+                    "uuid": "43905675-6f47-4fcf-beed-43c91252d9bf"
+                },
+                {
+                    "description": "Pad 1 [/SCL] of TP13 on F.Cu",
+                    "pos": {
+                        "x": 93.0,
+                        "y": 61.6
+                    },
+                    "uuid": "1e28a4cc-0014-4d38-9cf5-0d65ed255278"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP15",
+                    "pos": {
+                        "x": 83.14,
+                        "y": 48.072
+                    },
+                    "uuid": "26b9ab25-5fc0-433f-9cb2-91762ca43936"
+                },
+                {
+                    "description": "Pad 2 [GND] of C13 on F.Cu",
+                    "pos": {
+                        "x": 83.91,
+                        "y": 47.45
+                    },
+                    "uuid": "75e430c2-af8e-4170-b2f2-66eac0f7fb39"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP15",
+                    "pos": {
+                        "x": 83.14,
+                        "y": 48.072
+                    },
+                    "uuid": "26b9ab25-5fc0-433f-9cb2-91762ca43936"
+                },
+                {
+                    "description": "Pad 2 [/SWD_RST] of R1 on F.Cu",
+                    "pos": {
+                        "x": 83.94,
+                        "y": 48.4
+                    },
+                    "uuid": "85798202-d1f3-4216-91eb-98405e76214f"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP15",
+                    "pos": {
+                        "x": 83.14,
+                        "y": 48.072
+                    },
+                    "uuid": "26b9ab25-5fc0-433f-9cb2-91762ca43936"
+                },
+                {
+                    "description": "Pad 9 [unconnected-(U1-P2.00-Pad9)] of U1 on F.Cu",
+                    "pos": {
+                        "x": 81.497,
+                        "y": 48.2
+                    },
+                    "uuid": "5158cf0b-d8e0-4ad8-909d-a5283d114ef4"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP15",
+                    "pos": {
+                        "x": 83.14,
+                        "y": 48.072
+                    },
+                    "uuid": "26b9ab25-5fc0-433f-9cb2-91762ca43936"
+                },
+                {
+                    "description": "Pad 8 [unconnected-(U1-P2.02-Pad8)] of U1 on F.Cu",
+                    "pos": {
+                        "x": 81.497,
+                        "y": 47.45
+                    },
+                    "uuid": "71827bfa-bd0c-4b17-8767-fd577dcf1885"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP15",
+                    "pos": {
+                        "x": 83.14,
+                        "y": 48.072
+                    },
+                    "uuid": "26b9ab25-5fc0-433f-9cb2-91762ca43936"
+                },
+                {
+                    "description": "Pad 1 [/NRESET] of C13 on F.Cu",
+                    "pos": {
+                        "x": 82.95,
+                        "y": 47.45
+                    },
+                    "uuid": "7d238651-f053-42b1-b6c1-511cdb44d19a"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "Silkscreen clipped by solder mask",
+            "items": [
+                {
+                    "description": "Reference field of TP15",
+                    "pos": {
+                        "x": 83.14,
+                        "y": 48.072
+                    },
+                    "uuid": "26b9ab25-5fc0-433f-9cb2-91762ca43936"
+                },
+                {
+                    "description": "Pad 1 [/NRESET] of R1 on F.Cu",
+                    "pos": {
+                        "x": 82.92,
+                        "y": 48.4
+                    },
+                    "uuid": "de734c82-28b7-4a63-b0aa-a7ec2b912a6e"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        }
+    ]
+}

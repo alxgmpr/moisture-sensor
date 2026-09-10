@@ -1,0 +1,57 @@
+.....F...........F.................F.............
+======================================================================
+FAIL: test_only_bare_copper_footprints_are_model_less (test_3d_models.ModelCoverageTest.test_only_bare_copper_footprints_are_model_less)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/alex/moisture-sensor-carrier/tests/test_3d_models.py", line 103, in test_only_bare_copper_footprints_are_model_less
+    self.assertEqual(missing, NO_MODEL_EXPECTED)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Items in the first set but not the second:
+'TP9'
+'TP13'
+'TP7'
+'TP8'
+'TP12'
+'TP5'
+'TP4'
+'TP6'
+'TP14'
+'TP15'
+'TP10'
+'TP11'
+'TP17'
+'TP16'
+
+======================================================================
+FAIL: test_probe_clamps_have_nearby_ground_vias_in_ground_plane (test_esd_return_planes.EsdReturnPlanes.test_probe_clamps_have_nearby_ground_vias_in_ground_plane)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/alex/moisture-sensor-carrier/tests/test_esd_return_planes.py", line 32, in test_probe_clamps_have_nearby_ground_vias_in_ground_plane
+    self.assertTrue(local, f'{ref}: no GND-plane via within 0.7 mm of clamp ground')
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: [] is not true : D8: no GND-plane via within 0.7 mm of clamp ground
+
+======================================================================
+FAIL: test_routing_classes_use_production_safe_dimensions (test_pcb_routing_rules.PcbRoutingRulesTest.test_routing_classes_use_production_safe_dimensions) (netclass='SENSE')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/alex/moisture-sensor-carrier/tests/test_pcb_routing_rules.py", line 46, in test_routing_classes_use_production_safe_dimensions
+    self.assertEqual(actual, dimensions)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (0.25, 0.6, 0.5, 0.2) != (0.25, 0.2, 0.5, 0.2)
+
+First differing element 1:
+0.6
+0.2
+
+- (0.25, 0.6, 0.5, 0.2)
+?          ^
+
++ (0.25, 0.2, 0.5, 0.2)
+?          ^
+
+
+----------------------------------------------------------------------
+Ran 49 tests in 4.649s
+
+FAILED (failures=3)

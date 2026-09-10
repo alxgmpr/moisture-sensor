@@ -1,0 +1,2397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="E">
+  <design>
+    <source>/Users/alex/moisture-sensor-carrier/nrf-moisture-sensor.kicad_sch</source>
+    <date>2026-09-09T12:47:26</date>
+    <tool>Eeschema 10.99.0-3619-g0ef48b972f</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title>nRF Moisture Sensor</title>
+        <company/>
+        <rev>C</rev>
+        <date>2026-09-05</date>
+        <source>nrf-moisture-sensor.kicad_sch</source>
+        <comment number="1" value="BL54L15 + nPM2100 + FDC1004 + SHT45 | CR2032 | BTHome v2"/>
+        <comment number="2" value="VBAT: protected battery | +3V3: main rail | +3V3_FDC_SW: switched sensing rail"/>
+        <comment number="3" value="U1 is hand fitted after JLC assembly; firmware must select the labeled GPIOs"/>
+        <comment number="4" value="Hardware rationale: HARDWARE.md | Electrical review: docs/design-review-2026-09-05/"/>
+        <comment number="5" value=""/>
+        <comment number="6" value=""/>
+        <comment number="7" value=""/>
+        <comment number="8" value=""/>
+        <comment number="9" value=""/>
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="BT1">
+      <value>CR2032-BS-6</value>
+      <footprint>footprints:BatteryHolder_LianXin_CR2032-BS-6</footprint>
+      <datasheet>https://jlcpcb.com/partdetail/C22363833</datasheet>
+      <description>CR2032 SMT holder; 30.6 mm pad spacing, 5.5 mm height</description>
+      <fields>
+        <field name="Manufacturer">Lian Xin Technology</field>
+        <field name="MPN">CR2032-BS-6</field>
+        <field name="LCSC">C22363833</field>
+        <field name="Footprint">footprints:BatteryHolder_LianXin_CR2032-BS-6</field>
+        <field name="Datasheet">https://jlcpcb.com/partdetail/C22363833</field>
+        <field name="Description">CR2032 SMT holder; 30.6 mm pad spacing, 5.5 mm height</field>
+      </fields>
+      <libsource lib="Device" part="Battery_Cell" description="Single-cell battery"/>
+      <property name="Manufacturer" value="Lian Xin Technology"/>
+      <property name="MPN" value="CR2032-BS-6"/>
+      <property name="LCSC" value="C22363833"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="battery cell"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>d0c21afd-667b-460e-8d2f-13eac916b1dd</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C3">
+      <value>10uF/16V X6S</value>
+      <footprint>Capacitor_SMD:C_0603_1608Metric</footprint>
+      <fields>
+        <field name="Manufacturer">Samsung</field>
+        <field name="MPN">CL10X106MO8NRNC</field>
+        <field name="LCSC">C3039688</field>
+        <field name="Footprint">Capacitor_SMD:C_0603_1608Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Device" part="C_Small" description="Unpolarized capacitor, small symbol"/>
+      <property name="Manufacturer" value="Samsung"/>
+      <property name="MPN" value="CL10X106MO8NRNC"/>
+      <property name="LCSC" value="C3039688"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="capacitor cap"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>0fa689e7-377f-4d30-88ce-32c46e598dc4</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C13">
+      <value>3.9pF C0G</value>
+      <footprint>Capacitor_SMD:C_0402_1005Metric</footprint>
+      <fields>
+        <field name="Manufacturer">FH</field>
+        <field name="MPN">0402CG3R9C500NT</field>
+        <field name="LCSC">C1566</field>
+        <field name="Footprint">Capacitor_SMD:C_0402_1005Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Device" part="C_Small" description="Unpolarized capacitor, small symbol"/>
+      <property name="Manufacturer" value="FH"/>
+      <property name="MPN" value="0402CG3R9C500NT"/>
+      <property name="LCSC" value="C1566"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="capacitor cap"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ea66259d-b639-4ca8-a1cf-490074edd3f7</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C21">
+      <value>22uF/6.3V X5R</value>
+      <footprint>Capacitor_SMD:C_0402_1005Metric</footprint>
+      <datasheet>https://search.murata.co.jp/Ceramy/image/img/A01X/G101/ENG/GRM158R60J226ME01-01A.pdf</datasheet>
+      <description>Unpolarized capacitor, small symbol</description>
+      <fields>
+        <field name="Manufacturer">Murata Electronics</field>
+        <field name="MPN">GRM158R60J226ME01D</field>
+        <field name="LCSC">C3894351</field>
+        <field name="Footprint">Capacitor_SMD:C_0402_1005Metric</field>
+        <field name="Datasheet">https://search.murata.co.jp/Ceramy/image/img/A01X/G101/ENG/GRM158R60J226ME01-01A.pdf</field>
+        <field name="Description">Unpolarized capacitor, small symbol</field>
+      </fields>
+      <libsource lib="Device" part="C_Small" description="Unpolarized capacitor, small symbol"/>
+      <property name="Manufacturer" value="Murata Electronics"/>
+      <property name="MPN" value="GRM158R60J226ME01D"/>
+      <property name="LCSC" value="C3894351"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="capacitor cap"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>b5a06a91-1674-45e6-8d0a-fc4ab423cce0</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C22">
+      <value>1nF 50V X7R</value>
+      <footprint>Capacitor_SMD:C_0402_1005Metric</footprint>
+      <description>Unpolarized capacitor, small symbol</description>
+      <fields>
+        <field name="Manufacturer">FH</field>
+        <field name="MPN">0402B102K500NT</field>
+        <field name="LCSC">C1523</field>
+        <field name="Footprint">Capacitor_SMD:C_0402_1005Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description">Unpolarized capacitor, small symbol</field>
+      </fields>
+      <libsource lib="Device" part="C_Small" description="Unpolarized capacitor, small symbol"/>
+      <property name="Manufacturer" value="FH"/>
+      <property name="MPN" value="0402B102K500NT"/>
+      <property name="LCSC" value="C1523"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="capacitor cap"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>a5e7cdd3-8776-473e-95ed-44ea8fb46f1b</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C23">
+      <value>22uF/6.3V X5R</value>
+      <footprint>Capacitor_SMD:C_0402_1005Metric</footprint>
+      <datasheet>https://search.murata.co.jp/Ceramy/image/img/A01X/G101/ENG/GRM158R60J226ME01-01A.pdf</datasheet>
+      <description>Unpolarized capacitor, small symbol</description>
+      <fields>
+        <field name="Manufacturer">Murata Electronics</field>
+        <field name="MPN">GRM158R60J226ME01D</field>
+        <field name="LCSC">C3894351</field>
+        <field name="Footprint">Capacitor_SMD:C_0402_1005Metric</field>
+        <field name="Datasheet">https://search.murata.co.jp/Ceramy/image/img/A01X/G101/ENG/GRM158R60J226ME01-01A.pdf</field>
+        <field name="Description">Unpolarized capacitor, small symbol</field>
+      </fields>
+      <libsource lib="Device" part="C_Small" description="Unpolarized capacitor, small symbol"/>
+      <property name="Manufacturer" value="Murata Electronics"/>
+      <property name="MPN" value="GRM158R60J226ME01D"/>
+      <property name="LCSC" value="C3894351"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="capacitor cap"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>7687c396-0153-437f-a699-839613271ad8</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C24">
+      <value>1nF 50V X7R</value>
+      <footprint>Capacitor_SMD:C_0402_1005Metric</footprint>
+      <description>Unpolarized capacitor, small symbol</description>
+      <fields>
+        <field name="Manufacturer">FH</field>
+        <field name="MPN">0402B102K500NT</field>
+        <field name="LCSC">C1523</field>
+        <field name="Footprint">Capacitor_SMD:C_0402_1005Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description">Unpolarized capacitor, small symbol</field>
+      </fields>
+      <libsource lib="Device" part="C_Small" description="Unpolarized capacitor, small symbol"/>
+      <property name="Manufacturer" value="FH"/>
+      <property name="MPN" value="0402B102K500NT"/>
+      <property name="LCSC" value="C1523"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="capacitor cap"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>4e8b89c2-b0d8-47c5-8c61-2dd4d6b892c4</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C25">
+      <value>2.2uF/6.3V X5R</value>
+      <footprint>Capacitor_SMD:C_0402_1005Metric</footprint>
+      <description>Unpolarized capacitor, small symbol</description>
+      <fields>
+        <field name="Manufacturer">Samsung</field>
+        <field name="MPN">CL05A225MQ5NSNC</field>
+        <field name="LCSC">C12530</field>
+        <field name="Footprint">Capacitor_SMD:C_0402_1005Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description">Unpolarized capacitor, small symbol</field>
+      </fields>
+      <libsource lib="Device" part="C_Small" description="Unpolarized capacitor, small symbol"/>
+      <property name="Manufacturer" value="Samsung"/>
+      <property name="MPN" value="CL05A225MQ5NSNC"/>
+      <property name="LCSC" value="C12530"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="capacitor cap"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>b323bab5-e555-44ee-adfc-730f4f212324</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C26">
+      <value>1uF 10V X7R</value>
+      <footprint>Capacitor_SMD:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder</footprint>
+      <fields>
+        <field name="Manufacturer">Murata</field>
+        <field name="MPN">GRM155Z71A105KE01D</field>
+        <field name="LCSC">C528974</field>
+        <field name="Footprint">Capacitor_SMD:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Device" part="C_Small" description="Unpolarized capacitor, small symbol"/>
+      <property name="Manufacturer" value="Murata"/>
+      <property name="MPN" value="GRM155Z71A105KE01D"/>
+      <property name="LCSC" value="C528974"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="capacitor cap"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>2cf1cfa7-f55c-44ca-bd68-e5349d6e602e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C27">
+      <value>100nF 16V X7R</value>
+      <footprint>Capacitor_SMD:C_0402_1005Metric</footprint>
+      <fields>
+        <field name="Manufacturer">Samsung</field>
+        <field name="MPN">CL05B104KO5NNNC</field>
+        <field name="LCSC">C1525</field>
+        <field name="Footprint">Capacitor_SMD:C_0402_1005Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Device" part="C_Small" description="Unpolarized capacitor, small symbol"/>
+      <property name="Manufacturer" value="Samsung"/>
+      <property name="MPN" value="CL05B104KO5NNNC"/>
+      <property name="LCSC" value="C1525"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="capacitor cap"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>4936e042-b32e-4d8d-a323-5cb5661055e6</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="C28">
+      <value>100nF 16V X7R</value>
+      <footprint>Capacitor_SMD:C_0402_1005Metric</footprint>
+      <fields>
+        <field name="Manufacturer">Samsung</field>
+        <field name="MPN">CL05B104KO5NNNC</field>
+        <field name="LCSC">C1525</field>
+        <field name="Footprint">Capacitor_SMD:C_0402_1005Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Device" part="C_Small" description="Unpolarized capacitor, small symbol"/>
+      <property name="Manufacturer" value="Samsung"/>
+      <property name="MPN" value="CL05B104KO5NNNC"/>
+      <property name="LCSC" value="C1525"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="capacitor cap"/>
+      <property name="ki_fp_filters" value="C_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>667fba97-88be-4d8a-9469-909f9a174a44</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D1">
+      <value>TPD1E1B04DPYR</value>
+      <footprint>footprints:TI_DPY0002A</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/tpd1e1b04.pdf</datasheet>
+      <fields>
+        <field name="MPN">TPD1E1B04DPYR</field>
+        <field name="Manufacturer">Texas Instruments</field>
+        <field name="LCSC">C779408</field>
+        <field name="Footprint">footprints:TI_DPY0002A</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/tpd1e1b04.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="protection" part="TPD1E1B04" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="MPN" value="TPD1E1B04DPYR"/>
+      <property name="Manufacturer" value="Texas Instruments"/>
+      <property name="LCSC" value="C779408"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ea2e9ebc-5b7f-4174-912b-c5348c8e154c</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D2">
+      <value>TPD1E1B04DPYR</value>
+      <footprint>footprints:TI_DPY0002A</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/tpd1e1b04.pdf</datasheet>
+      <fields>
+        <field name="MPN">TPD1E1B04DPYR</field>
+        <field name="Manufacturer">Texas Instruments</field>
+        <field name="LCSC">C779408</field>
+        <field name="Footprint">footprints:TI_DPY0002A</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/tpd1e1b04.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="protection" part="TPD1E1B04" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="MPN" value="TPD1E1B04DPYR"/>
+      <property name="Manufacturer" value="Texas Instruments"/>
+      <property name="LCSC" value="C779408"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>a3148b2d-a202-4808-a070-79e5a3469d0e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D3">
+      <value>TPD1E1B04DPYR</value>
+      <footprint>footprints:TI_DPY0002A</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/tpd1e1b04.pdf</datasheet>
+      <fields>
+        <field name="MPN">TPD1E1B04DPYR</field>
+        <field name="Manufacturer">Texas Instruments</field>
+        <field name="LCSC">C779408</field>
+        <field name="Footprint">footprints:TI_DPY0002A</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/tpd1e1b04.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="protection" part="TPD1E1B04" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="MPN" value="TPD1E1B04DPYR"/>
+      <property name="Manufacturer" value="Texas Instruments"/>
+      <property name="LCSC" value="C779408"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>e1219058-9f31-48b5-8bc5-86498dbdd0f6</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D4">
+      <value>TPD1E01B04DPYR</value>
+      <footprint>footprints:TI_DPY0002A</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/tpd1e01b04.pdf</datasheet>
+      <fields>
+        <field name="MPN">TPD1E01B04DPYR</field>
+        <field name="Manufacturer">Texas Instruments</field>
+        <field name="LCSC">C779389</field>
+        <field name="Footprint">footprints:TI_DPY0002A</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/tpd1e01b04.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="protection" part="TPD1E01B04" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="MPN" value="TPD1E01B04DPYR"/>
+      <property name="Manufacturer" value="Texas Instruments"/>
+      <property name="LCSC" value="C779389"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>7a7817f1-e0b2-42eb-b6cb-c6a3d1577c0c</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D5">
+      <value>TPD1E01B04DPYR</value>
+      <footprint>footprints:TI_DPY0002A</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/tpd1e01b04.pdf</datasheet>
+      <fields>
+        <field name="MPN">TPD1E01B04DPYR</field>
+        <field name="Manufacturer">Texas Instruments</field>
+        <field name="LCSC">C779389</field>
+        <field name="Footprint">footprints:TI_DPY0002A</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/tpd1e01b04.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="protection" part="TPD1E01B04" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="MPN" value="TPD1E01B04DPYR"/>
+      <property name="Manufacturer" value="Texas Instruments"/>
+      <property name="LCSC" value="C779389"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>dee4e8e1-4eb1-4c1c-aad6-a8fa8efe46b9</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D6">
+      <value>TPD1E01B04DPYR</value>
+      <footprint>footprints:TI_DPY0002A</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/tpd1e01b04.pdf</datasheet>
+      <fields>
+        <field name="MPN">TPD1E01B04DPYR</field>
+        <field name="Manufacturer">Texas Instruments</field>
+        <field name="LCSC">C779389</field>
+        <field name="Footprint">footprints:TI_DPY0002A</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/tpd1e01b04.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="protection" part="TPD1E01B04" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="MPN" value="TPD1E01B04DPYR"/>
+      <property name="Manufacturer" value="Texas Instruments"/>
+      <property name="LCSC" value="C779389"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>69a0a247-6a90-4e71-bf05-aca01649f394</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D7">
+      <value>TPD1E01B04DPYR</value>
+      <footprint>footprints:TI_DPY0002A</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/tpd1e01b04.pdf</datasheet>
+      <fields>
+        <field name="MPN">TPD1E01B04DPYR</field>
+        <field name="Manufacturer">Texas Instruments</field>
+        <field name="LCSC">C779389</field>
+        <field name="Footprint">footprints:TI_DPY0002A</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/tpd1e01b04.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="protection" part="TPD1E01B04" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="MPN" value="TPD1E01B04DPYR"/>
+      <property name="Manufacturer" value="Texas Instruments"/>
+      <property name="LCSC" value="C779389"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>e1e9a0ad-3afb-4336-aa24-9c2c385850be</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D8">
+      <value>TPD1E01B04DPYR</value>
+      <footprint>footprints:TI_DPY0002A</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/tpd1e01b04.pdf</datasheet>
+      <fields>
+        <field name="MPN">TPD1E01B04DPYR</field>
+        <field name="Manufacturer">Texas Instruments</field>
+        <field name="LCSC">C779389</field>
+        <field name="Footprint">footprints:TI_DPY0002A</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/tpd1e01b04.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="protection" part="TPD1E01B04" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="MPN" value="TPD1E01B04DPYR"/>
+      <property name="Manufacturer" value="Texas Instruments"/>
+      <property name="LCSC" value="C779389"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>b8391fa4-3681-4d02-8d88-3951fad99375</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D9">
+      <value>TPD1E01B04DPYR</value>
+      <footprint>footprints:TI_DPY0002A</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/tpd1e01b04.pdf</datasheet>
+      <fields>
+        <field name="MPN">TPD1E01B04DPYR</field>
+        <field name="Manufacturer">Texas Instruments</field>
+        <field name="LCSC">C779389</field>
+        <field name="Footprint">footprints:TI_DPY0002A</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/tpd1e01b04.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="protection" part="TPD1E01B04" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="MPN" value="TPD1E01B04DPYR"/>
+      <property name="Manufacturer" value="Texas Instruments"/>
+      <property name="LCSC" value="C779389"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>7a2793c3-1247-4769-a594-7e87ff2aca02</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="D10">
+      <value>TPD1E01B04DPYR</value>
+      <footprint>footprints:TI_DPY0002A</footprint>
+      <datasheet>https://www.ti.com/lit/ds/symlink/tpd1e01b04.pdf</datasheet>
+      <fields>
+        <field name="MPN">TPD1E01B04DPYR</field>
+        <field name="Manufacturer">Texas Instruments</field>
+        <field name="LCSC">C779389</field>
+        <field name="Footprint">footprints:TI_DPY0002A</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/tpd1e01b04.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="protection" part="TPD1E01B04" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="MPN" value="TPD1E01B04DPYR"/>
+      <property name="Manufacturer" value="Texas Instruments"/>
+      <property name="LCSC" value="C779389"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <property name="ki_fp_filters" value="TO-???* *_Diode_* *SingleDiode* D_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>b600fa2f-f8b8-4dc2-9841-6db9907fd1a5</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="FID1">
+      <value>Fiducial</value>
+      <footprint>Fiducial:Fiducial_0.5mm_Mask1mm</footprint>
+      <description>Fiducial Marker</description>
+      <fields>
+        <field name="Footprint">Fiducial:Fiducial_0.5mm_Mask1mm</field>
+        <field name="Datasheet"/>
+        <field name="Description">Fiducial Marker</field>
+      </fields>
+      <libsource lib="Mechanical" part="Fiducial" description="Fiducial Marker"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <property name="ki_keywords" value="fiducial marker"/>
+      <property name="ki_fp_filters" value="Fiducial*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>350f0659-a2d4-46dd-b1a1-8dd0cf837d49</tstamps>
+      <units>
+        <unit name="A">
+          <pins/>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="FID2">
+      <value>Fiducial</value>
+      <footprint>Fiducial:Fiducial_0.5mm_Mask1mm</footprint>
+      <description>Fiducial Marker</description>
+      <fields>
+        <field name="Footprint">Fiducial:Fiducial_0.5mm_Mask1mm</field>
+        <field name="Datasheet"/>
+        <field name="Description">Fiducial Marker</field>
+      </fields>
+      <libsource lib="Mechanical" part="Fiducial" description="Fiducial Marker"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <property name="ki_keywords" value="fiducial marker"/>
+      <property name="ki_fp_filters" value="Fiducial*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>4cd1c3fa-8a3b-4fdf-9361-6daf7e8e4207</tstamps>
+      <units>
+        <unit name="A">
+          <pins/>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="FID3">
+      <value>Fiducial</value>
+      <footprint>Fiducial:Fiducial_0.5mm_Mask1mm</footprint>
+      <description>Fiducial Marker</description>
+      <fields>
+        <field name="Footprint">Fiducial:Fiducial_0.5mm_Mask1mm</field>
+        <field name="Datasheet"/>
+        <field name="Description">Fiducial Marker</field>
+      </fields>
+      <libsource lib="Mechanical" part="Fiducial" description="Fiducial Marker"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <property name="ki_keywords" value="fiducial marker"/>
+      <property name="ki_fp_filters" value="Fiducial*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>2a7b3f0c-1624-4e3a-9de1-a82ee8ba1afe</tstamps>
+      <units>
+        <unit name="A">
+          <pins/>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="J4">
+      <value>SWD 10p 1.27mm</value>
+      <footprint>Connector:Tag-Connect_TC2050-IDC-NL_2x05_P1.27mm_Vertical</footprint>
+      <fields>
+        <field name="Footprint">Connector:Tag-Connect_TC2050-IDC-NL_2x05_P1.27mm_Vertical</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Connector_Generic" part="Conn_02x05_Odd_Even" description="Generic connector, double row, 02x05, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <property name="exclude_from_pos_files"/>
+      <property name="ki_keywords" value="connector"/>
+      <property name="ki_fp_filters" value="Connector*:*_2x??_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>053311d4-52bb-4190-8b62-b352071bbf33</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="3"/>
+            <pin num="5"/>
+            <pin num="7"/>
+            <pin num="9"/>
+            <pin num="2"/>
+            <pin num="4"/>
+            <pin num="6"/>
+            <pin num="8"/>
+            <pin num="10"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="L10">
+      <value>2.2uH 20% DFE201210U-2R2M=P2</value>
+      <footprint>footprints:IND_Murata_DFE201210U</footprint>
+      <datasheet>https://www.murata.com/en-global/products/productdetail.aspx?partno=DFE201210U-2R2M%23</datasheet>
+      <description>Murata DFE201210U shielded metal-alloy power inductor, 2.2 uH, 20%, 2 A Isat, 228 mOhm max DCR</description>
+      <fields>
+        <field name="Manufacturer">Murata</field>
+        <field name="MPN">DFE201210U-2R2M=P2</field>
+        <field name="LCSC">C2049745</field>
+        <field name="Footprint">footprints:IND_Murata_DFE201210U</field>
+        <field name="Datasheet">https://www.murata.com/en-global/products/productdetail.aspx?partno=DFE201210U-2R2M%23</field>
+        <field name="Description">Murata DFE201210U shielded metal-alloy power inductor, 2.2 uH, 20%, 2 A Isat, 228 mOhm max DCR</field>
+      </fields>
+      <libsource lib="Device" part="L_Small" description="Inductor, small symbol"/>
+      <property name="Manufacturer" value="Murata"/>
+      <property name="MPN" value="DFE201210U-2R2M=P2"/>
+      <property name="LCSC" value="C2049745"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="inductor choke coil reactor magnetic"/>
+      <property name="ki_fp_filters" value="Choke_* *Coil* Inductor_* L_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>82acc75c-c3af-4476-bf41-bb5fb8bf48f5</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="Q1">
+      <value>DMG2305UX-7</value>
+      <footprint>Package_TO_SOT_SMD:SOT-23</footprint>
+      <datasheet>https://www.diodes.com/datasheet/download/DMG2305UX.pdf</datasheet>
+      <fields>
+        <field name="MPN">DMG2305UX-7</field>
+        <field name="Manufacturer">Diodes Incorporated</field>
+        <field name="LCSC">C150470</field>
+        <field name="Footprint">Package_TO_SOT_SMD:SOT-23</field>
+        <field name="Datasheet">https://www.diodes.com/datasheet/download/DMG2305UX.pdf</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="protection" part="DMG2305UX" description="P-MOSFET transistor"/>
+      <property name="MPN" value="DMG2305UX-7"/>
+      <property name="Manufacturer" value="Diodes Incorporated"/>
+      <property name="LCSC" value="C150470"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="PMOS P-MOS"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>9b13b165-c524-4556-8c83-0341762cf1fc</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="3"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R1">
+      <value>1k 1%</value>
+      <footprint>Resistor_SMD:R_0402_1005Metric</footprint>
+      <fields>
+        <field name="Manufacturer">UNI-ROYAL</field>
+        <field name="MPN">0402WGF1001TCE</field>
+        <field name="LCSC">C11702</field>
+        <field name="Footprint">Resistor_SMD:R_0402_1005Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Device" part="R_Small" description="Resistor, small symbol"/>
+      <property name="Manufacturer" value="UNI-ROYAL"/>
+      <property name="MPN" value="0402WGF1001TCE"/>
+      <property name="LCSC" value="C11702"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="R resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>c187298e-edc8-4c5e-b411-e4aef7711170</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R22">
+      <value>4.7k to +3V3</value>
+      <footprint>Resistor_SMD:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder</footprint>
+      <fields>
+        <field name="Manufacturer">UNI-ROYAL</field>
+        <field name="MPN">0402WGF4701TCE</field>
+        <field name="LCSC">C25900</field>
+        <field name="Footprint">Resistor_SMD:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Device" part="R_Small" description="Resistor, small symbol"/>
+      <property name="Manufacturer" value="UNI-ROYAL"/>
+      <property name="MPN" value="0402WGF4701TCE"/>
+      <property name="LCSC" value="C25900"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="R resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>50f5037d-fba9-41b6-97de-cf041f5d2285</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R23">
+      <value>4.7k to +3V3</value>
+      <footprint>Resistor_SMD:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder</footprint>
+      <fields>
+        <field name="Manufacturer">UNI-ROYAL</field>
+        <field name="MPN">0402WGF4701TCE</field>
+        <field name="LCSC">C25900</field>
+        <field name="Footprint">Resistor_SMD:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Device" part="R_Small" description="Resistor, small symbol"/>
+      <property name="Manufacturer" value="UNI-ROYAL"/>
+      <property name="MPN" value="0402WGF4701TCE"/>
+      <property name="LCSC" value="C25900"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="R resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>8f3a4a0a-12fb-4be4-be58-24a1479dc13c</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R30">
+      <value>5.1k 1%</value>
+      <footprint>Resistor_SMD:R_0402_1005Metric</footprint>
+      <fields>
+        <field name="MPN">0402WGF5101TCE</field>
+        <field name="Manufacturer">UNI-ROYAL</field>
+        <field name="LCSC">C25905</field>
+        <field name="Footprint">Resistor_SMD:R_0402_1005Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="MPN" value="0402WGF5101TCE"/>
+      <property name="Manufacturer" value="UNI-ROYAL"/>
+      <property name="LCSC" value="C25905"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>6ece35ad-9fa7-446d-b40c-1ab5a7038952</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R31">
+      <value>5.1k 1%</value>
+      <footprint>Resistor_SMD:R_0402_1005Metric</footprint>
+      <fields>
+        <field name="MPN">0402WGF5101TCE</field>
+        <field name="Manufacturer">UNI-ROYAL</field>
+        <field name="LCSC">C25905</field>
+        <field name="Footprint">Resistor_SMD:R_0402_1005Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="MPN" value="0402WGF5101TCE"/>
+      <property name="Manufacturer" value="UNI-ROYAL"/>
+      <property name="LCSC" value="C25905"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>18f4253f-c93d-49dc-8dc9-ac25c16f69d0</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R32">
+      <value>100 1%</value>
+      <footprint>Resistor_SMD:R_0402_1005Metric</footprint>
+      <fields>
+        <field name="MPN">0402WGF1000TCE</field>
+        <field name="Manufacturer">UNI-ROYAL</field>
+        <field name="LCSC">C25076</field>
+        <field name="Footprint">Resistor_SMD:R_0402_1005Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="MPN" value="0402WGF1000TCE"/>
+      <property name="Manufacturer" value="UNI-ROYAL"/>
+      <property name="LCSC" value="C25076"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>6922227b-b8c4-4580-b4bf-ec101ea72b36</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R33">
+      <value>100 1%</value>
+      <footprint>Resistor_SMD:R_0402_1005Metric</footprint>
+      <fields>
+        <field name="MPN">0402WGF1000TCE</field>
+        <field name="Manufacturer">UNI-ROYAL</field>
+        <field name="LCSC">C25076</field>
+        <field name="Footprint">Resistor_SMD:R_0402_1005Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="MPN" value="0402WGF1000TCE"/>
+      <property name="Manufacturer" value="UNI-ROYAL"/>
+      <property name="LCSC" value="C25076"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>e98dd36f-c178-42fb-9265-51f1cc7e900b</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R34">
+      <value>100 1%</value>
+      <footprint>Resistor_SMD:R_0402_1005Metric</footprint>
+      <fields>
+        <field name="MPN">0402WGF1000TCE</field>
+        <field name="Manufacturer">UNI-ROYAL</field>
+        <field name="LCSC">C25076</field>
+        <field name="Footprint">Resistor_SMD:R_0402_1005Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="MPN" value="0402WGF1000TCE"/>
+      <property name="Manufacturer" value="UNI-ROYAL"/>
+      <property name="LCSC" value="C25076"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>afea92a0-7afe-4c28-be00-9528d58ca4da</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="R35">
+      <value>100 1%</value>
+      <footprint>Resistor_SMD:R_0402_1005Metric</footprint>
+      <fields>
+        <field name="MPN">0402WGF1000TCE</field>
+        <field name="Manufacturer">UNI-ROYAL</field>
+        <field name="LCSC">C25076</field>
+        <field name="Footprint">Resistor_SMD:R_0402_1005Metric</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Device" part="R" description="Resistor"/>
+      <property name="MPN" value="0402WGF1000TCE"/>
+      <property name="Manufacturer" value="UNI-ROYAL"/>
+      <property name="LCSC" value="C25076"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <property name="ki_fp_filters" value="R_*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>a43f3c3d-4a42-4540-874f-ec99ec39fb9f</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP1">
+      <value>SENSE1</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <fields>
+        <field name="Footprint">TestPoint:TestPoint_Pad_D1.0mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <property name="exclude_from_pos_files"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>d4cd7ea3-100c-4538-badf-646c828715fa</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP2">
+      <value>SENSE2</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <fields>
+        <field name="Footprint">TestPoint:TestPoint_Pad_D1.0mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <property name="exclude_from_pos_files"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>15bfd6ae-f80a-49a9-896a-1da5e0ecd000</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP3">
+      <value>SHLD</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <fields>
+        <field name="Footprint">TestPoint:TestPoint_Pad_D1.0mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <property name="exclude_from_pos_files"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>39780a8d-ba77-499f-aa51-c7ab7b67a6e4</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP4">
+      <value>+3V3</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <fields>
+        <field name="Footprint">TestPoint:TestPoint_Pad_D1.0mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <property name="exclude_from_pos_files"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f36d2ddc-09f9-4789-8195-aaa19cde189c</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP5">
+      <value>GND</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <fields>
+        <field name="Footprint">TestPoint:TestPoint_Pad_D1.0mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <property name="exclude_from_pos_files"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>a2c92e1b-c5d6-45a0-98bb-88326542ebf6</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP6">
+      <value>+3V3_FDC_SW</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <fields>
+        <field name="Footprint">TestPoint:TestPoint_Pad_D1.0mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <property name="exclude_from_pos_files"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>c7abd9bd-5b4e-4e32-9ee7-80086ba96877</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP7">
+      <value>GND</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <fields>
+        <field name="Footprint">TestPoint:TestPoint_Pad_D1.0mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <property name="exclude_from_pos_files"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>58d16273-884d-43e4-bac2-1b774c176b15</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP8">
+      <value>VBAT</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <fields>
+        <field name="Footprint">TestPoint:TestPoint_Pad_D1.0mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <property name="exclude_from_pos_files"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>a230c28e-b83f-49e3-94eb-75894d9f5d79</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP9">
+      <value>VBAT_RAW</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <fields>
+        <field name="Footprint">TestPoint:TestPoint_Pad_D1.0mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <property name="exclude_from_pos_files"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>8c68019b-9812-4f54-8f16-661ac68e357b</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP10">
+      <value>VINT</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <fields>
+        <field name="Footprint">TestPoint:TestPoint_Pad_D1.0mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <property name="exclude_from_pos_files"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>8643b09e-30e3-4eb2-a630-1d797fd22583</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP11">
+      <value>GND</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <fields>
+        <field name="Footprint">TestPoint:TestPoint_Pad_D1.0mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <property name="exclude_from_pos_files"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>29819961-a331-4a9a-884c-06ffd016847e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP12">
+      <value>SDA</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <fields>
+        <field name="Footprint">TestPoint:TestPoint_Pad_D1.0mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <property name="exclude_from_pos_files"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>5d2154e9-c64d-432c-931f-63e97f92d350</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP13">
+      <value>SCL</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <fields>
+        <field name="Footprint">TestPoint:TestPoint_Pad_D1.0mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <property name="exclude_from_pos_files"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f2bd75c1-0dce-4119-beb7-8c00aa6f1804</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP14">
+      <value>PMIC_INT</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <fields>
+        <field name="Footprint">TestPoint:TestPoint_Pad_D1.0mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <property name="exclude_from_pos_files"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f04ebad4-cbca-4374-a420-2fc458ed7b96</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP15">
+      <value>NRESET</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <fields>
+        <field name="Footprint">TestPoint:TestPoint_Pad_D1.0mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <property name="exclude_from_pos_files"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>0ebad557-1c37-42b1-b5fe-a2583f93d2da</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP16">
+      <value>MARK1</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <fields>
+        <field name="Footprint">TestPoint:TestPoint_Pad_D1.0mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <property name="exclude_from_pos_files"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>7bc06e21-909a-4847-8954-3e2b1085281e</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="TP17">
+      <value>MARK2</value>
+      <footprint>TestPoint:TestPoint_Pad_D1.0mm</footprint>
+      <fields>
+        <field name="Footprint">TestPoint:TestPoint_Pad_D1.0mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Connector" part="TestPoint" description="test point"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="exclude_from_bom"/>
+      <property name="exclude_from_pos_files"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <property name="ki_fp_filters" value="Pin* Test*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>519156f0-449e-4170-8c41-7e7565c9fe21</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U1">
+      <value>453-00001R BL54L15</value>
+      <footprint>footprints:Ezurio_BL54L15_453-00001</footprint>
+      <datasheet>https://www.ezurio.com/documentation/datasheet-bl54l10-and-bl54l15-series</datasheet>
+      <fields>
+        <field name="Manufacturer">Ezurio</field>
+        <field name="MPN">453-00001R</field>
+        <field name="DigiKey">776-453-00001RCT-ND</field>
+        <field name="Assembly">HAND FIT; DNP at JLC</field>
+        <field name="LCSC"/>
+        <field name="Footprint">footprints:Ezurio_BL54L15_453-00001</field>
+        <field name="Datasheet">https://www.ezurio.com/documentation/datasheet-bl54l10-and-bl54l15-series</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="ezurio" part="BL54L15_453-00001" description=""/>
+      <property name="Manufacturer" value="Ezurio"/>
+      <property name="MPN" value="453-00001R"/>
+      <property name="DigiKey" value="776-453-00001RCT-ND"/>
+      <property name="Assembly" value="HAND FIT; DNP at JLC"/>
+      <property name="LCSC" value=""/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="exclude_from_pos_files"/>
+      <property name="dnp"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>4e2ac00a-cd90-40ac-893f-a80faadf8c92</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="26"/>
+            <pin num="25"/>
+            <pin num="24"/>
+            <pin num="35"/>
+            <pin num="28"/>
+            <pin num="17"/>
+            <pin num="5"/>
+            <pin num="6"/>
+            <pin num="7"/>
+            <pin num="4"/>
+            <pin num="1"/>
+            <pin num="16"/>
+            <pin num="27"/>
+            <pin num="39"/>
+            <pin num="2"/>
+            <pin num="3"/>
+            <pin num="8"/>
+            <pin num="9"/>
+            <pin num="10"/>
+            <pin num="11"/>
+            <pin num="12"/>
+            <pin num="13"/>
+            <pin num="14"/>
+            <pin num="15"/>
+            <pin num="18"/>
+            <pin num="19"/>
+            <pin num="20"/>
+            <pin num="21"/>
+            <pin num="22"/>
+            <pin num="23"/>
+            <pin num="29"/>
+            <pin num="30"/>
+            <pin num="31"/>
+            <pin num="32"/>
+            <pin num="33"/>
+            <pin num="34"/>
+            <pin num="36"/>
+            <pin num="37"/>
+            <pin num="38"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U2">
+      <value>nPM2100-QEAA</value>
+      <footprint>Package_DFN_QFN:QFN-16-1EP_4x4mm_P0.65mm_EP2.7x2.7mm_ThermalVias</footprint>
+      <datasheet>~</datasheet>
+      <fields>
+        <field name="Manufacturer">Nordic Semiconductor</field>
+        <field name="MPN">NPM2100-QEAA-R7</field>
+        <field name="LCSC">C46968654</field>
+        <field name="Footprint">Package_DFN_QFN:QFN-16-1EP_4x4mm_P0.65mm_EP2.7x2.7mm_ThermalVias</field>
+        <field name="Datasheet">~</field>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="npm2100" part="NPM2100-QEAA" description=""/>
+      <property name="Manufacturer" value="Nordic Semiconductor"/>
+      <property name="MPN" value="NPM2100-QEAA-R7"/>
+      <property name="LCSC" value="C46968654"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>7c65d29a-e48a-479f-8e26-4caa06110a5b</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+            <pin num="4"/>
+            <pin num="5"/>
+            <pin num="6"/>
+            <pin num="7"/>
+            <pin num="8"/>
+            <pin num="17"/>
+            <pin num="16"/>
+            <pin num="15"/>
+            <pin num="14"/>
+            <pin num="13"/>
+            <pin num="12"/>
+            <pin num="11"/>
+            <pin num="10"/>
+            <pin num="9"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U3">
+      <value>FDC1004</value>
+      <footprint>Package_SO:MSOP-10_3x3mm_P0.5mm</footprint>
+      <fields>
+        <field name="Manufacturer">Texas Instruments</field>
+        <field name="MPN">FDC1004DGSR</field>
+        <field name="LCSC">C2865994</field>
+        <field name="Footprint">Package_SO:MSOP-10_3x3mm_P0.5mm</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="fdc" part="FDC1004" description="4-channel capacitance-to-digital converter with active shield, I2C. Pinout per TI SNOSCY5 Table 4-1."/>
+      <property name="Manufacturer" value="Texas Instruments"/>
+      <property name="MPN" value="FDC1004DGSR"/>
+      <property name="LCSC" value="C2865994"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>06ca0284-0b38-4d4a-9c1b-3fb9ac3f7677</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+            <pin num="4"/>
+            <pin num="5"/>
+            <pin num="6"/>
+            <pin num="8"/>
+            <pin num="9"/>
+            <pin num="10"/>
+            <pin num="7"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="U4">
+      <value>SHT45-AD1F</value>
+      <footprint>Sensor_Humidity:Sensirion_DFN-4_1.5x1.5mm_P0.8mm_SHT4x_NoCentralPad</footprint>
+      <fields>
+        <field name="Manufacturer">Sensirion</field>
+        <field name="MPN">SHT45-AD1F-R2</field>
+        <field name="LCSC">C5360602</field>
+        <field name="Footprint">Sensor_Humidity:Sensirion_DFN-4_1.5x1.5mm_P0.8mm_SHT4x_NoCentralPad</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="sht4x" part="SHT4x" description="Sensirion SHT4x RH/T sensor, DFN-4 1.5x1.5mm. Pinout per datasheet v7.1 section 5.4 Figure 18. Die pad must NOT be soldered."/>
+      <property name="Manufacturer" value="Sensirion"/>
+      <property name="MPN" value="SHT45-AD1F-R2"/>
+      <property name="LCSC" value="C5360602"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>74155a64-15d1-4ab8-99f8-c12fdad01274</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+            <pin num="3"/>
+            <pin num="4"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+    <comp ref="X1">
+      <value>CM8V-T1A 32.768kHz CL=7pF 20ppm</value>
+      <footprint>footprints:XTAL_CM8V-T1A_2012</footprint>
+      <fields>
+        <field name="Manufacturer">Micro Crystal</field>
+        <field name="MPN">CM8V-T1A-32.768KHZ-7PF-20PPM-TA-QC</field>
+        <field name="LCSC">C5136974</field>
+        <field name="Footprint">footprints:XTAL_CM8V-T1A_2012</field>
+        <field name="Datasheet"/>
+        <field name="Description"/>
+      </fields>
+      <libsource lib="Device" part="Crystal_Small" description="Two pin crystal, small symbol"/>
+      <property name="Manufacturer" value="Micro Crystal"/>
+      <property name="MPN" value="CM8V-T1A-32.768KHZ-7PF-20PPM-TA-QC"/>
+      <property name="LCSC" value="C5136974"/>
+      <property name="Sheetname" value="Root"/>
+      <property name="Sheetfile" value="nrf-moisture-sensor.kicad_sch"/>
+      <property name="ki_keywords" value="quartz ceramic resonator oscillator"/>
+      <property name="ki_fp_filters" value="Crystal*"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>bbdc685f-cc11-4301-9393-9aa853d2b52a</tstamps>
+      <units>
+        <unit name="A">
+          <pins>
+            <pin num="1"/>
+            <pin num="2"/>
+          </pins>
+        </unit>
+      </units>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="Connector" part="TestPoint">
+      <description>test point</description>
+      <footprints>
+        <fp>Pin*</fp>
+        <fp>Test*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">TP</field>
+        <field name="Value">TestPoint</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">test point</field>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Connector_Generic" part="Conn_02x05_Odd_Even">
+      <description>Generic connector, double row, 02x05, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)</description>
+      <footprints>
+        <fp>Connector*:*_2x??_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_02x05_Odd_Even</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">Generic connector, double row, 02x05, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+        <pin num="3" name="Pin_3" type="passive"/>
+        <pin num="4" name="Pin_4" type="passive"/>
+        <pin num="5" name="Pin_5" type="passive"/>
+        <pin num="6" name="Pin_6" type="passive"/>
+        <pin num="7" name="Pin_7" type="passive"/>
+        <pin num="8" name="Pin_8" type="passive"/>
+        <pin num="9" name="Pin_9" type="passive"/>
+        <pin num="10" name="Pin_10" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="Battery_Cell">
+      <description>Single-cell battery</description>
+      <fields>
+        <field name="Reference">BT</field>
+        <field name="Value">Battery_Cell</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">Single-cell battery</field>
+        <field name="Sim.Device">V</field>
+        <field name="Sim.Type">DC</field>
+        <field name="Sim.Pins">1=+ 2=-</field>
+      </fields>
+      <pins>
+        <pin num="1" name="+" type="passive"/>
+        <pin num="2" name="-" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="C_Small">
+      <description>Unpolarized capacitor, small symbol</description>
+      <footprints>
+        <fp>C_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">C</field>
+        <field name="Value">C_Small</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">Unpolarized capacitor, small symbol</field>
+      </fields>
+      <pins>
+        <pin num="1" name="" type="passive"/>
+        <pin num="2" name="" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="Crystal_Small">
+      <description>Two pin crystal, small symbol</description>
+      <footprints>
+        <fp>Crystal*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">Y</field>
+        <field name="Value">Crystal_Small</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">Two pin crystal, small symbol</field>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="L_Small">
+      <description>Inductor, small symbol</description>
+      <footprints>
+        <fp>Choke_*</fp>
+        <fp>*Coil*</fp>
+        <fp>Inductor_*</fp>
+        <fp>L_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">L</field>
+        <field name="Value">L_Small</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">Inductor, small symbol</field>
+      </fields>
+      <pins>
+        <pin num="1" name="" type="passive"/>
+        <pin num="2" name="" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="R">
+      <description>Resistor</description>
+      <footprints>
+        <fp>R_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">R</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">Resistor</field>
+      </fields>
+      <pins>
+        <pin num="1" name="" type="passive"/>
+        <pin num="2" name="" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Device" part="R_Small">
+      <description>Resistor, small symbol</description>
+      <footprints>
+        <fp>R_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">R_Small</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">Resistor, small symbol</field>
+      </fields>
+      <pins>
+        <pin num="1" name="" type="passive"/>
+        <pin num="2" name="" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="Mechanical" part="Fiducial">
+      <description>Fiducial Marker</description>
+      <footprints>
+        <fp>Fiducial*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">FID</field>
+        <field name="Value">Fiducial</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">Fiducial Marker</field>
+      </fields>
+    </libpart>
+    <libpart lib="ezurio" part="BL54L15_453-00001">
+      <docs>https://www.ezurio.com/documentation/datasheet-bl54l10-and-bl54l15-series</docs>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">453-00001R</field>
+        <field name="Footprint">footprints:Ezurio_BL54L15_453-00001</field>
+        <field name="Datasheet">https://www.ezurio.com/documentation/datasheet-bl54l10-and-bl54l15-series</field>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="GND" type="power_in"/>
+        <pin num="2" name="P2.09" type="bidirectional"/>
+        <pin num="3" name="P2.08" type="bidirectional"/>
+        <pin num="4" name="P2.07/SWO" type="bidirectional"/>
+        <pin num="5" name="SWDIO" type="bidirectional"/>
+        <pin num="6" name="SWDCLK" type="input"/>
+        <pin num="7" name="nRESET" type="input"/>
+        <pin num="8" name="P2.02" type="bidirectional"/>
+        <pin num="9" name="P2.00" type="bidirectional"/>
+        <pin num="10" name="P2.01" type="bidirectional"/>
+        <pin num="11" name="P2.04" type="bidirectional"/>
+        <pin num="12" name="P2.05" type="bidirectional"/>
+        <pin num="13" name="P2.03" type="bidirectional"/>
+        <pin num="14" name="P1.03/NFC2" type="bidirectional"/>
+        <pin num="15" name="P1.02/NFC1" type="bidirectional"/>
+        <pin num="16" name="GND" type="power_in"/>
+        <pin num="17" name="P0.00" type="bidirectional"/>
+        <pin num="18" name="P0.01" type="bidirectional"/>
+        <pin num="19" name="P0.02" type="bidirectional"/>
+        <pin num="20" name="P1.07" type="bidirectional"/>
+        <pin num="21" name="P1.06" type="bidirectional"/>
+        <pin num="22" name="P1.05" type="bidirectional"/>
+        <pin num="23" name="P1.04" type="bidirectional"/>
+        <pin num="24" name="P1.01/XL2" type="bidirectional"/>
+        <pin num="25" name="P1.00/XL1" type="bidirectional"/>
+        <pin num="26" name="VDD_nRF" type="power_in"/>
+        <pin num="27" name="GND" type="power_in"/>
+        <pin num="28" name="P1.10" type="bidirectional"/>
+        <pin num="29" name="P1.09" type="bidirectional"/>
+        <pin num="30" name="P1.08" type="bidirectional"/>
+        <pin num="31" name="P0.04" type="bidirectional"/>
+        <pin num="32" name="P1.14" type="bidirectional"/>
+        <pin num="33" name="P1.13" type="bidirectional"/>
+        <pin num="34" name="P1.12" type="bidirectional"/>
+        <pin num="35" name="P1.11" type="bidirectional"/>
+        <pin num="36" name="P0.03" type="bidirectional"/>
+        <pin num="37" name="P2.10" type="bidirectional"/>
+        <pin num="38" name="P2.06" type="bidirectional"/>
+        <pin num="39" name="GND" type="power_in"/>
+      </pins>
+    </libpart>
+    <libpart lib="fdc" part="FDC1004">
+      <description>4-channel capacitance-to-digital converter with active shield, I2C. Pinout per TI SNOSCY5 Table 4-1.</description>
+      <docs>https://www.ti.com/lit/ds/symlink/fdc1004.pdf</docs>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">FDC1004</field>
+        <field name="Footprint">Package_SO:MSOP-10_3x3mm_P0.5mm</field>
+        <field name="Datasheet">https://www.ti.com/lit/ds/symlink/fdc1004.pdf</field>
+        <field name="Description">4-channel capacitance-to-digital converter with active shield, I2C. Pinout per TI SNOSCY5 Table 4-1.</field>
+      </fields>
+      <pins>
+        <pin num="1" name="SHLD1" type="passive"/>
+        <pin num="2" name="CIN1" type="passive"/>
+        <pin num="3" name="CIN2" type="passive"/>
+        <pin num="4" name="CIN3" type="passive"/>
+        <pin num="5" name="CIN4" type="passive"/>
+        <pin num="6" name="SHLD2" type="passive"/>
+        <pin num="7" name="GND" type="power_in"/>
+        <pin num="8" name="VDD" type="power_in"/>
+        <pin num="9" name="SCL" type="input"/>
+        <pin num="10" name="SDA" type="bidirectional"/>
+      </pins>
+    </libpart>
+    <libpart lib="npm2100" part="NPM2100-QEAA">
+      <docs>~</docs>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">NPM2100-QEAA</field>
+        <field name="Footprint"/>
+        <field name="Datasheet">~</field>
+        <field name="Description"/>
+      </fields>
+      <pins>
+        <pin num="1" name="VSET" type="passive"/>
+        <pin num="2" name="SW" type="passive"/>
+        <pin num="3" name="VBAT" type="power_in"/>
+        <pin num="4" name="SHPHLD" type="input"/>
+        <pin num="5" name="GPIO0" type="bidirectional"/>
+        <pin num="6" name="SDA" type="bidirectional"/>
+        <pin num="7" name="SCL" type="input"/>
+        <pin num="8" name="SYSGDEN" type="input"/>
+        <pin num="9" name="GPIO1" type="bidirectional"/>
+        <pin num="10" name="PG/RESET" type="open_collector"/>
+        <pin num="11" name="AVSS2" type="power_in"/>
+        <pin num="12" name="LSOUT/VOUTLDO" type="power_out"/>
+        <pin num="13" name="VOUT" type="power_out"/>
+        <pin num="14" name="VINT" type="power_out"/>
+        <pin num="15" name="VINT" type="passive"/>
+        <pin num="16" name="PVSS" type="power_in"/>
+        <pin num="17" name="AVSS1" type="power_in"/>
+      </pins>
+    </libpart>
+    <libpart lib="protection" part="DMG2305UX">
+      <description>P-MOSFET transistor</description>
+      <fields>
+        <field name="Reference">Q</field>
+        <field name="Value">DMG2305UX</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">P-MOSFET transistor</field>
+      </fields>
+      <pins>
+        <pin num="1" name="G" type="input"/>
+        <pin num="2" name="S" type="passive"/>
+        <pin num="3" name="D" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="protection" part="TPD1E01B04">
+      <description>Bidirectional transient-voltage-suppression diode</description>
+      <footprints>
+        <fp>TO-???*</fp>
+        <fp>*_Diode_*</fp>
+        <fp>*SingleDiode*</fp>
+        <fp>D_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">D</field>
+        <field name="Value">TPD1E01B04</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">Bidirectional transient-voltage-suppression diode</field>
+      </fields>
+      <pins>
+        <pin num="1" name="A1" type="passive"/>
+        <pin num="2" name="A2" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="protection" part="TPD1E1B04">
+      <description>Bidirectional transient-voltage-suppression diode</description>
+      <footprints>
+        <fp>TO-???*</fp>
+        <fp>*_Diode_*</fp>
+        <fp>*SingleDiode*</fp>
+        <fp>D_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">D</field>
+        <field name="Value">TPD1E1B04</field>
+        <field name="Footprint"/>
+        <field name="Datasheet"/>
+        <field name="Description">Bidirectional transient-voltage-suppression diode</field>
+      </fields>
+      <pins>
+        <pin num="1" name="A1" type="passive"/>
+        <pin num="2" name="A2" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="sht4x" part="SHT4x">
+      <description>Sensirion SHT4x RH/T sensor, DFN-4 1.5x1.5mm. Pinout per datasheet v7.1 section 5.4 Figure 18. Die pad must NOT be soldered.</description>
+      <docs>https://sensirion.com/resource/datasheet/sht4x</docs>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">SHT45-AD1F</field>
+        <field name="Footprint">Sensor_Humidity:Sensirion_DFN-4_1.5x1.5mm_P0.8mm_SHT4x_NoCentralPad</field>
+        <field name="Datasheet">https://sensirion.com/resource/datasheet/sht4x</field>
+        <field name="Description">Sensirion SHT4x RH/T sensor, DFN-4 1.5x1.5mm. Pinout per datasheet v7.1 section 5.4 Figure 18. Die pad must NOT be soldered.</field>
+      </fields>
+      <pins>
+        <pin num="1" name="SDA" type="bidirectional"/>
+        <pin num="2" name="SCL" type="input"/>
+        <pin num="3" name="VDD" type="power_in"/>
+        <pin num="4" name="VSS" type="power_in"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="Connector">
+      <uri>${KICAD10_SYMBOL_DIR}/Connector.kicad_sym</uri>
+    </library>
+    <library logical="Connector_Generic">
+      <uri>${KICAD10_SYMBOL_DIR}/Connector_Generic.kicad_sym</uri>
+    </library>
+    <library logical="Device">
+      <uri>${KICAD10_SYMBOL_DIR}/Device.kicad_sym</uri>
+    </library>
+    <library logical="Mechanical">
+      <uri>${KICAD10_SYMBOL_DIR}/Mechanical.kicad_sym</uri>
+    </library>
+    <library logical="ezurio">
+      <uri>${KIPRJMOD}/lib/ezurio.kicad_sym</uri>
+    </library>
+    <library logical="fdc">
+      <uri>${KIPRJMOD}/lib/FDC1004.kicad_sym</uri>
+    </library>
+    <library logical="npm2100">
+      <uri>${KIPRJMOD}/lib/nordic/NPM2100-QEAA.kicad_sym</uri>
+    </library>
+    <library logical="protection">
+      <uri>${KIPRJMOD}/lib/protection.kicad_sym</uri>
+    </library>
+    <library logical="sht4x">
+      <uri>${KIPRJMOD}/lib/SHT4x.kicad_sym</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="+3V3" class="Power">
+      <node ref="C25" pin="1" pintype="passive"/>
+      <node ref="C27" pin="1" pintype="passive"/>
+      <node ref="C3" pin="1" pintype="passive"/>
+      <node ref="D3" pin="1" pinfunction="A1_1" pintype="passive"/>
+      <node ref="J4" pin="1" pinfunction="Pin_1_1" pintype="passive"/>
+      <node ref="R22" pin="1" pintype="passive"/>
+      <node ref="R23" pin="1" pintype="passive"/>
+      <node ref="TP4" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U1" pin="26" pinfunction="VDD_nRF_26" pintype="power_in"/>
+      <node ref="U2" pin="13" pinfunction="VOUT_13" pintype="power_out"/>
+      <node ref="U4" pin="3" pinfunction="VDD_3" pintype="power_in"/>
+    </net>
+    <net code="2" name="+3V3_FDC_SW" class="Power">
+      <node ref="C26" pin="1" pintype="passive"/>
+      <node ref="C28" pin="1" pintype="passive"/>
+      <node ref="TP6" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U2" pin="12" pinfunction="LSOUT/VOUTLDO_12" pintype="power_out"/>
+      <node ref="U3" pin="8" pinfunction="VDD_8" pintype="power_in"/>
+    </net>
+    <net code="3" name="/CIN1_PROTECTED" class="SENSE">
+      <node ref="D8" pin="1" pinfunction="A1_1" pintype="passive"/>
+      <node ref="R30" pin="2" pintype="passive"/>
+      <node ref="U3" pin="2" pinfunction="CIN1_2" pintype="passive"/>
+    </net>
+    <net code="4" name="/CIN2_PROTECTED" class="SENSE">
+      <node ref="D9" pin="1" pinfunction="A1_1" pintype="passive"/>
+      <node ref="R31" pin="2" pintype="passive"/>
+      <node ref="U3" pin="3" pinfunction="CIN2_3" pintype="passive"/>
+    </net>
+    <net code="5" name="/MARK1" class="Default">
+      <node ref="TP16" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U1" pin="20" pinfunction="P1.07_20" pintype="bidirectional"/>
+    </net>
+    <net code="6" name="/MARK2" class="Default">
+      <node ref="TP17" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U1" pin="21" pinfunction="P1.06_21" pintype="bidirectional"/>
+    </net>
+    <net code="7" name="/NRESET" class="Control">
+      <node ref="C13" pin="1" pintype="passive"/>
+      <node ref="R1" pin="1" pintype="passive"/>
+      <node ref="TP15" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U1" pin="7" pinfunction="nRESET_7" pintype="input"/>
+    </net>
+    <net code="8" name="/P2.07_SWO" class="Control">
+      <node ref="R34" pin="2" pintype="passive"/>
+      <node ref="U1" pin="4" pinfunction="P2.07/SWO_4" pintype="bidirectional"/>
+    </net>
+    <net code="9" name="/PMIC_INT" class="Control">
+      <node ref="TP14" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U1" pin="17" pinfunction="P0.00_17" pintype="bidirectional"/>
+      <node ref="U2" pin="5" pinfunction="GPIO0_5" pintype="bidirectional"/>
+    </net>
+    <net code="10" name="/RESET_EXT" class="Control">
+      <node ref="D7" pin="1" pinfunction="A1_1" pintype="passive"/>
+      <node ref="J4" pin="10" pinfunction="Pin_10_10" pintype="passive"/>
+      <node ref="R35" pin="1" pintype="passive"/>
+    </net>
+    <net code="11" name="/SCL" class="I2C">
+      <node ref="R23" pin="2" pintype="passive"/>
+      <node ref="TP13" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U1" pin="35" pinfunction="P1.11_35" pintype="bidirectional"/>
+      <node ref="U2" pin="7" pinfunction="SCL_7" pintype="input"/>
+      <node ref="U3" pin="9" pinfunction="SCL_9" pintype="input"/>
+      <node ref="U4" pin="2" pinfunction="SCL_2" pintype="input"/>
+    </net>
+    <net code="12" name="/SDA" class="I2C">
+      <node ref="R22" pin="2" pintype="passive"/>
+      <node ref="TP12" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U1" pin="28" pinfunction="P1.10_28" pintype="bidirectional"/>
+      <node ref="U2" pin="6" pinfunction="SDA_6" pintype="bidirectional"/>
+      <node ref="U3" pin="10" pinfunction="SDA_10" pintype="bidirectional"/>
+      <node ref="U4" pin="1" pinfunction="SDA_1" pintype="bidirectional"/>
+    </net>
+    <net code="13" name="/SENSE1" class="SENSE">
+      <node ref="R30" pin="1" pintype="passive"/>
+      <node ref="TP1" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="14" name="/SENSE2" class="SENSE">
+      <node ref="R31" pin="1" pintype="passive"/>
+      <node ref="TP2" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="15" name="/SHLD" class="SHIELD">
+      <node ref="D10" pin="1" pinfunction="A1_1" pintype="passive"/>
+      <node ref="TP3" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U3" pin="1" pinfunction="SHLD1_1" pintype="passive"/>
+      <node ref="U3" pin="6" pinfunction="SHLD2_6" pintype="passive"/>
+    </net>
+    <net code="16" name="/SW" class="SWITCH">
+      <node ref="L10" pin="1" pintype="passive"/>
+      <node ref="U2" pin="2" pinfunction="SW_2" pintype="passive"/>
+    </net>
+    <net code="17" name="/SWDCLK" class="Control">
+      <node ref="R33" pin="2" pintype="passive"/>
+      <node ref="U1" pin="6" pinfunction="SWDCLK_6" pintype="input"/>
+    </net>
+    <net code="18" name="/SWDCLK_EXT" class="Control">
+      <node ref="D5" pin="1" pinfunction="A1_1" pintype="passive"/>
+      <node ref="J4" pin="4" pinfunction="Pin_4_4" pintype="passive"/>
+      <node ref="R33" pin="1" pintype="passive"/>
+    </net>
+    <net code="19" name="/SWDIO" class="Control">
+      <node ref="R32" pin="2" pintype="passive"/>
+      <node ref="U1" pin="5" pinfunction="SWDIO_5" pintype="bidirectional"/>
+    </net>
+    <net code="20" name="/SWDIO_EXT" class="Control">
+      <node ref="D4" pin="1" pinfunction="A1_1" pintype="passive"/>
+      <node ref="J4" pin="2" pinfunction="Pin_2_2" pintype="passive"/>
+      <node ref="R32" pin="1" pintype="passive"/>
+    </net>
+    <net code="21" name="/SWD_RST" class="Control">
+      <node ref="R1" pin="2" pintype="passive"/>
+      <node ref="R35" pin="2" pintype="passive"/>
+      <node ref="U2" pin="10" pinfunction="PG/RESET_10" pintype="open_collector"/>
+    </net>
+    <net code="22" name="/SWO_EXT" class="Control">
+      <node ref="D6" pin="1" pinfunction="A1_1" pintype="passive"/>
+      <node ref="J4" pin="6" pinfunction="Pin_6_6" pintype="passive"/>
+      <node ref="R34" pin="1" pintype="passive"/>
+    </net>
+    <net code="23" name="/VBAT_RAW" class="Power">
+      <node ref="BT1" pin="1" pinfunction="+_1" pintype="passive"/>
+      <node ref="D1" pin="1" pinfunction="A1_1" pintype="passive"/>
+      <node ref="Q1" pin="3" pinfunction="D_3" pintype="passive"/>
+      <node ref="TP9" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="24" name="/VINT" class="LocalPower">
+      <node ref="C23" pin="1" pintype="passive"/>
+      <node ref="C24" pin="1" pintype="passive"/>
+      <node ref="TP10" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U2" pin="14" pinfunction="VINT_14" pintype="power_out"/>
+      <node ref="U2" pin="15" pinfunction="VINT_15" pintype="passive"/>
+    </net>
+    <net code="25" name="/XL1" class="Crystal">
+      <node ref="U1" pin="25" pinfunction="P1.00/XL1_25" pintype="bidirectional"/>
+      <node ref="X1" pin="1" pinfunction="1_1" pintype="passive"/>
+    </net>
+    <net code="26" name="/XL2" class="Crystal">
+      <node ref="U1" pin="24" pinfunction="P1.01/XL2_24" pintype="bidirectional"/>
+      <node ref="X1" pin="2" pinfunction="2_2" pintype="passive"/>
+    </net>
+    <net code="27" name="GND" class="Power">
+      <node ref="BT1" pin="2" pinfunction="-_2" pintype="passive"/>
+      <node ref="C13" pin="2" pintype="passive"/>
+      <node ref="C21" pin="2" pintype="passive"/>
+      <node ref="C22" pin="2" pintype="passive"/>
+      <node ref="C23" pin="2" pintype="passive"/>
+      <node ref="C24" pin="2" pintype="passive"/>
+      <node ref="C25" pin="2" pintype="passive"/>
+      <node ref="C26" pin="2" pintype="passive"/>
+      <node ref="C27" pin="2" pintype="passive"/>
+      <node ref="C28" pin="2" pintype="passive"/>
+      <node ref="C3" pin="2" pintype="passive"/>
+      <node ref="D1" pin="2" pinfunction="A2_2" pintype="passive"/>
+      <node ref="D10" pin="2" pinfunction="A2_2" pintype="passive"/>
+      <node ref="D2" pin="2" pinfunction="A2_2" pintype="passive"/>
+      <node ref="D3" pin="2" pinfunction="A2_2" pintype="passive"/>
+      <node ref="D4" pin="2" pinfunction="A2_2" pintype="passive"/>
+      <node ref="D5" pin="2" pinfunction="A2_2" pintype="passive"/>
+      <node ref="D6" pin="2" pinfunction="A2_2" pintype="passive"/>
+      <node ref="D7" pin="2" pinfunction="A2_2" pintype="passive"/>
+      <node ref="D8" pin="2" pinfunction="A2_2" pintype="passive"/>
+      <node ref="D9" pin="2" pinfunction="A2_2" pintype="passive"/>
+      <node ref="J4" pin="3" pinfunction="Pin_3_3" pintype="passive"/>
+      <node ref="J4" pin="5" pinfunction="Pin_5_5" pintype="passive"/>
+      <node ref="J4" pin="9" pinfunction="Pin_9_9" pintype="passive"/>
+      <node ref="Q1" pin="1" pinfunction="G_1" pintype="input"/>
+      <node ref="TP11" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="TP5" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="TP7" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U1" pin="1" pinfunction="GND_1" pintype="power_in"/>
+      <node ref="U1" pin="16" pinfunction="GND_16" pintype="power_in"/>
+      <node ref="U1" pin="27" pinfunction="GND_27" pintype="power_in"/>
+      <node ref="U1" pin="39" pinfunction="GND_39" pintype="power_in"/>
+      <node ref="U2" pin="11" pinfunction="AVSS2_11" pintype="power_in"/>
+      <node ref="U2" pin="16" pinfunction="PVSS_16" pintype="power_in"/>
+      <node ref="U2" pin="17" pinfunction="AVSS1_17" pintype="power_in"/>
+      <node ref="U2" pin="8" pinfunction="SYSGDEN_8" pintype="input"/>
+      <node ref="U3" pin="7" pinfunction="GND_7" pintype="power_in"/>
+      <node ref="U4" pin="4" pinfunction="VSS_4" pintype="power_in"/>
+    </net>
+    <net code="28" name="VBAT" class="Power">
+      <node ref="C21" pin="1" pintype="passive"/>
+      <node ref="C22" pin="1" pintype="passive"/>
+      <node ref="D2" pin="1" pinfunction="A1_1" pintype="passive"/>
+      <node ref="L10" pin="2" pintype="passive"/>
+      <node ref="Q1" pin="2" pinfunction="S_2" pintype="passive"/>
+      <node ref="TP8" pin="1" pinfunction="1_1" pintype="passive"/>
+      <node ref="U2" pin="3" pinfunction="VBAT_3" pintype="power_in"/>
+    </net>
+    <net code="29" name="unconnected-(J4-Pin_7-Pad7)" class="Default">
+      <node ref="J4" pin="7" pinfunction="Pin_7_7" pintype="passive+no_connect"/>
+    </net>
+    <net code="30" name="unconnected-(J4-Pin_8-Pad8)" class="Default">
+      <node ref="J4" pin="8" pinfunction="Pin_8_8" pintype="passive+no_connect"/>
+    </net>
+    <net code="31" name="unconnected-(U1-P0.01-Pad18)" class="Default">
+      <node ref="U1" pin="18" pinfunction="P0.01_18" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="32" name="unconnected-(U1-P0.02-Pad19)" class="Default">
+      <node ref="U1" pin="19" pinfunction="P0.02_19" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="33" name="unconnected-(U1-P0.03-Pad36)" class="Default">
+      <node ref="U1" pin="36" pinfunction="P0.03_36" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="34" name="unconnected-(U1-P0.04-Pad31)" class="Default">
+      <node ref="U1" pin="31" pinfunction="P0.04_31" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="35" name="unconnected-(U1-P1.02/NFC1-Pad15)" class="Default">
+      <node ref="U1" pin="15" pinfunction="P1.02/NFC1_15" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="36" name="unconnected-(U1-P1.03/NFC2-Pad14)" class="Default">
+      <node ref="U1" pin="14" pinfunction="P1.03/NFC2_14" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="37" name="unconnected-(U1-P1.04-Pad23)" class="Default">
+      <node ref="U1" pin="23" pinfunction="P1.04_23" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="38" name="unconnected-(U1-P1.05-Pad22)" class="Default">
+      <node ref="U1" pin="22" pinfunction="P1.05_22" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="39" name="unconnected-(U1-P1.08-Pad30)" class="Default">
+      <node ref="U1" pin="30" pinfunction="P1.08_30" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="40" name="unconnected-(U1-P1.09-Pad29)" class="Default">
+      <node ref="U1" pin="29" pinfunction="P1.09_29" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="41" name="unconnected-(U1-P1.12-Pad34)" class="Default">
+      <node ref="U1" pin="34" pinfunction="P1.12_34" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="42" name="unconnected-(U1-P1.13-Pad33)" class="Default">
+      <node ref="U1" pin="33" pinfunction="P1.13_33" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="43" name="unconnected-(U1-P1.14-Pad32)" class="Default">
+      <node ref="U1" pin="32" pinfunction="P1.14_32" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="44" name="unconnected-(U1-P2.00-Pad9)" class="Default">
+      <node ref="U1" pin="9" pinfunction="P2.00_9" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="45" name="unconnected-(U1-P2.01-Pad10)" class="Default">
+      <node ref="U1" pin="10" pinfunction="P2.01_10" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="46" name="unconnected-(U1-P2.02-Pad8)" class="Default">
+      <node ref="U1" pin="8" pinfunction="P2.02_8" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="47" name="unconnected-(U1-P2.03-Pad13)" class="Default">
+      <node ref="U1" pin="13" pinfunction="P2.03_13" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="48" name="unconnected-(U1-P2.04-Pad11)" class="Default">
+      <node ref="U1" pin="11" pinfunction="P2.04_11" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="49" name="unconnected-(U1-P2.05-Pad12)" class="Default">
+      <node ref="U1" pin="12" pinfunction="P2.05_12" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="50" name="unconnected-(U1-P2.06-Pad38)" class="Default">
+      <node ref="U1" pin="38" pinfunction="P2.06_38" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="51" name="unconnected-(U1-P2.08-Pad3)" class="Default">
+      <node ref="U1" pin="3" pinfunction="P2.08_3" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="52" name="unconnected-(U1-P2.09-Pad2)" class="Default">
+      <node ref="U1" pin="2" pinfunction="P2.09_2" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="53" name="unconnected-(U1-P2.10-Pad37)" class="Default">
+      <node ref="U1" pin="37" pinfunction="P2.10_37" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="54" name="unconnected-(U2-GPIO1-Pad9)" class="Default">
+      <node ref="U2" pin="9" pinfunction="GPIO1_9" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="55" name="unconnected-(U2-SHPHLD-Pad4)" class="Default">
+      <node ref="U2" pin="4" pinfunction="SHPHLD_4" pintype="input+no_connect"/>
+    </net>
+    <net code="56" name="unconnected-(U2-VSET-Pad1)" class="Default">
+      <node ref="U2" pin="1" pinfunction="VSET_1" pintype="passive+no_connect"/>
+    </net>
+    <net code="57" name="unconnected-(U3-CIN3-Pad4)" class="Default">
+      <node ref="U3" pin="4" pinfunction="CIN3_4" pintype="passive+no_connect"/>
+    </net>
+    <net code="58" name="unconnected-(U3-CIN4-Pad5)" class="Default">
+      <node ref="U3" pin="5" pinfunction="CIN4_5" pintype="passive+no_connect"/>
+    </net>
+  </nets>
+</export>

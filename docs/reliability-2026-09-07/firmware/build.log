@@ -1,0 +1,120 @@
+[0/1] Re-running CMake...
+Loading Zephyr module(s) (Zephyr base (cached)): sysbuild_default
+-- Cache files will be written to: /workdir/zephyr/.cache
+-- Found west (found suitable version "1.4.0", minimum required is "0.14.0")
+-- Board: bl54l15_dvk, qualifiers: nrf54l15/cpuapp
+Parsing /workdir/zephyr/share/sysbuild/Kconfig
+Loaded configuration '/builds/carrier-reliability/zephyr/.config'
+No change to configuration in '/builds/carrier-reliability/zephyr/.config'
+No change to Kconfig header in '/builds/carrier-reliability/_sysbuild/autoconf.h'
+-- 
+   *************************************
+   * Running CMake for carrier-bringup *
+   *************************************
+
+Loading Zephyr default modules (Zephyr base (cached)).
+-- Application: /fw/firmware/carrier-bringup
+-- CMake version: 3.21.0
+-- Cache files will be written to: /workdir/zephyr/.cache
+-- Zephyr version: 4.2.99 (/workdir/zephyr)
+-- Found west (found suitable version "1.4.0", minimum required is "0.14.0")
+-- Board: bl54l15_dvk, qualifiers: nrf54l15/cpuapp
+-- Found host-tools: zephyr 0.17.0 (/opt/ncs/toolchains/927563c840/opt/zephyr-sdk)
+-- Found toolchain: zephyr 0.17.0 (/opt/ncs/toolchains/927563c840/opt/zephyr-sdk)
+-- Found BOARD.dts: /workdir/zephyr/boards/ezurio/bl54l15_dvk/bl54l15_dvk_nrf54l15_cpuapp.dts
+-- Found devicetree overlay: /fw/firmware/carrier-bringup/app.overlay
+-- Generated zephyr.dts: /builds/carrier-reliability/carrier-bringup/zephyr/zephyr.dts
+-- Generated pickled edt: /builds/carrier-reliability/carrier-bringup/zephyr/edt.pickle
+-- Generated devicetree_generated.h: /builds/carrier-reliability/carrier-bringup/zephyr/include/generated/zephyr/devicetree_generated.h
+Parsing /workdir/zephyr/Kconfig
+Loaded configuration '/builds/carrier-reliability/carrier-bringup/zephyr/.config'
+Merged configuration '/builds/carrier-reliability/carrier-bringup/zephyr/.config.sysbuild'
+No change to configuration in '/builds/carrier-reliability/carrier-bringup/zephyr/.config'
+No change to Kconfig header in '/builds/carrier-reliability/carrier-bringup/zephyr/include/generated/zephyr/autoconf.h'
+-- Using ccache: /opt/ncs/toolchains/927563c840/usr/bin/ccache
+-- Found gen_kobject_list: /workdir/zephyr/scripts/build/gen_kobject_list.py
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /builds/carrier-reliability/carrier-bringup
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /builds/carrier-reliability
+[0/5] Performing build step for 'carrier-bringup'
+[1/255] Generating misc/generated/syscalls.json, misc/generated/struct_tags.json
+[2/69] Generating linker_zephyr_pre0.cmd
+[3/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/workdir/modules/crypto/mbedtls/library/pkcs12.c.obj
+[4/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/workdir/modules/crypto/mbedtls/library/pkcs5.c.obj
+[5/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/workdir/modules/crypto/mbedtls/library/pem.c.obj
+[6/69] Building C object zephyr/CMakeFiles/zephyr.dir/workdir/nrf/subsys/partition_manager/flash_map_partition_manager.c.obj
+[7/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/workdir/modules/crypto/mbedtls/library/pkparse.c.obj
+[8/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/workdir/modules/crypto/mbedtls/library/pkwrite.c.obj
+[9/69] Building C object zephyr/arch/arch/arm/core/mpu/CMakeFiles/arch__arm__core__mpu.dir/arm_mpu_regions.c.obj
+[10/69] Building C object zephyr/drivers/entropy/CMakeFiles/drivers__entropy.dir/entropy_psa_crypto.c.obj
+[11/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/workdir/modules/crypto/mbedtls/library/cipher.c.obj
+[12/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/workdir/modules/crypto/mbedtls/library/dhm.c.obj
+[13/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/workdir/modules/crypto/mbedtls/library/md.c.obj
+[14/69] Linking C static library zephyr/arch/arch/arm/core/mpu/libarch__arm__core__mpu.a
+[15/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/workdir/modules/crypto/mbedtls/library/pk_wrap.c.obj
+[16/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/workdir/modules/crypto/mbedtls/library/cipher_wrap.c.obj
+[17/69] Linking C static library zephyr/drivers/entropy/libdrivers__entropy.a
+[18/69] Building C object CMakeFiles/app.dir/src/carrier.c.obj
+[19/69] Building C object zephyr/lib/libc/common/CMakeFiles/lib__libc__common.dir/source/stdlib/malloc.c.obj
+[20/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/workdir/modules/crypto/oberon-psa-crypto/programs/ssl/library/pk.c.obj
+[21/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/workdir/modules/crypto/mbedtls/library/pk_ecc.c.obj
+[22/69] Linking C static library zephyr/lib/libc/common/liblib__libc__common.a
+[23/69] Building C object CMakeFiles/app.dir/src/main.c.obj
+[24/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto_base.dir/workdir/modules/crypto/mbedtls/library/bignum_core.c.obj
+[25/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto_base.dir/workdir/modules/crypto/mbedtls/library/bignum.c.obj
+[26/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto_base.dir/workdir/modules/crypto/mbedtls/library/nist_kw.c.obj
+[27/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/workdir/modules/crypto/mbedtls/library/psa_util.c.obj
+[28/69] Linking C static library app/libapp.a
+[29/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto_base.dir/workdir/modules/crypto/mbedtls/library/asn1write.c.obj
+[30/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto_base.dir/workdir/modules/crypto/mbedtls/library/padlock.c.obj
+[31/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto_base.dir/workdir/modules/crypto/mbedtls/library/asn1parse.c.obj
+[32/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto_base.dir/workdir/modules/crypto/mbedtls/library/base64.c.obj
+[33/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto_base.dir/workdir/modules/crypto/mbedtls/library/version.c.obj
+[34/69] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/workdir/modules/crypto/oberon-psa-crypto/library/platform.c.obj
+[35/69] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/workdir/modules/crypto/oberon-psa-crypto/library/psa_crypto_storage.c.obj
+[36/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto_base.dir/workdir/modules/crypto/mbedtls/library/constant_time.c.obj
+[37/69] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/workdir/modules/crypto/oberon-psa-crypto/library/psa_crypto_client.c.obj
+[38/69] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/workdir/nrf/subsys/nrf_security/src/mbedtls_psa_platform.c.obj
+[39/69] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/workdir/modules/crypto/oberon-psa-crypto/library/platform_util.c.obj
+[40/69] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/hmac.c.obj
+[41/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto_base.dir/workdir/modules/crypto/mbedtls/library/oid.c.obj
+[42/69] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/hash.c.obj
+[43/69] Linking C static library modules/nrf/subsys/nrf_security/src/libmbedcrypto_base.a
+[44/69] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/workdir/modules/crypto/oberon-psa-crypto/library/psa_crypto_slot_management.c.obj
+[45/69] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/workdir/nrf/subsys/nrf_security/src/psa_crypto_driver_wrappers.c.obj
+[46/69] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/cracen.c.obj
+[47/69] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/key_management.c.obj
+[48/69] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/ecc.c.obj
+[49/69] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/rndinrange.c.obj
+[50/69] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/sxsymcrypt/src/sha3.c.obj
+[51/69] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/cipher.c.obj
+[52/69] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/common.c.obj
+[53/69] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/prng_pool.c.obj
+[54/69] Building C object modules/nrf/subsys/nrf_security/src/core/nrf_oberon/CMakeFiles/psa_core.dir/workdir/modules/crypto/oberon-psa-crypto/library/psa_crypto.c.obj
+[55/69] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/ecdsa.c.obj
+[56/69] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/ctr_drbg.c.obj
+[57/69] Building C object modules/nrf/subsys/nrf_security/src/zephyr/CMakeFiles/mbedtls_zephyr.dir/entropy_poll.c.obj
+[58/69] Building C object modules/nrf/subsys/nrf_security/src/zephyr/CMakeFiles/mbedtls_zephyr.dir/psa_crypto_init.c.obj
+[59/69] Building C object modules/nrf/subsys/nrf_security/src/drivers/cracen/CMakeFiles/cracen_psa_driver.dir/cracenpsa/src/kmu.c.obj
+[60/69] Linking C static library modules/nrf/subsys/nrf_security/src/zephyr/libmbedtls_zephyr.a
+[61/69] Linking C static library modules/nrf/subsys/nrf_security/src/drivers/cracen/libcracen_psa_driver.a
+[62/69] Linking C static library modules/nrf/subsys/nrf_security/src/core/nrf_oberon/libpsa_core.a
+[63/69] Linking C static library modules/nrf/subsys/nrf_security/src/libmbedcrypto.a
+[64/69] Linking C static library zephyr/libzephyr.a
+[65/69] Linking C executable zephyr/zephyr_pre0.elf
+[66/69] Generating linker.cmd
+[67/69] Generating isr_tables.c, isr_tables_vt.ld, isr_tables_swi.ld
+[68/69] Building C object zephyr/CMakeFiles/zephyr_final.dir/isr_tables.c.obj
+[69/69] Linking C executable zephyr/zephyr.elf
+Memory region         Used Size  Region Size  %age Used
+           FLASH:       84608 B      1428 KB      5.79%
+             RAM:       21624 B       188 KB     11.23%
+        IDT_LIST:          0 GB        32 KB      0.00%
+Generating files from /builds/carrier-reliability/carrier-bringup/zephyr/zephyr.elf for board: bl54l15_dvk
+[2/5] No install step for 'carrier-bringup'
+[3/5] Completed 'carrier-bringup'
+[4/5] cd /builds/carrier-reliability/_sysbuild && /opt/ncs/toolchains/927563c840/usr/local/bin/cmake -E true
+[5/5] Generating ../merged.hex

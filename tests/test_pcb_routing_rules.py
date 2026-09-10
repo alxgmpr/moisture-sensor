@@ -29,7 +29,7 @@ class PcbRoutingRulesTest(unittest.TestCase):
             "Crystal": (0.20, 0.20, 0.50, 0.20),
             "LocalPower": (0.30, 0.20, 0.60, 0.30),
             "Power": (0.40, 0.25, 0.60, 0.30),
-            "SENSE": (0.25, 0.60, 0.50, 0.20),
+            "SENSE": (0.25, 0.20, 0.50, 0.20),
             "SHIELD": (0.30, 0.20, 0.60, 0.30),
             "SWITCH": (0.50, 0.30, 0.60, 0.30),
         }
@@ -53,6 +53,8 @@ class PcbRoutingRulesTest(unittest.TestCase):
             "/PMIC_INT": "Control",
             "/SCL": "I2C",
             "/SDA": "I2C",
+            "/FDC_SDA": "I2C",
+            "/FDC_SCL": "I2C",
             "/SENSE1": "SENSE",
             "/SENSE2": "SENSE",
             "/SHLD": "SHIELD",

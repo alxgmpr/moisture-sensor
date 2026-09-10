@@ -85,10 +85,10 @@ in both schematic and PCB; it does not mean a power pin was omitted.
 | 17 | P0.00 | PMIC_INT / U2.5 |
 | 18 | P0.01 | NC |
 | 19 | P0.02 | NC |
-| 20 | P1.07 | NC |
-| 21 | P1.06 | NC |
-| 22 | P1.05 | NC |
-| 23 | P1.04 | NC |
+| 20 | P1.07 | MARK1 / TP16 (timing marker) |
+| 21 | P1.06 | MARK2 / TP17 (timing marker) |
+| 22 | P1.05 | FDC_SDA |
+| 23 | P1.04 | FDC_SCL |
 | 24 | P1.01/XL2 | XL2 / X1.2 |
 | 25 | P1.00/XL1 | XL1 / X1.1 |
 | 26 | VDD_nRF | +3V3 / C3.1 |

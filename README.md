@@ -1,6 +1,6 @@
 # nRF Moisture Sensor
 
-CR2032-powered BLE soil-moisture and temperature/humidity sensor using Ezurio BL54L15, nPM2100, FDC1004 and SHT45.
+CR2032-powered BLE soil-moisture and temperature/humidity sensor using Ezurio BL54L15, nPM2100, FDC1004 and SHT40.
 
 Open [nrf-moisture-sensor.kicad_pro](nrf-moisture-sensor.kicad_pro) in KiCad. The maintained schematic and PCB are authoritative; the retired full-design generators must not overwrite them.
 

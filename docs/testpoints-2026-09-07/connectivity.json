@@ -1,0 +1,18 @@
+{
+  "added_test_points": 14,
+  "original_pad_net_changes": {
+    "U1.29": [
+      "unconnected-(U1-P1.09-Pad29)",
+      "/MARK1"
+    ],
+    "U1.30": [
+      "unconnected-(U1-P1.08-Pad30)",
+      "/MARK2"
+    ]
+  },
+  "marker_netlist_verified": true,
+  "all_new_testpoint_nets_verified": true,
+  "existing_tracks_preserved": true,
+  "existing_zone_outlines_preserved": true,
+  "ground_stitches_repositioned": 7
+}

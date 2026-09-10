@@ -1,0 +1,765 @@
+{
+    "$schema": "https://schemas.kicad.org/drc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-09-09T14:13:08",
+    "ignored_checks": [
+        {
+            "description": "Footprint has no courtyard defined",
+            "key": "missing_courtyard"
+        },
+        {
+            "description": "Track endpoint not centered on via",
+            "key": "track_not_centered_on_via"
+        },
+        {
+            "description": "Tuning profile track geometries",
+            "key": "tuning_profile_track_geometries"
+        },
+        {
+            "description": "Footprint doesn't match symbol's footprint filters",
+            "key": "footprint_filters_mismatch"
+        },
+        {
+            "description": "Footprint component type doesn't match footprint pads",
+            "key": "footprint_type_mismatch"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning",
+        "exclusion"
+    ],
+    "kicad_version": "10.99.0",
+    "schematic_parity": [],
+    "source": "nrf-moisture-sensor.kicad_pcb",
+    "unconnected_items": [],
+    "violations": [
+        {
+            "description": "Items not allowed (keepout area)",
+            "items": [
+                {
+                    "description": "Via [+3V3] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 74.475,
+                        "y": 72.675
+                    },
+                    "uuid": "0c92937a-92ec-40d8-8988-a4f1037265c0"
+                }
+            ],
+            "severity": "error",
+            "type": "items_not_allowed"
+        },
+        {
+            "description": "Items not allowed (keepout area)",
+            "items": [
+                {
+                    "description": "Via [+3V3] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 74.35,
+                        "y": 83.64
+                    },
+                    "uuid": "e7de8e73-6c93-4c86-a512-ca4be7dd1ff3"
+                }
+            ],
+            "severity": "error",
+            "type": "items_not_allowed"
+        },
+        {
+            "description": "Track has unconnected end",
+            "items": [
+                {
+                    "description": "Track [+3V3] on F.Cu, length 0.6650 mm",
+                    "pos": {
+                        "x": 84.0,
+                        "y": 62.76
+                    },
+                    "uuid": "0c40ca7d-f19f-4efb-810e-dc25f37043fa"
+                }
+            ],
+            "severity": "warning",
+            "type": "track_dangling"
+        },
+        {
+            "description": "Via is not connected or connected on only one layer",
+            "items": [
+                {
+                    "description": "Via [/NRESET] on F.Cu - B.Cu",
+                    "pos": {
+                        "x": 82.4,
+                        "y": 47.45
+                    },
+                    "uuid": "4f0526a3-a563-4d43-aa4e-c79a9a6eb9a3"
+                }
+            ],
+            "severity": "warning",
+            "type": "via_dangling"
+        },
+        {
+            "description": "Footprint 'QFN-16-1EP_4x4mm_P0.65mm_EP2.7x2.7mm_ThermalVias' does not match copy in library 'Package_DFN_QFN'",
+            "items": [
+                {
+                    "description": "Footprint U2",
+                    "pos": {
+                        "x": 68.5,
+                        "y": 99.0
+                    },
+                    "uuid": "ae90bc02-0545-4bc9-b2a8-ec625e0527fb"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Footprint 'Sensirion_DFN-4_1.5x1.5mm_P0.8mm_SHT4x_NoCentralPad' does not match copy in library 'Sensor_Humidity'",
+            "items": [
+                {
+                    "description": "Footprint U4",
+                    "pos": {
+                        "x": 99.7,
+                        "y": 60.6
+                    },
+                    "uuid": "f660d59c-b71d-49a0-b6bb-67ab2a0d06e9"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "Text thickness out of range (TrueType font characters with insufficient stroke weight)",
+            "items": [
+                {
+                    "description": "PCB text 'RAW' on F.Silkscreen",
+                    "pos": {
+                        "x": 62.8,
+                        "y": 90.2
+                    },
+                    "uuid": "82fcd8ab-2b94-4c23-a25e-c3b39b7cf590"
+                }
+            ],
+            "severity": "warning",
+            "type": "text_thickness"
+        },
+        {
+            "description": "Text thickness out of range (TrueType font characters with insufficient stroke weight)",
+            "items": [
+                {
+                    "description": "PCB text 'VBAT' on F.Silkscreen",
+                    "pos": {
+                        "x": 63.32,
+                        "y": 96.65
+                    },
+                    "uuid": "996a755b-7e3f-4140-b3b2-09aeb32a21ac"
+                }
+            ],
+            "severity": "warning",
+            "type": "text_thickness"
+        },
+        {
+            "description": "Text thickness out of range (TrueType font characters with insufficient stroke weight)",
+            "items": [
+                {
+                    "description": "PCB text 'GND' on F.Silkscreen",
+                    "pos": {
+                        "x": 65.15,
+                        "y": 60.2
+                    },
+                    "uuid": "3bd5d47e-29c1-446e-81ef-0e95221ad77c"
+                }
+            ],
+            "severity": "warning",
+            "type": "text_thickness"
+        },
+        {
+            "description": "Text thickness out of range (TrueType font characters with insufficient stroke weight)",
+            "items": [
+                {
+                    "description": "PCB text 'GND' on F.Silkscreen",
+                    "pos": {
+                        "x": 66.085,
+                        "y": 91.31
+                    },
+                    "uuid": "6379355b-cab2-4656-9111-5272681abd50"
+                }
+            ],
+            "severity": "warning",
+            "type": "text_thickness"
+        },
+        {
+            "description": "Text thickness out of range (TrueType font characters with insufficient stroke weight)",
+            "items": [
+                {
+                    "description": "PCB text 'INT' on F.Silkscreen",
+                    "pos": {
+                        "x": 67.5,
+                        "y": 105.82
+                    },
+                    "uuid": "b3013b60-3328-4ee3-8ca6-83bcef28d446"
+                }
+            ],
+            "severity": "warning",
+            "type": "text_thickness"
+        },
+        {
+            "description": "Text thickness out of range (TrueType font characters with insufficient stroke weight)",
+            "items": [
+                {
+                    "description": "PCB text '3V3' on F.Silkscreen",
+                    "pos": {
+                        "x": 73.0,
+                        "y": 59.55
+                    },
+                    "uuid": "94477536-9dff-4aee-bc98-d1babaf1d1d6"
+                }
+            ],
+            "severity": "warning",
+            "type": "text_thickness"
+        },
+        {
+            "description": "Text thickness out of range (TrueType font characters with insufficient stroke weight)",
+            "items": [
+                {
+                    "description": "PCB text 'M2' on F.Silkscreen",
+                    "pos": {
+                        "x": 77.96,
+                        "y": 56.6
+                    },
+                    "uuid": "63baf082-8960-4f4f-acab-b1c537827858"
+                }
+            ],
+            "severity": "warning",
+            "type": "text_thickness"
+        },
+        {
+            "description": "Text thickness out of range (TrueType font characters with insufficient stroke weight)",
+            "items": [
+                {
+                    "description": "PCB text 'M1' on F.Silkscreen",
+                    "pos": {
+                        "x": 79.29,
+                        "y": 56.6
+                    },
+                    "uuid": "fb012eef-1b0e-4806-839a-27a895494c98"
+                }
+            ],
+            "severity": "warning",
+            "type": "text_thickness"
+        },
+        {
+            "description": "Text thickness out of range (TrueType font characters with insufficient stroke weight)",
+            "items": [
+                {
+                    "description": "PCB text 'RST' on F.Silkscreen",
+                    "pos": {
+                        "x": 85.3,
+                        "y": 50.72
+                    },
+                    "uuid": "76f57772-ab08-4e00-918b-1c7847321308"
+                }
+            ],
+            "severity": "warning",
+            "type": "text_thickness"
+        },
+        {
+            "description": "Text thickness out of range (TrueType font characters with insufficient stroke weight)",
+            "items": [
+                {
+                    "description": "PCB text 'GND' on F.Silkscreen",
+                    "pos": {
+                        "x": 74.4,
+                        "y": 102.9
+                    },
+                    "uuid": "e397d295-ab27-4ff2-872a-09cf323a0a87"
+                }
+            ],
+            "severity": "warning",
+            "type": "text_thickness"
+        },
+        {
+            "description": "Text thickness out of range (TrueType font characters with insufficient stroke weight)",
+            "items": [
+                {
+                    "description": "PCB text 'VINT' on B.Silkscreen",
+                    "pos": {
+                        "x": 70.9,
+                        "y": 94.9
+                    },
+                    "uuid": "52242e79-564b-4b95-92eb-11ed71cbc6ab"
+                }
+            ],
+            "severity": "warning",
+            "type": "text_thickness"
+        },
+        {
+            "description": "Text thickness out of range (TrueType font characters with insufficient stroke weight)",
+            "items": [
+                {
+                    "description": "Reference field of TP5",
+                    "pos": {
+                        "x": 65.15,
+                        "y": 59.0
+                    },
+                    "uuid": "1f6d44d4-13ba-46ff-9d80-6937b73d6e63"
+                }
+            ],
+            "severity": "warning",
+            "type": "text_thickness"
+        },
+        {
+            "description": "Text thickness out of range (TrueType font characters with insufficient stroke weight)",
+            "items": [
+                {
+                    "description": "Reference field of TP9",
+                    "pos": {
+                        "x": 62.8,
+                        "y": 89.0
+                    },
+                    "uuid": "c8458361-ad0d-4831-939b-1a5097e42e46"
+                }
+            ],
+            "severity": "warning",
+            "type": "text_thickness"
+        },
+        {
+            "description": "Text thickness out of range (TrueType font characters with insufficient stroke weight)",
+            "items": [
+                {
+                    "description": "Reference field of TP7",
+                    "pos": {
+                        "x": 66.085,
+                        "y": 92.5
+                    },
+                    "uuid": "72b4fee7-7274-4a2c-823f-ce3d92ee0a18"
+                }
+            ],
+            "severity": "warning",
+            "type": "text_thickness"
+        },
+        {
+            "description": "Text thickness out of range (TrueType font characters with insufficient stroke weight)",
+            "items": [
+                {
+                    "description": "Reference field of TP6",
+                    "pos": {
+                        "x": 71.97,
+                        "y": 99.4
+                    },
+                    "uuid": "9dc1d638-cfca-4b0e-94bf-063e5722f783"
+                }
+            ],
+            "severity": "warning",
+            "type": "text_thickness"
+        },
+        {
+            "description": "Text thickness out of range (TrueType font characters with insufficient stroke weight)",
+            "items": [
+                {
+                    "description": "Reference field of TP16",
+                    "pos": {
+                        "x": 79.29,
+                        "y": 59.2
+                    },
+                    "uuid": "a964151a-2fd2-41d1-a50d-54020a180ff8"
+                }
+            ],
+            "severity": "warning",
+            "type": "text_thickness"
+        },
+        {
+            "description": "Text thickness out of range (TrueType font characters with insufficient stroke weight)",
+            "items": [
+                {
+                    "description": "Reference field of TP17",
+                    "pos": {
+                        "x": 77.96,
+                        "y": 59.2
+                    },
+                    "uuid": "2a0661b1-c2e9-4239-9dd3-88cabcb7e06d"
+                }
+            ],
+            "severity": "warning",
+            "type": "text_thickness"
+        },
+        {
+            "description": "Text thickness out of range (TrueType font characters with insufficient stroke weight)",
+            "items": [
+                {
+                    "description": "Reference field of TP13",
+                    "pos": {
+                        "x": 95.2,
+                        "y": 60.7
+                    },
+                    "uuid": "11211aed-117e-48f5-ab42-985e9ab4f31a"
+                }
+            ],
+            "severity": "warning",
+            "type": "text_thickness"
+        },
+        {
+            "description": "Text thickness out of range (TrueType font characters with insufficient stroke weight)",
+            "items": [
+                {
+                    "description": "Reference field of TP3",
+                    "pos": {
+                        "x": 72.85,
+                        "y": 114.65
+                    },
+                    "uuid": "5d178727-3ac2-4f81-859e-cb8180e9f58a"
+                }
+            ],
+            "severity": "warning",
+            "type": "text_thickness"
+        },
+        {
+            "description": "Text thickness out of range (TrueType font characters with insufficient stroke weight)",
+            "items": [
+                {
+                    "description": "Reference field of TP15",
+                    "pos": {
+                        "x": 85.3,
+                        "y": 49.52
+                    },
+                    "uuid": "26b9ab25-5fc0-433f-9cb2-91762ca43936"
+                }
+            ],
+            "severity": "warning",
+            "type": "text_thickness"
+        },
+        {
+            "description": "Text thickness out of range (TrueType font characters with insufficient stroke weight)",
+            "items": [
+                {
+                    "description": "Reference field of TP8",
+                    "pos": {
+                        "x": 63.32,
+                        "y": 97.7
+                    },
+                    "uuid": "5078a132-69d9-42b6-b262-c05c03f28a4a"
+                }
+            ],
+            "severity": "warning",
+            "type": "text_thickness"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP17 on F.Silkscreen",
+                    "pos": {
+                        "x": 77.96,
+                        "y": 55.15
+                    },
+                    "uuid": "560cf238-374b-4889-90f8-b53189eb756e"
+                },
+                {
+                    "description": "Circle of TP16 on F.Silkscreen",
+                    "pos": {
+                        "x": 79.29,
+                        "y": 55.15
+                    },
+                    "uuid": "adc0c58b-c37e-4067-8a3b-ada8bb56d748"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.1322 mm)",
+            "items": [
+                {
+                    "description": "PCB text 'M2' on F.Silkscreen",
+                    "pos": {
+                        "x": 77.96,
+                        "y": 56.6
+                    },
+                    "uuid": "63baf082-8960-4f4f-acab-b1c537827858"
+                },
+                {
+                    "description": "PCB text 'M1' on F.Silkscreen",
+                    "pos": {
+                        "x": 79.29,
+                        "y": 56.6
+                    },
+                    "uuid": "fb012eef-1b0e-4806-839a-27a895494c98"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0900 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP4 on F.Silkscreen",
+                    "pos": {
+                        "x": 73.01,
+                        "y": 56.61
+                    },
+                    "uuid": "484f4384-fdc0-449b-9551-239e74ac770f"
+                },
+                {
+                    "description": "Segment of C3 on F.Silkscreen",
+                    "pos": {
+                        "x": 73.14058,
+                        "y": 55.76
+                    },
+                    "uuid": "5f3aba18-5685-435c-9453-2a76e58d3043"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP2 on F.Silkscreen",
+                    "pos": {
+                        "x": 71.48,
+                        "y": 112.55
+                    },
+                    "uuid": "a1c57c63-739a-4974-a860-fde92c0c5596"
+                },
+                {
+                    "description": "Circle of TP1 on F.Silkscreen",
+                    "pos": {
+                        "x": 70.14,
+                        "y": 112.56
+                    },
+                    "uuid": "c2bc67b2-d40c-4a3b-b5ae-4422c6933e44"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.1176 mm)",
+            "items": [
+                {
+                    "description": "Segment of R36 on F.Silkscreen",
+                    "pos": {
+                        "x": 69.43,
+                        "y": 103.096359
+                    },
+                    "uuid": "b13842cc-bf42-4204-880e-3a4f0e58473e"
+                },
+                {
+                    "description": "Segment of R37 on F.Silkscreen",
+                    "pos": {
+                        "x": 69.62,
+                        "y": 102.646359
+                    },
+                    "uuid": "bd2b47fa-2ad1-4d6c-a1b4-95c569a41477"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP6 on F.Silkscreen",
+                    "pos": {
+                        "x": 71.97,
+                        "y": 101.44
+                    },
+                    "uuid": "72369534-40e9-4a29-9a0a-20995ed46af1"
+                },
+                {
+                    "description": "Circle of TP11 on F.Silkscreen",
+                    "pos": {
+                        "x": 73.4,
+                        "y": 101.44
+                    },
+                    "uuid": "8cc546f2-3189-441b-9d81-55ba5c6be746"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0244 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP6 on F.Silkscreen",
+                    "pos": {
+                        "x": 71.97,
+                        "y": 101.44
+                    },
+                    "uuid": "72369534-40e9-4a29-9a0a-20995ed46af1"
+                },
+                {
+                    "description": "Segment of C26 on F.Silkscreen",
+                    "pos": {
+                        "x": 71.467164,
+                        "y": 102.17
+                    },
+                    "uuid": "bcfc9c09-777e-4865-afcd-d346715d0efe"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.1311 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP11 on F.Silkscreen",
+                    "pos": {
+                        "x": 73.4,
+                        "y": 101.44
+                    },
+                    "uuid": "8cc546f2-3189-441b-9d81-55ba5c6be746"
+                },
+                {
+                    "description": "PCB text 'GND' on F.Silkscreen",
+                    "pos": {
+                        "x": 74.4,
+                        "y": 102.9
+                    },
+                    "uuid": "e397d295-ab27-4ff2-872a-09cf323a0a87"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0850 mm)",
+            "items": [
+                {
+                    "description": "Segment of C26 on F.Silkscreen",
+                    "pos": {
+                        "x": 71.467164,
+                        "y": 102.89
+                    },
+                    "uuid": "47d421f6-0529-40f2-ac6d-2baf20ed40fa"
+                },
+                {
+                    "description": "Segment of C28 on F.Silkscreen",
+                    "pos": {
+                        "x": 71.287164,
+                        "y": 103.095
+                    },
+                    "uuid": "83b918d1-12db-43ae-b8fc-c35f638bdab5"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP3 on F.Silkscreen",
+                    "pos": {
+                        "x": 72.85,
+                        "y": 112.55
+                    },
+                    "uuid": "3f0175aa-f1ca-4662-a36e-40f77a309a58"
+                },
+                {
+                    "description": "Circle of TP2 on F.Silkscreen",
+                    "pos": {
+                        "x": 71.48,
+                        "y": 112.55
+                    },
+                    "uuid": "a1c57c63-739a-4974-a860-fde92c0c5596"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0900 mm)",
+            "items": [
+                {
+                    "description": "Circle of D4 on F.Silkscreen",
+                    "pos": {
+                        "x": 82.4,
+                        "y": 63.57
+                    },
+                    "uuid": "1ed3b2bb-af1d-4d55-bf4a-ee37a5f515eb"
+                },
+                {
+                    "description": "Circle of D3 on F.Silkscreen",
+                    "pos": {
+                        "x": 82.4,
+                        "y": 63.21
+                    },
+                    "uuid": "c4b0a4a8-c114-4f34-b6d5-d3a7a19b90ab"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP15 on F.Silkscreen",
+                    "pos": {
+                        "x": 83.14,
+                        "y": 49.52
+                    },
+                    "uuid": "9a408e7b-4256-4e52-b40d-99e3f9dc1a27"
+                },
+                {
+                    "description": "Segment of R1 on F.Silkscreen",
+                    "pos": {
+                        "x": 83.276359,
+                        "y": 48.78
+                    },
+                    "uuid": "f8b4e7db-78a4-4583-a801-cdd51403e74b"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.0900 mm)",
+            "items": [
+                {
+                    "description": "Segment of C13 on F.Silkscreen",
+                    "pos": {
+                        "x": 83.322164,
+                        "y": 47.81
+                    },
+                    "uuid": "881cc994-8aad-45f2-8a63-55c16b98a9be"
+                },
+                {
+                    "description": "Segment of R1 on F.Silkscreen",
+                    "pos": {
+                        "x": 83.276359,
+                        "y": 48.02
+                    },
+                    "uuid": "cd83f029-d7e3-4164-aba5-59f434aec8c4"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        },
+        {
+            "description": "Silkscreen clearance (board setup constraints silk clearance 0.1500 mm; actual 0.1437 mm)",
+            "items": [
+                {
+                    "description": "Circle of TP10 on B.Silkscreen",
+                    "pos": {
+                        "x": 68.4,
+                        "y": 96.3
+                    },
+                    "uuid": "3db7f6a4-87af-4bf7-8b0a-b29f8b4bb435"
+                },
+                {
+                    "description": "Reference field of TP10",
+                    "pos": {
+                        "x": 70.5,
+                        "y": 96.3
+                    },
+                    "uuid": "68fe3dbb-271b-440f-bb18-58c402bb2406"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_overlap"
+        }
+    ]
+}

@@ -1,0 +1,643 @@
+{
+  "C144153": {
+    "lcsc": "C144153",
+    "model": "DMG2305UX-13",
+    "manufacturer": "Diodes Incorporated",
+    "package": "SOT-23",
+    "stock": 22529,
+    "price": 0.4524,
+    "price_10": 0.3613,
+    "library_type": "extended",
+    "preferred": false,
+    "category": "Transistors/Thyristors",
+    "subcategory": "MOSFETs",
+    "subcategory_id": 2954,
+    "mounting_type": "smd",
+    "specs": {
+      "Operating Temperature": "-55℃~+150℃",
+      "Input Capacitance(Ciss)": "808pF",
+      "Type": "P-Channel",
+      "Number": "1 P-Channel",
+      "Gate Threshold Voltage (Vgs(th))": "900mV",
+      "Gate Charge(Qg)": "10.2nC@4.5V",
+      "Reverse Transfer Capacitance (Crss@Vds)": "77pF",
+      "Current - Continuous Drain(Id)": "5A",
+      "Drain to Source Voltage": "20V",
+      "Output Capacitance(Coss)": "85pF",
+      "Pd - Power Dissipation": "1.4W",
+      "RDS(on)": "40mΩ@4.5V、52mΩ@2.5V"
+    },
+    "description": "-55℃~+150℃ 1 P-Channel 1.4W 10.2nC@4.5V 20V 40mΩ@4.5V、52mΩ@2.5V 5A 77pF 808pF 85pF 900mV P-Channel SOT-23 MOSFETs ROHS",
+    "min_order": 1,
+    "reel_qty": 10000,
+    "datasheet": "https://www.lcsc.com/datasheet/lcsc_datasheet_2304140030_Diodes-Incorporated-DMG2305UX-13_C144153.pdf",
+    "lcsc_url": "https://www.lcsc.com/product-detail/mosfets_diodes-incorporated-dmg2305ux-13_C144153.html",
+    "prices": [
+      {
+        "qty": "1+",
+        "price": 0.4524
+      },
+      {
+        "qty": "10+",
+        "price": 0.3613
+      },
+      {
+        "qty": "30+",
+        "price": 0.3238
+      },
+      {
+        "qty": "100+",
+        "price": 0.275
+      },
+      {
+        "qty": "500+",
+        "price": 0.2539
+      },
+      {
+        "qty": "1000+",
+        "price": 0.2409
+      }
+    ],
+    "attributes": [
+      {
+        "name": "Operating Temperature",
+        "value": "-55℃~+150℃"
+      },
+      {
+        "name": "Input Capacitance(Ciss)",
+        "value": "808pF"
+      },
+      {
+        "name": "Type",
+        "value": "P-Channel"
+      },
+      {
+        "name": "Number",
+        "value": "1 P-Channel"
+      },
+      {
+        "name": "Gate Threshold Voltage (Vgs(th))",
+        "value": "900mV"
+      },
+      {
+        "name": "Gate Charge(Qg)",
+        "value": "10.2nC@4.5V"
+      },
+      {
+        "name": "Reverse Transfer Capacitance (Crss@Vds)",
+        "value": "77pF"
+      },
+      {
+        "name": "Current - Continuous Drain(Id)",
+        "value": "5A"
+      },
+      {
+        "name": "Drain to Source Voltage",
+        "value": "20V"
+      },
+      {
+        "name": "Output Capacitance(Coss)",
+        "value": "85pF"
+      },
+      {
+        "name": "Pd - Power Dissipation",
+        "value": "1.4W"
+      },
+      {
+        "name": "RDS(on)",
+        "value": "40mΩ@4.5V、52mΩ@2.5V"
+      }
+    ],
+    "has_easyeda_footprint": true,
+    "easyeda_symbol_uuid": "526e3333af384663a328d794ec7a938a",
+    "easyeda_footprint_uuid": "bade90667a6e4731855e9a223387b8a6"
+  },
+  "C7461846": {
+    "lcsc": "C7461846",
+    "model": "SHT40-AD1F-R2",
+    "manufacturer": "Sensirion",
+    "package": "DFN-4(1.5x1.5)",
+    "stock": 3988,
+    "price": 2.5594,
+    "price_10": 2.195,
+    "library_type": "extended",
+    "preferred": false,
+    "category": "Sensors",
+    "subcategory": "Temperature and Humidity Sensor",
+    "subcategory_id": 3191,
+    "mounting_type": "smd",
+    "specs": {
+      "Temperature Tolerance": "±0.2℃",
+      "Voltage - Supply": "1.08V~3.6V",
+      "Humidity": "0%RH~100%RH",
+      "Temperature Range": "-40℃~+125℃",
+      "Features": "Factory calibration、Chemical gas resistance、Built-in heater",
+      "Current - Supply": "400nA",
+      "Interface": "I2C",
+      "Resolution": "16bit",
+      "Humidity Tolerance": "±1.8%RH"
+    },
+    "description": "-40℃~+125℃ 0%RH~100%RH 1.08V~3.6V 16bit 400nA Factory calibration、Chemical gas resistance、Built-in heater I2C ±0.2℃ ±1.8%RH DFN-4(1.5x1.5) Temperature and Humidity Sensor ROHS",
+    "min_order": 1,
+    "reel_qty": 2500,
+    "datasheet": "",
+    "lcsc_url": "https://www.lcsc.com/product-detail/temperature and humidity sensor_sensirion_sht40-ad1f-r2_C7461846.html",
+    "prices": [
+      {
+        "qty": "1+",
+        "price": 2.5594
+      },
+      {
+        "qty": "10+",
+        "price": 2.195
+      },
+      {
+        "qty": "30+",
+        "price": 1.9655
+      },
+      {
+        "qty": "100+",
+        "price": 1.7312
+      },
+      {
+        "qty": "500+",
+        "price": 1.6255
+      },
+      {
+        "qty": "1000+",
+        "price": 1.5799
+      }
+    ],
+    "attributes": [
+      {
+        "name": "Temperature Tolerance",
+        "value": "±0.2℃"
+      },
+      {
+        "name": "Voltage - Supply",
+        "value": "1.08V~3.6V"
+      },
+      {
+        "name": "Humidity",
+        "value": "0%RH~100%RH"
+      },
+      {
+        "name": "Temperature Range",
+        "value": "-40℃~+125℃"
+      },
+      {
+        "name": "Features",
+        "value": "Factory calibration、Chemical gas resistance、Built-in heater"
+      },
+      {
+        "name": "Current - Supply",
+        "value": "400nA"
+      },
+      {
+        "name": "Interface",
+        "value": "I2C"
+      },
+      {
+        "name": "Resolution",
+        "value": "16bit"
+      },
+      {
+        "name": "Humidity Tolerance",
+        "value": "±1.8%RH"
+      }
+    ],
+    "has_easyeda_footprint": true,
+    "easyeda_symbol_uuid": "3bc9d91fc33c448cab0a1ea1a83a64bd",
+    "easyeda_footprint_uuid": "2b047100ed7c4cbd83c58c9e53344b4a"
+  },
+  "C96446": {
+    "lcsc": "C96446",
+    "model": "CL10A106MA8NRNC",
+    "manufacturer": "Samsung Electro-Mechanics",
+    "package": "0603",
+    "stock": 5163204,
+    "price": 0.0552,
+    "price_10": 0.0435,
+    "library_type": "basic",
+    "preferred": false,
+    "category": "Capacitors",
+    "subcategory": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+    "subcategory_id": 2929,
+    "mounting_type": "smd",
+    "specs": {
+      "Voltage Rating": "25V",
+      "Tolerance": "±20%",
+      "Capacitance": "10uF",
+      "Temperature Coefficient": "X5R"
+    },
+    "description": "10uF 25V X5R ±20% 0603 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+    "min_order": 1,
+    "reel_qty": 4000,
+    "datasheet": "https://www.lcsc.com/datasheet/lcsc_datasheet_2304140030_Samsung-Electro-Mechanics-CL10A106MA8NRNC_C96446.pdf",
+    "lcsc_url": "https://www.lcsc.com/product-detail/multilayer-ceramic-capacitors-mlcc-smd-smt_samsung-electro-mechanics-cl10a106ma8nrnc_C96446.html",
+    "prices": [
+      {
+        "qty": "1+",
+        "price": 0.0552
+      },
+      {
+        "qty": "200+",
+        "price": 0.0435
+      },
+      {
+        "qty": "600+",
+        "price": 0.0375
+      },
+      {
+        "qty": "4000+",
+        "price": 0.0326
+      },
+      {
+        "qty": "8000+",
+        "price": 0.0308
+      },
+      {
+        "qty": "20000+",
+        "price": 0.0297
+      }
+    ],
+    "attributes": [
+      {
+        "name": "Voltage Rating",
+        "value": "25V"
+      },
+      {
+        "name": "Tolerance",
+        "value": "±20%"
+      },
+      {
+        "name": "Capacitance",
+        "value": "10uF"
+      },
+      {
+        "name": "Temperature Coefficient",
+        "value": "X5R"
+      }
+    ],
+    "has_easyeda_footprint": true,
+    "easyeda_symbol_uuid": "5563491116b5449a9a46d9ad40c4d199",
+    "easyeda_footprint_uuid": "f8151fdc728a41ebbc304e11d39e5437"
+  },
+  "C52923": {
+    "lcsc": "C52923",
+    "model": "CL05A105KA5NQNC",
+    "manufacturer": "Samsung Electro-Mechanics",
+    "package": "0402",
+    "stock": 10148511,
+    "price": 0.0121,
+    "price_10": 0.0096,
+    "library_type": "basic",
+    "preferred": false,
+    "category": "Capacitors",
+    "subcategory": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+    "subcategory_id": 2929,
+    "mounting_type": "smd",
+    "specs": {
+      "Voltage Rating": "25V",
+      "Tolerance": "±10%",
+      "Capacitance": "1uF",
+      "Temperature Coefficient": "X5R"
+    },
+    "description": "1uF 25V X5R ±10% 0402 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+    "min_order": 1,
+    "reel_qty": 10000,
+    "datasheet": "https://www.lcsc.com/datasheet/lcsc_datasheet_2304140030_Samsung-Electro-Mechanics-CL05A105KA5NQNC_C52923.pdf",
+    "lcsc_url": "https://www.lcsc.com/product-detail/multilayer-ceramic-capacitors-mlcc-smd-smt_samsung-electro-mechanics-cl05a105ka5nqnc_C52923.html",
+    "prices": [
+      {
+        "qty": "1+",
+        "price": 0.0121
+      },
+      {
+        "qty": "500+",
+        "price": 0.0096
+      },
+      {
+        "qty": "1500+",
+        "price": 0.0085
+      },
+      {
+        "qty": "10000+",
+        "price": 0.0069
+      },
+      {
+        "qty": "20000+",
+        "price": 0.0065
+      },
+      {
+        "qty": "50000+",
+        "price": 0.0063
+      }
+    ],
+    "attributes": [
+      {
+        "name": "Voltage Rating",
+        "value": "25V"
+      },
+      {
+        "name": "Tolerance",
+        "value": "±10%"
+      },
+      {
+        "name": "Capacitance",
+        "value": "1uF"
+      },
+      {
+        "name": "Temperature Coefficient",
+        "value": "X5R"
+      }
+    ],
+    "has_easyeda_footprint": true,
+    "easyeda_symbol_uuid": "c6551ffd8df4e1d9edf79a5278696201",
+    "easyeda_footprint_uuid": "0821ed6ea50c44f4909e4be7610e4198"
+  },
+  "C5360602": {
+    "lcsc": "C5360602",
+    "model": "SHT45-AD1F-R2",
+    "manufacturer": "Sensirion",
+    "package": "DFN-4",
+    "stock": 2825,
+    "price": 6.9183,
+    "price_10": 6.1227,
+    "library_type": "extended",
+    "preferred": false,
+    "category": "Sensors",
+    "subcategory": "Temperature and Humidity Sensor",
+    "subcategory_id": 3191,
+    "mounting_type": "smd",
+    "specs": {
+      "Temperature Tolerance": "±0.1℃",
+      "Voltage - Supply": "1.08V~3.6V",
+      "Humidity": "0%RH~100%RH",
+      "Temperature Range": "-40℃~+125℃",
+      "Features": "Factory calibration、Chemical gas resistance、Built-in heater",
+      "Current - Supply": "400nA",
+      "Interface": "I2C",
+      "Resolution": "16bit",
+      "Humidity Tolerance": "±1%RH"
+    },
+    "description": "-40℃~+125℃ 0%RH~100%RH 1.08V~3.6V 16bit 400nA Factory calibration、Chemical gas resistance、Built-in heater I2C ±0.1℃ ±1%RH DFN-4 Temperature and Humidity Sensor ROHS",
+    "min_order": 1,
+    "reel_qty": 2500,
+    "datasheet": "https://sensirion.com/media/documents/33FD6951/63E1087C/Datasheet_SHT4x_1.pdf",
+    "lcsc_url": null,
+    "prices": [
+      {
+        "qty": "1+",
+        "price": 6.9183
+      },
+      {
+        "qty": "10+",
+        "price": 6.1227
+      },
+      {
+        "qty": "30+",
+        "price": 5.6362
+      },
+      {
+        "qty": "100+",
+        "price": 5.2294
+      },
+      {
+        "qty": "102+",
+        "price": 5.2294
+      },
+      {
+        "qty": "104+",
+        "price": 5.2294
+      }
+    ],
+    "attributes": [
+      {
+        "name": "Temperature Tolerance",
+        "value": "±0.1℃"
+      },
+      {
+        "name": "Voltage - Supply",
+        "value": "1.08V~3.6V"
+      },
+      {
+        "name": "Humidity",
+        "value": "0%RH~100%RH"
+      },
+      {
+        "name": "Temperature Range",
+        "value": "-40℃~+125℃"
+      },
+      {
+        "name": "Features",
+        "value": "Factory calibration、Chemical gas resistance、Built-in heater"
+      },
+      {
+        "name": "Current - Supply",
+        "value": "400nA"
+      },
+      {
+        "name": "Interface",
+        "value": "I2C"
+      },
+      {
+        "name": "Resolution",
+        "value": "16bit"
+      },
+      {
+        "name": "Humidity Tolerance",
+        "value": "±1%RH"
+      }
+    ],
+    "has_easyeda_footprint": true,
+    "easyeda_symbol_uuid": "e7864d984d9847dc8e865992de926336",
+    "easyeda_footprint_uuid": "d243d258368c4d11b605e1b814b0df31"
+  },
+  "C150470": {
+    "lcsc": "C150470",
+    "model": "DMG2305UX-7",
+    "manufacturer": "Diodes Incorporated",
+    "package": "SOT-23",
+    "stock": 14334,
+    "price": 0.8022,
+    "price_10": 0.6606,
+    "library_type": "extended",
+    "preferred": false,
+    "category": "Transistors/Thyristors",
+    "subcategory": "MOSFETs",
+    "subcategory_id": 2954,
+    "mounting_type": "smd",
+    "specs": {
+      "Operating Temperature": "-55℃~+150℃",
+      "Input Capacitance(Ciss)": "808pF",
+      "Type": "P-Channel",
+      "Number": "1 P-Channel",
+      "Gate Threshold Voltage (Vgs(th))": "900mV",
+      "Gate Charge(Qg)": "10.2nC@4.5V",
+      "Reverse Transfer Capacitance (Crss@Vds)": "77pF",
+      "Current - Continuous Drain(Id)": "5A",
+      "Drain to Source Voltage": "20V",
+      "Output Capacitance(Coss)": "85pF",
+      "Pd - Power Dissipation": "1.4W",
+      "RDS(on)": "52mΩ@4.5V、100mΩ@2.5V"
+    },
+    "description": "-55℃~+150℃ 1 P-Channel 1.4W 10.2nC@4.5V 20V 52mΩ@4.5V、100mΩ@2.5V 5A 77pF 808pF 85pF 900mV P-Channel SOT-23 MOSFETs ROHS",
+    "min_order": 1,
+    "reel_qty": 3000,
+    "datasheet": "https://www.lcsc.com/datasheet/lcsc_datasheet_2412251003_Diodes-Incorporated-DMG2305UX-7_C150470.pdf",
+    "lcsc_url": "https://www.lcsc.com/product-detail/mosfets_diodes-incorporated-dmg2305ux-7_C150470.html",
+    "prices": [
+      {
+        "qty": "1+",
+        "price": 0.8022
+      },
+      {
+        "qty": "10+",
+        "price": 0.6606
+      },
+      {
+        "qty": "30+",
+        "price": 0.589
+      },
+      {
+        "qty": "100+",
+        "price": 0.5191
+      },
+      {
+        "qty": "500+",
+        "price": 0.4768
+      },
+      {
+        "qty": "1000+",
+        "price": 0.454
+      }
+    ],
+    "attributes": [
+      {
+        "name": "Operating Temperature",
+        "value": "-55℃~+150℃"
+      },
+      {
+        "name": "Input Capacitance(Ciss)",
+        "value": "808pF"
+      },
+      {
+        "name": "Type",
+        "value": "P-Channel"
+      },
+      {
+        "name": "Number",
+        "value": "1 P-Channel"
+      },
+      {
+        "name": "Gate Threshold Voltage (Vgs(th))",
+        "value": "900mV"
+      },
+      {
+        "name": "Gate Charge(Qg)",
+        "value": "10.2nC@4.5V"
+      },
+      {
+        "name": "Reverse Transfer Capacitance (Crss@Vds)",
+        "value": "77pF"
+      },
+      {
+        "name": "Current - Continuous Drain(Id)",
+        "value": "5A"
+      },
+      {
+        "name": "Drain to Source Voltage",
+        "value": "20V"
+      },
+      {
+        "name": "Output Capacitance(Coss)",
+        "value": "85pF"
+      },
+      {
+        "name": "Pd - Power Dissipation",
+        "value": "1.4W"
+      },
+      {
+        "name": "RDS(on)",
+        "value": "52mΩ@4.5V、100mΩ@2.5V"
+      }
+    ],
+    "has_easyeda_footprint": true,
+    "easyeda_symbol_uuid": "ea36651c922442de855ec34b96e8f244",
+    "easyeda_footprint_uuid": "bade90667a6e4731855e9a223387b8a6"
+  },
+  "C3039688": {
+    "lcsc": "C3039688",
+    "model": "CL10X106MO8NRNC",
+    "manufacturer": "Samsung Electro-Mechanics",
+    "package": "0603",
+    "stock": 124777,
+    "price": 0.1034,
+    "price_10": 0.0843,
+    "library_type": "extended",
+    "preferred": false,
+    "category": "Capacitors",
+    "subcategory": "Multilayer Ceramic Capacitors MLCC - SMD/SMT",
+    "subcategory_id": 2929,
+    "mounting_type": "smd",
+    "specs": {
+      "Voltage Rating": "16V",
+      "Tolerance": "±20%",
+      "Capacitance": "10uF",
+      "Temperature Coefficient": "X6S"
+    },
+    "description": "10uF 16V X6S ±20% 0603 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+    "min_order": 1,
+    "reel_qty": 4000,
+    "datasheet": "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2206222030_Samsung-Electro-Mechanics-CL10X106MO8NRNC_C3039688.pdf",
+    "lcsc_url": "https://www.lcsc.com/product-detail/multilayer-ceramic-capacitors-mlcc-smd-smt_samsung-electro-mechanics-cl10x106mo8nrnc_C3039688.html",
+    "prices": [
+      {
+        "qty": "1+",
+        "price": 0.1034
+      },
+      {
+        "qty": "100+",
+        "price": 0.0843
+      },
+      {
+        "qty": "300+",
+        "price": 0.0749
+      },
+      {
+        "qty": "1000+",
+        "price": 0.0677
+      },
+      {
+        "qty": "4000+",
+        "price": 0.062
+      },
+      {
+        "qty": "8000+",
+        "price": 0.0593
+      }
+    ],
+    "attributes": [
+      {
+        "name": "Voltage Rating",
+        "value": "16V"
+      },
+      {
+        "name": "Tolerance",
+        "value": "±20%"
+      },
+      {
+        "name": "Capacitance",
+        "value": "10uF"
+      },
+      {
+        "name": "Temperature Coefficient",
+        "value": "X6S"
+      }
+    ],
+    "has_easyeda_footprint": true,
+    "easyeda_symbol_uuid": "ae4eb7a3834e4b118fee616165381140",
+    "easyeda_footprint_uuid": "f8151fdc728a41ebbc304e11d39e5437"
+  }
+}

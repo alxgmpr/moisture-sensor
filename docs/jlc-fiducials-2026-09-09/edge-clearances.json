@@ -1,0 +1,18 @@
+{
+  "FID1": {
+    "center_to_outline_mm": 6.0,
+    "copper_keepout_to_outline_mm": 4.9
+  },
+  "FID2": {
+    "center_to_outline_mm": 8.7886,
+    "copper_keepout_to_outline_mm": 7.6886
+  },
+  "FID3": {
+    "center_to_outline_mm": 4.5167,
+    "copper_keepout_to_outline_mm": 3.4167
+  },
+  "FID4": {
+    "center_to_outline_mm": 4.7,
+    "copper_keepout_to_outline_mm": 3.6
+  }
+}

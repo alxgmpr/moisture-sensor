@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<openEMS>
+  <FDTD NumberOfTimesteps="400000" endCriteria="0.0001" f_max="1000000000">
+    <Excitation Type="0" f0="500000000" fc="500000000">
+    </Excitation>
+    <BoundaryCond xmin="PML_8" xmax="PML_8" ymin="PML_8" ymax="PML_8" zmin="PML_8" zmax="PML_8">
+    </BoundaryCond>
+  </FDTD>
+  <ContinuousStructure CoordSystem="0">
+    <Properties>
+      <Material Name="FR4">
+        <Property Epsilon="4.2">
+        </Property>
+        <Primitives>
+          <Box Priority="0">
+            <P1 X="-5" Y="-9" Z="-1.6">
+            </P1>
+            <P2 X="7" Y="2" Z="0">
+            </P2>
+          </Box>
+        </Primitives>
+      </Material>
+      <Metal Name="copper">
+        <Primitives>
+          <Box Priority="10">
+            <P1 X="-4" Y="-8" Z="3">
+            </P1>
+            <P2 X="6" Y="1" Z="3">
+            </P2>
+          </Box>
+          <Box Priority="10">
+            <P1 X="-4" Y="-8" Z="-0.15">
+            </P1>
+            <P2 X="6" Y="-5.6" Z="-0.15">
+            </P2>
+          </Box>
+          <Box Priority="10">
+            <P1 X="-4" Y="-7" Z="-0.15">
+            </P1>
+            <P2 X="6" Y="-6" Z="3">
+            </P2>
+          </Box>
+          <Box Priority="10">
+            <P1 X="-0.15" Y="-0.25" Z="0">
+            </P1>
+            <P2 X="0.15" Y="0.25" Z="0">
+            </P2>
+          </Box>
+          <Box Priority="10">
+            <P1 X="-0.2" Y="-1.961384" Z="0">
+            </P1>
+            <P2 X="0.2" Y="0" Z="0">
+            </P2>
+          </Box>
+          <Box Priority="10">
+            <P1 X="2.5" Y="-6" Z="0">
+            </P1>
+            <P2 X="2.9" Y="-4.661384" Z="0">
+            </P2>
+          </Box>
+          <Box Priority="10">
+            <P1 X="2.5" Y="-6" Z="-0.15">
+            </P1>
+            <P2 X="2.9" Y="-5.6" Z="0">
+            </P2>
+          </Box>
+          <Cylinder Priority="10" Radius="0.25">
+            <P1 X="0" Y="-1.961384" Z="-1.6">
+            </P1>
+            <P2 X="0" Y="-1.961384" Z="0">
+            </P2>
+          </Cylinder>
+          <Cylinder Priority="10" Radius="0.25">
+            <P1 X="2.7" Y="-4.661384" Z="-1.6">
+            </P1>
+            <P2 X="2.7" Y="-4.661384" Z="0">
+            </P2>
+          </Cylinder>
+          <Polygon Priority="10" Elevation="-1.6" NormDir="2">
+            <Vertex X1="-0.141421" X2="-2.102805">
+            </Vertex>
+            <Vertex X1="0.141421" X2="-1.819963">
+            </Vertex>
+            <Vertex X1="2.841421" X2="-4.519963">
+            </Vertex>
+            <Vertex X1="2.558579" X2="-4.802805">
+            </Vertex>
+          </Polygon>
+        </Primitives>
+      </Metal>
+      <LumpedElement Name="port_resist_1" Direction="2" Caps="1" R="50">
+        <Primitives>
+          <Box Priority="20">
+            <P1 X="-0.1" Y="-0.1" Z="0">
+            </P1>
+            <P2 X="0.1" Y="0.1" Z="3">
+            </P2>
+          </Box>
+        </Primitives>
+      </LumpedElement>
+      <Excitation Name="port_excite_1" Type="0" Excite="-0,-0,-1">
+        <Primitives>
+          <Box Priority="20">
+            <P1 X="-0.1" Y="-0.1" Z="0">
+            </P1>
+            <P2 X="0.1" Y="0.1" Z="3">
+            </P2>
+          </Box>
+        </Primitives>
+      </Excitation>
+      <ProbeBox Name="port_ut1" Type="0" Weight="-1">
+        <Primitives>
+          <Box Priority="20">
+            <P1 X="0" Y="0" Z="0">
+            </P1>
+            <P2 X="0" Y="0" Z="3">
+            </P2>
+          </Box>
+        </Primitives>
+      </ProbeBox>
+      <ProbeBox Name="port_it1" Type="1" Weight="1" NormDir="2">
+        <Primitives>
+          <Box Priority="20">
+            <P1 X="-0.1" Y="-0.1" Z="1.5">
+            </P1>
+            <P2 X="0.1" Y="0.1" Z="1.5">
+            </P2>
+          </Box>
+        </Primitives>
+      </ProbeBox>
+    </Properties>
+    <RectilinearGrid DeltaUnit="0.001" CoordSystem="0">
+      <XLines>-12,-10.5,-9,-7.5,-6,-4.99456,-3.98912,-3.2208,-2.672,-2.28,-2,-1.8,-1.6,-1.4,-1.2,-1,-0.8,-0.6,-0.4,-0.335,-0.27,-0.2,-0.15,-0.1,-0.066667,-0.033333,0,0.033333,0.066667,0.1,0.15,0.2,0.27,0.335,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2,2.2,2.4,2.6,2.8,3,3.2,3.4,3.6,3.8,4,4.28,4.672,5.2208,6.1104,7,8.5,10,11.5,13</XLines>
+      <YLines>-15,-13.75,-12.5,-11.25,-10,-8.99456,-7.98912,-7.2208,-6.672,-6.28,-6,-5.8,-5.6,-5.4,-5.2,-5,-4.8,-4.6,-4.4,-4.2,-4,-3.8,-3.6,-3.4,-3.2,-3,-2.8,-2.6,-2.4,-2.2,-2,-1.8,-1.6,-1.4,-1.2,-1,-0.8,-0.6,-0.4,-0.36,-0.32,-0.25,-0.2,-0.166667,-0.133333,-0.1,0,0.1,0.133333,0.166667,0.2,0.25,0.32,0.36,0.4,0.6,0.8,1,1.28,1.672,2.2208,2.98912,3.99456,5,6.5,8,9.5,11</YLines>
+      <ZLines>-10,-8.75,-7.5,-6.25,-5,-3.86666666666667,-2.73333333333333,-1.6,-1.28466666666667,-0.969333333333333,-0.654,-0.36,-0.15,0,0.15,0.325,0.5,1,1.33333333333333,1.66666666666667,2,3,4,5,6.25,7.5,8.75,10</ZLines>
+    </RectilinearGrid>
+  </ContinuousStructure>
+</openEMS>

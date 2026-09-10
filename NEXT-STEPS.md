@@ -1,3 +1,5 @@
+> 2026-09-09 cost revision: U4 is now Sensirion SHT40-AD1F-R2. The existing SHT4x footprint, membrane handling, geometry, and legacy SHT45-named model/rule areas are retained. See [cost revision](docs/cost-reduction-2026-09-09/README.md).
+
 > Current nRF Moisture Sensor work: [2026-09-05 review and remaining tasks](docs/design-review-2026-09-05/README.md). This supersedes older routing and unresolved-order-code notes below.
 
 # Where this stands, and what's next
@@ -337,7 +339,7 @@ library does not remove their models.
 | X2 | `lib/FA-128 …​.STEP` | (−90, 0, 90) | height along +Y; Z turn aligns its long axis |
 | U4 | `lib/SHT45_AD1F_R2/SHT45-AD1F-R2.step` | (−90, 0, 0) | local vendor model replaces a missing KiCad-library reference |
 | L10 | `lib/DFE201210U_2R2M_P2/IND_DFE201210U-2R2MP2_MUR.step` | none | supplied Murata model, already Z-up and centred |
-| BT1 | `lib/BU2032SM-BT-GTR.STEP` | (−90, 0, 0) | supplied holder-and-cell model, height along +Y |
+| BT1 | `lib/CR2032-BS-6-1_C70377.step` | (0, 0, 180), Z offset +0.08 mm | Q&J visualization substitute; purchase Lian Xin CR2032-BS-6/C22363833 per the schematic and selected-holder drawing |
 
 The similarly named downloaded nPM2100 bundle contained a 1.9×1.9 mm WLCSP
 model and was removed. The selected `nPM2100-QEAA` is the 4×4 mm QFN; Nordic's

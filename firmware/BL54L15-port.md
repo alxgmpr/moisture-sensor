@@ -1,13 +1,12 @@
 # BL54L15 carrier firmware port
 
-The repository applications currently target the nRF54L15 DK; this migration
-does not silently change those bench targets into a production carrier build.
-The following are required when adding the carrier board definition. Hardware
-has not been built or measured, so these settings are not a qualified release.
+A real carrier qualification image is now available in [carrier-bringup](carrier-bringup/README.md), built against nRF Connect SDK 3.2.2 with the carrier overlay. Existing DK applications retain their bench targets. The remaining requirements below still need physical qualification; no carrier has been built or measured.
 
 ## GPIO and programming
 
-No product GPIO assignments changed: SCL=P1.11 (module35), SDA=P1.10 (28),
+Main bus: SCL=P1.11 (module35), SDA=P1.10 (28). Dedicated FDC bus:
+SDA=P1.05 (22), SCL=P1.04 (23), on TWIM20 with switched pull-ups.
+
 PMIC_INT=P0.00 (17), SWO=P2.07 (4). Dedicated SWDIO/SWDCLK/nRESET are module5/6/7.
 J4 and its reset connection to nPM2100 PG/RESET are unchanged. The module ships
 without application firmware; program through J4. P1.00/P1.01 are reserved
@@ -87,3 +86,7 @@ relying on SoC System OFF/GRTC wake.
 - [Zephyr nRF54L LFXO binding](https://docs.zephyrproject.org/latest/build/dts/api/bindings/clock/nordic,nrf54l-lfxo.html) and [factory-trim implementation](https://github.com/zephyrproject-rtos/zephyr/blob/main/soc/nordic/nrf54l/soc.c).
 - [Ezurio BL54L15 DVK clock/regulator configuration](https://github.com/zephyrproject-rtos/zephyr/blob/main/boards/ezurio/bl54l15_dvk/nrf54l_10_15_cpuapp_common.dtsi). This is a module reference, not a carrier pin assignment.
 - Local Nordic nPM2100 Datasheet v1.0, boost operating modes and external component limits.
+
+## Timing-marker pads
+
+The carrier now exposes **MARK1 / TP16 on P1.07 (U1 pad 20)** and **MARK2 / TP17 on P1.06 (U1 pad 21)**. For Zephyr these are `gpio1` pins 7 and 6. Reserve both for optional instrumentation; hardware routing alone does not enable output toggling. P0.01/P0.02 remain unused. [Board map](../docs/testpoints-2026-09-07/README.md).

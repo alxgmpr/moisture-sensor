@@ -1,0 +1,461 @@
+                                                                                                                                            DMG2305UX
+                                                                                                  P-CHANNEL ENHANCEMENT MODE MOSFET
+
+Product Summary                                                                     Features
+                                                                ID Max              •        Low On-Resistance
+    BVDSS              RDS(on) Max            Package
+                                                              TA = +25°C            •        Low Input Capacitance
+                  52mΩ @VGS = -4.5V                              -5.0A              •        Fast Switching Speed
+    -20V                                       SOT23
+                 100mΩ @VGS = -2.5V                              -3.6A              •        Totally Lead-Free & Fully RoHS Compliant (Notes 1 & 2)
+                                                                                    •        Halogen and Antimony Free. “Green” Device (Note 3)
+                                                                                    •        For automotive applications requiring specific change control
+                                                                                             (i.e. parts qualified to AEC-Q100/101/200, PPAP capable, and
+                                                                                             manufactured in IATF 16949 certified facilities), please
+Description                                                                                  contact us or your local Diodes representative.
+This MOSFET is designed to minimize on-state resistance (RDS(on)),                           https://www.diodes.com/quality/product-definitions/
+yet maintain superior switching performance, making it ideal for high-              •        An Automotive-Compliant Part is Available Under Separate
+efficiency power management applications.                                                    Datasheet (DMG2305UXQ)
+
+
+Applications                                                                        Mechanical Data
+•    Backlighting                                                                   •        Case: SOT23 (Standard)
+•    Power Management Functions                                                     •        Case Material: Molded Plastic, “Green” Molding Compound.
+•    DC-DC Converters                                                                        UL Flammability Classification Rating 94V-0
+•    Motor Controls                                                                 •        Moisture Sensitivity: Level 1 per J-STD-020
+                                                                                    •        Terminals: Finish – Matte Tin Annealed over Copper Leadframe.
+                                                                                             Solderable per MIL-STD-202, Method 208
+                                                                                    •        Terminals Connections: See Diagram Below
+                                                                                    •        Weight: 0.009 grams (Approximate)
+
+
+                                                                                    D
+
+                                                                                                                    D
+
+                                                                     G
+
+                                                                                    S                     G               S
+
+                                            Top View                   Internal Schematic                     Top View
+
+Ordering Information (Note 4)
+             Part Number                                Compliance                                 Case                                  Packaging
+            DMG2305UX-7                                  Standard                              SOT23 (Standard)                      3,000/Tape & Reel
+            DMG2305UX-13                                 Standard                              SOT23 (Standard)                      10,000/Tape & Reel
+Notes:      1. No purposely added lead. Fully EU Directive 2002/95/EC (RoHS), 2011/65/EU (RoHS 2) & 2015/863/EU (RoHS 3) compliant.
+            2. See https://www.diodes.com/quality/lead-free/ for more information about Diodes Incorporated’s definitions of Halogen- and Antimony-free, "Green" and
+               Lead-free.
+            3. Halogen- and Antimony-free "Green” products are defined as those which contain <900ppm bromine, <900ppm chlorine (<1500ppm total Br + Cl) and
+               <1000ppm antimony compounds.
+            4. For packaging details, go to our website at https://www.diodes.com/design/support/packaging/diodes-packaging/.
+
+
+Marking Information
+
+                                                                                    23X = Product Type Marking Code
+                                                                                    YM = Date Code Marking
+                                                          23X        YM             Y or Y= Year (ex: I = 2021)
+                                                                                    M = Month (ex: 9 = September)
+
+Date Code Key
+       Year               2009        ……          2021        2022        2023          2024       2025       2026       2027        2028        2029        2030
+      Code                 W          ……            I           J          K              L         M          N          O           P           R           S
+
+         Month             Jan         Feb         Mar         Apr        May           Jun         Jul       Aug         Sep         Oct        Nov         Dec
+         Code                1          2           3           4           5            6           7          8             9        O           N            D
+
+
+DMG2305UX                                                                    1 of 6                                                                        July 2021
+Document number: DS36196 Rev. 8 - 2                                      www.diodes.com                                                           © Diodes Incorporated
+                                                                                                                                   DMG2305UX
+
+
+Maximum Ratings (@ TA = +25°C, unless otherwise specified.)
+                               Characteristic                                           Symbol                     Value                      Unit
+Drain-Source Voltage                                                                       VDSS                      -20                        V
+Gate-Source Voltage                                                                        VGSS                      ±8                         V
+                                                      Steady      TA = +25°C                                         -4.2
+                                                                                               ID                                               A
+                                                       State      TA = +70°C                                         -3.3
+Continuous Drain Current (Note 5) VGS = -4.5V
+                                                                  TA = +25°C                                         -5.0
+                                                       t<10s                                   ID                                               A
+                                                                  TA = +70°C                                         -4.0
+Pulsed Drain Current (10µs Pulse, Duty Cycle = 1%) (Note 6)                                    IDM                   -15                        A
+
+
+
+
+Thermal Characteristics
+                               Characteristic                                           Symbol                     Value                      Unit
+Power Dissipation (Note 5)                                                                     PD                    1.4                        W
+                                                                Steady State                                         90                       °C/W
+Thermal Resistance, Junction to Ambient (Note 5)                                           RθJA
+                                                                   t<10s                                             64                       °C/W
+Thermal Resistance, Junction to Case (Note 7)                                              RθJC                      33                       °C/W
+Operating and Storage Temperature Range                                                 TJ, TSTG               -55 to +150                      °C
+
+
+
+
+Electrical Characteristics (@ TA = +25°C, unless otherwise specified.)
+              Characteristic                                   Symbol         Min       Typ            Max    Unit               Test Condition
+OFF CHARACTERISTICS (Note 7)
+Drain-Source Breakdown Voltage                                 BVDSS           -20                           V        VGS = 0V, ID = -250µA
+Zero Gate Voltage Drain Current               TJ = +25°C        IDSS                                 -1.0   µA        VDS = -20V, VGS = 0V
+Gate-Source Leakage                                             IGSS                               ±100     nA        VGS = ±8V, VDS = 0V
+ON CHARACTERISTICS (Note 7)
+Gate Threshold Voltage                                         VGS(th)        -0.5       —             -0.9    V        VDS = VGS, ID = -250µA
+                                                                                         40            52               VGS = -4.5V, ID = -4.2A
+Static Drain-Source On-Resistance                              RDS(on)                  52            100    mΩ        VGS = -2.5V, ID = -3.4A
+                                                                                         68            200              VGS = -1.8V, ID = -2A
+Forward Transfer Admittance                                     |YFS|                     9                  s        VDS = -5V, ID = -4A
+DYNAMIC CHARACTERISTICS (Note 8)
+Input Capacitance                                               Ciss                   808                  pF
+                                                                                                                        VDS = -15V, VGS = 0V
+Output Capacitance                                              Coss                    85                  pF
+                                                                                                                        f = 1.0MHz
+Reverse Transfer Capacitance                                    Crss                    77                  pF
+Gate Resistance                                                  Rg                     15.2                   Ω        VGS = 0V, VDS = 0V, f = 1.0MHz
+SWITCHING CHARACTERISTICS (Note 8)
+Total Gate Charge                                                Qg                    10.2                 nC
+                                                                                                                        VGS = -4.5V, VDS = -4V,
+Gate-Source Charge                                              Qgs                    1.3                  nC
+                                                                                                                        ID = -3.5A
+Gate-Drain Charge                                               Qgd                    2.2                  nC
+Turn-On Delay Time                                              tD(on)                 10.8                 ns
+Turn-On Rise Time                                                 tR                   13.7                 ns        VDS = -4V, VGS = -4.5V,
+Turn-Off Delay Time                                             tD(off)                79.3                 ns        Rg = 6Ω, ID = -1A
+Turn-Off Fall Time                                                tF                   34.7                 ns
+Notes:    5. Device mounted on FR-4 substrate PC board, 2oz copper, with 1-inch square copper plate.
+          6. Repetitive rating, pulse width limited by junction temperature.
+          7. Short duration pulse test used to minimize self-heating effect.
+          8. Guaranteed by design. Not subject to product testing.
+
+
+
+
+DMG2305UX                                                                     2 of 6                                                                 July 2021
+Document number: DS36196 Rev. 8 - 2                                       www.diodes.com                                                  © Diodes Incorporated
+                                                                                                                                                                                                                                  DMG2305UX
+
+                                                  20.0                                                                                                                             20
+                                                                           VGS = -8.0V                                                                                                                            TA = -55°C
+                                                                                                                                                                                         VDS = -5.0V
+                                                  18.0
+                                                                         VGS = -4.5V                                                                                                                              TA = 25°C                  TA = 150°C
+                                                  16.0                                    VGS = -2.0V
+                                                                     VGS = -3.0V                                                                                                                                 TA = 85°C
+                                                                                                                                                       )A 15
+
+
+
+
+            -ID, DRAIN CURRENT (A)
+                                                                                                                                                          -ID, DRAIN CURRENT (A)
+                                                                                                                                                                                                                                        TA = 125°C
+                                                  14.0                                                                                                 (
+                                                                                                                                                       T
+                                                                                                                                                       N
+                                                  12.0               VGS = -2.5V                        VGS = -1.8V                                     E
+                                                                                                                                                       R
+                                                                                                                                                       R
+                                                  10.0                                                                                                 U 10
+                                                                                                                                                       C
+                                                                                                                                                       N
+                                                   8.0                                                                                                  IA
+                                                                                                       VGS = -1.5V                                     R
+                                                                                                                                                       D
+                                                   6.0                                                                                                   ,D
+                                                                                                                                                       -I   5
+                                                   4.0
+
+                                                   2.0                                                    VGS = -1.2V
+
+
+                                                   0.0                                                                                                                              0
+                                                         0       1         2         3         4                        5                                                            0           0.5      1       1.5      2      2.5                      3
+                                                               -VDS, DRAIN-SOURCE VOLTAGE (V)                                                                                                     -VGS , GATE-SOURCE VOLTAGE (V)
+                                                              Figure 1 Typical Output Characteristics                                                                                           Figure 2 Typical Transfer Characteristics
+                                                   0.1                                                                                                                            0.08
+
+
+
+
+       RDS(ON), DRAIN-SOURCE ON-RESISTANCE ( Ω)                                                                                         RDS(ON), DRAIN-SOURCE ON-RESISTANCE (Ω)
+                                                                                                                                                                                             VGS = -4.5V
+
+                                                                                                                                                                                  0.07
+                                                                                                                                                                                                                                        TTAA =
+                                                                                                                                                                                                                                           =150°C
+                                                                                                                                                                                                                                               150°C
+                                                  0.08                                                                                                                                                                           °C
+                                                                                                                                                                                                                        TA = 125°C
+                                                                                                                                                                                  0.06
+                                                                                                                                                                                                                                             TT=85°C
+                                                                                                                                                                                                                                              AA = 85°C
+                                                                                         VGS = -2.5V                                                                              0.05
+                                                  0.06                                                                                                                                                                                       TAT=25 °C
+                                                                                                                                                                                                                                                A = 25°C
+                                                                                                                                                                                  0.04
+                                                                                                                                                                                                                                             TTAA=
+                                                                                                                                                                                                                                                 =-55°C
+                                                                                                                                                                                                                                                   -55°C
+                                                  0.04                                                                                                                            0.03
+                                                                                         VGS = -4.5V
+
+
+                                                                                                                                                                                  0.02
+                                                  0.02
+                                                                                                                                                                                  0.01
+
+
+                                                    0                                                                                                                                0
+                                                         0           5           10         15                          20                                                               0               5           10         15                         20
+                                                                -ID, DRAIN SOURCE CURRENT (A)                                                                                                       -ID, DRAIN SOURCE CURRENT (A)
+                                                                 Figure 3 Typical On-Resistance vs.                                                                                                  Figure 4 Typical On-Resistance vs.
+                                                                   Drain Current and Gate Voltage                                                                                                      Drain Current and Temperature
+
+                                                   1.6                                                                                                                             0.1
+
+
+
+
+                                                                                                                                   RDS(on), DRAIN-SOURCE ON-RESISTANCE (Ω)
+                                                                                                 VGS = -2.5V
+                                                                                                 ID = -5.0A
+                                                                                                                                                                                  0.09
+
+
+
+
+       RDS(ON), DRAIN-SOURCE
+                                                   1.4                                                                                                                            0.08                                         VGS = -2.5V
+                                                                                                                                                                                                                               ID = -5A
+                                                                                                                                                                                  0.07
+                                                                                                            VGS = -4.5V
+                                                   1.2                                                      ID = -10A                                                             0.06
+
+                                                                                                                                                                                  0.05
+
+
+
+
+    ON-RESISTANCE (NORMALIZED)
+                                                                                                                                                                                                                                      VGS = -4.5V
+                                                     1                                                                                                                            0.04                                                ID = -10A
+
+
+                                                                                                                                                                                  0.03
+
+                                                   0.8                                                                                                                            0.02
+
+                                                                                                                                                                                  0.01
+
+                                                   0.6                                                                                                                                  0
+                                                      -50     -25    0   25    50     75 100 125 150                                                                                    -50   -25    0   25    50     75 100 125 150
+                                                                TJ, JUNCTION TEMPERATURE (°C)                                                                                                   TJ, JUNCTION TEMPERATURE (°C)
+                                                         Figure 5 On-Resistance Variation with Temperature                                                                               Figure 6 On-Resistance Variation with Temperature
+
+DMG2305UX                                                                                                                   3 of 6                                                                                                                    July 2021
+Document number: DS36196 Rev. 8 - 2                                                                                     www.diodes.com                                                                                                       © Diodes Incorporated
+                                                                                                                                                                                            DMG2305UX
+
+                                                     1.5                                                                                                 20
+
+                                                                                                                                                         18
+
+
+
+
+             - VGS(TH), GATE THRESHOLD VOLTAGE (V)
+                                                     1.2                                                                                                 16
+
+
+
+
+                                                                                                                               -IS, SOURCE CURRENT (A)
+                                                                                                                                                         14
+
+                                                     0.9                                                                                                 12
+
+                                                                                       -ID = 1mA                                                         10
+
+                                                     0.6                                                                                                  8
+                                                                                                                                                                                TA= 25°C
+
+                                                                                            -ID = 250µA                                                   6
+                                                                                                  250µA
+
+                                                     0.3                                                                                                  4
+
+                                                                                                                                                          2
+
+                                                         0                                                                                                0
+                                                             -50
+                                                             -25     0   25    50      75 100 125 150                                                      0       0.3       0.6      0.9       1.2       1.5
+                                                                TA, AMBIENT TEMPERATURE (°C)                                                                      -VSD, SOURCE-DRAIN VOLTAGE (V)
+                                                     Figure 7 Gate Threshold Variation vs. Ambient Temperature                                                 Figure 8 Diode Forward Voltage vs. Current
+
+
+
+                               100
+                                                               RDS(ON) Limited          PW =100µs
+
+                                                                                                   PW =1ms
+                                             10                                                           PW
+
+
+
+
+ -ID, DRAIN CURRENT (A)
+                                                                                                          =10ms
+
+
+
+                                                     1         PW
+                                                               =100ms
+                                                                    PW =1s
+                                                              TJ(Max) = 150℃
+                                      0.1
+                                                              TC = 25℃
+                                                              Single Pulse       PW =10s
+                                                              DUT on 1*MRP Board
+                                                              VGS= -10V                  DC
+                        0.01
+                                                         0.1                     1          10                    100
+                                                                     -VDS, DRAIN-SOURCE VOLTAGE (V)
+                                                                      Figure 9. SOA, Safe Operation Area
+
+
+
+
+DMG2305UX                                                                                                              4 of 6                                                                               July 2021
+Document number: DS36196 Rev. 8 - 2                                                                                www.diodes.com                                                                  © Diodes Incorporated
+                                                                                                                DMG2305UX
+
+
+Package Outline Dimensions
+Please see http://www.diodes.com/package-outlines.html for the latest version.
+
+                                                                     SOT23 (Standard)
+
+
+
+                                D
+                                                                                     GAUGE PLANE
+                                                                                         0.25
+                                                      A1                                                 SOT23 (Standard)
+         A A2                                                                                       Dim      Min   Max    Typ
+                                                                                                     A      0.90   1.15 1.025
+                                                           c                                        A1      0.00   0.10   0.05
+                                                                                            a
+                                                                    L1                  L           A2      0.85   1.10 0.975
+                                 b                                                                   b      0.30   0.51   0.40
+                                                                                                      c     0.080 0.202 0.11
+                                                                                                     D      2.80   3.00   2.90
+                                                                                                     E      2.25   2.55   2.40
+                                                                                                    E1      1.20   1.40   1.30
+                                                                                                      e     0.89   1.03 0.915
+         E    E1                                                                                     e1     1.78   2.05   1.83
+                                                                                                     F      0.40   0.60 0.535
+                                                                                                     L1     0.45   0.61   0.55
+                                                                                                     L      0.25   0.55   0.40
+                                                                                                      a       0°    8°     --
+                                                                                                       All Dimensions in mm
+                                       e
+                     F            e1
+
+
+
+
+Suggested Pad Layout
+Please see http://www.diodes.com/package-outlines.html for the latest version.
+
+                                                                     SOT23 (Standard)
+
+
+
+
+                                              Y
+
+                                                                                                   Dimensions    Value (in mm)
+                                                                                                       C              2.0
+                                      Y1                                   C
+                                                                                                       X              0.8
+                                                                                                       X1            1.35
+                                                                                                       Y              0.9
+                                                                                                       Y1             2.9
+
+
+                                             X                 X1
+
+
+
+
+DMG2305UX                                                               5 of 6                                                July 2021
+Document number: DS36196 Rev. 8 - 2                                 www.diodes.com                                   © Diodes Incorporated
+                                                                                                                            DMG2305UX
+
+
+                                                              IMPORTANT NOTICE
+
+1.      DIODES INCORPORATED AND ITS SUBSIDIARIES (“DIODES”) MAKE NO WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+WITH REGARDS TO ANY INFORMATION CONTAINED IN THIS DOCUMENT, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT OF THIRD PARTY
+INTELLECTUAL PROPERTY RIGHTS (AND THEIR EQUIVALENTS UNDER THE LAWS OF ANY JURISDICTION).
+
+2.         The Information contained herein is for informational purpose only and is provided only to illustrate the operation of Diodes products
+described herein and application examples. Diodes does not assume any liability arising out of the application or use of this document or any
+product described herein. This document is intended for skilled and technically trained engineering customers and users who design with Diodes
+products. Diodes products may be used to facilitate safety-related applications; however, in all instances customers and users are responsible for
+(a) selecting the appropriate Diodes products for their applications, (b) evaluating the suitability of the Diodes products for their intended
+applications, (c) ensuring their applications, which incorporate Diodes products, comply the applicable legal and regulatory requirements as well
+as safety and functional-safety related standards, and (d) ensuring they design with appropriate safeguards (including testing, validation, quality
+control techniques, redundancy, malfunction prevention, and appropriate treatment for aging degradation) to minimize the risks associated with
+their applications.
+
+3.           Diodes assumes no liability for any application-related information, support, assistance or feedback that may be provided by Diodes
+from time to time. Any customer or user of this document or products described herein will assume all risks and liabilities associated with such
+use, and will hold Diodes and all companies whose products are represented herein or on Diodes’ websites, harmless against all damages and
+liabilities.
+
+4.         Products described herein may be covered by one or more United States, international or foreign patents and pending patent
+applications. Product names and markings noted herein may also be covered by one or more United States, international or foreign trademarks
+and trademark applications. Diodes does not convey any license under any of its intellectual property rights or the rights of any third parties
+(including third parties whose products and services may be described in this document or on Diodes’ website) under this document.
+
+5.         Diodes    products    are     provided    subject    to    Diodes’     Standard      Terms      and     Conditions    of    Sale
+(https://www.diodes.com/about/company/terms-and-conditions/terms-and-conditions-of-sales/) or other applicable terms. This document does not
+alter or expand the applicable warranties provided by Diodes. Diodes does not warrant or accept any liability whatsoever in respect of any
+products purchased through unauthorized sales channel.
+
+6.        Diodes products and technology may not be used for or incorporated into any products or systems whose manufacture, use or sale is
+prohibited under any applicable laws and regulations. Should customers or users use Diodes products in contravention of any applicable laws or
+regulations, or for any unintended or unauthorized application, customers and users will (a) be solely responsible for any damages, losses or
+penalties arising in connection therewith or as a result thereof, and (b) indemnify and hold Diodes and its representatives and agents harmless
+against any and all claims, damages, expenses, and attorney fees arising out of, directly or indirectly, any claim relating to any noncompliance with
+the applicable laws and regulations, as well as any unintended or unauthorized application.
+
+7.          While efforts have been made to ensure the information contained in this document is accurate, complete and current, it may contain
+technical inaccuracies, omissions and typographical errors. Diodes does not warrant that information contained in this document is error-free and
+Diodes is under no obligation to update or otherwise correct this information. Notwithstanding the foregoing, Diodes reserves the right to make
+modifications, enhancements, improvements, corrections or other changes without further notice to this document and any product described
+herein. This document is written in English but may be translated into multiple languages for reference. Only the English version of this document
+is the final and determinative format released by Diodes.
+
+8.        Any unauthorized copying, modification, distribution, transmission, display or other use of this document (or any portion hereof) is
+prohibited. Diodes assumes no responsibility for any losses incurred by the customers or users or any third parties arising from any such
+unauthorized use.
+
+Copyright © 2021 Diodes Incorporated
+
+www.diodes.com
+
+
+
+
+DMG2305UX                                                            6 of 6                                                                 July 2021
+Document number: DS36196 Rev. 8 - 2                              www.diodes.com                                                    © Diodes Incorporated
+

@@ -50,3 +50,9 @@ __pycache__/
 # Fingerprint of the copper tools_route.py last wrote. Local state - it says
 # what THIS checkout's board looks like, not what the design is.
 .routed-by-script
+
+# Local scratch, supplier cache, and regenerable visualization outputs.
+# Selected output source scripts and notes are tracked explicitly.
+/tmp/
+/.easyeda_cache/
+/output/

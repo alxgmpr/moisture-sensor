@@ -1,0 +1,79 @@
+# nRF Moisture Sensor: 4-layer JLC04161H-3313, nominal 1.6 mm.
+(version 1)
+
+(rule "Fab minimum track"
+	(constraint track_width (min 0.127mm))
+	(condition "A.Type == 'Track'"))
+
+(rule "Fab minimum clearance"
+	(constraint clearance (min 0.127mm)))
+
+(rule "Sense away from switching nodes"
+	(constraint clearance (min 3mm))
+	(condition "A.NetClass == 'SENSE' && B.NetClass == 'SWITCH'"))
+
+(rule "Shield away from switching nodes"
+	(constraint clearance (min 2mm))
+	(condition "A.NetClass == 'SHIELD' && B.NetClass == 'SWITCH'"))
+
+(rule "Sense to power clearance"
+	(constraint clearance (min 0.2mm))
+	(condition "A.NetClass == 'SENSE' && B.NetClass == 'Power'"))
+
+(rule "Sense to shield spacing"
+	(constraint clearance (min 0.2mm))
+	(condition "A.NetClass == 'SENSE' && B.NetClass == 'SHIELD'"))
+
+(rule "Sense channel to sense channel"
+	(constraint clearance (min 0.2mm))
+	(condition "A.NetClass == 'SENSE' && B.NetClass == 'SENSE' && A.NetName != B.NetName"))
+
+(rule "Power track width"
+	# 0.4 mm remains the routing default; 0.2 mm is permitted only where dense
+	# package escapes already exist. Switching-node widths remain stricter below.
+	(constraint track_width (min 0.2mm))
+	(condition "A.NetClass == 'Power'"))
+
+(rule "Switch node width"
+	(constraint track_width (min 0.5mm))
+	(condition "A.NetClass == 'SWITCH'"))
+
+(rule "No copper under SHT45"
+	(constraint disallow track via zone)
+	(condition "A.insideArea('NoCopperSHT45')"))
+
+(rule "Fab minimum annular ring"
+	(constraint annular_width (min 0.13mm)))
+
+(rule "Fab minimum drill"
+	(constraint hole_size (min 0.2mm)))
+
+(rule "Edge clearance"
+	(constraint edge_clearance (min 0.3mm)))
+
+
+
+# Deliberate ground-referenced ESD terminations: TI DPY lands have 0.4 mm gap.
+# Only the two short clamp fanouts use fabrication clearance; long sense routes
+# use 0.2 mm clearance elsewhere. This is not an ESD qualification waiver.
+(rule "Probe ESD clamp terminal spacing"
+ (constraint clearance (min 0.127mm))
+ (condition "(A.insideArea('ESD_SENSE1') && B.insideArea('ESD_SENSE1')) || (A.insideArea('ESD_SENSE2') && B.insideArea('ESD_SENSE2'))"))
+
+# The nets on either side of each input series resistor are the same sensing
+# channel. Its 0402 land gap is 0.48 mm; this is not inter-channel isolation.
+(rule "Input resistor same channel terminals"
+ (constraint clearance (min 0.2mm))
+ (condition "(A.NetName == '/SENSE1' && B.NetName == '/CIN1_PROTECTED') || (A.NetName == '/CIN1_PROTECTED' && B.NetName == '/SENSE1') || (A.NetName == '/SENSE2' && B.NetName == '/CIN2_PROTECTED') || (A.NetName == '/CIN2_PROTECTED' && B.NetName == '/SENSE2')"))
+
+# U3's 0.5 mm pitch leaves 0.225 mm between a pad and its neighbour's escape.
+# Limit the 0.2 mm inter-channel escape rule to this 3.35 x 3.3 mm front area.
+# Switching-node separation still applies outside the local input fanout.
+(rule "FDC local input fanout"
+ (constraint clearance (min 0.2mm))
+ (condition "A.NetClass == 'SENSE' && B.NetClass == 'SENSE' && A.insideArea('FDC_InputFanout') && B.insideArea('FDC_InputFanout')"))
+
+# Keep the package-pad exemption last so local escape rules cannot override it.
+(rule "FDC1004 adjacent pins are package geometry"
+	(constraint clearance (min 0mm))
+	(condition "A.Type == 'Pad' && B.Type == 'Pad' && A.memberOfFootprint('U3') && B.memberOfFootprint('U3')"))

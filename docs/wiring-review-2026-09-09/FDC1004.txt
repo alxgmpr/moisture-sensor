@@ -1,0 +1,1970 @@
+                                                                                                                                           FDC1004
+                                                                                            SNOSCY5C – AUGUST 2014 – REVISED OCTOBER 2024
+
+          FDC1004 4-Channel Capacitance-to-Digital Converter for Capacitive Sensing
+                                      Applications
+ 1 Features                                                                3 Description
+ •   Input range: ±15pF                                                    Capacitive sensing with grounded capacitor sensors
+ •   Measurement resolution: 0.5fF                                         is a very low-power, low-cost, high-resolution contact-
+ •   Maximum offset capacitance: 100pF                                     less sensing technique that can be applied to a
+ •   Programmable output rates: 100/200/400 S/s                            variety of applications ranging from proximity sensing
+ •   Maximum shield load: 400pF                                            and gesture recognition to material analysis and
+ •   Supply voltage: 3.3V                                                  remote liquid level sensing. The sensor in a capacitive
+ •   Temp range: –40° to 125°C                                             sensing system is any metal or conductor, allowing for
+ •   Current consumption:                                                  low cost and highly flexible system design.
+     – Active: 750µA                                                       The FDC1004 is a high-resolution, 4-channel
+     – Standby: 29µA                                                       capacitance-to-digital converter for implementing
+ •   Interface: I2C                                                        capacitive sensing solutions. Each channel has a
+ •   Number of channels: 4                                                 full scale range of ±15pF and can handle a sensor
+ 2 Applications                                                            offset capacitance of up to 100pF, which can be either
+                                                                           programmed internally or can be an external capacitor
+ •   Proximity sensors                                                     for tracking environmental changes over time and
+ •   Gesture recognition                                                   temperature. The large offset capacitance capability
+ •   Automotive door / kick sensors                                        allows for the use of remote sensors.
+ •   Automotive rain sensors
+ •   Remote and direct liquid level sensors                                The FDC1004 also includes shield drivers for sensor
+ •   High-resolution metal profiling                                       shields, which can reduce EMI interference and help
+ •   Rain / fog / ice / snow sensors                                       focus the sensing direction of a capacitive sensor.
+ •   Material size detection                                               The small footprint of the FDC1004 allows for use
+ •   Material stack height                                                 in space-constrained applications. The FDC1004 is
+                                                                           available in a 10-pin WSON and VSSOP package and
+                                                                           features an I2C interface for interfacing to an MCU.
+                                                                                                 Package Information
+                                                                                 PART NUMBER                 PACKAGE(1)          PACKAGE SIZE(2)
+                                                                                                       DSC (WSON, 10)            3mm × 3mm
+                                                                           FDC1004
+                                                                                                       DGS (VSSOP, 10)           3mm × 4.9mm
+
+                                                                           (1)    For all available packages, see Section 10.
+                                                                           (2)    The package size (length × width) is a nominal value and
+                                                                                  includes pins, where applicable.
+                                                                                               3.3 V
+
+
+                                        SHLD1                                                  VDD
+ LEVEL
+SENSOR    ENVIRONMENTAL                 SHLD2             EXCITATION
+             SENSOR                                                                                                3.3 V 3.3 V
+                                        CIN1                             FDC1004                                                                   3.3 V
+                                        CIN2
+                                                    CHA           CHA
+                                        CIN3        MUX
+                                        CIN4                                                                                                       VDD
+                                                                        CAPACITANCE        OFFSET
+             LIQUID                                                       TO DIGITAL       & GAIN                                        MCU
+            SENSOR                                                       CONVERTER       CALIBRATION
+
+
+                                                    CHB
+                                                                                                             SCL
+                                                    MUX
+                                                                  CHB   CONFIGURATION & DATA
+                                                                                                                                         I2C
+                                                                                                       I2C   SDA                      Peripheral
+                                                                             REGISTERS
+
+
+                                                   CAPDAC                                                                                          GND
+                                                                                         GND
+
+
+                                                            Typical Application
+         An IMPORTANT NOTICE at the end of this data sheet addresses availability, warranty, changes, use in safety-critical applications,
+         intellectual property matters and other important disclaimers. PRODUCTION DATA.
+FDC1004
+SNOSCY5C – AUGUST 2014 – REVISED OCTOBER 2024                                                                                                                    www.ti.com
+
+
+                                                                        Table of Contents
+1 Features............................................................................1     6.6 Register Maps...........................................................15
+2 Applications..................................................................... 1     7 Applications and Implementation................................ 19
+3 Description.......................................................................1       7.1 Application Information............................................. 19
+4 Pin Configuration and Functions...................................3                       7.2 Typical Application.................................................... 20
+5 Specifications.................................................................. 4        7.3 Best Design Practices...............................................22
+  5.1 Absolute Maximum Ratings........................................ 4                    7.4 Initialization Set Up................................................... 22
+  5.2 ESD Ratings............................................................... 4          7.5 Power Supply Recommendations.............................22
+  5.3 Recommended Operating Conditions.........................4                            7.6 Layout....................................................................... 22
+  5.4 Thermal Information....................................................4            8 Device and Documentation Support............................23
+  5.5 Electrical Characteristics.............................................5              8.1 Documentation Support............................................ 23
+  5.6 I2C Interface Voltage Level......................................... 5                8.2 Receiving Notification of Documentation Updates....23
+  5.7 I2C Interface Timing.................................................... 6            8.3 Support Resources................................................... 23
+  5.8 Typical Characteristics................................................ 7             8.4 Trademarks............................................................... 23
+6 Detailed Description........................................................9             8.5 Electrostatic Discharge Caution................................23
+  6.1 Overview..................................................................... 9       8.6 Glossary....................................................................23
+  6.2 Functional Block Diagram........................................... 9               9 Revision History............................................................ 23
+  6.3 Feature Description.....................................................9           10 Mechanical, Packaging, and Orderable
+  6.4 Device Functional Modes..........................................10                   Information.................................................................... 24
+  6.5 Programming............................................................ 12
+
+
+
+
+2       Submit Document Feedback                                                                                         Copyright © 2024 Texas Instruments Incorporated
+
+                                                                     Product Folder Links: FDC1004
+                                                                                                                                          FDC1004
+www.ti.com                                                                                      SNOSCY5C – AUGUST 2014 – REVISED OCTOBER 2024
+
+
+4 Pin Configuration and Functions
+
+                                                          SHLD1   1                10   SDA
+
+                                                           CIN1   2                9    SCL
+
+                                                           CIN2   3      DAP       8    VDD
+
+                                                           CIN3   4                7    GND
+
+                                                           CIN4   5                6    SHLD2
+
+
+
+                                                  Figure 4-1. WSON (DSC) 10 Pins TOP
+
+                                                  SHLD1           1                10           SDA
+
+                                                   CIN1           2                 9           SCL
+
+                                                   CIN2           3                 8           VDD
+
+                                                   CIN3           4                 7           GND
+
+                                                   CIN4           5                 6           SHLD2
+
+
+                                                  Figure 4-2. VSSOP (DGS) 10 Pins TOP
+
+                                                           Table 4-1. Pin Functions
+               PIN
+                                      TYPE(1)                                                 DESCRIPTION
+ NAME                  NO.
+ SHLD1                   1                A        Capacitive Input Active AC Shielding.
+                                                   Capacitive Input. The measured capacitance is connected between the CIN1 pin and GND.
+ CIN1                    2                A
+                                                   If not used, leave this pin as an open circuit.
+                                                   Capacitive Input. The measured capacitance is connected between the CIN2 pin and GND.
+ CIN2                    3                A
+                                                   If not used, leave this pin as an open circuit.
+                                                   Capacitive Input. The measured capacitance is connected between the CIN3 pin and GND.
+ CIN3                    4                A
+                                                   If not used, leave this pin as an open circuit.
+                                                   Capacitive Input. The measured capacitance is connected between the CIN4 pin and GND.
+ CIN4                    5                A
+                                                   If not used, leave this pin as an open circuit.
+ SHLD2                   6                A        Capacitive Input Active AC Shielding.
+ GND                     7               G         Ground
+                                                   Power Supply Voltage. Decouple this pin to GND, using a low impedance capacitor, for
+ VDD                     8                P
+                                                   example in combination with a 1μF tantalum and a 0.1μF multilayer ceramic.
+                                                   Serial Interface Clock Input. Connects to the controller clock line. Requires pullup resistor if
+ SCL                     9                I
+                                                   not already provided elsewhere in the system.
+                                                   Serial Interface Bidirectional Data. Connects to the controller data line. Requires a pullup
+ SDA                    10               I/O
+                                                   resistor if not provided elsewhere in the system.
+ DAP(2)                  -              N/A        Connect to GND
+
+(1)     P=Power, G=Ground, I=Input, O=Output, A=Analog, I/O=Bidirectional Input/Output
+(2)     There is an internal electrical connection between the exposed Die Attach Pad (DAP) and the GND pin of the device. Although the
+        DAP can be left floating, for best performance the DAP should be connected to the same potential as the device's GND pin. Do not use
+        the DAP as the primary ground for the device. The device GND pin must always be connected to ground.
+
+
+
+
+Copyright © 2024 Texas Instruments Incorporated                                                                 Submit Document Feedback              3
+                                                           Product Folder Links: FDC1004
+FDC1004
+SNOSCY5C – AUGUST 2014 – REVISED OCTOBER 2024                                                                                               www.ti.com
+
+5 Specifications
+5.1 Absolute Maximum Ratings
+See (1)
+                                                                                                            MIN             MAX              UNIT
+    Input voltage                            VDD                                                            –0.3                 6             V
+                                             SCL, SDA                                                       –0.3                 6             V
+                                             at any other pin                                               –0.3          VDD+0.3              V
+    Input current                            at any pin                                                                          3            mA
+    Junction temperature(2)                                                                                                 150                °C
+    Storage temperature                      TSTG                                                           –65             150                °C
+
+(1)        Stresses beyond those listed under Absolute Maximum Ratings may cause permanent damage to the device. These are stress
+           ratings only, which do not imply functional operation of the device at these or any other conditions beyond those indicated under
+           Recommended Operating Conditions. Exposure to absolute-maximum-rated conditions for extended periods may affect device
+           reliability.
+(2)        The maximum power dissipation is a function of TJ(MAX), RθJA, and the ambient temperature, TA. The maximum allowable power
+           dissipation at any ambient temperature is PDMAX = (TJ(MAX) - TA)/ RθJA. All numbers apply for packages soldered directly onto a PC
+           board.
+5.2 ESD Ratings
+                                                                                                                             VALUE            UNIT
+                                                                     Human body model (HBM), per ANSI/ESDA/
+                                                                                                                                 ±1000
+                                                                     JEDEC JS-001, all pins(2)
+    V(ESD)      Electrostatic discharge(1)                                                                                                     V
+                                                                     Charged device model (CDM), per JEDEC
+                                                                                                                                 ±250
+                                                                     specification -500 500 JESD22-C101, all pins(3)
+
+(1)        Electrostatic discharge (ESD) to measure device sensitivity and immunity to damage caused by assembly line electrostatic discharges
+           in to the device.
+(2)        Level listed above is the passing level per ANSI, ESDA, and JEDEC JS-001. JEDEC document JEP155 states that 500V HBM allows
+           safe manufacturing with a standard ESD control process.
+(3)        Level listed above is the passing level per EIA-JEDEC JESD22-C101. JEDEC document JEP157 states that 250V CDM allows safe
+           manufacturing with a standard ESD control process.
+5.3 Recommended Operating Conditions
+Over operating temperature range (unless otherwise noted)
+                                                                                                  MIN             NOM                MAX     UNIT
+    Supply voltage (VDD-GND)                                                                          3             3.3               3.6      V
+    Temperature                                                                                    –40                               125      °C
+
+
+5.4 Thermal Information
+                                                                                                          FDC1004
+                                 THERMAL METRIC(1)                                        WSON (DSC)                VSSOP (DGS)               UNIT
+                                                                                                          10 PINS
+    RθJA          Junction-to-ambient thermal resistance                                       46.8                       46.8                °C/W
+    RθJC          Junction-to-case(top) thermal resistance                                     46.7                       48.7                °C/W
+    RθJB          Junction-to-board thermal resistance                                         21.5                       70.6                °C/W
+
+(1)        For more information about traditional and new thermal metrics, see the Semiconductor and IC Package Thermal Metrics application
+           note.
+
+
+
+
+4          Submit Document Feedback                                                                   Copyright © 2024 Texas Instruments Incorporated
+
+                                                             Product Folder Links: FDC1004
+                                                                                                                                      FDC1004
+www.ti.com                                                                                  SNOSCY5C – AUGUST 2014 – REVISED OCTOBER 2024
+
+
+5.5 Electrical Characteristics
+Over recommended operating temperature range, VDD = 3.3V, for TA = 25°C (unless otherwise noted). (1)
+                    PARAMETER                                   TEST CONDITION                     MIN(2)     TYP(3)       MAX(2)     UNIT
+ POWER SUPPLY
+ IDD            Supply current                        Conversion mode; Digital input to                          750          950       µA
+                                                      VDD or GND
+                                                      Standby; Digital input to VDD or                            29           70       µA
+                                                      GND
+ CAPACITIVE INPUT
+ ICR            Input conversion range                                                                           ±15                    pF
+ COMAX          Max input offset capacitance          per channel, Series resistance at                          100                    pF
+                                                      CINn n=1.4 = 0 Ω
+ RES            Effective resolution (4)              Sample rate = 100S/s (5)                                    16                    bit
+ EON            Output noise                          Sample rate = 100S/s (5)                                  33.2                 aF/√Hz
+ ERR            Absolute error                        after offset calibration                                    ±6                    fF
+ TcCOFF         Offset deviation over temperature     -40°C < T < 125°C                                           46                    fF
+ GERR           Gain error                                                                                        0.2                   %
+ tcG            Gain drift vs temperature             -40°C < T < 125°C                                         -37.5                ppm/°C
+ PSRR           DC power supply rejection             3V < VDD < 3.6V, single-ended mode                        13.6                   fF/V
+                                                      (channel vs GND)
+ CAPDAC
+ FRCAPDAC       Full-scale range                                                                                96.9                    pF
+ TcCOFFCAP Offset drift vs. temperature               -40°C < T < 125°C                                           30                    fF
+ DAC
+
+ EXCITATION
+ ƒ              Frequency                                                                                         25                   kHz
+ VAC            AC voltage across capacitance                                                                     2.4                  Vpp
+ VDC            Average DC voltage across                                                                         1.2                   V
+                capacitance
+ SHIELD
+ DRV            Driver capability                     ƒ = 25kHz, SHLDn to GND, n = 1,2                                        400       pF
+
+(1)  Electrical Characteristics Table values apply only for factory testing conditions at the temperature indicated. Factor testing conditions
+     result in very limited self-heating of the device such that TJ=TA. No guarantee of parametric performance is indicated in the electrical
+     tables under conditions of internal self-heating where TJ>TA. Absolute Maximum Ratings indicate junction temperature limits beyond
+     which the device can be permanently degraded, either mechanically or electrically.
+(2) Limits are ensured by testing, design, or statistical analysis at 25Degree C. Limits over the operating temperature range are ensured
+     through correlations using statistical quality control (SQC) method.
+(3) Typical values represent the most likely parametric norm as determined at the time of characterization. Actual typical values can vary
+     over time and also depend on the application and configuration. The typical values are not tested and are not guaranteed on shipped
+     production material.
+(4) Effective resolution is the ratio of converter full scale range to RMS measurement noise.
+(5) No external capacitance connected.
+5.6 I2C Interface Voltage Level
+Over recommended operating free-air temperature range, VDD = 3.3V, for TA = TJ = 25°C (unless otherwise noted).
+                    PARAMETER                                  TEST CONDITIONS                       MIN         TYP         MAX       UNIT
+ VIH           Input high voltage                                                                0.7*VDD                                 V
+ VIL           Input low voltage                                                                                          0.3*VDD        V
+ VOL           Output low voltage                     Sink current 3 mA                                                        0.4       V
+ HYS           Hysteresis (1)                                                                    0.1*VDD                                 V
+
+(1)     This parameter is specified by design and/or characterization and is not tested in production.
+
+
+
+Copyright © 2024 Texas Instruments Incorporated                                                             Submit Document Feedback             5
+                                                         Product Folder Links: FDC1004
+FDC1004
+SNOSCY5C – AUGUST 2014 – REVISED OCTOBER 2024                                                                                                        www.ti.com
+
+5.7 I2C Interface Timing
+Over recommended operating free-air temperature range, VDD = 3.3V, for TA = TJ = 25°C (unless otherwise noted).
+                        PARAMETER                                          TEST CONDITIONS                         MIN              TYP      MAX       UNIT
+    fSCL           Clock frequency(1)                                                                                   10                    400       kHz
+    tLOW           Clock low time(1)                                                                                1.3                                 µs
+    tHIGH          Clock high time(1)                                                                               0.6                                 µs
+    tHD;STA        Hold time (repeated) START                After this period, the first clock pulse               0.6                                 µs
+                   condition(1)                              is generated
+    tSU;STA        Set-up time for a repeated START                                                                 0.6                                 µs
+                   condition(1)
+    tHD;DAT        Data hold time(1) (2)                                                                                 0                               ns
+    tSU;DAT        Data setup time(1)                                                                               100                                  ns
+    tf             SDA fall time(1)                          IL ≤ 3mA; CL ≤ 400pF                                                             300        ns
+    tSU;STO        Set-up time for STOP condition(1)                                                                0.6                                 µs
+    tBUF           Bus free time between a STOP and                                                                 1.3                                 µs
+                   START condition(1)
+    tVD;DAT        Data valid time(1)                                                                                                          0.9       ns
+    tVD;ACK        Data valid acknowledge time(1)                                                                                              0.9       ns
+    tSP            Pulse width of spikes that must be                                                                                           50       ns
+                   suppressed by the input filter(1)
+
+(1)         This parameter is specified by design and/or characterization and is not tested in production.
+(2)         The FDC1004 provides an internal 300ns minimum hold time to bridge the undefined region of the falling edge of SCL.
+
+
+                          SDA
+                                                                                                                                tBUF
+                                tf           tLOW                                                 tHD;STA               tr
+                                                        tr    tf                                        tSP
+
+                          SCL
+                                              tHD;STA                                         tSU;STA         tSU;STO
+                                                                   tHIGH
+                                             tHD;DAT                              tSU;DAT
+
+                                     START                                            REPEATED                               STOP   START
+                                                                                        START
+
+                                                                    Figure 5-1. I2C Timing
+
+
+
+
+6           Submit Document Feedback                                                                               Copyright © 2024 Texas Instruments Incorporated
+
+                                                                   Product Folder Links: FDC1004
+                                                                                                                                                                                                                                                                         FDC1004
+www.ti.com                                                                                                                                                                                                SNOSCY5C – AUGUST 2014 – REVISED OCTOBER 2024
+
+
+5.8 Typical Characteristics
+                                      1300                                                                                                                                    50
+                                                                                                                       3V
+                                      1200                                                                             3.3 V
+                                                                                                                       3.6 V                                                  45
+                                      1100
+
+
+
+
+                                                                                                                                                  Standby Current (µA)
+                                                                                                                                                                              40
+                                      1000
+
+
+         Current (µA)
+                                        900                                                                                                                                   35
+
+                                        800
+                                                                                                                                                                              30
+                                        700
+                                                                                                                                                                              25                                                                             VDD = 3 V
+                                        600                                                                                                                                                                                                                  VDD = 3.3 V
+                                                                                                                                                                                                                                                             VDD = 3.6 V
+                                        500                                                                                                                                   20
+                                          -60       -40       -20      0     20   40    60              80    100     120   140                                                 -60                 -40     -20       0     20   40    60          80    100       120    140
+                                                                            Temperature (°C)                                   D002
+                                                                                                                                                                                                                           Temperature (°C)                                 D001
+                                      Figure 5-2. Active Conversion Mode Supply Current vs                                                        Figure 5-3. Stand-by Mode Supply Current vs Temperature
+                                                           Temperature
+                                        2000                                                                                                                                      0.1
+                                                                                                                                                                         0.08
+                                        1000
+                                                                                                                                                                         0.06
+                                           0
+                                                                                                                                                                         0.04
+
+
+
+
+           G a in D r ift ( p p m )                                                                                                    Offset Drift (pF)
+                                        -1000
+                                                                                                                                                                         0.02
+                                                                                                                                                                                          0
+                                        -2000
+                                                                                                                                                                         -0.02
+
+                                        -3000                                                                                                                            -0.04
+                                                                                                                                                                         -0.06
+                                        -4000
+                                                                                                                                                                         -0.08
+                                        -5000                                                                                                                               -0.1
+                                              -50    -30        -10        10         30     50      70       90      110      130                                             -40                    -20         0         20    40      60            80         100      120
+                                                                                  Temperature (°C)
+                                                                                                                               D004
+                                                                                                                                                                                                                            Temperature (°C)                                    D003
+                                                    Figure 5-4. Gain Drift vs Temperature                                                                                                                         CINn = open, where n = 1...4
+                                                                                                                                                                                                    Figure 5-5. Offset Drift vs Temperature
+                                      10.258                                                                                                                                               10
+                                                                                                                                                                                              0
+                                      10.256                                                                                                                                               -10
+                                                                                                                                                                                           -20
+                                      10.254                                                                                                                                               -30
+                                                                                                                                                                                           -40
+
+
+
+
+  Capacitance (pF)
+                                                                                                                                                                         Magnitude (dB)
+                                      10.252                                                                                                                                               -50
+                                                                                                                                                                                           -60
+                                       10.25                                                                                                                                               -70
+                                                                                                                                                                                           -80
+                                      10.248                                                                                                                                               -90
+                                                                                                                                                                                          -100
+                                      10.246                                                                                                                                              -110
+                                                                                                                                                                                          -120
+                                      10.244                                                                                                                                              -130
+                                                                                                                                                                                          -140
+                                      10.242                                                                                                                                              -150
+                                                                                                                                                                                             10-1           100           101        102         103         104          105
+                                            2.9           3         3.1         3.2       3.3     3.4        3.5      3.6      3.7                                                                                              Frequency (Hz)
+                                                                                      Voltage (V)                               D005
+                                                                                                                                                                                                  Figure 5-7. Frequency Response 100S/s
+                                                                      Capacitance Value = 10pF
+                                                     Figure 5-6. Capacitance vs Voltage
+
+
+
+
+Copyright © 2024 Texas Instruments Incorporated                                                                                                                                                                                     Submit Document Feedback                           7
+                                                                                                                   Product Folder Links: FDC1004
+FDC1004
+SNOSCY5C – AUGUST 2014 – REVISED OCTOBER 2024                                                                                                                      www.ti.com
+
+5.8 Typical Characteristics (continued)
+                        10                                                                                    10
+                          0                                                                                     0
+                        -10                                                                                   -10
+                        -20                                                                                   -20
+                        -30                                                                                   -30
+                        -40                                                                                   -40
+
+
+
+
+      Magnitude (dB)                                                                        Magnitude (dB)
+                        -50                                                                                   -50
+                        -60                                                                                   -60
+                        -70                                                                                   -70
+                        -80                                                                                   -80
+                        -90                                                                                   -90
+                       -100                                                                                  -100
+                       -110                                                                                  -110
+                       -120                                                                                  -120
+                       -130                                                                                  -130
+                       -140                                                                                  -140
+                       -150                                                                                  -150
+                          10-1     100    101        102         103   104    105                               10-1     100    101        102         103   104     105
+                                                Frequency (Hz)                                                                        Frequency (Hz)
+                              Figure 5-8. Frequency Response 200S/s                                                 Figure 5-9. Frequency Response 400S/s
+
+
+
+
+8     Submit Document Feedback                                                                                                 Copyright © 2024 Texas Instruments Incorporated
+
+                                                                        Product Folder Links: FDC1004
+                                                                                                                            FDC1004
+www.ti.com                                                                               SNOSCY5C – AUGUST 2014 – REVISED OCTOBER 2024
+
+
+6 Detailed Description
+6.1 Overview
+The FDC1004 is a high-resolution, 4-channel capacitance-to-digital converter for implementing capacitive
+sensing solutions. Each channel has a full scale range of ±15pF and can handle a sensor offset capacitance
+of up to 100pF, which can be either programmed internally or can be an external capacitor for tracking
+environmental changes over time and temperature. The large offset capacitance capability allows for the use
+of remote sensors. The FDC1004 also includes shield drivers for sensor shields, which can reduce EMI
+interference and help focus the sensing direction of a capacitive sensor. The small footprint of the FDC1004
+allows for use in space-constrained applications. For more information on the basics of capacitive sensing and
+applications, refer to the FDC1004: Basics of Capacitive Sensing and Applications application note.
+6.2 Functional Block Diagram
+
+                CIN1                                                                                VDD
+                                                                      FDC1004
+                CIN2
+                                            M          CHA
+                                            U
+                                            X
+
+                SHLD1                                                                      OFFSET
+                                                                      CAPACITANCE
+                                                  EXCITATION                                  &                     SDA
+                                                                        TO DIGITAL
+                SHLD2                                                                        GAIN
+                                                                       CONVERTER
+                                                                                         CALIBRATION         I2C    SCL
+                                                                       CONFIGURATION REGISTERS
+                                                                                  &
+                                            M                              DATA REGISTERS
+                CIN3                        U          CHB
+                                            X
+                CIN4
+
+
+
+                                            CAPDAC
+                                                                                                    GND
+
+6.3 Feature Description
+6.3.1 The Shield
+The FDC1004 measures capacitance between CINn and ground. That means any capacitance to ground on
+signal path between the FDC1004 CINn pins and sensor is included in the FDC1004 conversion result.
+In some applications, the parasitic capacitance of the sensor connections can be larger than the capacitance of
+the sensor. If that parasitic capacitance is stable, the capacitance can be treated as a constant capacitive offset.
+However, the parasitic capacitance of the sensor connections can have significant variation due to environmental
+changes (such as mechanical movement, temperature shifts, humidity changes). These changes are seen as
+drift in the conversion result and can significantly compromise the system accuracy.
+To eliminate the CINn parasitic capacitance to ground, the FDC1004 SHLDx signals can be used for shielding
+the connection between the sensor and CINn. The SHLDx output is the same signal waveform as the excitation
+of the CINn pin; the SHLDx is driven to the same voltage potential as the CINn pin. Therefore, there is no current
+between CINn and SHLDx pins, and any capacitance between these pins does not affect the CINn charge
+transfer. Ideally, the CINn to SHLD capacitance does not have any contribution to the FDC1004 result.
+In differential measurements, SHLD1 is assigned to CHn and SHLD2 is assigned to CHm, where n < m. For
+instance in the measurement CIN1 – CIN2, where CHA = CIN1 and CHB = CIN2 (see Table 6-4), SHDL1 is
+assigned to CIN1 and SHDL2 is assigned to CIN2.
+
+
+
+Copyright © 2024 Texas Instruments Incorporated                                                        Submit Document Feedback     9
+                                                         Product Folder Links: FDC1004
+FDC1004
+SNOSCY5C – AUGUST 2014 – REVISED OCTOBER 2024                                                                     www.ti.com
+
+
+In a single-ended configuration, such as CINn versus GND, SHLD1 is internally shorted to SHLD2. In a single
+ended configuration, such as CINn versus GND with CAPDAC enabled, SHLD1 is assigned to the selected
+channel, SHLD2 is floating.
+For best results, locate the FDC1004 as close as possible to the capacitive sensor. Minimize the connection
+length between the sensor and FDC1004 CINn pins and between the sensor ground and the FDC1004 GND pin.
+Shield the PCB traces to the CINn pins and connect the shielding to the FDC1004 SHLDx pins. In addition, if a
+shielded cable is used to connect the FDC1004 to the sensor, connect the shield to the appropriate SHLDx pin.
+In applications where only one SHLDx pin is used, the unused SHLDx pin can be left unconnected.
+For more information on shielding, refer to Capacitive Sensing: Ins and Outs of Active Sensing application note.
+6.3.2 The CAPDAC
+The FDC1004 full-scale input range is ±15pF. The part can accept a higher capacitance on the input and
+the common-mode or offset (constant component) capacitance can be balanced by the programmable on-chip
+CAPDACs. The CAPDAC can be viewed as a negative capacitance connected internally to the CINn pin. The
+relation between the input capacitance and output data can be expressed as DATA = (CINn – CAPDAC), n =
+1...4. The CAPDACs have a 5-bit resolution, monotonic transfer function, are well matched to each other, and
+have a defined temperature coefficient.
+6.3.3 Capacitive System Offset Calibration
+The capacitive offset can be due to many factors including the initial capacitance of the sensor, parasitic
+capacitances of board traces, and the capacitance of any other connections between the sensor and the FDC.
+The parasitic capacitances of the FDC1004 are calibrated out at production. If there are other sources of offset
+in the system, it can be necessary to calibrate the system capacitance offset in the application. Any offset in the
+capacitance input larger than ½ LSB of the CAPDAC should first be removed using the on-chip CAPDACs. Any
+residual offset of approximately 1pF can then be removed by using the capacitance offset calibration register.
+The offset calibration register is reloaded by the default value at power-on or after reset. Therefore, if the offset
+calibration is not repeated after each system power-up, the calibration coefficient value should be stored by the
+host controller and reloaded as part of the FDC1004 setup.
+6.3.4 Capacitive Gain Calibration
+The gain is factory calibrated up to ±15pF in the production for each part individually. The factory gain coefficient
+is stored in a one-time programmable (OTP) memory.
+The gain can be temporarily changed by setting the Gain Calibration Register (registers 0x11 to 0x14) for the
+appropriate CINn pin, although the factory gain coefficient is restored after power-up or reset.
+The part is tested and specified for use only with the default factory calibration coefficient. Adjusting the Gain
+calibration can be used to normalize the capacitance measurement of the CINn input channels.
+6.4 Device Functional Modes
+6.4.1 Single Ended Measurement
+The FDC1004 can be used for interfacing to a single-ended capacitive sensor. In this configuration, connect the
+sensor to the input CINn (n = 1..4) pins of the FDC1004 and GND. The capacitance-to-digital convertor (without
+using the CAPDAC, CAPDAC= 0pF) measures the positive (or the negative) input capacitance in the range of
+0pF to 15pF. The CAPDAC can be used for programmable shifting of the input range. In this case it is possible to
+measure input capacitance in the range of 0pF to ±15pF which are on top of an offset capacitance up to 100pF.
+In single ended measurements with CAPDAC disabled SHLD1 is internally shorted to SHLD2 (see Figure 6-1);
+if CAPDAC is enabled SHLD2 is floating (see Figure 6-2). The single ended mode is enabled when the CHB
+register of the Measurements configuration registers (see Table 6-4) are set to b100 or b111.
+
+
+
+
+10    Submit Document Feedback                                                   Copyright © 2024 Texas Instruments Incorporated
+
+                                                Product Folder Links: FDC1004
+                                                                                                                          FDC1004
+www.ti.com                                                                         SNOSCY5C – AUGUST 2014 – REVISED OCTOBER 2024
+
+
+                                           CIN1                                                              VDD
+                                                                                   FDC1004
+                                           CIN2
+                                                          M        CHA
+                                                          U
+                                                          X
+
+                                           SHLD1                                                     OFFSET
+                                                                                   CAPACITANCE
+                                                              EXCITATION                                &                    SDA
+                                                                                     TO DIGITAL
+                                           SHLD2                                                       GAIN
+                                                                                    CONVERTER
+                                                                                                   CALIBRATION      I2C      SCL
+                                                                                    CONFIGURATION REGISTERS
+                                                                                               &
+                                                          M                             DATA REGISTERS
+                                           CIN3           U        CHB
+                                                          X
+                                           CIN4
+
+
+
+S1     S2    S3    S4                                     CAPDAC
+                                                                                                             GND
+
+
+
+
+                               Figure 6-1. Single-Ended Configuration with CAPDAC Disabled
+
+                                           CIN1                                                              VDD
+                                                                                   FDC1004
+                                           CIN2
+                                                          M        CHA
+                                                          U
+                                                          X
+
+                                           SHLD1                                                     OFFSET
+                                                                                   CAPACITANCE
+                                                              EXCITATION                                &                    SDA
+                                                                                     TO DIGITAL
+                                           SHLD2                                                       GAIN
+                                                                                    CONVERTER
+                                                                                                   CALIBRATION      I2C      SCL
+                                                                                    CONFIGURATION REGISTERS
+                                                                                               &
+                                                          M                             DATA REGISTERS
+                                           CIN3           U        CHB
+                                                          X
+                                           CIN4
+
+
+
+S1     S2    S3    S4                                     CAPDAC
+                                                                                                             GND
+
+
+
+
+                               Figure 6-2. Single-Ended Configuration with CAPDAC Enabled
+
+6.4.2 Differential Measurement
+When the FDC1004 is used for interfacing to a differential capacitive sensor, each of the two input capacitances
+must be less than 115pF. In this configuration the CAPDAC is disabled. Keep the absolute value of the difference
+between the two input capacitances below 15pF to avoid introducing errors in the measurement. In differential
+measurements, SHLD1 is assigned to CHn and SHLD2 is assigned to CHm, where n < m. For instance in
+the measurement CIN1 – CIN2, where CHA = CIN1 and CHB = CIN2 (see Table 6-4), SHDL1 is assigned to
+CIN1 and SHDL2 is to CIN2. Differential sensors made with S1 versus S3 and S2 versus S4 is shown below
+in Figure 6-3. S1 and S2 are alternatively connected to CHA and the S3 and S4 are alternatively connected to
+CHB, the shield signals are connected as explained in previous paragraph. The FDC1004 performs a differential
+
+Copyright © 2024 Texas Instruments Incorporated                                                   Submit Document Feedback     11
+                                                   Product Folder Links: FDC1004
+FDC1004
+SNOSCY5C – AUGUST 2014 – REVISED OCTOBER 2024                                                                           www.ti.com
+
+
+measurement when CHB field of the Measurements Configuration Registers (refer to Table 6-4) is less than to
+b100.
+This configuration is very useful in applications where environment conditions need to be tracked. The
+differential measurement between the main electrode and the environment electrode makes the measurement
+independent of the environment conditions.
+
+                                  CIN1                                                                       VDD
+                                                                                FDC1004
+                                  CIN2
+                                                       M        CHA
+                                                       U
+                                                       X
+
+                                  SHLD1                                                            OFFSET
+                                                                                CAPACITANCE
+                                                           EXCITATION                                 &                        SDA
+                                                                                  TO DIGITAL
+                                  SHLD2                                                              GAIN
+                                                                                 CONVERTER
+                                                                                                 CALIBRATION           2
+                                                                                                                       IC      SCL
+                                                                                 CONFIGURATION REGISTERS
+                                                                                            &
+                                                       M                             DATA REGISTERS
+                                  CIN3                 U        CHB
+                                                       X
+                                  CIN4
+
+
+
+S1    S2   S3   S4                                     CAPDAC
+                                                                                                             GND
+
+
+
+
+                                         Figure 6-3. Differential Configuration
+
+6.5 Programming
+The FDC1004 operates only as a target device on the two-wire bus interface. Every device on the bus must
+have a unique address. Connection to the bus is made via the open-drain I/O lines, SDA, and SCL. The SDA
+and SCL pins feature integrated spike-suppression filters and Schmitt triggers to minimize the effects of input
+spikes and bus noise. The FDC1004 supports fast mode frequencies 10kHz to 400kHz. All data bytes are
+transmitted MSB first.
+6.5.1 Serial Bus Address
+To communicate with the FDC1004, the controller must first address target devices via a target address byte.
+The target address byte consists of seven address bits and a direction bit that indicates the intent to execute a
+read or write operation. The seven bit address for the FDC1004 is (MSB first): b101 0000.
+6.5.2 Read/Write Operations
+Access a particular register on the FDC1004 by writing the appropriate value to the Pointer Register. The pointer
+value is the first byte transferred after the target address byte with the R/W bit low. Every write operation to the
+FDC1004 requires a value for the pointer register. When reading from the FDC1004, the last value stored in
+the pointer by a write operation is used to determine which register is read by a read operation. To change the
+pointer register for a read operation, a new value must be written to the pointer. This transaction is accomplished
+by issuing the target address byte with the R/W bit low, followed by the pointer byte. No additional data is
+required. The controller can then generate a START condition and send the target address byte with the R/W
+bit high to initiate the read command. Note that register bytes are sent MSB first, followed by the LSB. A write
+operation in a read only registers such as MANUFACTURER ID or SERIAL ID returns a NACK after each
+data byte; read/write operation to unused address returns a NACK after the pointer; a read/write operation with
+incorrect I2C address returns a NACK after the I2C address.
+
+
+12    Submit Document Feedback                                                         Copyright © 2024 Texas Instruments Incorporated
+
+                                                Product Folder Links: FDC1004
+                                                                                                                                                                                                                     FDC1004
+www.ti.com                                                                                                                                       SNOSCY5C – AUGUST 2014 – REVISED OCTOBER 2024
+
+                                                             1                                                     9     1                                                     9
+                                     SCL
+
+
+                                    SDA                      A6    A5    A4     A3      A2    A1   A0     R/W            P7   P6   P5      P4      P3     P2   P1     P0
+
+                                                 Start by                                                       Ack by                                                        Ack by
+                                                Controller                                                      Target                                                        Target
+
+                                                                                Frame 1                                                       Frame 2
+                                                                    7-bit Serial Bus Address Byte                                       Pointer Register Byte
+
+
+
+                                                     1                                                      9       1                                                  9
+                                    SCL
+
+
+                                    SDA             D15      D14   D13   D12     D11    D10   D9    D8              D7   D6   D5   D4       D3       D2   D1    D0
+
+                                                                                                          Ack by                                                     Ack by         Stop by
+                                                                                                          Target                                                     Target        Controller
+                                                                            Frame 3                                                    Frame 4
+                                                                         Data MSB from                                              Data LSB from
+                                                                             Target                                                     Target
+
+
+
+                                                                                        Figure 6-4. Write Frame
+                          1                                                      9       1                                                  9
+       SCL
+
+
+      SDA                 A6   A5   A4     A3      A2        A1    A0 R/W               P7    P6    P5     P4      P3    P2   P1   P0
+              Start by                                                         Ack by                                                     Ack by
+             Controller                                                        Target                                                     Target
+                                           Frame 1                                                              Frame 2
+                                7-bit Serial Bus Address Byte                                            Pointer Register Byte
+
+
+                          1                                                      9      1                                                   9      1                                                       9
+      SCL
+
+
+      SDA             A6       A5   A4     A3      A2        A1    A0 R/W               D15 D14 D13 D12 D11 D10               D9   D8              D7     D6   D5     D4      D3       D2       D1   D0
+              Start by                                                         Ack by                                                    Ack by                                                       Nack by      Stop by
+             Controller                                                        Target                                                   Controller                                                   Controller   Controller
+                                                                                                             Frame 4                                                     Frame 5
+                                           Frame 3
+                                                                                                          Data MSB from                                                Data LSB from
+                                7-bit Serial Bus Address Byte
+                                                                                                              Target                                                      Target
+
+
+                                                                                         Figure 6-5. Read Frame
+
+The I2C interface of the FDC1004 is designed to operate with the standard I2C transactions detailed in the I2C
+specification; however it is not suitable for use in an I2C system which supports early termination of transactions.
+A STOP condition or other early termination occurring before the normal end of a transaction (ACK) is not
+supported and can corrupt that transaction and/or the following transaction.
+The device is also sensitive to any extraneous pulse on SDA during the SCL low period of the first bit position
+of the I2C address byte. To ensure proper operation of the FDC1004, make sure the controller device does not
+transmit this type of waveform. An example of an unsupported I2C waveform is shown in Figure 6-6.
+                                                                                                                AVOID SDA PULSE
+                                                                                                                   AFTER START
+
+                                                                                SDA
+
+
+
+
+                                                                                SCL
+
+
+
+
+                                                                                              START                                     ADDR
+
+                                    Figure 6-6. Extraneous Pulse on SDA between I2C START and ADDR
+
+6.5.3 Device Usage
+The basic usage model of the FDC1004 is to simply follow these steps:
+1. Configure measurements (for details, refer to Measurement Configuration).
+
+Copyright © 2024 Texas Instruments Incorporated                                                                                                                               Submit Document Feedback                         13
+                                                                                        Product Folder Links: FDC1004
+FDC1004
+SNOSCY5C – AUGUST 2014 – REVISED OCTOBER 2024                                                                    www.ti.com
+
+2. Trigger a measurement set (for details, refer to Triggering Measurements).
+3. Wait for measurement completion (for details, refer to Wait for Measurement Completion).
+4. Read measurement data (for details, refer to Read of Measurement Result).
+6.5.3.1 Measurement Configuration
+Configuring a measurement involves setting the input channels and the type of measurement (single-ended or
+differential).
+The FDC1004 can be configured with up to 4 separate measurements, where each measurement can be any
+valid configuration (that is, a specific channel can be used in multiple measurements). There is a dedicated
+configuration register for each of the 4 possible measurements (for example, MEAS_CONF1 in register 0x08
+configures measurement 1, MEAS_CONF2 in register 0x09 configures measurement 2, ...). Configuring only one
+measurement is allowed, and it can be one of the 4 possible measurement configurations.
+1. Setup the input channels for each measurement. Determine which of the 4 measurement configuration
+    registers to use (registers 0x08 to 0x0A) and set the following:
+    a. For single-ended measurement:
+        i. Select the positive input pin for the measurement by setting the CHA field (bits[15:13]).
+        ii. Set CAPDAC (bits[9:5]) if the channel offset capacitance is more than 15pF.
+    b. For a differential measurement:
+        i. Select the positive input pin for the measurement by setting the CHA field (bits[15:13]).
+        ii. Select the negative input pin for the measurement by setting the CHB field (bits[12:10]). Note that
+            the CAPDAC setting has no effect for a differential measurement.
+2. Determine the appropriate sample rate. The sample rate sets the resolution of the measurement. Lower the
+    sample rate higher is the resolution of the measurement.
+6.5.3.2 Triggering Measurements
+For a single measurement, trigger the desired measurement (that is, which one of the configured
+measurements) when needed by:
+1. Setting REPEAT (Register 0x0C:bit[8]) to 0.
+2. Setting the corresponding MEAS_x field (Register 0x0C:bit[7:4]) to 1.
+   • For example, to trigger a single measurement of Measurement 2 at a rate of 100S/s, set Address 0x0C to
+      0x0540.
+Note that, at a given time, only one measurement of the configured measurements can be triggered in this
+manner (that is, MEAS_1 and MEAS_2 cannot both be triggered in a single operation).
+The FDC1004 can also trigger a new measurement on the completion of the previous measurement (repeated
+measurements). This is setup by:
+1. Setting REPEAT (Register 0x0C:bit[8]) to 1.
+2. Setting the corresponding MEAS_x field (Register 0x0C:bit[7:4]) to 1.
+When the FDC1004 is setup for repeated measurements, multiple configured measurements (up to a maximum
+of 4) can be performed in this manner, but Register 0x0C must be written in a single transaction.
+6.5.3.3 Wait for Measurement Completion
+Wait for the triggered measurements to complete. When the measurements are complete, the corresponding
+DONE_x field (Register 0x0C:bits[3:0]) is set to 1.
+6.5.3.4 Read of Measurement Result
+Read the result of the measurement from the corresponding registers:
+• 0x00/0x01 for Measurement 1
+• 0x02/0x03 for Measurement 2
+• 0x04/0x05 for Measurement 3
+• 0x06/0x07 for Measurement 4
+
+
+
+14    Submit Document Feedback                                                  Copyright © 2024 Texas Instruments Incorporated
+
+                                                Product Folder Links: FDC1004
+                                                                                                                               FDC1004
+www.ti.com                                                                                  SNOSCY5C – AUGUST 2014 – REVISED OCTOBER 2024
+
+
+The measurement results span 2 register addresses; both registers must be read to have a complete conversion
+result. The lower address (for example, 0x00 for Measurement 1) must be read first, then the upper address
+read afterwards (for example, 0x01 for Measurement 1).
+When the measurement read is complete, the corresponding DONE_x field (Register 0x0C:bits[3:0]) returns to 0.
+If an additional single triggered measurement is desired, simply perform the Trigger, Wait, Read steps again.
+If the FDC1004 is set up for repeated measurements (Register 0x0C:bit[8]) = 1), the FDC1004 continuously
+measures until the REPEAT field (Register 0x0C:bit[8]) is set to 0, even if the results are not read back.
+6.6 Register Maps
+                                                           Table 6-1. Register Map
+  Pointer         Register Name              Reset Value                                         Description
+   0x00            MEAS1_MSB                      0x0000       MSB portion of Measurement 1
+   0x01            MEAS1_LSB                      0x0000       LSB portion of Measurement 1
+   0x02            MEAS2_MSB                      0x0000       MSB portion of Measurement 2
+   0x03            MEAS2_LSB                      0x0000       LSB portion of Measurement 2
+   0x04            MEAS3_MSB                      0x0000       MSB portion of Measurement 3
+   0x05            MEAS3_LSB                      0x0000       LSB portion of Measurement 3
+   0x06            MEAS4_MSB                      0x0000       MSB portion of Measurement 4
+   0x07            MEAS4_LSB                      0x0000       LSB portion of Measurement 4
+   0x08           CONF_MEAS1                      0x1C00       Measurement 1 Configuration
+   0x09           CONF_MEAS2                      0x1C00       Measurement 2 Configuration
+   0x0A           CONF_MEAS3                      0x1C00       Measurement 3 Configuration
+   0x0B           CONF_MEAS4                      0x1C00       Measurement 4 Configuration
+   0x0C            FDC_CONF                       0x0000       Capacitance to Digital Configuration
+   0x0D        OFFSET_CAL_CIN1                    0x0000       CIN1 Offset Calibration
+   0x0E        OFFSET_CAL_CIN2                    0x0000       CIN2 Offset Calibration
+   0x0F        OFFSET_CAL_CIN3                    0x0000       CIN3 Offset Calibration
+   0x10        OFFSET_CAL_CIN4                    0x0000       CIN4 Offset Calibration
+    0x11         GAIN_CAL_CIN1                    0x4000       CIN1 Gain Calibration
+   0x12          GAIN_CAL_CIN2                    0x4000       CIN2 Gain Calibration
+   0x13          GAIN_CAL_CIN3                    0x4000       CIN3 Gain Calibration
+   0x14          GAIN_CAL_CIN4                    0x4000       CIN4 Gain Calibration
+   0xFE          Manufacturer ID                  0x5449       ID of Texas Instruments
+   0xFF              Device ID                    0x1004       ID of FDC1004 device
+
+
+Registers from 0x15 to 0xFD are reserved and should not be written to.
+6.6.1 Registers
+The FDC1004 has an 8-bit pointer used to address a given data register. The pointer identifies which of the
+data registers should respond to a read or write command on the two-wire bus. This register is set with every
+write command. A write command must be issued to set the proper value in the pointer before executing a read
+command. The power-on reset (POR) value of the pointer is 0x00.
+6.6.1.1 Capacitive Measurement Registers
+The capacitance measurement registers are 24-bit result registers in binary format (the 8 LSBs D[7:0] are always
+0x00). The result of the acquisition is always a 24 bit value, while the accuracy is related to the selected
+conversion time (refer to Electrical Characteristics). The result of the measurement can be calculated by the
+following formula:
+
+Copyright © 2024 Texas Instruments Incorporated                                                            Submit Document Feedback   15
+                                                           Product Folder Links: FDC1004
+FDC1004
+SNOSCY5C – AUGUST 2014 – REVISED OCTOBER 2024                                                                                       www.ti.com
+
+      Capacitance (pf) = (measurement [23:0]) / 219 ) + Coffset                                                                        (1)
+
+where
+•     Coffset is based on the CAPDAC setting.
+                      Table 6-2. Measurement Registers Description (0x00, 0x02, 0x04, 0x06)
+ Field Name             Bits                                                    Description
+ MSB_MEASn(1)        [15:0]                            Most significant 16 bits of Measurement n (read only)
+
+(1)    MSB_MEAS1 = register 0x00, MSB_MEAS2 = register 0x02, MSB_MEAS3 = register 0x04, MSB_MEAS4 = register 0x06
+                      Table 6-3. Measurement Registers Description (0x01, 0x03, 0x05, 0x07)
+ Field Name             Bits                                                    Description
+ LSB_MEASn(1)        [15:8]                            Least significant 8 bits of Measurement n (read only)
+                     [7:0]     Reserved                Reserved, always 0 (read only)
+
+(1)    LSB_MEAS1 = register 0x01, LSB_MEAS2 = register 0x03, LSB_MEAS3 = register 0x05, LSB_MEAS4 = register 0x07
+6.6.1.2 Measurement Configuration Registers
+These registers configure the input channels and CAPDAC setting for a measurement.
+              Table 6-4. Measurement Configuration Registers Description (0x08, 0x09, 0x0A, 0x0B)
+ Field Name             Bits                                                   Description
+ CHA(1) (2)          [15:13]   Positive input b000       CIN1
+                               channel
+                                              b001       CIN2
+                               capacitive to
+                               digital        b010       CIN3
+                               converter      b011       CIN4
+ CHB(1) (2)          [12:10]   Negative      b000        CIN1
+                               input channel
+                                             b001        CIN2
+                               capacitive to
+                               digital       b010        CIN3
+                               converter     b011        CIN4
+                                             b100        CAPDAC
+                                             b111        DISABLED
+ CAPDAC              [9:5]     Offset        b00000      0pF (minimum programmable offset)
+                               Capacitance
+                                             -----       Configure the single-ended measurement capacitive offset:
+                                                         Coffset = CAPDAC x 3.125pF
+                                             b11111      96.875pF (maximum programmable offset)
+ RESERVED            [04:00]   Reserved                  Reserved, always 0 (read only)
+
+(1)    It is not permitted to configure a measurement where the CHA field and CHB field hold the same value (for example, if
+       CHA=b010, CHB cannot also be set to b010).
+(2)    It is not permitted to configure a differential measurement between CHA and CHB where CHA > CHB (for example, if CHA=
+       b010, CHB cannot be b001 or b000).
+6.6.1.3 FDC Configuration Register
+This register configures measurement triggering and reports measurement completion.
+                                       Table 6-5. FDC Register Description (0x0C)
+ Field Name             Bits                                                   Description
+ RST                 [15]      Reset           0       Normal operation
+                                               1       Software reset: write a 1 to initiate a device reset; after completion of reset, this
+                                                       field returns to 0
+ RESERVED            [14:12]   Reserved                Reserved, always 0 (read only)
+
+
+
+
+16     Submit Document Feedback                                                                   Copyright © 2024 Texas Instruments Incorporated
+
+                                                     Product Folder Links: FDC1004
+                                                                                                                                 FDC1004
+www.ti.com                                                                                   SNOSCY5C – AUGUST 2014 – REVISED OCTOBER 2024
+
+                                     Table 6-5. FDC Register Description (0x0C) (continued)
+ Field Name                   Bits                                                 Description
+ RATE                   [11:10]      Measurement    b00     Reserved
+                                     Rate
+                                                    b01     100S/s
+                                                    b10     200S/s
+                                                    b11     400S/s
+ RESERVED               [9]          Reserved               Reserved, always 0 (read only)
+ REPEAT                 [8]          Repeat       0         Repeat disabled
+                                     Measurements
+                                                  1         Repeat enabled, all the enabled measurement are repeated
+ MEAS_1                 [7]          Initiate     0         Measurement 1 disabled
+                                     Measurements
+                                                  1         Measurement 1 enabled
+ MEAS_2                 [6]          Initiate     0         Measurement 2 disabled
+                                     Measurements
+                                                  1         Measurement 2 enabled
+ MEAS_3                 [5]          Initiate     0         Measurement 3 disabled
+                                     Measurements
+                                                  1         Measurement 3 enabled
+ MEAS_4                 [4]          Initiate     0         Measurement 4 disabled
+                                     Measurements
+                                                  1         Measurement 4 enabled
+ DONE_1                 [3]          Measurement    0       Measurement 1 not completed
+                                     Done
+                                                    1       Measurement 1 completed
+ DONE_2                 [2]          Measurement    0       Measurement 2 not completed
+                                     Done
+                                                    1       Measurement 2 completed
+ DONE_3                 [1]          Measurement    0       Measurement 3 not completed
+                                     Done
+                                                    1       Measurement 3 completed
+ DONE_4                 [0]          Measurement    0       Measurement 4 not completed
+                                     Done
+                                                    1       Measurement 4 completed
+
+
+6.6.1.4 Offset Calibration Registers
+These registers configure a digitized capacitance value in the range of -16pF to 16pF (max residual offset 250
+aF) that can be added to each channel in order to remove parasitic capacitance due to external circuitry. In
+addition to the offset calibration capacitance which is a fine-tune offset capacitance, it is possible to support
+a larger offset by using the CAPDAC (for up to 100pF). These 16-bit registers are formatted as a fixed point
+number, where the first 5 bits represents the integer portion of the capacitance in Two’s complement format, and
+the remaining 11 bits represent the fractional portion of the capacitance.
+                      Table 6-6. Offset Calibration Registers Description (0x0D, 0x0E, 0x0F, 0x10)
+ Field Name                   Bits                                                 Description
+ OFFSET_CALn(1)         [15:11]      Integer part           Integer portion of the Offset Calibration of Channel CINn
+                        [10:0]       Decimal part           Decimal portion of the Offset Calibration of Channel CINn
+
+(1)    OFFSET_CAL1 = register 0x0D, OFFSET_CAL2 = register 0x0E, OFFSET_CAL3 = register 0x0F, OFFSET_CAL4 = register 0x10
+6.6.1.5 Gain Calibration Registers
+These registers contain a gain factor correction in the range of 0 to 4 that can be applied to each channel in
+order to remove gain mismatch due to the external circuitry. This 16-bit register is formatted as a fixed point
+number, where the 2 MSBs of the GAIN_CALn register correspond to an integer portion of the gain correction,
+and the remaining 14 bits represent the fractional portion of the gain correction. The result of the conversion
+represents a number without dimensions.
+The Gain can be set according to the following formula:
+Gain = GAIN_CAL[15:0]/214
+
+
+Copyright © 2024 Texas Instruments Incorporated                                                              Submit Document Feedback   17
+                                                          Product Folder Links: FDC1004
+FDC1004
+SNOSCY5C – AUGUST 2014 – REVISED OCTOBER 2024                                                                                   www.ti.com
+
+                    Table 6-7. Gain Calibration Registers Description (0x11, 0x12, 0x13, 0x14)
+ Field Name            Bits                                                   Description
+ GAIN_CALn(1)       [15:14]    Integer part            Integer portion of the Gain Calibration of Channel CINn
+                    [13:0]     Decimal part            Decimal portion of the Gain Calibration of Channel CINn
+
+(1)   GAIN_CAL1 = register 0x11, GAIN_CAL2 = register 0x12, GAIN_CAL3 = register 0x13, GAIN_CAL4 = register 0x14
+6.6.1.6 Manufacturer ID Register
+This register contains a factory-programmable identification value that identifies this device as being
+manufactured by Texas Instruments. This register distinguishes this device from other devices that are on the
+same I2C bus. The manufacturer ID reads 0x5449.
+                               Table 6-8. Manufacturer ID Register Description (0xFE)
+ Field Name            Bits                                                   Description
+ MANUFACTURER       [15:0]     Manufacturer 0x5449h       Texas instruments ID (read only)
+ ID                            ID
+
+
+6.6.1.7 Device ID Register
+This register contains a factory-programmable identification value that identifies this device as a FDC1004.
+This register distinguishes this device from other devices that are on the same I2C bus. The Device ID for the
+FDC1004 is 0x1004.
+                                    Table 6-9. Device ID Register Description (0xFF)
+ Field Name            Bits                                                   Description
+ DEVICE ID          [15:0]     Device ID      0x1004       FDC1004 Device ID (read only)
+
+
+
+
+18    Submit Document Feedback                                                                 Copyright © 2024 Texas Instruments Incorporated
+
+                                                  Product Folder Links: FDC1004
+                                                                                                                     FDC1004
+www.ti.com                                                                        SNOSCY5C – AUGUST 2014 – REVISED OCTOBER 2024
+
+
+7 Applications and Implementation
+                                                             Note
+        Information in the following applications sections is not part of the TI component specification,
+        and TI does not warrant its accuracy or completeness. TI’s customers are responsible for
+        determining suitability of components for their purposes, as well as validating and testing their design
+        implementation to confirm system functionality.
+
+7.1 Application Information
+7.1.1 Liquid Level Sensor
+The FDC1004 can be used to measure liquid level in non-conductive containers. Capacitive sensors can be
+attached to the outside of the container or be located remotely from the container, allowing for contactless
+measurements. The working principle is based on a ratiometric measurement; Figure 7-1 shows a possible
+system implementation which uses three electrodes. The Level electrode provides a capacitance value
+proportional to the liquid level. The Reference Environmental electrode and the Reference Liquid electrode are
+used as references. The Reference Liquid electrode accounts for the liquid dielectric constant and its variation,
+while the Reference Environmental electrode is used to compensate for any other environmental variations
+that are not due to the liquid itself. Note that the Reference Environmental electrode and the Reference Liquid
+electrode are the same physical size (hREF).
+For this application, single-ended measurements on the appropriate channels are appropriate, as the tank is
+grounded.
+Use the following formula to determine the liquid level from the measured capacitances:
+
+                       CLev CLev (0)
+      Level     href
+                        CRL CRE
+
+where
+•    CRE is the capacitance of the Reference Environmental electrode,
+•    CRL is the capacitance of the Reference Liquid electrode,
+•    CLev is the current value of the capacitance measured at the Level electrode sensor,
+•    CLev(0) is the capacitance of the Level electrode when the container is empty, and
+•    hREF is the height in the desired units of the Container or Liquid Reference electrodes.
+7.1.2
+The ratio between the capacitance of the level and the reference electrodes allows simple calculation of the
+liquid level inside the container itself. Very high sensitivity values (that is, many LSB/mm) can be obtained due to
+the high resolution of the FDC1004, even when the sensors are located remotely from the container.
+For more information on a robust liquid level sensing technique, refer to the Capacitive Sensing: Out-of-Phase
+Liquid Level Technique application note and the TIDA-00317 Capacitive-Based Liquid Level Sensing Sensor
+Reference Design.
+
+
+
+
+Copyright © 2024 Texas Instruments Incorporated                                                 Submit Document Feedback    19
+                                                  Product Folder Links: FDC1004
+FDC1004
+SNOSCY5C – AUGUST 2014 – REVISED OCTOBER 2024                                                                                             www.ti.com
+
+7.2 Typical Application
+                                                                                         3.3 V
+
+
+                                     SHLD1                                               VDD
+      LEVEL
+     SENSOR   ENVIRONMENTAL          SHLD2          EXCITATION
+                 SENSOR                                                                                        3.3 V 3.3 V
+                                     CIN1                          FDC1004                                                                      3.3 V
+                                     CIN2
+                                             CHA            CHA
+                                     CIN3    MUX
+                                     CIN4                                                                                                       VDD
+                                                                  CAPACITANCE      OFFSET
+                LIQUID                                              TO DIGITAL     & GAIN                                             MCU
+               SENSOR                                              CONVERTER     CALIBRATION
+
+
+                                             CHB
+                                                                                                        SCL
+                                             MUX
+                                                            CHB   CONFIGURATION & DATA
+                                                                                                                                      I2C
+                                                                                                 I2C    SDA                        Peripheral
+                                                                       REGISTERS
+
+
+                                             CAPDAC                                                                                             GND
+                                                                                 GND
+
+
+                                    Figure 7-1. FDC1004 (Liquid Level Measurement)
+
+7.2.1 Design Requirements
+Make sure the liquid level measurement is independent of the liquid, which can be achieved using the 3-
+electrode design described above. Moreover, make sure the sensor is immune to environmental interferences
+such as a human body, other objects, or EMI. This can be achieved by shielding the side of the sensor which
+does not face the container.
+7.2.2 Detailed Design Procedure
+In capacitive sensing systems, the design of the sensor plays an important role in determining system
+performance and capabilities. In most cases the sensor is simply a metal plate that can be designed on the
+PCB.
+The sensor used in this example is implemented with a two-layer PCB. On the top layer, which faces the
+tank, there are the 3 electrodes (Reference Environmental, Reference Liquid, and Level) with a ground plane
+surrounding the electrodes. The bottom layer is covered with a shield plane in order to isolate the electrodes
+from any external interference sources.
+Depending on the shape of the container, the FDC1004 can be located on the sensor PCB to minimize the
+length of the traces between the input channels and the sensors and increase the immunity from EMI sources.
+In case the shape of the container or other mechanical constraints do not allow having the sensors and the
+FDC1004 on the same PCB, the traces which connect the channels to the sensor need to be shielded with the
+appropriate shield. In this design example all of the channels are shielded with SHLD1. For this configuration,
+the FDC1004 measures the capacitance of the 3 channels versus ground; and so the SHLD1 and SHLD2 pins
+are internally shorted in the FDC1004 (see The Shield).
+7.2.3 Application Curve
+The data shown below has been collected with the FDC1004EVM. A liquid level sensor with 3 electrodes like
+the one shown in the schematic was connected to the EVM. The plot shows the capacitance measured by the 3
+electrodes at different levels of liquid in the tank. The capacitance of the Reference Liquid (the RF trace in the
+graph below) and Reference Environmental (the RE trace) sensors have a steady value when the liquid is above
+their height while the capacitance of the level sensor (Level) increases linearly with the height of the liquid in the
+tank.
+
+
+
+
+20       Submit Document Feedback                                                                      Copyright © 2024 Texas Instruments Incorporated
+
+                                                   Product Folder Links: FDC1004
+                                                                                                                                                               FDC1004
+www.ti.com                                                                                                          SNOSCY5C – AUGUST 2014 – REVISED OCTOBER 2024
+
+                                                         4.5                                                                 4.7
+                                                                       RF
+                                                                       RE
+                                                          4            Level                                                 4.6
+
+
+                                                         3.5                                                                 4.5
+
+
+
+
+                                      RE (pF), RF (pF)
+                                                                                                                                   Level (pF)
+                                                          3                                                                  4.4
+
+
+                                                         2.5                                                                 4.3
+
+
+                                                          2                                                                  4.2
+
+
+                                                         1.5                                                                 4.1
+
+
+                                                          1                                                                   4
+                                                               0   5      10     15    20   25    30   35      40      45   50
+                                                                                        Level (mm)
+
+                                                         Figure 7-2. Electrode Capacitance vs Liquid Level
+
+
+
+
+Copyright © 2024 Texas Instruments Incorporated                                                                                            Submit Document Feedback   21
+                                                                               Product Folder Links: FDC1004
+FDC1004
+SNOSCY5C – AUGUST 2014 – REVISED OCTOBER 2024                                                                    www.ti.com
+
+7.3 Best Design Practices
+Avoid long traces to connect the sensor to the FDC1004. Short traces reduce parasitic capacitances between
+shield versus input channel and parasitic resistance between input channel versus GND and shield versus GND.
+The sensor in many cases is simply a metal surface on a PCB, therefore the sensor must be protected with
+solder resist to avoid short circuits and limit any corrosion. Any change in the sensor can result in a change in
+system performance.
+7.4 Initialization Set Up
+At power on the device is in stand-by. It stays in this mode until a measurement is triggered.
+7.5 Power Supply Recommendations
+The FDC1004 requires a voltage supply within 3V and 3.6V. Two multilayer ceramic bypass X7R capacitors of
+0.1 μF and 1μF, respectively between VDD and GND pin are recommended. Make sure the 0.1μF capacitor is
+closer to the VDD pin than the 1μF capacitor.
+7.6 Layout
+7.6.1 Layout Guidelines
+The FDC1004 measures the capacitances connected between the CINn (n=1..4) pins and GND. To get the
+best result, locate the FDC1004 as close as possible to the capacitive sensor. Minimize the connection length
+between the sensor and FDC1004 CINn pins and between the sensor ground and the FDC1004 GND pin. If a
+shielded cable is used for remote sensor connection, connect the shield to the SHLDm (m=1...2) pin according
+to the configured measurement.
+7.6.2 Layout Example
+Figure 7-3 below is optimized for applications where the sensor is not too far from the FDC1004. Each channel
+trace runs between 2 shield traces. This layout allows the measurements of 4 single ended capacitance or 2
+differential capacitance. The ground plane needs to be far from the channel traces, it is mandatory around or
+below the I2C pin.
+
+
+
+
+                          TOP LAYER                                                BOTTOM LAYER
+
+
+                                                   Figure 7-3. Layout
+
+
+
+
+22    Submit Document Feedback                                                  Copyright © 2024 Texas Instruments Incorporated
+
+                                                Product Folder Links: FDC1004
+                                                                                                                                 FDC1004
+www.ti.com                                                                               SNOSCY5C – AUGUST 2014 – REVISED OCTOBER 2024
+
+
+8 Device and Documentation Support
+8.1 Documentation Support
+8.1.1 Related Documentation
+For related documentation, see the following:
+• Texas Instruments, Semiconductor and IC Package Thermal Metrics application note
+• Texas Instruments, FDC1004: Basics of Capacitive Sensing and Applications application note
+• Texas Instruments, Capacitive Sensing: Ins and Outs of Active Sensing application note
+• Texas Instruments, Capacitive Sensing: Out-of-Phase Liquid Level Technique application note
+• Texas Instruments, Capacitive Proximity Sensing Using the FDC1004 application note
+• Texas Instruments, Ice Buildup Detection Using TI's Capacitive Sensing Technology - FDC1004 application
+   note
+• Texas Instruments, TIDA-00317 Capacitive-Based Liquid Level Sensing Sensor reference design
+• Texas Instruments, TIDA-00506 Automotive Capacitive Proximity Kick to Open Detection reference design
+• Texas Instruments, TIDA-00220 Capacitive-Based Human Proximity Detection for System Wake-Up &
+   Interrupt reference design
+• Texas Instruments, TIDA-00373 Backlight and Smart Lighting Control by Ambient Light and Proximity Sensor
+   reference design
+8.2 Receiving Notification of Documentation Updates
+To receive notification of documentation updates, navigate to the device product folder on ti.com. Click on
+Notifications to register and receive a weekly digest of any product information that has changed. For change
+details, review the revision history included in any revised document.
+8.3 Support Resources
+TI E2E™ support forums are an engineer's go-to source for fast, verified answers and design help — straight
+from the experts. Search existing answers or ask your own question to get the quick design help you need.
+Linked content is provided "AS IS" by the respective contributors. They do not constitute TI specifications and do
+not necessarily reflect TI's views; see TI's Terms of Use.
+8.4 Trademarks
+TI E2E™ is a trademark of Texas Instruments.
+All trademarks are the property of their respective owners.
+8.5 Electrostatic Discharge Caution
+                    This integrated circuit can be damaged by ESD. Texas Instruments recommends that all integrated circuits be handled
+                    with appropriate precautions. Failure to observe proper handling and installation procedures can cause damage.
+                    ESD damage can range from subtle performance degradation to complete device failure. Precision integrated circuits may
+                    be more susceptible to damage because very small parametric changes could cause the device not to meet its published
+                    specifications.
+
+
+8.6 Glossary
+ TI Glossary             This glossary lists and explains terms, acronyms, and definitions.
+
+9 Revision History
+Changes from Revision B (April 2015) to Revision C (October 2024)                                                                 Page
+• Changed data sheet title from: FDC1004 4-Channel Capacitance-to-Digital Converter for Capacitive Sensing
+  Solutions to: FDC1004 4-Channel Capacitance-to-Digital Converter for Capacitive Sensing Applications....... 1
+• Updated the numbering format for tables, figures, and cross-references throughout the document................. 1
+• Changed all instances of legacy terminology to controller and target where I2C is mentioned..........................1
+• Changed Device Information table to Package Information .............................................................................. 1
+
+
+
+Copyright © 2024 Texas Instruments Incorporated                                                          Submit Document Feedback         23
+                                                       Product Folder Links: FDC1004
+FDC1004
+SNOSCY5C – AUGUST 2014 – REVISED OCTOBER 2024                                                                                                              www.ti.com
+
+•    Changed Equation 1 ........................................................................................................................................15
+
+
+
+Changes from Revision A (October 2014) to Revision B (April 2015)                                                                                                 Page
+• Changed max temp range from 85C to 125C throughout ................................................................................. 1
+• Added VSSOP package type............................................................................................................................. 1
+• Deleted WSON DAP explicit assignment to GND in diagram............................................................................ 3
+• Added VSSOP package diagram ...................................................................................................................... 3
+• Changed table from Handling Ratings to ESD Ratings and moved Storage Temp to Absolute Maximum
+  Ratings .............................................................................................................................................................. 4
+• Added JA thermal resistance for VSSOP package ........................................................................................... 4
+• Added JC thermal resistance for WSON package ............................................................................................ 4
+• Added JC thermal resistance for VSSOP package ........................................................................................... 4
+• Added JC thermal resistance for WSON package ............................................................................................ 4
+• Added JB thermal resistance for VSSOP package ........................................................................................... 4
+• Added note to Electrical Characteristics limits ...................................................................................................5
+• Changed TcCOFF to "46" from "30"..................................................................................................................... 5
+• Changed GERR to "0.2" from "0.07" ................................................................................................................... 5
+• Changed gain error unit to "%" from "% of full scale"......................................................................................... 5
+• Changed tcG to "-37.5" from "2.1" .....................................................................................................................5
+• Changed tcG unit to "ppm/°C" from "ppm of full scale/°C"................................................................................. 5
+• Added testing for PSRR condition...................................................................................................................... 5
+• Changed PSRR to "13.6" from "11" ...................................................................................................................5
+• Changed FRCAPDACto "96.9" from "96.875" .......................................................................................................5
+• Deleted CAPDAC resolution from EC table........................................................................................................5
+• Changed TcCOFFCAPDAC to "30" from "1" ......................................................................................................... 5
+• Changed TcCOFFCAPDACto "fF" from "ppm of FS/°C" ....................................................................................... 5
+• Changed DRV value of 400pF from typ and moved to max limit........................................................................5
+• Added note to Electrical Characteristics table ................................................................................................... 5
+• Changed plot for Active Supply Current vs Temperature due to change in temperature range ........................ 7
+• Changed plot for Stand-by Supply Current vs Temperature due to change in temperature range ................... 7
+• Changed plot for Gain Drift vs Temperature due to change in temperature range and gain drift unit ............... 7
+• Changed plot for Offset Drift vs Temperature due to change in temperature range ..........................................7
+• Added capacitance vs voltage plot .................................................................................................................... 7
+• Changed shield configuration example for differential mode from "CIN2-CIN1, where CHA=CIN2 and
+  CHB=CIN1" to "CIN1-CIN2, where CHA=CIN1 and CHB=CIN2" ......................................................................9
+• Changed shield configuration example for differential mode from "CIN2-CIN1, where CHA=CIN2 and
+  CHB=CIN1" to "CIN1-CIN2, where CHA=CIN1 and CHB=CIN2" .................................................................... 11
+• Changed plot for Active Supply Current vs Temperature due to change in temperature range ...................... 15
+
+
+
+Changes from Revision * (August 2014) to Revision A (October 2014)                                                                             Page
+• Added Parameter not tested in production ........................................................................................................ 5
+• Changed CINx to CINn throughout ....................................................................................................................9
+• Added note for Applications and Implementation section.................................................................................19
+
+
+10 Mechanical, Packaging, and Orderable Information
+The following pages include mechanical, packaging, and orderable information. This information is the most
+current data available for the designated devices. This data is subject to change without notice and revision of
+this document. For browser-based versions of this data sheet, refer to the left-hand navigation.
+
+
+
+24     Submit Document Feedback                                                                                       Copyright © 2024 Texas Instruments Incorporated
+
+                                                                 Product Folder Links: FDC1004
+                                                                                                                                                                     PACKAGE OPTION ADDENDUM
+
+       www.ti.com                                                                                                                                                                                                    8-Nov-2025
+
+
+
+
+PACKAGING INFORMATION
+
+       Orderable part number          Status     Material type      Package | Pins      Package qty | Carrier       RoHS             Lead finish/               MSL rating/          Op temp (°C)               Part marking
+                                        (1)            (2)                                                            (3)            Ball material              Peak reflow                                           (6)
+                                                                                                                                          (4)                       (5)
+
+           FDC1004DGSR                Active      Production      VSSOP (DGS) | 10       3500 | LARGE T&R            Yes                  SN             Level-1-260C-UNLIM            -40 to 125                   ZBNX
+          FDC1004DGSR.A               Active      Production      VSSOP (DGS) | 10       3500 | LARGE T&R            Yes                  SN             Level-1-260C-UNLIM            -40 to 125                   ZBNX
+          FDC1004DGSR.B               Active      Production      VSSOP (DGS) | 10       3500 | LARGE T&R            Yes                  SN             Level-1-260C-UNLIM            -40 to 125                   ZBNX
+           FDC1004DGST               Obsolete     Production      VSSOP (DGS) | 10                 -                   -                Call TI                   Call TI              -40 to 125                   ZBNX
+           FDC1004DSCJ                Active      Production       WSON (DSC) | 10       4500 | LARGE T&R            Yes                  SN             Level-1-260C-UNLIM            -40 to 125                   F1004
+          FDC1004DSCJ.A               Active      Production       WSON (DSC) | 10       4500 | LARGE T&R            Yes                  SN             Level-1-260C-UNLIM            -40 to 125                   F1004
+          FDC1004DSCJ.B               Active      Production       WSON (DSC) | 10       4500 | LARGE T&R            Yes                  SN             Level-1-260C-UNLIM            -40 to 125                   F1004
+           FDC1004DSCR                Active      Production       WSON (DSC) | 10       1000 | SMALL T&R            Yes                  SN             Level-1-260C-UNLIM            -40 to 125                   F1004
+          FDC1004DSCR.A               Active      Production       WSON (DSC) | 10       1000 | SMALL T&R            Yes                  SN             Level-1-260C-UNLIM            -40 to 125                   F1004
+          FDC1004DSCR.B               Active      Production       WSON (DSC) | 10       1000 | SMALL T&R            Yes                  SN             Level-1-260C-UNLIM            -40 to 125                   F1004
+           FDC1004DSCT               Obsolete     Production       WSON (DSC) | 10                 -                   -                Call TI                   Call TI              -40 to 125                   F1004
+
+(1)
+      Status: For more details on status, see our product life cycle.
+
+(2)
+   Material type: When designated, preproduction parts are prototypes/experimental devices, and are not yet approved or released for full production. Testing and final process, including without limitation quality assurance,
+reliability performance testing, and/or process qualification, may not yet be complete, and this item is subject to further changes or possible discontinuation. If available for ordering, purchases will be subject to an additional
+waiver at checkout, and are intended for early internal evaluation purposes only. These items are sold without warranties of any kind.
+
+(3)
+      RoHS values: Yes, No, RoHS Exempt. See the TI RoHS Statement for additional information and value definition.
+
+(4)
+   Lead finish/Ball material: Parts may have multiple material finish options. Finish options are separated by a vertical ruled line. Lead finish/Ball material values may wrap to two lines if the finish value exceeds the maximum
+column width.
+
+(5)
+  MSL rating/Peak reflow: The moisture sensitivity level ratings and peak solder (reflow) temperatures. In the event that a part has multiple moisture sensitivity ratings, only the lowest level per JEDEC standards is shown.
+Refer to the shipping label for the actual reflow temperature that will be used to mount the part to the printed circuit board.
+
+(6)
+      Part marking: There may be an additional marking, which relates to the logo, the lot trace code information, or the environmental category of the part.
+
+Multiple part markings will be inside parentheses. Only one part marking contained in parentheses and separated by a "~" will appear on a part. If a line is indented then it is a continuation of the previous line and the two
+combined represent the entire part marking for that device.
+
+
+
+
+                                                                                                          Addendum-Page 1
+                                                                                                                                                                      PACKAGE OPTION ADDENDUM
+
+    www.ti.com                                                                                                                                                                                                    8-Nov-2025
+
+
+
+
+Important Information and Disclaimer:The information provided on this page represents TI's knowledge and belief as of the date that it is provided. TI bases its knowledge and belief on information provided by third parties, and
+makes no representation or warranty as to the accuracy of such information. Efforts are underway to better integrate information from third parties. TI has taken and continues to take reasonable steps to provide representative
+and accurate information but may not have conducted destructive testing or chemical analysis on incoming materials and chemicals. TI and TI suppliers consider certain information to be proprietary, and thus CAS numbers
+and other limited information may not be available for release.
+
+In no event shall TI's liability arising out of such information exceed the total purchase price of the TI part(s) at issue in this document sold by TI to Customer on an annual basis.
+
+OTHER QUALIFIED VERSIONS OF FDC1004 :
+
+• Automotive : FDC1004-Q1
+
+NOTE: Qualified Version Definitions:
+
+        • Automotive - Q100 devices qualified for high-reliability automotive applications targeting zero defects
+
+
+
+
+                                                                                                          Addendum-Page 2
+                                                                               PACKAGE MATERIALS INFORMATION
+
+www.ti.com                                                                                                                                       1-Aug-2025
+
+
+
+TAPE AND REEL INFORMATION
+
+       REEL DIMENSIONS                                                                      TAPE DIMENSIONS
+                                                                                       K0       P1
+
+
+
+                                                                                                                      B0 W
+                                        Reel
+                                      Diameter
+                                                                                    Cavity           A0
+                                                                A0   Dimension designed to accommodate the component width
+                                                                B0   Dimension designed to accommodate the component length
+                                                                K0   Dimension designed to accommodate the component thickness
+                                                                W    Overall width of the carrier tape
+                                                                P1   Pitch between successive cavity centers
+
+
+                                       Reel Width (W1)
+                              QUADRANT ASSIGNMENTS FOR PIN 1 ORIENTATION IN TAPE
+
+                                                                                                     Sprocket Holes
+
+
+                                                 Q1        Q2          Q1    Q2
+
+                                                 Q3        Q4          Q3    Q4                  User Direction of Feed
+
+
+
+                                                            Pocket Quadrants
+
+
+*All dimensions are nominal
+             Device           Package Package Pins              SPQ       Reel   Reel   A0                  B0         K0     P1     W     Pin1
+                               Type Drawing                             Diameter Width (mm)                (mm)       (mm)   (mm)   (mm) Quadrant
+                                                                          (mm) W1 (mm)
+     FDC1004DGSR              VSSOP     DGS           10        3500        330.0        12.4        5.3    3.4       1.4    8.0    12.0    Q1
+      FDC1004DSCJ             WSON      DSC           10        4500        330.0        12.4        3.3    3.3       1.0    8.0    12.0    Q1
+     FDC1004DSCR              WSON      DSC           10        1000        177.8        12.4        3.3    3.3       1.0    8.0    12.0    Q1
+
+
+
+
+                                                                      Pack Materials-Page 1
+                                                                PACKAGE MATERIALS INFORMATION
+
+www.ti.com                                                                                                              1-Aug-2025
+
+
+
+ TAPE AND REEL BOX DIMENSIONS
+
+
+
+
+                                                               Width (mm)
+                                                                              H
+
+
+
+
+                      W                                   L
+
+
+
+
+*All dimensions are nominal
+             Device           Package Type   Package Drawing   Pins         SPQ    Length (mm)   Width (mm)   Height (mm)
+      FDC1004DGSR               VSSOP             DGS           10          3500      367.0        367.0         35.0
+      FDC1004DSCJ                WSON             DSC           10          4500      367.0        367.0         35.0
+      FDC1004DSCR                WSON             DSC           10          1000      210.0        185.0         35.0
+
+
+
+
+                                                        Pack Materials-Page 2
+                                                                                                           PACKAGE OUTLINE
+DGS0010A                                                        SCALE 3.200
+                                                                                                      VSSOP - 1.1 mm max height
+                                                                                                                   SMALL OUTLINE PACKAGE
+
+
+
+
+                                                                                                                            C
+                                        5.05
+                                             TYP                                                           SEATING PLANE
+                                        4.75
+
+             A                                  PIN 1 ID                                                                0.1 C
+                                                AREA
+
+                                                                                         8X 0.5
+                                                                                  10
+                    1
+
+           3.1
+           2.9                                                                           2X
+          NOTE 3                                                                          2
+
+
+                    5
+                                                                              6
+                                                                                              0.27
+                                                                                       10X
+                                                                                              0.17
+                                          3.1                                                  0.1   C A   B              1.1 MAX
+                        B
+                                          2.9
+                                        NOTE 4
+
+
+
+
+                                                                                       0.23
+                                                                                            TYP
+                                        SEE DETAIL A                                   0.13
+
+
+
+
+                                                                                         0.25
+                                                                                  GAGE PLANE
+
+
+
+
+                                                                                                                  0.7                    0.15
+                                                                                       0 -8                                              0.05
+                                                                                                                  0.4
+
+                                                                                                                 DETAIL A
+                                                                                                                  TYPICAL
+
+
+                                                                                                                                4221984/A 05/2015
+
+NOTES:
+
+1. All linear dimensions are in millimeters. Any dimensions in parenthesis are for reference only. Dimensioning and tolerancing
+   per ASME Y14.5M.
+2. This drawing is subject to change without notice.
+3. This dimension does not include mold flash, protrusions, or gate burrs. Mold flash, protrusions, or gate burrs shall not
+   exceed 0.15 mm per side.
+4. This dimension does not include interlead flash. Interlead flash shall not exceed 0.25 mm per side.
+5. Reference JEDEC registration MO-187, variation BA.
+
+
+
+
+                                                                              www.ti.com
+                                                                                EXAMPLE BOARD LAYOUT
+DGS0010A                                                                                VSSOP - 1.1 mm max height
+                                                                                                          SMALL OUTLINE PACKAGE
+
+
+
+
+                                                10X (1.45)
+                             10X (0.3)                           SYMM                           (R0.05)
+                                            1                                                   TYP
+                                                                                          10
+
+                                                                                               SYMM
+
+
+
+                           8X (0.5)         5                                             6
+
+
+                                                                  (4.4)
+
+
+                                                     LAND PATTERN EXAMPLE
+                                                              SCALE:10X
+
+
+
+
+                SOLDER MASK                                               METAL UNDER                     SOLDER MASK
+                                                 METAL                                                    OPENING
+                OPENING                                                   SOLDER MASK
+
+
+
+
+                                      0.05 MAX                                                0.05 MIN
+                                      ALL AROUND                                              ALL AROUND
+
+                             NON SOLDER MASK                                            SOLDER MASK
+                                 DEFINED                                                  DEFINED
+
+                                                      SOLDER MASK DETAILS
+                                                             NOT TO SCALE
+
+
+
+
+                                                                                                                4221984/A 05/2015
+NOTES: (continued)
+
+6. Publication IPC-7351 may have alternate designs.
+7. Solder mask tolerances between and around signal pads can vary based on board fabrication site.
+
+
+
+
+                                                                www.ti.com
+                                                                               EXAMPLE STENCIL DESIGN
+DGS0010A                                                                                VSSOP - 1.1 mm max height
+                                                                                                         SMALL OUTLINE PACKAGE
+
+
+
+
+                                                10X (1.45)
+                                                                 SYMM                           (R0.05) TYP
+                              10X (0.3)
+                                            1
+                                                                                           10
+
+                                                                                                SYMM
+                                 8X (0.5)
+
+                                            5                                              6
+
+                                                                  (4.4)
+
+
+
+                                                     SOLDER PASTE EXAMPLE
+                                                   BASED ON 0.125 mm THICK STENCIL
+                                                              SCALE:10X
+
+
+
+
+                                                                                                                  4221984/A 05/2015
+NOTES: (continued)
+
+8. Laser cutting apertures with trapezoidal walls and rounded corners may offer better paste release. IPC-7525 may have alternate
+   design recommendations.
+9. Board assembly site may have different recommendations for stencil design.
+
+
+
+
+                                                                 www.ti.com
+                                                                                                                   PACKAGE OUTLINE
+DSC0010B                                                             SCALE 4.000
+                                                                                                              WSON - 0.8 mm max height
+                                                                                                                    PLASTIC SMALL OUTLINE - NO LEAD
+
+
+
+                                                       3.1
+                                    B
+                                                       2.9                                      A
+
+
+
+
+               PIN 1 INDEX AREA
+                                                                                                3.1
+                                                                                                2.9
+
+
+
+
+                                                                                                               C
+                    0.8 MAX
+
+                                                                                                                   SEATING PLANE
+                                                                                                      0.08
+                         0.05
+                         0.00
+
+
+
+                                                     1.2±0.1                                                                            (0.2) TYP
+
+
+                                                                                                       8X 0.5
+                                        5                                                 6
+
+
+
+                                                                                                        2X
+                            2±0.1                                                                        2
+
+
+
+
+                                        1
+                                                                                         10
+                                                                                                            0.3
+                                                                                                      10X
+                                                                                                            0.2
+                              PIN 1 ID                         0.5                                          0.1    C A   B
+                           (OPTIONAL)                    10X
+                                                               0.4                                          0.05    C
+
+
+
+
+                                                                                                                                   4214926/A 07/2014
+
+NOTES:
+
+1. All linear dimensions are in millimeters. Any dimensions in parenthesis are for reference only. Dimensioning and tolerancing
+   per ASME Y14.5M.
+2. This drawing is subject to change without notice.
+3. The package thermal pad must be soldered to the printed circuit board for thermal and mechanical performance.
+
+
+
+
+                                                                                   www.ti.com
+                                                                                    EXAMPLE BOARD LAYOUT
+DSC0010B                                                                                      WSON - 0.8 mm max height
+                                                                                                      PLASTIC SMALL OUTLINE - NO LEAD
+
+
+
+
+                                                                   (1.2)
+
+                          10X (0.65)                               SYMM
+
+                                                                                                10
+                                       1
+
+                       10X (0.25)
+
+
+                              SYMM                                                                                (2)
+
+
+                                                                                                     (0.75) TYP
+
+                           8X (0.5)
+
+                                       5                                                         6
+                                                      (0.35) TYP
+                             ( 0.2) TYP
+                                     VIA
+                                                                   (2.75)
+
+
+                                                     LAND PATTERN EXAMPLE
+                                                                SCALE:20X
+
+
+
+
+                         0.07 MAX                                               0.07 MIN
+                     ALL AROUND                                             ALL AROUND
+
+
+
+
+                          SOLDER MASK                        METAL              SOLDER MASK                         METAL
+                          OPENING                                               OPENING                             UNDER
+                                                                                                                    SOLDER MASK
+                                        NON SOLDER MASK
+                                                                                               SOLDER MASK
+                                            DEFINED
+                                                                                                 DEFINED
+                                          (PREFERRED)
+
+                                                             SOLDER MASK DETAILS
+
+                                                                                                                        4214926/A 07/2014
+
+NOTES: (continued)
+
+4. This package is designed to be soldered to a thermal pad on the board. For more information, see Texas Instruments literature
+   number SLUA271 (www.ti.com/lit/slua271).
+
+
+
+
+                                                                      www.ti.com
+                                                                               EXAMPLE STENCIL DESIGN
+DSC0010B                                                                                 WSON - 0.8 mm max height
+                                                                                               PLASTIC SMALL OUTLINE - NO LEAD
+
+
+
+
+                     10X (0.65)
+                                                                 SYMM
+
+
+
+
+                                                                                                        METAL
+                 10X (0.25)                                                                             TYP
+
+
+                                                                                                       (0.55)
+                          SYMM
+
+
+
+
+                                                                                                           (0.89)
+                        8X (0.5)
+
+
+
+                                                                 (1.13)
+
+                                                                 (2.75)
+
+
+
+                                                    SOLDER PASTE EXAMPLE
+                                                  BASED ON 0.125 mm THICK STENCIL
+
+                                                          EXPOSED PAD
+                                              84% PRINTED SOLDER COVERAGE BY AREA
+                                                            SCALE:25X
+
+
+
+
+                                                                                                                    4214926/A 07/2014
+
+NOTES: (continued)
+
+5. Laser cutting apertures with trapezoidal walls and rounded corners may offer better paste release. IPC-7525 may have alternate
+  design recommendations.
+
+
+
+
+                                                                 www.ti.com
+                                         IMPORTANT NOTICE AND DISCLAIMER
+TI PROVIDES TECHNICAL AND RELIABILITY DATA (INCLUDING DATASHEETS), DESIGN RESOURCES (INCLUDING REFERENCE
+DESIGNS), APPLICATION OR OTHER DESIGN ADVICE, WEB TOOLS, SAFETY INFORMATION, AND OTHER RESOURCES “AS IS”
+AND WITH ALL FAULTS, AND DISCLAIMS ALL WARRANTIES, EXPRESS AND IMPLIED, INCLUDING WITHOUT LIMITATION ANY
+IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT OF THIRD
+PARTY INTELLECTUAL PROPERTY RIGHTS.
+These resources are intended for skilled developers designing with TI products. You are solely responsible for (1) selecting the appropriate
+TI products for your application, (2) designing, validating and testing your application, and (3) ensuring your application meets applicable
+standards, and any other safety, security, regulatory or other requirements.
+These resources are subject to change without notice. TI grants you permission to use these resources only for development of an
+application that uses the TI products described in the resource. Other reproduction and display of these resources is prohibited. No license
+is granted to any other TI intellectual property right or to any third party intellectual property right. TI disclaims responsibility for, and you fully
+indemnify TI and its representatives against any claims, damages, costs, losses, and liabilities arising out of your use of these resources.
+TI’s products are provided subject to TI’s Terms of Sale, TI’s General Quality Guidelines, or other applicable terms available either on
+ti.com or provided in conjunction with such TI products. TI’s provision of these resources does not expand or otherwise alter TI’s applicable
+warranties or warranty disclaimers for TI products. Unless TI explicitly designates a product as custom or customer-specified, TI products
+are standard, catalog, general purpose devices.
+TI objects to and rejects any additional or different terms you may propose.
+IMPORTANT NOTICE
+
+                                                Copyright © 2025, Texas Instruments Incorporated
+                                                                Last updated 10/2025
+

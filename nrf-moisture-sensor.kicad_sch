@@ -5,7 +5,7 @@
 	(uuid "29551000-a13a-494c-a3a3-b85b9fc11a3c")
 	(paper "A2")
 	(title_block (title "nRF Moisture Sensor") (date "2026-09-05") (rev "C")
-  (comment 1 "BL54L15 + nPM2100 + FDC1004 + SHT45 | CR2032 | BTHome v2")
+  (comment 1 "BL54L15 + nPM2100 + FDC1004 + SHT40 | CR2032 | BTHome v2")
   (comment 2 "VBAT: protected battery | +3V3: main rail | +3V3_FDC_SW: switched sensing rail")
   (comment 3 "U1 is hand fitted after JLC assembly; firmware must select the labeled GPIOs")
   (comment 4 "Hardware rationale: HARDWARE.md | Electrical review: docs/design-review-2026-09-05/"))
@@ -3980,103 +3980,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Mechanical:Fiducial"
-			(exclude_from_sim no)
-			(in_bom no)
-			(on_board yes)
-			(in_pos_files yes)
-			(duplicate_pin_numbers_are_jumpers no)
-			(property "Reference" "FID"
-				(at 0 5.08 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "Fiducial"
-				(at 0 3.175 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Description" "Fiducial Marker"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_keywords" "fiducial marker"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "ki_fp_filters" "Fiducial*"
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(symbol "Fiducial_0_1"
-				(circle
-					(center 0 0)
-					(radius 1.27)
-					(stroke
-						(width 0.508)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-			)
-			(symbol "Fiducial_1_1")
-			(embedded_fonts no)
-		)
+		
 		(symbol "ezurio:BL54L15_453-00001"
 			(pin_names
 				(offset 1.016)
@@ -7782,29 +7686,183 @@
 			)
 			(embedded_fonts no)
 		)
+	(symbol "Device:R_Small_US"
+		(pin_numbers
+			(hide yes)
+		)
+		(pin_names
+			(offset 0.254)
+			(hide yes)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(duplicate_pin_numbers_are_jumpers no)
+		(property "Reference" "R"
+			(at 0.762 0.508 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "R_Small_US"
+			(at 0.762 -1.016 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor, small US symbol"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_keywords" "r resistor"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_fp_filters" "R_*"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(symbol "R_Small_US_1_1"
+			(polyline
+				(pts
+					(xy 0 1.524) (xy 1.016 1.143) (xy 0 0.762) (xy -1.016 0.381) (xy 0 0)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 0 0) (xy 1.016 -0.381) (xy 0 -0.762) (xy -1.016 -1.143) (xy 0 -1.524)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(pin passive line
+				(at 0 2.54 270)
+				(length 1.016)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -2.54 90)
+				(length 1.016)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
 	)
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	(junction
 		(at 76.2000 60.9600)
 		(diameter 0)
@@ -7856,7 +7914,7 @@
 		(uuid "3602d7b6-7b02-4c64-a309-79b2212eaa39")
 	)
 	(no_connect
-		(at 134.6200 60.9600)
+		(at 134.6200 71.1200)
 		(uuid "410c2ebe-597f-4d5e-8d2d-62dc88a8ed05")
 	)
 	(no_connect
@@ -7867,10 +7925,7 @@
 		(at 134.6200 33.0200)
 		(uuid "4a818803-e8e9-48a3-b563-3d4648328be8")
 	)
-	(no_connect
-		(at 134.6200 71.1200)
-		(uuid "520e8c99-bb1f-41a7-b181-e62db5ecfd9a")
-	)
+
 	(no_connect
 		(at 134.6200 88.9000)
 		(uuid "5fea9c66-210e-4146-9da2-0406531d9ed2")
@@ -7879,10 +7934,7 @@
 		(at 134.6200 81.2800)
 		(uuid "7afc1e4d-b6e6-4a5d-932b-7d941b13fa95")
 	)
-	(no_connect
-		(at 134.6200 73.6600)
-		(uuid "7b1d95bf-a102-489f-925b-97d8bc771eb3")
-	)
+
 	(no_connect
 		(at 353.0600 241.3000)
 		(uuid "7feffc26-6243-4a4b-a7e6-0eb254398630")
@@ -7908,13 +7960,10 @@
 		(uuid "a90e7f14-7623-429f-bc94-890dbef352f3")
 	)
 	(no_connect
-		(at 134.6200 63.5000)
+		(at 134.6200 73.66000)
 		(uuid "bd9457f3-21f4-471d-bb99-f713058907ec")
 	)
-	(no_connect
-		(at 134.6200 66.0400)
-		(uuid "c62f9a0c-2363-4e54-a4d7-e73a88967d46")
-	)
+	
 	(no_connect
 		(at 134.6200 55.8800)
 		(uuid "d0bd7354-4a74-4198-b516-f4762a773c24")
@@ -7947,10 +7996,7 @@
 		(at 134.6200 76.2000)
 		(uuid "eab0ec83-e901-4050-a864-672f8ce975fc")
 	)
-	(no_connect
-		(at 134.6200 68.5800)
-		(uuid "ed74d947-bc5a-4b1c-855b-08d9ece5e011")
-	)
+	
 	(no_connect
 		(at 134.6200 48.2600)
 		(uuid "fcb6072e-0df7-44ea-b720-bef539a9492e")
@@ -8331,7 +8377,7 @@
 	)
 	(wire
 		(pts
-			(xy 393.7000 233.6800) (xy 398.7800 233.6800)
+			(xy 393.7000 233.6800) (xy 396.2400 233.6800)
 		)
 		(stroke
 			(width 0)
@@ -9079,7 +9125,7 @@
 		)
 		(uuid "15e02046-6705-4701-9658-6d9e2eee0290")
 	)
-	(label "SENSE2"
+	(label "CIN2_PROTECTED"
 		(at 143.5100 335.2800 180)
 		(effects
 			(font
@@ -9489,7 +9535,7 @@
 		)
 		(uuid "d660163d-f7dc-45cc-850d-2f4e45f797bc")
 	)
-	(label "SCL"
+	(label "FDC_SCL"
 		(at 398.7800 238.7600 0)
 		(effects
 			(font
@@ -9519,7 +9565,7 @@
 		)
 		(uuid "df37f57a-cf62-4352-87a6-d0bb5e593681")
 	)
-	(label "SDA"
+	(label "FDC_SDA"
 		(at 398.7800 241.3000 0)
 		(effects
 			(font
@@ -9529,7 +9575,7 @@
 		)
 		(uuid "e401db8e-f176-4f3a-b4cb-7a7c672576ce")
 	)
-	(label "SENSE1"
+	(label "CIN1_PROTECTED"
 		(at 92.7100 335.2800 180)
 		(effects
 			(font
@@ -10291,7 +10337,7 @@
 		)
 		(property "Value" "+3V3"
 			(at 424.18 255.2700 0)
-			
+
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -10366,7 +10412,7 @@
 		)
 		(property "Value" "GND"
 			(at 340.36 278.1300 0)
-			
+
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -10440,7 +10486,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10uF/16V X6S"
+		(property "Value" "10uF/25V X5R"
 			(at 200.6600 53.3400 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10493,7 +10539,7 @@
 				)
 			)
 		)
-		(property "MPN" "CL10X106MO8NRNC"
+		(property "MPN" "CL10A106MA8NRNC"
 			(at 200.6600 48.2600 0)
 			(hide yes)
 			(show_name no)
@@ -10504,7 +10550,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C3039688"
+		(property "LCSC" "C96446"
 			(at 200.6600 48.2600 0)
 			(hide yes)
 			(show_name no)
@@ -10631,7 +10677,7 @@
 		)
 		(property "Value" "+3V3"
 			(at 71.12 143.5100 0)
-			
+
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -10706,7 +10752,7 @@
 		)
 		(property "Value" "GND"
 			(at 424.18 278.1300 0)
-			
+
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -10936,7 +10982,7 @@
 		)
 		(property "Value" "+3V3"
 			(at 368.3 255.2700 0)
-			
+
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -11011,7 +11057,7 @@
 		)
 		(property "Value" "+3V3_FDC_SW"
 			(at 322.5800 255.2700 0)
-			
+
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -11199,7 +11245,7 @@
 		)
 		(property "Value" "+3V3"
 			(at 472.44 229.8700 0)
-			
+
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -11252,7 +11298,7 @@
 	)
 	(symbol
 		(lib_id "power_local:+3V3_FDC_SW")
-		(at 398.7800 233.6800 0)
+		(at 396.2400 233.6800 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -11262,7 +11308,7 @@
 		(dnp no)
 		(uuid "1e8cd1b6-8998-4786-950c-6eb205145942")
 		(property "Reference" "#PWR074"
-			(at 398.7800 233.6800 0)
+			(at 396.2400 233.6800 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11273,8 +11319,8 @@
 			)
 		)
 		(property "Value" "+3V3_FDC_SW"
-			(at 398.78 229.8700 0)
-			
+			(at 396.2400 229.8700 0)
+
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -11284,7 +11330,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 398.7800 233.6800 0)
+			(at 396.2400 233.6800 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -11294,7 +11340,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 398.7800 233.6800 0)
+			(at 396.2400 233.6800 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -11304,7 +11350,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 398.7800 233.6800 0)
+			(at 396.2400 233.6800 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -11402,82 +11448,7 @@
 			)
 		)
 	)
-	(symbol
-		(lib_id "Mechanical:Fiducial")
-		(at 317.5000 190.5000 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "2a7b3f0c-1624-4e3a-9de1-a82ee8ba1afe")
-		(property "Reference" "FID3"
-			(at 320.0400 189.2299 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "Fiducial"
-			(at 320.0400 191.7699 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Fiducial:Fiducial_0.5mm_Mask1mm"
-			(at 317.5000 190.5000 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 317.5000 190.5000 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Fiducial Marker"
-			(at 317.5000 190.5000 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(instances
-			(project "nrf-moisture-sensor"
-				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
-					(reference "FID3")
-					(unit 1)
-				)
-			)
-		)
-	)
+	
 	(symbol
 		(lib_id "Device:C_Small")
 		(at 340.3600 266.7000 0)
@@ -11512,7 +11483,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder"
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
 			(at 340.3600 266.7000 0)
 			(hide yes)
 			(show_name no)
@@ -11591,82 +11562,7 @@
 			)
 		)
 	)
-	(symbol
-		(lib_id "Mechanical:Fiducial")
-		(at 317.5000 172.7200 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "350f0659-a2d4-46dd-b1a1-8dd0cf837d49")
-		(property "Reference" "FID1"
-			(at 320.0400 171.4499 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "Fiducial"
-			(at 320.0400 173.9899 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Fiducial:Fiducial_0.5mm_Mask1mm"
-			(at 317.5000 172.7200 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 317.5000 172.7200 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Fiducial Marker"
-			(at 317.5000 172.7200 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(instances
-			(project "nrf-moisture-sensor"
-				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
-					(reference "FID1")
-					(unit 1)
-				)
-			)
-		)
-	)
+	
 	(symbol
 		(lib_id "power_local:VBAT")
 		(at 347.9800 55.8800 0)
@@ -12073,7 +11969,7 @@
 		)
 		(property "Value" "GND"
 			(at 71.12 161.2900 0)
-			
+
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -12237,82 +12133,7 @@
 			)
 		)
 	)
-	(symbol
-		(lib_id "Mechanical:Fiducial")
-		(at 317.5000 181.6100 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "4cd1c3fa-8a3b-4fdf-9361-6daf7e8e4207")
-		(property "Reference" "FID2"
-			(at 320.0400 180.3399 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "Fiducial"
-			(at 320.0400 182.8799 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Fiducial:Fiducial_0.5mm_Mask1mm"
-			(at 317.5000 181.6100 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 317.5000 181.6100 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Fiducial Marker"
-			(at 317.5000 181.6100 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(instances
-			(project "nrf-moisture-sensor"
-				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
-					(reference "FID2")
-					(unit 1)
-				)
-			)
-		)
-	)
+	
 	(symbol
 		(lib_id "power:GND")
 		(at 444.5000 45.7200 0)
@@ -12771,7 +12592,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "4.7k to +3V3"
+		(property "Value" "4.7k 1%"
 			(at 368.3000 271.7800 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -12782,7 +12603,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder"
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 368.3000 266.7000 0)
 			(hide yes)
 			(show_name no)
@@ -13349,7 +13170,7 @@
 				)
 			)
 		)
-		(property "Footprint" "footprints:TI_DPY0002A"
+		(property "Footprint" "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm"
 			(at 0.0000 -55.8800 0)
 			(hide yes)
 			(show_name no)
@@ -13719,7 +13540,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "SHT45-AD1F"
+		(property "Value" "SHT40-AD1F"
 			(at 434.34 253.68 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13772,7 +13593,7 @@
 				)
 			)
 		)
-		(property "MPN" "SHT45-AD1F-R2"
+		(property "MPN" "SHT40-AD1F-R2"
 			(at 434.3400 233.6800 0)
 			(hide yes)
 			(show_name no)
@@ -13783,7 +13604,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C5360602"
+		(property "LCSC" "C7461846"
 			(at 434.3400 233.6800 0)
 			(hide yes)
 			(show_name no)
@@ -13859,7 +13680,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "https://search.murata.co.jp/Ceramy/image/img/A01X/G101/ENG/GRM158R60J226ME01-01A.pdf"
 			(at 374.6500 106.6800 0)
 			(hide yes)
 			(show_name no)
@@ -13881,7 +13702,7 @@
 				)
 			)
 		)
-		(property "Manufacturer" "Murata"
+		(property "Manufacturer" "Murata Electronics"
 			(at 374.6500 106.6800 0)
 			(hide yes)
 			(show_name no)
@@ -13892,7 +13713,7 @@
 				)
 			)
 		)
-		(property "MPN" "GRM155R60J226ME11D"
+		(property "MPN" "GRM158R60J226ME01D"
 			(at 374.6500 106.6800 0)
 			(hide yes)
 			(show_name no)
@@ -13903,7 +13724,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C415703"
+		(property "LCSC" "C3894351"
 			(at 374.6500 106.6800 0)
 			(hide yes)
 			(show_name no)
@@ -13960,7 +13781,7 @@
 				)
 			)
 		)
-		(property "Footprint" "footprints:TI_DPY0002A"
+		(property "Footprint" "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm"
 			(at 0.0000 -55.8800 0)
 			(hide yes)
 			(show_name no)
@@ -14071,7 +13892,7 @@
 				)
 			)
 		)
-		(property "Footprint" "footprints:TI_DPY0002A"
+		(property "Footprint" "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm"
 			(at 0.0000 -55.8800 0)
 			(hide yes)
 			(show_name no)
@@ -14332,7 +14153,7 @@
 		)
 		(property "Value" "GND"
 			(at 322.5800 278.1300 0)
-			
+
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -14521,7 +14342,7 @@
 		)
 		(property "Value" "+3V3"
 			(at 200.66 36.8300 0)
-			
+
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -14596,7 +14417,7 @@
 		)
 		(property "Value" "GND"
 			(at 472.44 242.5700 0)
-			
+
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -14670,7 +14491,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "4.7k to +3V3"
+		(property "Value" "4.7k 1%"
 			(at 396.2400 271.7800 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14681,7 +14502,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder"
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
 			(at 396.2400 266.7000 0)
 			(hide yes)
 			(show_name no)
@@ -14858,7 +14679,7 @@
 		)
 		(property "Value" "+3V3"
 			(at 396.24 255.2700 0)
-			
+
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -14930,7 +14751,7 @@
 				)
 			)
 		)
-		(property "Value" "DMG2305UX-7"
+		(property "Value" "DMG2305UX-13"
 			(at 50.8000 238.3400 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14972,7 +14793,7 @@
 				)
 			)
 		)
-		(property "MPN" "DMG2305UX-7"
+		(property "MPN" "DMG2305UX-13"
 			(at 0.0000 -55.8800 0)
 			(hide yes)
 			(show_name no)
@@ -14994,7 +14815,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C150470"
+		(property "LCSC" "C144153"
 			(at 50.8000 243.8400 0)
 			(hide yes)
 			(show_name no)
@@ -15131,7 +14952,7 @@
 				)
 			)
 		)
-		(property "Footprint" "footprints:TI_DPY0002A"
+		(property "Footprint" "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm"
 			(at 0.0000 -55.8800 0)
 			(hide yes)
 			(show_name no)
@@ -15764,7 +15585,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10uF/6.3V X5R"
+		(property "Value" "22uF/6.3V X5R"
 			(at 340.6140 108.7120 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15786,7 +15607,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "https://search.murata.co.jp/Ceramy/image/img/A01X/G101/ENG/GRM158R60J226ME01-01A.pdf"
 			(at 340.3600 106.6800 0)
 			(hide yes)
 			(show_name no)
@@ -15808,7 +15629,7 @@
 				)
 			)
 		)
-		(property "Manufacturer" "Samsung"
+		(property "Manufacturer" "Murata Electronics"
 			(at 340.3600 106.6800 0)
 			(hide yes)
 			(show_name no)
@@ -15819,7 +15640,7 @@
 				)
 			)
 		)
-		(property "MPN" "CL05A106MQ5NUNC"
+		(property "MPN" "GRM158R60J226ME01D"
 			(at 340.3600 106.6800 0)
 			(hide yes)
 			(show_name no)
@@ -15830,7 +15651,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C15525"
+		(property "LCSC" "C3894351"
 			(at 340.3600 106.6800 0)
 			(hide yes)
 			(show_name no)
@@ -15887,7 +15708,7 @@
 				)
 			)
 		)
-		(property "Footprint" "footprints:TI_DPY0002A"
+		(property "Footprint" "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm"
 			(at 0.0000 -55.8800 0)
 			(hide yes)
 			(show_name no)
@@ -15998,7 +15819,7 @@
 				)
 			)
 		)
-		(property "Footprint" "footprints:TI_DPY0002A"
+		(property "Footprint" "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm"
 			(at 0.0000 -55.8800 0)
 			(hide yes)
 			(show_name no)
@@ -17367,7 +17188,7 @@
 				)
 			)
 		)
-		(property "Footprint" "footprints:TI_DPY0002A"
+		(property "Footprint" "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm"
 			(at 0.0000 -55.8800 0)
 			(hide yes)
 			(show_name no)
@@ -17478,7 +17299,7 @@
 				)
 			)
 		)
-		(property "Footprint" "footprints:TI_DPY0002A"
+		(property "Footprint" "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm"
 			(at 0.0000 -55.8800 0)
 			(hide yes)
 			(show_name no)
@@ -17589,7 +17410,7 @@
 				)
 			)
 		)
-		(property "Footprint" "footprints:TI_DPY0002A"
+		(property "Footprint" "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm"
 			(at 0.0000 -55.8800 0)
 			(hide yes)
 			(show_name no)
@@ -17693,7 +17514,7 @@
 		)
 		(property "Value" "GND"
 			(at 228.6 87.6300 0)
-			
+
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -17768,7 +17589,7 @@
 		)
 		(property "Value" "VBAT"
 			(at 205.74 189.2300 0)
-			
+
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -17963,7 +17784,7 @@
 				)
 			)
 		)
-		(property "Footprint" "footprints:TI_DPY0002A"
+		(property "Footprint" "Package_SON:Texas_DPY0002A_0.6x1mm_P0.65mm"
 			(at 0.0000 -55.8800 0)
 			(hide yes)
 			(show_name no)
@@ -18257,7 +18078,7 @@
 		)
 		(property "Value" "GND"
 			(at 200.66 59.6900 0)
-			
+
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -18409,7 +18230,7 @@
 		)
 		(property "Value" "GND"
 			(at 398.78 250.1900 0)
-			
+
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -18484,7 +18305,7 @@
 		)
 		(property "Value" "+3V3_FDC_SW"
 			(at 340.36 255.2700 0)
-			
+
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -18559,7 +18380,7 @@
 		)
 		(property "Value" "GND"
 			(at 71.12 153.6700 0)
-			
+
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -18711,7 +18532,7 @@
 		)
 		(property "Value" "GND"
 			(at 71.12 156.2100 0)
-			
+
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -18797,8 +18618,1880 @@
 	(text "GPIO0: PMIC_INT | GPIO1: unused (NC)." (at 330.2 129.54 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "ce532cf1-98ef-442f-b6c5-c2e7c10a54af"))
 	(text "PMOS reverse polarity; ESD clamps + series resistors." (at 22.86 223.52 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "a1faef73-bb7f-419b-bc7f-89f7eeab0d47"))
 	(text "No sustained overvoltage cutoff or battery fuse." (at 22.86 228.6 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "731dc1df-358d-4106-a8d3-ad0b991e4a2c"))
-	(text "FDC1004: switched supply. SHT45: main +3V3 supply." (at 312.42 310 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "d4c0b89b-355a-42de-a890-e5c44fb41fff"))
+	(text "FDC1004: switched supply. SHT40: main +3V3 supply." (at 312.42 310 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "d4c0b89b-355a-42de-a890-e5c44fb41fff"))
 	(text "R22 / R23: shared I2C pull-ups to +3V3." (at 312.42 315.08 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "8b452372-a0cc-406f-9b15-7cf83dda8ca4"))
 	(text "CIN1 / CIN2 via 5.1k protection; SHLD driven by FDC." (at 312.42 320.16 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "3f0c9d06-1295-4174-9160-c3ec196b2b77"))
 	(text "FIDUCIALS" (at 310 162.56 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "85cb960f-0d44-4d85-8a98-85f9490c21a8"))
+
+(symbol
+		(lib_id "Connector:TestPoint")
+		(at 260.3500 48.2600 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(in_pos_files no)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "f36d2ddc-09f9-4789-8195-aaa19cde189c")
+		(property "Reference" "TP4"
+			(at 260.3500 43.1800 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 260.3500 53.3400 0)
+			(hide yes) (show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 260.3500 48.2600 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 260.3500 48.2600 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 260.3500 48.2600 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "ff9e1725-9464-4718-a318-ad493184891a")
+		)
+		(instances
+			(project "nrf-moisture-sensor"
+				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
+					(reference "TP4")
+					(unit 1)
+				)
+			)
+		)
+	)
+(symbol
+		(lib_id "power:+3V3")
+		(at 260.3500 53.3400 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "d58a3af8-51b3-4177-8bed-efb11068674d")
+		(property "Reference" "#PWRTP4"
+			(at 260.3500 57.1500 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 260.3500 49.5300 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 260.3500 53.3400 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 260.3500 53.3400 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
+			(at 260.3500 53.3400 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "d7eabde3-6d50-4cb7-b22a-e9aea2059a8c")
+		)
+		(instances
+			(project "nrf-moisture-sensor"
+				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
+					(reference "#PWRTP4")
+					(unit 1)
+				)
+			)
+		)
+	)
+(wire (pts (xy 260.35 48.26) (xy 260.35 53.339999999999996)) (stroke (width 0) (type default)) (uuid "361b068c-4f8a-43b0-a6cd-7112e7af44a5"))
+(symbol
+		(lib_id "Connector:TestPoint")
+		(at 280.6700 48.2600 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(in_pos_files no)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "a2c92e1b-c5d6-45a0-98bb-88326542ebf6")
+		(property "Reference" "TP5"
+			(at 280.6700 43.1800 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "GND"
+			(at 280.6700 53.3400 0)
+			(hide yes) (show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 280.6700 48.2600 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 280.6700 48.2600 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 280.6700 48.2600 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "c5fa7b95-bbe2-444b-a80a-df4a20f12cb9")
+		)
+		(instances
+			(project "nrf-moisture-sensor"
+				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
+					(reference "TP5")
+					(unit 1)
+				)
+			)
+		)
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 280.6700 50.8000 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "12e8d5a7-16fb-4016-8055-172ad2519764")
+		(property "Reference" "#PWRTP5"
+			(at 280.6700 50.8000 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 280.6700 54.6100 0)
+
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 280.6700 50.8000 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 280.6700 50.8000 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 280.6700 50.8000 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "5f151dcc-734e-421c-adf6-0ba52c3f7f87")
+		)
+		(instances
+			(project "nrf-moisture-sensor"
+				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
+					(reference "#PWRTP5")
+					(unit 1)
+				)
+			)
+		)
+	)
+(wire (pts (xy 280.67 48.26) (xy 280.67 50.8)) (stroke (width 0) (type default)) (uuid "4b17c5f3-13f2-48b9-865e-f8ef97f22327"))
+(symbol
+		(lib_id "Connector:TestPoint")
+		(at 480.0600 266.7000 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(in_pos_files no)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "c7abd9bd-5b4e-4e32-9ee7-80086ba96877")
+		(property "Reference" "TP6"
+			(at 480.0600 261.6200 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "+3V3_FDC_SW"
+			(at 480.0600 271.7800 0)
+			(hide yes) (show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 480.0600 266.7000 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 480.0600 266.7000 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 480.0600 266.7000 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "3c21fd4a-f455-44e8-a8aa-3ecbfeb3e072")
+		)
+		(instances
+			(project "nrf-moisture-sensor"
+				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
+					(reference "TP6")
+					(unit 1)
+				)
+			)
+		)
+	)
+(symbol
+		(lib_id "power_local:+3V3_FDC_SW")
+		(at 480.0600 271.7800 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "d21c91bd-4ccf-4dbf-9752-b06b830edb16")
+		(property "Reference" "#PWRTP6"
+			(at 480.0600 271.7800 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3V3_FDC_SW"
+			(at 480.0600 267.9700 0)
+
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 480.0600 271.7800 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 480.0600 271.7800 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 480.0600 271.7800 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "9c477402-fa5f-43bd-91ca-3f7d98c2b3f4")
+		)
+		(instances
+			(project "nrf-moisture-sensor"
+				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
+					(reference "#PWRTP6")
+					(unit 1)
+				)
+			)
+		)
+	)
+(wire (pts (xy 480.06 266.7) (xy 480.06 271.78)) (stroke (width 0) (type default)) (uuid "8f64350d-44b3-42cd-bc18-a1555e2f86bd"))
+(symbol
+		(lib_id "Connector:TestPoint")
+		(at 505.4600 266.7000 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(in_pos_files no)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "58d16273-884d-43e4-bac2-1b774c176b15")
+		(property "Reference" "TP7"
+			(at 505.4600 261.6200 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "GND"
+			(at 505.4600 271.7800 0)
+			(hide yes) (show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 505.4600 266.7000 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 505.4600 266.7000 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 505.4600 266.7000 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "0204f8d6-bce3-4331-a004-9f06a5484f52")
+		)
+		(instances
+			(project "nrf-moisture-sensor"
+				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
+					(reference "TP7")
+					(unit 1)
+				)
+			)
+		)
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 505.4600 269.2400 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "fbd2f489-8439-4cf9-a198-f1a0b392e940")
+		(property "Reference" "#PWRTP7"
+			(at 505.4600 269.2400 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 505.4600 273.0500 0)
+
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 505.4600 269.2400 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 505.4600 269.2400 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 505.4600 269.2400 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "4b509086-6f23-4124-8d1e-09d65073c3b6")
+		)
+		(instances
+			(project "nrf-moisture-sensor"
+				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
+					(reference "#PWRTP7")
+					(unit 1)
+				)
+			)
+		)
+	)
+(wire (pts (xy 505.46 266.7) (xy 505.46 269.24)) (stroke (width 0) (type default)) (uuid "e965cf81-2e9b-4bca-92cd-1095cd2a851c"))
+(symbol
+		(lib_id "Connector:TestPoint")
+		(at 160.0200 223.5200 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(in_pos_files no)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "a230c28e-b83f-49e3-94eb-75894d9f5d79")
+		(property "Reference" "TP8"
+			(at 160.0200 218.4400 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "VBAT"
+			(at 160.0200 228.6000 0)
+			(hide yes) (show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 160.0200 223.5200 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 160.0200 223.5200 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 160.0200 223.5200 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "87a4c142-40df-417d-9f39-4051ad5430b5")
+		)
+		(instances
+			(project "nrf-moisture-sensor"
+				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
+					(reference "TP8")
+					(unit 1)
+				)
+			)
+		)
+	)
+(symbol
+		(lib_id "power_local:VBAT")
+		(at 160.0200 228.6000 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "46083cf6-1c48-4e9e-98d1-be130e66659d")
+		(property "Reference" "#PWRTP8"
+			(at 160.0200 228.6000 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "VBAT"
+			(at 160.0200 224.7900 0)
+
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 160.0200 228.6000 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 160.0200 228.6000 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 160.0200 228.6000 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "0eb235a0-c65c-427f-a268-75c7f0bdb62a")
+		)
+		(instances
+			(project "nrf-moisture-sensor"
+				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
+					(reference "#PWRTP8")
+					(unit 1)
+				)
+			)
+		)
+	)
+(wire (pts (xy 160.02 223.52) (xy 160.02 228.60000000000002)) (stroke (width 0) (type default)) (uuid "116f51f7-63c3-4084-989c-130ebd9fbcdf"))
+(symbol
+		(lib_id "Connector:TestPoint")
+		(at 109.2200 223.5200 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(in_pos_files no)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "8c68019b-9812-4f54-8f16-661ac68e357b")
+		(property "Reference" "TP9"
+			(at 109.2200 218.4400 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "VBAT_RAW"
+			(at 109.2200 228.6000 0)
+			(hide yes) (show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 109.2200 223.5200 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 109.2200 223.5200 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 109.2200 223.5200 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "da37689e-579a-4700-9539-16e9ed2d9a82")
+		)
+		(instances
+			(project "nrf-moisture-sensor"
+				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
+					(reference "TP9")
+					(unit 1)
+				)
+			)
+		)
+	)
+(wire (pts (xy 109.22 223.52) (xy 109.22 226.06)) (stroke (width 0) (type default)) (uuid "7b0242cd-37e4-4c27-b517-2479ec15f854"))
+(label "VBAT_RAW" (at 109.22 226.06 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "bb6dd2cd-4f9d-42b9-b253-2babfc674fef"))
+(symbol
+		(lib_id "Connector:TestPoint")
+		(at 449.5800 101.6000 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(in_pos_files no)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "8643b09e-30e3-4eb2-a630-1d797fd22583")
+		(property "Reference" "TP10"
+			(at 449.5800 96.5200 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "VINT"
+			(at 449.5800 106.6800 0)
+			(hide yes) (show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 449.5800 101.6000 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 449.5800 101.6000 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 449.5800 101.6000 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "81b80fa0-cf58-4050-891a-e804e651498c")
+		)
+		(instances
+			(project "nrf-moisture-sensor"
+				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
+					(reference "TP10")
+					(unit 1)
+				)
+			)
+		)
+	)
+(wire (pts (xy 449.58 101.6) (xy 449.58 104.14)) (stroke (width 0) (type default)) (uuid "5e4930f3-0ebc-49c5-b245-64ae22bd3d48"))
+(label "VINT" (at 449.58 104.14 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "62287695-454a-431e-952c-0bc41a1eaec8"))
+(symbol
+		(lib_id "Connector:TestPoint")
+		(at 474.9800 101.6000 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(in_pos_files no)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "29819961-a331-4a9a-884c-06ffd016847e")
+		(property "Reference" "TP11"
+			(at 474.9800 96.5200 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "GND"
+			(at 474.9800 106.6800 0)
+			(hide yes) (show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 474.9800 101.6000 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 474.9800 101.6000 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 474.9800 101.6000 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "3caad1ca-2e17-49e0-aad0-19b2957ddbe8")
+		)
+		(instances
+			(project "nrf-moisture-sensor"
+				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
+					(reference "TP11")
+					(unit 1)
+				)
+			)
+		)
+	)
+(symbol
+		(lib_id "power:GND")
+		(at 474.9800 104.1400 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "02431688-fe1a-4f05-96f4-87f587b39372")
+		(property "Reference" "#PWRTP11"
+			(at 474.9800 104.1400 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 474.9800 107.9500 0)
+
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 474.9800 104.1400 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 474.9800 104.1400 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 474.9800 104.1400 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "4a236c0a-6449-4ace-8e31-ec81b28a07c3")
+		)
+		(instances
+			(project "nrf-moisture-sensor"
+				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
+					(reference "#PWRTP11")
+					(unit 1)
+				)
+			)
+		)
+	)
+(wire (pts (xy 474.98 101.6) (xy 474.98 104.14)) (stroke (width 0) (type default)) (uuid "30235d71-a13e-4813-98a6-5e48937ea1e3"))
+(symbol
+		(lib_id "Connector:TestPoint")
+		(at 449.5800 124.4600 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(in_pos_files no)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "5d2154e9-c64d-432c-931f-63e97f92d350")
+		(property "Reference" "TP12"
+			(at 449.5800 119.3800 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "SDA"
+			(at 449.5800 129.5400 0)
+			(hide yes) (show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 449.5800 124.4600 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 449.5800 124.4600 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 449.5800 124.4600 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "6d86bcde-f4cf-440b-ba2d-c6676805aa7f")
+		)
+		(instances
+			(project "nrf-moisture-sensor"
+				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
+					(reference "TP12")
+					(unit 1)
+				)
+			)
+		)
+	)
+(wire (pts (xy 449.58 124.46) (xy 449.58 127.0)) (stroke (width 0) (type default)) (uuid "57c00970-e737-418b-99fd-6782feee2bfd"))
+(label "SDA" (at 449.58 127.0 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "be7392a3-8422-4bf3-a621-c59b21dc2296"))
+(symbol
+		(lib_id "Connector:TestPoint")
+		(at 474.9800 124.4600 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(in_pos_files no)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "f2bd75c1-0dce-4119-beb7-8c00aa6f1804")
+		(property "Reference" "TP13"
+			(at 474.9800 119.3800 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "SCL"
+			(at 474.9800 129.5400 0)
+			(hide yes) (show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 474.9800 124.4600 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 474.9800 124.4600 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 474.9800 124.4600 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "ffed3951-e5da-4668-b54d-c64b9e4fdb75")
+		)
+		(instances
+			(project "nrf-moisture-sensor"
+				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
+					(reference "TP13")
+					(unit 1)
+				)
+			)
+		)
+	)
+(wire (pts (xy 474.98 124.46) (xy 474.98 127.0)) (stroke (width 0) (type default)) (uuid "1874a85b-d37e-4f44-ab37-49afbef5dbaf"))
+(label "SCL" (at 474.98 127.0 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "b9deaa29-673f-49e6-9f15-d58e8db9d848"))
+(symbol
+		(lib_id "Connector:TestPoint")
+		(at 500.3800 124.4600 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(in_pos_files no)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "f04ebad4-cbca-4374-a420-2fc458ed7b96")
+		(property "Reference" "TP14"
+			(at 500.3800 119.3800 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "PMIC_INT"
+			(at 500.3800 129.5400 0)
+			(hide yes) (show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 500.3800 124.4600 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 500.3800 124.4600 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 500.3800 124.4600 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "c2ba5fbb-5e56-4ed8-b2f3-14447b8732b1")
+		)
+		(instances
+			(project "nrf-moisture-sensor"
+				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
+					(reference "TP14")
+					(unit 1)
+				)
+			)
+		)
+	)
+(wire (pts (xy 500.38 124.46) (xy 500.38 127.0)) (stroke (width 0) (type default)) (uuid "8842cf2b-1fee-4c58-a334-1f29d603448d"))
+(label "PMIC_INT" (at 500.38 127.0 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "720e745b-c5a1-430c-b197-6c7bd0fc1604"))
+(symbol
+		(lib_id "Connector:TestPoint")
+		(at 260.3500 76.2000 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(in_pos_files no)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "0ebad557-1c37-42b1-b5fe-a2583f93d2da")
+		(property "Reference" "TP15"
+			(at 260.3500 71.1200 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "NRESET"
+			(at 260.3500 81.2800 0)
+			(hide yes) (show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 260.3500 76.2000 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 260.3500 76.2000 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 260.3500 76.2000 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "09a77c0b-a672-42d0-a41c-5dee52b065ab")
+		)
+		(instances
+			(project "nrf-moisture-sensor"
+				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
+					(reference "TP15")
+					(unit 1)
+				)
+			)
+		)
+	)
+(wire (pts (xy 260.35 76.2) (xy 260.35 78.74000000000001)) (stroke (width 0) (type default)) (uuid "ddd604b2-d7d2-4304-864b-6681e19b9795"))
+(label "NRESET" (at 260.35 78.74000000000001 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "74b08051-b1b6-4504-b19c-3d444a22946a"))
+(symbol
+		(lib_id "Connector:TestPoint")
+		(at 154.9400 40.6400 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(in_pos_files no)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "7bc06e21-909a-4847-8954-3e2b1085281e")
+		(property "Reference" "TP16"
+			(at 154.9400 35.5600 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "MARK1"
+			(at 154.9400 45.7200 0)
+			(hide yes) (show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 154.9400 40.6400 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 154.9400 40.6400 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 154.9400 40.6400 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "2ed0e1e4-4e28-4809-aa2d-eb8dcd5ad950")
+		)
+		(instances
+			(project "nrf-moisture-sensor"
+				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
+					(reference "TP16")
+					(unit 1)
+				)
+			)
+		)
+	)
+(wire (pts (xy 154.94 40.64) (xy 154.94 43.18)) (stroke (width 0) (type default)) (uuid "d99937b4-6670-46cf-aaa9-cf405497398a"))
+(label "MARK1" (at 154.94 43.18 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "3f545f1b-80b5-4244-a20b-43f38efcfb7c"))
+(symbol
+		(lib_id "Connector:TestPoint")
+		(at 154.9400 81.2800 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(in_pos_files no)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "519156f0-449e-4170-8c41-7e7565c9fe21")
+		(property "Reference" "TP17"
+			(at 154.9400 76.2000 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "MARK2"
+			(at 154.9400 86.3600 0)
+			(hide yes) (show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 154.9400 81.2800 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 154.9400 81.2800 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 154.9400 81.2800 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "d77824e1-63dd-41f8-9dee-45eef6db8618")
+		)
+		(instances
+			(project "nrf-moisture-sensor"
+				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
+					(reference "TP17")
+					(unit 1)
+				)
+			)
+		)
+	)
+(wire (pts (xy 154.94 81.28) (xy 154.94 83.82000000000001)) (stroke (width 0) (type default)) (uuid "3036fc47-e7b5-45cf-8b2f-88a4131c0c95"))
+(label "MARK2" (at 154.94 83.82000000000001 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "a5f38271-55f6-4cf3-87e6-e394b1cff454"))
+(wire (pts (xy 134.62 60.96) (xy 139.7 60.96)) (stroke (width 0) (type default)) (uuid "996725ca-98db-4008-bbab-afd57aa2bc7b"))
+(label "MARK1" (at 139.7 60.96 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "43b77332-7bf5-4efa-87ad-901ffaf0fbe3"))
+(wire (pts (xy 134.62 63.5) (xy 139.7 63.5)) (stroke (width 0) (type default)) (uuid "70536bca-7daf-4c1a-af1d-fc0ac32d0d9d"))
+(label "MARK2" (at 139.7 63.5 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "e1cf4420-13f1-47d1-8a17-2ec22e62e976"))
+
+(wire (pts (xy 134.62 66.04) (xy 139.7 66.04)) (stroke (width 0) (type default)) (uuid "1b7d1014-d03c-4683-8f53-60a40bc91a69"))
+(label "FDC_SDA" (at 139.7 66.04 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "3700fb7a-ef79-4539-b38a-e6448ca51570"))
+(wire (pts (xy 134.62 68.58) (xy 139.7 68.58)) (stroke (width 0) (type default)) (uuid "d3bf7d95-e49d-4b34-885b-b32a5cf699ed"))
+(label "FDC_SCL" (at 139.7 68.58 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "a358965c-7d2a-42fc-9264-46f07fe6fc2d"))
+(symbol
+		(lib_id "Device:R_Small_US")
+		(at 419.1000 228.6000 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "7231e54d-06f7-4325-bd93-ccb2f10eb8d7")
+		(property "Reference" "R36"
+			(at 421.64000000000004 227.33 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "4.7k 1%"
+			(at 421.64000000000004 229.87 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 419.1000 228.6000 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 419.1000 228.6000 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 419.1000 228.6000 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer" "UNI-ROYAL"
+			(at 419.1000 228.6000 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "0402WGF4701TCE"
+			(at 419.1000 228.6000 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25900"
+			(at 419.1000 228.6000 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "dbee1bcb-c8f1-4af5-8ffe-e1e19b74942a")
+		)
+		(pin "2"
+			(uuid "3c12f5bf-1d70-47e0-9aa2-f63f7d23681a")
+		)
+		(instances
+			(project "nrf-moisture-sensor"
+				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
+					(reference "R36")
+					(unit 1)
+				)
+			)
+		)
+	)
+(wire (pts (xy 419.1 226.06) (xy 419.1 222.25)) (stroke (width 0) (type default)) (uuid "e50c14bb-8913-4ebd-ba23-8081e8fe8536"))
+(wire (pts (xy 419.1 231.14) (xy 419.1 241.3)) (stroke (width 0) (type default)) (uuid "173eae27-f179-4c4f-8963-38fd5f3e63dc"))
+(wire (pts (xy 398.78 241.3) (xy 419.1 241.3)) (stroke (width 0) (type default)) (uuid "adebdc10-d6dc-4692-a82d-1348e46e3309"))
+(symbol
+		(lib_id "Device:R_Small_US")
+		(at 406.4000 228.6000 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "760b70b4-506a-4588-8027-3e580c946855")
+		(property "Reference" "R37"
+			(at 408.94 227.33 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "4.7k 1%"
+			(at 408.94 229.87 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 406.4000 228.6000 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 406.4000 228.6000 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 406.4000 228.6000 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Manufacturer" "UNI-ROYAL"
+			(at 406.4000 228.6000 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "MPN" "0402WGF4701TCE"
+			(at 406.4000 228.6000 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C25900"
+			(at 406.4000 228.6000 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "6da23d68-f2de-41a4-915c-9c2e5f9aa8cd")
+		)
+		(pin "2"
+			(uuid "e3521373-7eac-4022-9b6d-771c2481db69")
+		)
+		(instances
+			(project "nrf-moisture-sensor"
+				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
+					(reference "R37")
+					(unit 1)
+				)
+			)
+		)
+	)
+(wire (pts (xy 406.4 226.06) (xy 406.4 222.25)) (stroke (width 0) (type default)) (uuid "e95072e8-618f-4cb9-a155-bd5b5ddf741c"))
+(wire (pts (xy 406.4 231.14) (xy 406.4 238.76)) (stroke (width 0) (type default)) (uuid "32c27eb9-8298-437d-950c-4a0a5cba48a0"))
+(wire (pts (xy 398.78 238.76) (xy 406.4 238.76)) (stroke (width 0) (type default)) (uuid "551ac723-7361-4e69-821d-00ff7b5b90ca"))
+(wire (pts (xy 406.4 222.25) (xy 412.75 222.25)) (stroke (width 0) (type default)) (uuid "475f4532-d0c6-4643-861d-660e9f69d839"))
+(wire (pts (xy 412.75 222.25) (xy 419.1 222.25)) (stroke (width 0) (type default)) (uuid "11433858-5b4c-4414-af1e-1dcb2c1271ae"))
+(junction (at 412.75 222.25) (diameter 0) (color 0 0 0 0) (uuid "443173d9-70b9-4e1a-b1e7-0a7f749e9c31"))
+(symbol
+		(lib_id "power_local:+3V3_FDC_SW")
+		(at 412.7500 222.2500 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "2bd36edb-959a-4572-a0ac-292c6e14a4d7")
+		(property "Reference" "#PWR110"
+			(at 412.7500 222.2500 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3V3_FDC_SW"
+			(at 412.7500 218.4400 0)
+
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 412.7500 222.2500 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 412.7500 222.2500 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 412.7500 222.2500 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "23c8b381-8571-4d07-abbd-b3beccc74435")
+		)
+		(instances
+			(project "nrf-moisture-sensor"
+				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
+					(reference "#PWR110")
+					(unit 1)
+				)
+			)
+		)
+	)
 )
