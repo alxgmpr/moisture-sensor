@@ -1,0 +1,233 @@
+{
+  "source_file": "JLC-BOM-JLCPCB Assembly Order (2).xls",
+  "source_sha256": "8e7bafc1f85e5ae6ca50f169a7b86d780995d61be8ff5c65a16695a79151e828",
+  "sheet": "JLCPCB BOM Tool - BOM Matching",
+  "download_label": "Download Time\uff1a2026-09-10 09:32:38",
+  "assembled_qty": 5,
+  "rows": [
+    {
+      "row": 6,
+      "references": "BT1",
+      "mpn": "CR2032-BS-6",
+      "lcsc": "C22363833",
+      "url": "https://jlcpcb.com/partdetail/Lian_XinTechnology-CR2032_BS6/C22363833",
+      "library": "Extended",
+      "purchased_qty": 5.0,
+      "total_usd": 1.185
+    },
+    {
+      "row": 7,
+      "references": "C3",
+      "mpn": "CL10A106MA8NRNC",
+      "lcsc": "C96446",
+      "url": "https://jlcpcb.com/partdetail/97651-CL10A106MA8NRNC/C96446",
+      "library": "Basic",
+      "purchased_qty": 5.0,
+      "total_usd": 0.276
+    },
+    {
+      "row": 8,
+      "references": "C13",
+      "mpn": "0402CG3R9C500NT",
+      "lcsc": "C1566",
+      "url": "https://jlcpcb.com/partdetail/1918-0402CG3R9C500NT/C1566",
+      "library": "Extended",
+      "purchased_qty": 20.0,
+      "total_usd": 0.07
+    },
+    {
+      "row": 9,
+      "references": "C21,C23",
+      "mpn": "GRM158R60J226ME01D",
+      "lcsc": "C3894351",
+      "url": "https://jlcpcb.com/partdetail/4462880-GRM158R60J226ME01D/C3894351",
+      "library": "Extended",
+      "purchased_qty": 10.0,
+      "total_usd": 2.676
+    },
+    {
+      "row": 10,
+      "references": "C22,C24",
+      "mpn": "0402B102K500NT",
+      "lcsc": "C1523",
+      "url": "https://jlcpcb.com/partdetail/1875-0402B102K500NT/C1523",
+      "library": "Basic",
+      "purchased_qty": 10.0,
+      "total_usd": 0.06
+    },
+    {
+      "row": 11,
+      "references": "C25",
+      "mpn": "CL05A225MQ5NSNC",
+      "lcsc": "C12530",
+      "url": "https://jlcpcb.com/partdetail/13164-CL05A225MQ5NSNC/C12530",
+      "library": "Basic",
+      "purchased_qty": 5.0,
+      "total_usd": 0.029
+    },
+    {
+      "row": 12,
+      "references": "C26",
+      "mpn": "GRM155Z71A105KE01D",
+      "lcsc": "C528974",
+      "url": "https://jlcpcb.com/partdetail/548880-GRM155Z71A105KE01D/C528974",
+      "library": "Extended",
+      "purchased_qty": 20.0,
+      "total_usd": 1.72
+    },
+    {
+      "row": 13,
+      "references": "C27,C28",
+      "mpn": "CL05B104KO5NNNC",
+      "lcsc": "C1525",
+      "url": "https://jlcpcb.com/partdetail/1877-CL05B104KO5NNNC/C1525",
+      "library": "Basic",
+      "purchased_qty": 10.0,
+      "total_usd": 0.045
+    },
+    {
+      "row": 14,
+      "references": "D1,D2,D3",
+      "mpn": "TPD1E1B04DPYR",
+      "lcsc": "C779408",
+      "url": "https://jlcpcb.com/partdetail/TexasInstruments-TPD1E1B04DPYR/C779408",
+      "library": "Extended",
+      "purchased_qty": 17.0,
+      "total_usd": 1.4977
+    },
+    {
+      "row": 15,
+      "references": "D4,D5,D6,D7,D8,D9,D10",
+      "mpn": "TPD1E01B04DPYR",
+      "lcsc": "C779389",
+      "url": "https://jlcpcb.com/partdetail/TexasInstruments-TPD1E01B04DPYR/C779389",
+      "library": "Extended",
+      "purchased_qty": 39.0,
+      "total_usd": 2.8275
+    },
+    {
+      "row": 16,
+      "references": "L10",
+      "mpn": "DFE201210U-2R2M=P2",
+      "lcsc": "C2049745",
+      "url": "https://jlcpcb.com/partdetail/2141314-DFE201210U_2R2MP2/C2049745",
+      "library": "Extended",
+      "purchased_qty": 5.0,
+      "total_usd": 0.9765
+    },
+    {
+      "row": 17,
+      "references": "Q1",
+      "mpn": "DMG2305UX-13",
+      "lcsc": "C144153",
+      "url": "https://jlcpcb.com/partdetail/DiodesIncorporated-DMG2305UX13/C144153",
+      "library": "Extended",
+      "purchased_qty": 9.0,
+      "total_usd": 4.0725
+    },
+    {
+      "row": 18,
+      "references": "R1",
+      "mpn": "0402WGF1001TCE",
+      "lcsc": "C11702",
+      "url": "https://jlcpcb.com/partdetail/12256-0402WGF1001TCE/C11702",
+      "library": "Basic",
+      "purchased_qty": 5.0,
+      "total_usd": 0.0195
+    },
+    {
+      "row": 19,
+      "references": "R22,R23,R36,R37",
+      "mpn": "0402WGF4701TCE",
+      "lcsc": "C25900",
+      "url": "https://jlcpcb.com/partdetail/26643-0402WGF4701TCE/C25900",
+      "library": "Basic",
+      "purchased_qty": 20.0,
+      "total_usd": 0.058
+    },
+    {
+      "row": 20,
+      "references": "R30,R31",
+      "mpn": "0402WGF5101TCE",
+      "lcsc": "C25905",
+      "url": "https://jlcpcb.com/partdetail/26648-0402WGF5101TCE/C25905",
+      "library": "Basic",
+      "purchased_qty": 10.0,
+      "total_usd": 0.026
+    },
+    {
+      "row": 21,
+      "references": "R32,R33,R34,R35",
+      "mpn": "0402WGF1000TCE",
+      "lcsc": "C25076",
+      "url": "https://jlcpcb.com/partdetail/25819-0402WGF1000TCE/C25076",
+      "library": "Basic",
+      "purchased_qty": 20.0,
+      "total_usd": 0.074
+    },
+    {
+      "row": 22,
+      "references": "U2",
+      "mpn": "NPM2100-QEAA-R7",
+      "lcsc": "C46968654",
+      "url": "https://jlcpcb.com/partdetail/NordicSemicon-NPM2100_QEAAR7/C46968654",
+      "library": "Extended",
+      "purchased_qty": 5.0,
+      "total_usd": 8.2105
+    },
+    {
+      "row": 23,
+      "references": "U3",
+      "mpn": "FDC1004DGSR",
+      "lcsc": "C2865994",
+      "url": "https://jlcpcb.com/partdetail/TexasInstruments-FDC1004DGSR/C2865994",
+      "library": "Extended",
+      "purchased_qty": 5.0,
+      "total_usd": 15.5585
+    },
+    {
+      "row": 24,
+      "references": "U4",
+      "mpn": "SHT40-AD1F-R2",
+      "lcsc": "C7461846",
+      "url": "https://jlcpcb.com/partdetail/Sensirion-SHT40_AD1FR2/C7461846",
+      "library": "Extended",
+      "purchased_qty": 5.0,
+      "total_usd": 12.8
+    },
+    {
+      "row": 25,
+      "references": "X1",
+      "mpn": "CM8V-T1A-32.768KHZ-7PF-20PPM-TA-QC",
+      "lcsc": "C5136974",
+      "url": "https://jlcpcb.com/partdetail/C5136974",
+      "library": "Extended",
+      "purchased_qty": 5.0,
+      "total_usd": 3.0435
+    }
+  ],
+  "screenshot_file": "codex-clipboard-31b86e00-a66b-4251-84b7-c803b4b19fdc.png",
+  "screenshot_sha256": "9153dd66178a026b4dd7a1d71b1d7cb7dd837ae93773f8391a74246cced28da6",
+  "screenshot_charges_usd": {
+    "pcb": 30.04,
+    "pcba": 104.09,
+    "setup": 8.18,
+    "stencil": 1.53,
+    "components": 55.23,
+    "extended": 36.84,
+    "smt_assembly": 0.96,
+    "confirm_placement": 0.45,
+    "nitrogen": 0.9
+  },
+  "sht40_ad1b_candidate": {
+    "source": "PCBParts jlc_get_part(mpn=SHT40-AD1B-R2), cached database; not a checkout quote",
+    "mpn": "SHT40-AD1B-R2",
+    "manufacturer": "Sensirion",
+    "lcsc": "C2909890",
+    "library": "Extended",
+    "database_unit_price_usd": 1.9053,
+    "database_stock": 22892,
+    "quantity_tier_confirmed": false,
+    "five_piece_savings_if_price_holds_usd": 3.2735
+  }
+}

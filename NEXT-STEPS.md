@@ -1,3 +1,5 @@
+> Planned development revision: [consolidated capacitor/diode BOM and quote savings](docs/dev-bom-consolidation-2026-09-09.md). Target: five capacitor SKUs and one diode SKU; capacitor validation and KiCad implementation remain pending.
+
 > 2026-09-09 cost revision: U4 is now Sensirion SHT40-AD1F-R2. The existing SHT4x footprint, membrane handling, geometry, and legacy SHT45-named model/rule areas are retained. See [cost revision](docs/cost-reduction-2026-09-09/README.md).
 
 > Current nRF Moisture Sensor work: [2026-09-05 review and remaining tasks](docs/design-review-2026-09-05/README.md). This supersedes older routing and unresolved-order-code notes below.
