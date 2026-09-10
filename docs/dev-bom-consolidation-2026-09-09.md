@@ -14,8 +14,9 @@ The development ESD tradeoff does not imply production qualification.
 This is the most consolidated practical target identified using existing quoted
 parts while preserving distinct circuit functions, not a proven global optimum
 across all available parts. Seven capacitor SKUs become five; two diode SKUs
-become one. JLC purchase lines drop from 20 to 17, Extended lines from 12 to nine.
-U1 remains a separate manual-fit purchase: 18 unique parts for the complete
+become one. Merge the 4.7 kΩ and 5.1 kΩ groups onto 4.7 kΩ as well.
+JLC purchase lines drop from 20 to 16, Extended lines from 12 to nine.
+U1 remains a separate manual-fit purchase: 17 unique parts for the complete
 product, excluding the battery cell and mechanical enclosure.
 
 ## Proposed complete purchase list
@@ -32,8 +33,7 @@ product, excluding the battery cell and mechanical enclosure.
 | L10 | 1 | 2.2 µH PMIC inductor | DFE201210U-2R2M=P2 | C2049745 | Extended | Retain |
 | Q1 | 1 | Reverse-battery PMOS | DMG2305UX-13 | C144153 | Extended | Retain |
 | R1 | 1 | 1 kΩ, 0402 | 0402WGF1001TCE | C11702 | Basic | Retain reset filtering |
-| R22, R23, R36, R37 | 4 | 4.7 kΩ, 0402 | 0402WGF4701TCE | C25900 | Basic | Retain I²C pull-ups |
-| R30, R31 | 2 | 5.1 kΩ, 0402 | 0402WGF5101TCE | C25905 | Basic | Retain sense series resistance |
+| R22, R23, R30, R31, R36, R37 | 6 | 4.7 kΩ, 0402 | 0402WGF4701TCE | C25900 | Basic | Retain pull-ups; change R30/R31 from 5.1 kΩ |
 | R32–R35 | 4 | 100 Ω, 0402 | 0402WGF1000TCE | C25076 | Basic | Retain debug series resistance |
 | U2 | 1 | PMIC | NPM2100-QEAA-R7 | C46968654 | Extended | Retain |
 | U3 | 1 | Capacitance converter | FDC1004DGSR | C2865994 | Extended | Retain |
@@ -115,14 +115,15 @@ unit prices are quote-specific. Hold the other displayed charges constant.
 | C21/C23 to C3 part | $2.676 − 10 × $0.0552 | $2.1240 | $3.07 | $5.1940 |
 | C26 to C25 part | $1.720 − 5 × $0.0058 | $1.6910 | $3.07 | $4.7610 |
 | All diodes to TPD1E01B04 | $1.4977 + $2.8275 − 55 × $0.0725 | $0.3377 | $3.07 | $3.4077 |
-| Combined | | $4.1527 | $9.21 | **$13.3627** |
+| R30/R31 to common 4.7 kΩ | $0.026 − 10 × $0.0029 | −$0.0030 | $0 | −$0.0030 |
+| Combined | | $4.1497 | $9.21 | **$13.3597** |
 
 C26's original purchase is 20 pieces for five fitted capacitors. Original diode
 purchases are 17 + 39 = 56 for 50 fitted parts. The common-diode estimate assumes
-55 purchased pieces including allowance; with 56, combined savings are $13.2902.
+55 purchased pieces including allowance; with 56, combined savings are $13.2872.
 Re-quote for actual attrition quantities, MOQs and price tiers.
 
-New components: approximately $51.0725. New Extended fees: $27.63. New displayed
+New components: approximately $51.0755. New Extended fees: $27.63. New displayed
 PCB + PCBA total: **$120.77**, saving **$13.36/order**, **$2.67/board**, about
 **10.0%**. Checkout rounding can move cents. This excludes unshown shipping,
 tax, manual module purchases, battery and enclosure costs.
@@ -131,6 +132,36 @@ Other scenarios discussed: C25/C26 plus common low-capacitance diodes alone save
 $8.17. Adding the 10 µF consolidation saves another $5.19. Using the stronger
 diode everywhere saves about $2.55 instead of $3.41 and changes sensing loading.
 Replacing C3 with existing 22 µF costs about $1.06 extra with no feeder-fee saving.
+
+## Common 4.7 kΩ resistors
+
+Propose **0402WGF4701TCE / C25900** for all six R22/R23/R30/R31/R36/R37.
+Retain the four existing I²C pull-ups and change only the two sense series
+resistors from 5.1 kΩ to 4.7 kΩ. Their package and 1% tolerance stay the same.
+
+This lowers sense series resistance by 7.84%. At an illustrative 100 pF load,
+RC changes from 0.51 µs to 0.47 µs, modestly improving settling. For the same
+voltage across the resistor, current rises by 8.51%; this is a simple Ohm's-law
+comparison, not a prediction of ESD current with a nonlinear clamp. Neither value
+establishes pulse survival or measurement settling by itself. The development
+tradeoff is reasonable and aligns with retaining basic ESD protection while
+prioritizing sensing and a simpler BOM. Check sensor repeatability after the change.
+
+Both resistor lines are Basic. The supplied quote charges $0.058 for 20 of the
+4.7 kΩ part ($0.0029 each) and $0.026 for ten of the 5.1 kΩ part ($0.0026 each).
+At unchanged unit prices, consolidating onto 4.7 kΩ raises the five-board parts
+cost by $0.003, effectively zero, and saves no feeder fee. Its benefit is one
+fewer SKU. A refreshed quote might change the combined-quantity price tier.
+
+Using 5.1 kΩ everywhere instead would save $0.006 at these prices but weaken the
+I²C pull-ups (roughly 8.5% longer RC rise time at fixed bus capacitance). Prefer
+4.7 kΩ to preserve the reviewed bus pull-ups and slightly reduce sense settling
+resistance. Leave the 1 kΩ reset and 100 Ω debug groups separate.
+
+Source topology and existing settling limitations: [probe review](probe-review-2026-09-09/README.md).
+The quoted resistor inputs are rows 19–20 in the archived source data. The current
+TI support link returned HTTP 403 during this follow-up; no new manufacturer
+approval of either value is claimed.
 
 ## Additional U4 cost option requested during review
 
@@ -163,8 +194,8 @@ the quantity tier was not established and no live checkout price was available.
 The current quoted AD1F is $12.80 for five, or $2.56 each. **If five AD1B parts
 price at $1.9053 with no additional procurement fees**, the saving is
 5 × ($2.56 − $1.9053) = **$3.2735**. There is no additional feeder-fee saving.
-With all capacitor/diode proposals, this illustrative scenario totals **$117.49**,
-or **$16.64/order ($3.33/board)** saved. Keep the quote-backed capacitor/diode
+With all capacitor/diode proposals, this illustrative scenario totals **$117.50**,
+or **$16.63/order ($3.33/board)** saved. Keep the quote-backed capacitor/diode
 estimate above separate from this conditional sensor-price estimate. Ordering
 directly from LCSC for hand assembly also has separate shipping/procurement costs.
 
@@ -177,7 +208,8 @@ price above comes from PCBParts, not from a completed quote.
 ## Next steps
 
 1. Validate capacitor bias/corner behavior and 0603 fit; record final MPNs or fallbacks.
-2. Implement common diodes and accepted capacitor changes in schematic and PCB.
+2. Implement common diodes, common 4.7 kΩ resistors and accepted capacitor changes
+   in schematic and PCB.
 3. Update intentional selection checks only after review: `test_reservoir_selection.py`
    currently enforces Nordic-listed 0402 parts. Do not bypass it merely to pass a test.
 4. Reconcile the three checkpoint failures; run connectivity, ERC/DRC and repository

@@ -1,4 +1,4 @@
-> Planned development revision: [consolidated capacitor/diode BOM and quote savings](docs/dev-bom-consolidation-2026-09-09.md). Target: five capacitor SKUs and one diode SKU; capacitor validation and KiCad implementation remain pending.
+> Planned development revision: [consolidated capacitor/diode BOM and quote savings](docs/dev-bom-consolidation-2026-09-09.md). Target: five capacitor SKUs, one diode SKU and three resistor SKUs, with an unfiltered SHT40 dev option; capacitor validation and KiCad implementation remain pending.
 
 # nRF Moisture Sensor — Bill of Materials
 
