@@ -1,6 +1,11 @@
+> Subsequent status: schematic changes and Alex’s PCB update are complete; source files match the regenerated JLC quote package. See [Rev A checkpoint](rev-a-checkpoint/README.md). Earlier implementation-stage notes below are historical.
+
 # Consolidated development-board BOM
 
-Status: selected direction for the next revision, **not implemented in KiCad**.
+Status: **implemented in the schematic only** at Alex’s request. PCB update and routing
+are assigned to Alex. [Implementation and checks](schematic-consolidation-2026-09-09/README.md).
+The rationale and original quote estimates below remain the design record; capacitor
+qualification and a refreshed assembly quote are still pending.
 Baseline: `f6205a2`. See [checkpoint tests](sweep-2026-09-09.md).
 
 ## Decision

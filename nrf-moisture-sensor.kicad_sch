@@ -3980,7 +3980,7 @@
 			)
 			(embedded_fonts no)
 		)
-		
+
 		(symbol "ezurio:BL54L15_453-00001"
 			(pin_names
 				(offset 1.016)
@@ -7963,7 +7963,7 @@
 		(at 134.6200 73.66000)
 		(uuid "bd9457f3-21f4-471d-bb99-f713058907ec")
 	)
-	
+
 	(no_connect
 		(at 134.6200 55.8800)
 		(uuid "d0bd7354-4a74-4198-b516-f4762a773c24")
@@ -7996,7 +7996,7 @@
 		(at 134.6200 76.2000)
 		(uuid "eab0ec83-e901-4050-a864-672f8ce975fc")
 	)
-	
+
 	(no_connect
 		(at 134.6200 48.2600)
 		(uuid "fcb6072e-0df7-44ea-b720-bef539a9492e")
@@ -8125,16 +8125,7 @@
 		)
 		(uuid "2aa6a973-bbf3-45de-8469-50b4e8b08f72")
 	)
-	(wire
-		(pts
-			(xy 200.6600 78.7400) (xy 200.6600 83.8200)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2f0e5a6e-ff1f-4868-9a5c-3c3003d144e8")
-	)
+
 	(wire
 		(pts
 			(xy 205.7400 170.1800) (xy 205.7400 167.6400)
@@ -8425,16 +8416,7 @@
 		)
 		(uuid "7f417ed9-cf15-40f8-bb86-aee98415334d")
 	)
-	(wire
-		(pts
-			(xy 228.6000 73.6600) (xy 228.6000 68.5800)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "803edf54-4f00-49d6-b4fd-f8c3c5411963")
-	)
+
 	(wire
 		(pts
 			(xy 152.4000 361.9500) (xy 152.4000 356.8700)
@@ -8645,16 +8627,7 @@
 		)
 		(uuid "b3fc319b-ed56-484e-b7c1-972643469bfb")
 	)
-	(wire
-		(pts
-			(xy 200.6600 73.6600) (xy 200.6600 68.5800)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b443fef9-e7e3-4904-92e7-9f1ca9d19e26")
-	)
+
 	(wire
 		(pts
 			(xy 368.3000 269.2400) (xy 368.3000 274.3200)
@@ -8865,16 +8838,7 @@
 		)
 		(uuid "d517e6e6-2431-4a11-ad28-1452cda32623")
 	)
-	(wire
-		(pts
-			(xy 228.6000 78.7400) (xy 228.6000 83.8200)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d5ca7a13-3e65-42ea-8b57-ee3ec61a1b40")
-	)
+
 	(wire
 		(pts
 			(xy 374.6500 104.1400) (xy 374.6500 101.6000)
@@ -9165,16 +9129,7 @@
 		)
 		(uuid "20f427e7-68f5-4b78-93a1-48cb71c6ca9d")
 	)
-	(label "SWD_RST"
-		(at 200.6600 83.8200 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "2add11d0-3a4c-4644-bf61-ad25c850312d")
-	)
+
 	(label "SENSE1"
 		(at 101.6000 356.8700 0)
 		(effects
@@ -9195,16 +9150,7 @@
 		)
 		(uuid "346f7661-8a9d-47a0-b472-534f01afb3aa")
 	)
-	(label "NRESET"
-		(at 200.6600 68.5800 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "3943ab96-9ed9-4ae3-9c78-74639a8fa2be")
-	)
+
 	(label "SWDCLK_EXT"
 		(at 152.4000 295.9100 0)
 		(effects
@@ -9415,17 +9361,8 @@
 		)
 		(uuid "895fcbb0-195a-43be-83c8-a3200a09b49b")
 	)
+
 	(label "NRESET"
-		(at 228.6000 68.5800 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "9623071d-b656-4e2e-a918-e4940a464ac0")
-	)
-	(label "SWD_RST"
 		(at 441.9600 81.2800 0)
 		(effects
 			(font
@@ -9615,7 +9552,7 @@
 		)
 		(uuid "f17f0054-a537-4e24-9ad2-e39d667e1b75")
 	)
-	(label "SWD_RST"
+	(label "NRESET"
 		(at 254.0000 313.6900 0)
 		(effects
 			(font
@@ -11130,7 +11067,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "5.1k 1%"
+		(property "Value" "4.7k 1%"
 			(at 157.4800 367.2600 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11173,7 +11110,7 @@
 				)
 			)
 		)
-		(property "MPN" "0402WGF5101TCE"
+		(property "MPN" "0402WGF4701TCE"
 			(at 0.0000 -55.8800 0)
 			(hide yes)
 			(show_name no)
@@ -11195,7 +11132,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C25905"
+		(property "LCSC" "C25900"
 			(at 152.4000 365.7600 0)
 			(hide yes)
 			(show_name no)
@@ -11448,7 +11385,7 @@
 			)
 		)
 	)
-	
+
 	(symbol
 		(lib_id "Device:C_Small")
 		(at 340.3600 266.7000 0)
@@ -11472,7 +11409,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "1uF 10V X7R"
+		(property "Value" "2.2uF/6.3V X5R"
 			(at 340.3600 271.7800 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11514,7 +11451,7 @@
 				)
 			)
 		)
-		(property "Manufacturer" "Murata"
+		(property "Manufacturer" "Samsung"
 			(at 340.3600 266.7000 0)
 			(hide yes)
 			(show_name no)
@@ -11525,7 +11462,7 @@
 				)
 			)
 		)
-		(property "MPN" "GRM155Z71A105KE01D"
+		(property "MPN" "CL05A225MQ5NSNC"
 			(at 340.3600 266.7000 0)
 			(hide yes)
 			(show_name no)
@@ -11536,7 +11473,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C528974"
+		(property "LCSC" "C12530"
 			(at 340.3600 266.7000 0)
 			(hide yes)
 			(show_name no)
@@ -11562,7 +11499,7 @@
 			)
 		)
 	)
-	
+
 	(symbol
 		(lib_id "power_local:VBAT")
 		(at 347.9800 55.8800 0)
@@ -12133,7 +12070,7 @@
 			)
 		)
 	)
-	
+
 	(symbol
 		(lib_id "power:GND")
 		(at 444.5000 45.7200 0)
@@ -13349,7 +13286,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "5.1k 1%"
+		(property "Value" "4.7k 1%"
 			(at 106.6800 367.2600 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13392,7 +13329,7 @@
 				)
 			)
 		)
-		(property "MPN" "0402WGF5101TCE"
+		(property "MPN" "0402WGF4701TCE"
 			(at 0.0000 -55.8800 0)
 			(hide yes)
 			(show_name no)
@@ -13414,7 +13351,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C25905"
+		(property "LCSC" "C25900"
 			(at 101.6000 365.7600 0)
 			(hide yes)
 			(show_name no)
@@ -13540,7 +13477,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "SHT40-AD1F"
+		(property "Value" "SHT40-AD1B"
 			(at 434.34 253.68 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13593,7 +13530,7 @@
 				)
 			)
 		)
-		(property "MPN" "SHT40-AD1F-R2"
+		(property "MPN" "SHT40-AD1B-R2"
 			(at 434.3400 233.6800 0)
 			(hide yes)
 			(show_name no)
@@ -13604,7 +13541,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C7461846"
+		(property "LCSC" "C2909890"
 			(at 434.3400 233.6800 0)
 			(hide yes)
 			(show_name no)
@@ -13658,7 +13595,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "22uF/6.3V X5R"
+		(property "Value" "10uF/25V X5R"
 			(at 374.9040 108.7120 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -13669,7 +13606,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 374.6500 106.6800 0)
 			(hide yes)
 			(show_name no)
@@ -13680,7 +13617,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://search.murata.co.jp/Ceramy/image/img/A01X/G101/ENG/GRM158R60J226ME01-01A.pdf"
+		(property "Datasheet" ""
 			(at 374.6500 106.6800 0)
 			(hide yes)
 			(show_name no)
@@ -13702,7 +13639,7 @@
 				)
 			)
 		)
-		(property "Manufacturer" "Murata Electronics"
+		(property "Manufacturer" "Samsung"
 			(at 374.6500 106.6800 0)
 			(hide yes)
 			(show_name no)
@@ -13713,7 +13650,7 @@
 				)
 			)
 		)
-		(property "MPN" "GRM158R60J226ME01D"
+		(property "MPN" "CL10A106MA8NRNC"
 			(at 374.6500 106.6800 0)
 			(hide yes)
 			(show_name no)
@@ -13724,7 +13661,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C3894351"
+		(property "LCSC" "C96446"
 			(at 374.6500 106.6800 0)
 			(hide yes)
 			(show_name no)
@@ -14922,7 +14859,7 @@
 		)
 	)
 	(symbol
-		(lib_id "protection:TPD1E1B04")
+		(lib_id "protection:TPD1E01B04")
 		(at 152.4000 243.8400 0)
 		(unit 1)
 		(body_style 1)
@@ -14942,7 +14879,7 @@
 				)
 			)
 		)
-		(property "Value" "TPD1E1B04DPYR"
+		(property "Value" "TPD1E01B04DPYR"
 			(at 152.4000 238.3400 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14963,7 +14900,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/tpd1e1b04.pdf"
+		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/tpd1e01b04.pdf"
 			(at 0.0000 -55.8800 0)
 			(hide yes)
 			(show_name no)
@@ -14984,7 +14921,7 @@
 				)
 			)
 		)
-		(property "MPN" "TPD1E1B04DPYR"
+		(property "MPN" "TPD1E01B04DPYR"
 			(at 0.0000 -55.8800 0)
 			(hide yes)
 			(show_name no)
@@ -15006,7 +14943,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C779408"
+		(property "LCSC" "C779389"
 			(at 152.4000 243.8400 0)
 			(hide yes)
 			(show_name no)
@@ -15585,7 +15522,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "22uF/6.3V X5R"
+		(property "Value" "10uF/25V X5R"
 			(at 340.6140 108.7120 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -15596,7 +15533,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
 			(at 340.3600 106.6800 0)
 			(hide yes)
 			(show_name no)
@@ -15607,7 +15544,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://search.murata.co.jp/Ceramy/image/img/A01X/G101/ENG/GRM158R60J226ME01-01A.pdf"
+		(property "Datasheet" ""
 			(at 340.3600 106.6800 0)
 			(hide yes)
 			(show_name no)
@@ -15629,7 +15566,7 @@
 				)
 			)
 		)
-		(property "Manufacturer" "Murata Electronics"
+		(property "Manufacturer" "Samsung"
 			(at 340.3600 106.6800 0)
 			(hide yes)
 			(show_name no)
@@ -15640,7 +15577,7 @@
 				)
 			)
 		)
-		(property "MPN" "GRM158R60J226ME01D"
+		(property "MPN" "CL10A106MA8NRNC"
 			(at 340.3600 106.6800 0)
 			(hide yes)
 			(show_name no)
@@ -15651,7 +15588,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C3894351"
+		(property "LCSC" "C96446"
 			(at 340.3600 106.6800 0)
 			(hide yes)
 			(show_name no)
@@ -16243,119 +16180,7 @@
 			)
 		)
 	)
-	(symbol
-		(lib_id "Device:R_Small")
-		(at 200.6600 76.2000 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "c187298e-edc8-4c5e-b411-e4aef7711170")
-		(property "Reference" "R1"
-			(at 200.6600 71.1200 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "1k 1%"
-			(at 200.6600 81.2800 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
-			(at 200.6600 76.2000 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 200.6600 76.2000 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 200.6600 76.2000 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Manufacturer" "UNI-ROYAL"
-			(at 200.6600 76.2000 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "MPN" "0402WGF1001TCE"
-			(at 200.6600 76.2000 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "LCSC" "C11702"
-			(at 200.6600 76.2000 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "fc46a9d3-95f1-44e9-ada5-2565dd88d4c7")
-		)
-		(pin "2"
-			(uuid "4bef27c6-2268-479d-a8d1-2e0159e02650")
-		)
-		(instances
-			(project "nrf-moisture-sensor"
-				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
-					(reference "R1")
-					(unit 1)
-				)
-			)
-		)
-	)
+
 	(symbol
 		(lib_id "power_local:+3V3_FDC_SW")
 		(at 444.5000 71.1200 0)
@@ -17269,7 +17094,7 @@
 		)
 	)
 	(symbol
-		(lib_id "protection:TPD1E1B04")
+		(lib_id "protection:TPD1E01B04")
 		(at 203.2000 243.8400 0)
 		(unit 1)
 		(body_style 1)
@@ -17289,7 +17114,7 @@
 				)
 			)
 		)
-		(property "Value" "TPD1E1B04DPYR"
+		(property "Value" "TPD1E01B04DPYR"
 			(at 203.2000 238.3400 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -17310,7 +17135,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/tpd1e1b04.pdf"
+		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/tpd1e01b04.pdf"
 			(at 0.0000 -55.8800 0)
 			(hide yes)
 			(show_name no)
@@ -17331,7 +17156,7 @@
 				)
 			)
 		)
-		(property "MPN" "TPD1E1B04DPYR"
+		(property "MPN" "TPD1E01B04DPYR"
 			(at 0.0000 -55.8800 0)
 			(hide yes)
 			(show_name no)
@@ -17353,7 +17178,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C779408"
+		(property "LCSC" "C779389"
 			(at 203.2000 243.8400 0)
 			(hide yes)
 			(show_name no)
@@ -17490,81 +17315,7 @@
 			)
 		)
 	)
-	(symbol
-		(lib_id "power:GND")
-		(at 228.6000 83.8200 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "e6f4faa6-573c-492a-b19e-40866a1878fa")
-		(property "Reference" "#PWR067"
-			(at 228.6000 83.8200 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GND"
-			(at 228.6 87.6300 0)
 
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 228.6000 83.8200 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 228.6000 83.8200 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 228.6000 83.8200 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "4885758a-52c3-401c-939f-4c92405384f3")
-		)
-		(instances
-			(project "nrf-moisture-sensor"
-				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
-					(reference "#PWR067")
-					(unit 1)
-				)
-			)
-		)
-	)
 	(symbol
 		(lib_id "power_local:VBAT")
 		(at 205.7400 193.0400 0)
@@ -17754,7 +17505,7 @@
 		)
 	)
 	(symbol
-		(lib_id "protection:TPD1E1B04")
+		(lib_id "protection:TPD1E01B04")
 		(at 101.6000 243.8400 0)
 		(unit 1)
 		(body_style 1)
@@ -17774,7 +17525,7 @@
 				)
 			)
 		)
-		(property "Value" "TPD1E1B04DPYR"
+		(property "Value" "TPD1E01B04DPYR"
 			(at 101.6000 238.3400 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -17795,7 +17546,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/tpd1e1b04.pdf"
+		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/tpd1e01b04.pdf"
 			(at 0.0000 -55.8800 0)
 			(hide yes)
 			(show_name no)
@@ -17816,7 +17567,7 @@
 				)
 			)
 		)
-		(property "MPN" "TPD1E1B04DPYR"
+		(property "MPN" "TPD1E01B04DPYR"
 			(at 0.0000 -55.8800 0)
 			(hide yes)
 			(show_name no)
@@ -17838,7 +17589,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C779408"
+		(property "LCSC" "C779389"
 			(at 101.6000 243.8400 0)
 			(hide yes)
 			(show_name no)
@@ -17864,119 +17615,7 @@
 			)
 		)
 	)
-	(symbol
-		(lib_id "Device:C_Small")
-		(at 228.6000 76.2000 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "ea66259d-b639-4ca8-a1cf-490074edd3f7")
-		(property "Reference" "C13"
-			(at 228.6000 71.1200 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "3.9pF C0G"
-			(at 228.6000 81.2800 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
-			(at 228.6000 76.2000 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 228.6000 76.2000 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 228.6000 76.2000 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Manufacturer" "FH"
-			(at 228.6000 76.2000 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "MPN" "0402CG3R9C500NT"
-			(at 228.6000 76.2000 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "LCSC" "C1566"
-			(at 228.6000 76.2000 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "c051d8e9-2737-4fa7-a0a9-f03e35132b52")
-		)
-		(pin "2"
-			(uuid "88dc947f-f741-47c1-ac50-dfa73e13f981")
-		)
-		(instances
-			(project "nrf-moisture-sensor"
-				(path "/29551000-a13a-494c-a3a3-b85b9fc11a3c"
-					(reference "C13")
-					(unit 1)
-				)
-			)
-		)
-	)
+
 	(symbol
 		(lib_id "power:GND")
 		(at 262.8900 274.3200 0)
@@ -18608,7 +18247,7 @@
 	(text "U1 DNP is for JLC assembly only; hand fit for use." (at 22.86 110.49 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "0db5c525-b21c-4ac1-9534-d910f36e64c8"))
 	(text "SDA / SCL: configure GPIO selection in firmware." (at 22.86 115.57 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "96b25366-0012-4642-bbd4-e0216792d501"))
 	(text "C3: external module bulk capacitor." (at 187.96 96.52 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "7f791587-d578-48b8-b8a3-12b3fc08b544"))
-	(text "R1 / C13: module reset input network." (at 187.96 101.6 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "65731fb9-64df-481c-9894-2b59d7f0e51a"))
+	(text "Reset: direct host / PMIC connection." (at 187.96 101.6 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "65731fb9-64df-481c-9894-2b59d7f0e51a"))
 	(text "Keep antenna copper / component keepout clear." (at 187.96 106.68 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "1369f713-e015-487a-9139-852023669d9d"))
 	(text "X1: XL1 pad 25; XL2 pad 24." (at 237 148 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "49acf9ba-bd6e-4f99-9a11-56986c489956"))
 	(text "Internal LFXO load bank; tune on hardware." (at 237 153.08 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "a2bae816-2ef0-4ec3-9f7a-650fade97aa3"))
@@ -18620,7 +18259,7 @@
 	(text "No sustained overvoltage cutoff or battery fuse." (at 22.86 228.6 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "731dc1df-358d-4106-a8d3-ad0b991e4a2c"))
 	(text "FDC1004: switched supply. SHT40: main +3V3 supply." (at 312.42 310 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "d4c0b89b-355a-42de-a890-e5c44fb41fff"))
 	(text "R22 / R23: shared I2C pull-ups to +3V3." (at 312.42 315.08 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "8b452372-a0cc-406f-9b15-7cf83dda8ca4"))
-	(text "CIN1 / CIN2 via 5.1k protection; SHLD driven by FDC." (at 312.42 320.16 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "3f0c9d06-1295-4174-9160-c3ec196b2b77"))
+	(text "CIN1 / CIN2 via 4.7k protection; SHLD driven by FDC." (at 312.42 320.16 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "3f0c9d06-1295-4174-9160-c3ec196b2b77"))
 	(text "FIDUCIALS" (at 310 162.56 0) (effects (font (size 1.27 1.27)) (justify left)) (uuid "85cb960f-0d44-4d85-8a98-85f9490c21a8"))
 
 (symbol

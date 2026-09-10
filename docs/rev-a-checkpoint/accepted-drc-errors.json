@@ -1,0 +1,32 @@
+[
+  {
+    "description": "Items not allowed (keepout area)",
+    "items": [
+      {
+        "description": "Via [+3V3] on F.Cu - B.Cu",
+        "pos": {
+          "x": 74.475,
+          "y": 72.675
+        },
+        "uuid": "0c92937a-92ec-40d8-8988-a4f1037265c0"
+      }
+    ],
+    "severity": "error",
+    "type": "items_not_allowed"
+  },
+  {
+    "description": "Items not allowed (keepout area)",
+    "items": [
+      {
+        "description": "Via [+3V3] on F.Cu - B.Cu",
+        "pos": {
+          "x": 74.35,
+          "y": 83.64
+        },
+        "uuid": "e7de8e73-6c93-4c86-a512-ca4be7dd1ff3"
+      }
+    ],
+    "severity": "error",
+    "type": "items_not_allowed"
+  }
+]

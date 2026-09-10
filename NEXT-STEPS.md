@@ -1,4 +1,4 @@
-> Planned development revision: [consolidated capacitor/diode BOM and quote savings](docs/dev-bom-consolidation-2026-09-09.md). Target: four capacitor SKUs, one diode SKU and two resistor SKUs (omit C13 and bridge R1), with an unfiltered SHT40 dev option; capacitor validation and KiCad implementation remain pending.
+> Rev A checkpoint: consolidated schematic and updated PCB match the JLC export. See [checkpoint and Rev B follow-ups](docs/rev-a-checkpoint/README.md).
 
 > 2026-09-09 cost revision: U4 is now Sensirion SHT40-AD1F-R2. The existing SHT4x footprint, membrane handling, geometry, and legacy SHT45-named model/rule areas are retained. See [cost revision](docs/cost-reduction-2026-09-09/README.md).
 
