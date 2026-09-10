@@ -13,10 +13,11 @@ The development ESD tradeoff does not imply production qualification.
 
 This is the most consolidated practical target identified using existing quoted
 parts while preserving distinct circuit functions, not a proven global optimum
-across all available parts. Seven capacitor SKUs become five; two diode SKUs
-become one. Merge the 4.7 kΩ and 5.1 kΩ groups onto 4.7 kΩ as well.
-JLC purchase lines drop from 20 to 16, Extended lines from 12 to nine.
-U1 remains a separate manual-fit purchase: 17 unique parts for the complete
+across all available parts. Seven capacitor SKUs become four; two diode SKUs
+become one. Merge the 4.7 kΩ and 5.1 kΩ groups onto 4.7 kΩ, omit C13 and
+bypass R1 with copper per the supplied module integration guidance.
+JLC purchase lines drop from 20 to 14, Extended lines from 12 to eight.
+U1 remains a separate manual-fit purchase: 15 unique parts for the complete
 product, excluding the battery cell and mechanical enclosure.
 
 ## Proposed complete purchase list
@@ -25,14 +26,12 @@ product, excluding the battery cell and mechanical enclosure.
 | --- | ---: | --- | --- | --- | --- | --- |
 | BT1 | 1 | CR2032 holder | CR2032-BS-6 | C22363833 | Extended | Retain |
 | C3, C21, C23 | 3 | 10 µF, 25 V, X5R, 0603 | CL10A106MA8NRNC | C96446 | Basic | C21/C23 change from 22 µF 0402; qualify and check fit |
-| C13 | 1 | 3.9 pF, C0G, 0402 | 0402CG3R9C500NT | C1566 | Extended | Retain reset RF filter |
 | C22, C24 | 2 | 1 nF, 50 V, X7R, 0402 | 0402B102K500NT | C1523 | Basic | Retain PMIC RF bypass |
 | C25, C26 | 2 | 2.2 µF, 6.3 V, X5R, 0402 | CL05A225MQ5NSNC | C12530 | Basic | C26 changes from 1 µF; qualify |
 | C27, C28 | 2 | 100 nF, 16 V, X7R, 0402 | CL05B104KO5NNNC | C1525 | Basic | Retain local bypass |
 | D1–D10 | 10 | Bidirectional low-capacitance ESD, DPY | TPD1E01B04DPYR | C779389 | Extended | Change D1–D3; retain D4–D10 |
 | L10 | 1 | 2.2 µH PMIC inductor | DFE201210U-2R2M=P2 | C2049745 | Extended | Retain |
 | Q1 | 1 | Reverse-battery PMOS | DMG2305UX-13 | C144153 | Extended | Retain |
-| R1 | 1 | 1 kΩ, 0402 | 0402WGF1001TCE | C11702 | Basic | Retain reset filtering |
 | R22, R23, R30, R31, R36, R37 | 6 | 4.7 kΩ, 0402 | 0402WGF4701TCE | C25900 | Basic | Retain pull-ups; change R30/R31 from 5.1 kΩ |
 | R32–R35 | 4 | 100 Ω, 0402 | 0402WGF1000TCE | C25076 | Basic | Retain debug series resistance |
 | U2 | 1 | PMIC | NPM2100-QEAA-R7 | C46968654 | Extended | Retain |
@@ -86,8 +85,8 @@ Sources: [TPD1E01B04](https://www.ti.com/lit/ds/symlink/tpd1e01b04.pdf),
   fee and increases cost. Any alternative must meet the 0.7–15 µF effective
   total VOUT limit including C3/C25/C27 and the module. Nominal 22 µF alone
   neither proves nor disproves compliance.
-- **Keep 3.9 pF, 1 nF and 100 nF separate:** their reset RF filtering, PMIC RF
-  bypass and local bypass functions differ. Making dielectric labels identical
+- **Keep 1 nF and 100 nF separate:** PMIC RF bypass and local bypass
+  functions differ. C13 is now proposed for omission per the module review below. Making dielectric labels identical
   would not combine different-value SKUs. Moving the 2.2 µF roles to common
   10 µF could be studied separately, but changes output loading, area and inrush;
   it is not an established substitution in this target.
@@ -116,16 +115,18 @@ unit prices are quote-specific. Hold the other displayed charges constant.
 | C26 to C25 part | $1.720 − 5 × $0.0058 | $1.6910 | $3.07 | $4.7610 |
 | All diodes to TPD1E01B04 | $1.4977 + $2.8275 − 55 × $0.0725 | $0.3377 | $3.07 | $3.4077 |
 | R30/R31 to common 4.7 kΩ | $0.026 − 10 × $0.0029 | −$0.0030 | $0 | −$0.0030 |
-| Combined | | $4.1497 | $9.21 | **$13.3597** |
+| Omit C13 | Eliminate quoted 20-piece purchase | $0.0700 | $3.07 | $3.1400 |
+| Remove R1 and bridge with copper | Eliminate five-piece purchase | $0.0195 | $0 | $0.0195 |
+| Combined | | $4.2392 | $12.28 | **$16.5192** |
 
 C26's original purchase is 20 pieces for five fitted capacitors. Original diode
 purchases are 17 + 39 = 56 for 50 fitted parts. The common-diode estimate assumes
-55 purchased pieces including allowance; with 56, combined savings are $13.2872.
+55 purchased pieces including allowance; with 56, combined savings are $16.4467.
 Re-quote for actual attrition quantities, MOQs and price tiers.
 
-New components: approximately $51.0755. New Extended fees: $27.63. New displayed
-PCB + PCBA total: **$120.77**, saving **$13.36/order**, **$2.67/board**, about
-**10.0%**. Checkout rounding can move cents. This excludes unshown shipping,
+New components: approximately $50.9860. New Extended fees: $24.56. New displayed
+PCB + PCBA total: **$117.61**, saving **$16.52/order**, **$3.30/board**, about
+**12.3%**. Checkout rounding can move cents. This excludes unshown shipping,
 tax, manual module purchases, battery and enclosure costs.
 
 Other scenarios discussed: C25/C26 plus common low-capacitance diodes alone saves
@@ -156,18 +157,20 @@ fewer SKU. A refreshed quote might change the combined-quantity price tier.
 Using 5.1 kΩ everywhere instead would save $0.006 at these prices but weaken the
 I²C pull-ups (roughly 8.5% longer RC rise time at fixed bus capacitance). Prefer
 4.7 kΩ to preserve the reviewed bus pull-ups and slightly reduce sense settling
-resistance. Leave the 1 kΩ reset and 100 Ω debug groups separate.
+resistance. Retain the 100 Ω debug group. R1 is now proposed for removal and a copper
+bridge, as explained in the module-datasheet review below.
 
 Source topology and existing settling limitations: [probe review](probe-review-2026-09-09/README.md).
 The quoted resistor inputs are rows 19–20 in the archived source data. The current
 TI support link returned HTTP 403 during this follow-up; no new manufacturer
 approval of either value is claimed.
 
-## R1 and C13: retain pending module-specific reset/RF review
+## R1 and C13: original screening, superseded by supplied module datasheet
 
 Alex asked whether R1 could join the 4.7 kΩ group and C13 could join another
 capacitor group. Review found a functional reason not to adopt either as a
-routine BOM substitution. The proposed table retains R1 = 1 kΩ and C13 = 3.9 pF.
+routine BOM substitution. The initial proposal retained R1 = 1 kΩ and C13 = 3.9 pF. The later module
+datasheet review below supersedes that decision and the purchase table is updated.
 
 The maintained netlist is programmer RESET_EXT → R35 (100 Ω) → SWD_RST →
 R1 (1 kΩ) → module NRESET. PMIC PG/RESET also connects to SWD_RST; C13
@@ -207,14 +210,49 @@ host layout is RF-qualified merely because the nominal values match Nordic's.
 
 Replacing C13 with the existing 1 nF part would theoretically save $3.11/order
 ($0.07 old purchase plus $3.07 fee minus five × $0.006), and omitting it would
-save $3.14. These are **unapproved scenarios**, excluded from target totals.
+save $3.14. At this stage these were unapproved scenarios. The later module-specific
+review below now includes omission (not a larger capacitor) in target totals.
 The dev decision to accept weaker ESD protection does not automatically accept
-changed reset reliability or radio-emission behavior. Keep the pair for now;
-revisit host-filter necessity with module-specific evidence.
+changed reset reliability or radio-emission behavior. The initial recommendation was to keep the pair pending module-specific evidence;
+that evidence is evaluated below.
 
 Sources: [Ezurio reset pull-up and integration documentation](https://www.ezurio.com/documentation/datasheet-bl54l10-and-bl54l15-series),
 [Nordic explanation and rejection of 10 nF substitution](https://devzone.nordicsemi.com/f/nordic-q-a/121811/nrf54lxx---reset-circuitry),
 [Nordic confirmation of the tested 1 kΩ / 3.9 pF network](https://devzone.nordicsemi.com/f/nordic-q-a/127632/nrf54l15-reference-design-onboarding-questions/564599).
+
+## Supplied BL54L15 datasheet review: omit the external reset RC
+
+Source: user-supplied `453-00001R_new.pdf`, BL54L15/BL54L10 Series v1.8,
+42 pages. Text searched across the document; pages 9, 20 and 21 visually inspected.
+Source SHA-256: `1968a812ea2bd265636c7432667eabbafa98503b96df2c7493b6a96265f017b6`.
+
+Section 7.1, printed page 20, identifies one mandatory external 10 µF capacitor
+for module integration. Its reset bullet says to wire nRESET to a push button
+or drive it from the host. The continuation on page 21 identifies the internal
+13 kΩ pull-up. No external series resistor or reset shunt capacitor is specified.
+The block diagram on page 9 is functional, not an internal passive schematic;
+it does not establish whether the exact Nordic 1 kΩ / 3.9 pF pair exists inside.
+
+**Revised development recommendation: omit C13 and remove/bypass R1 using copper.**
+This follows the module integration guidance instead of imposing the bare-SoC
+reference RC on the carrier. Do not replace R1 with 4.7 kΩ or C13 with a much
+larger capacitor. R1 is in series: simply marking it DNP without bridging it
+would disconnect reset and is incorrect. Retain R35 (100 Ω), D7, and the existing
+PMIC PG/RESET connection. The remaining 100 Ω debug resistor is our carrier
+protection choice, not an Ezurio requirement.
+
+This is a module-specific engineering inference from its documented integration
+requirements, not proof of the internal filter implementation or RF/ESD testing
+of this carrier. Verify programming, connect-under-reset, PMIC-triggered reset,
+power-up and normal radio operation on the development boards. The earlier
+voltage-divider objection still applies to adding 4.7 kΩ in series; removing
+R1 avoids that objection instead of trying to tolerate the larger voltage drop.
+
+Omission saves $3.14 for C13 and $0.0195 for R1 in the five-board quote; reduced
+placement charges, if any, are not included. The target is now four capacitor
+SKUs and two resistor SKUs (4.7 kΩ and 100 Ω), with one diode SKU. Total: 14 JLC
+purchase lines, eight Extended lines, plus the required manual-fit module.
+No schematic or PCB edits were made during this document review.
 
 ## Additional U4 cost option requested during review
 
@@ -247,8 +285,8 @@ the quantity tier was not established and no live checkout price was available.
 The current quoted AD1F is $12.80 for five, or $2.56 each. **If five AD1B parts
 price at $1.9053 with no additional procurement fees**, the saving is
 5 × ($2.56 − $1.9053) = **$3.2735**. There is no additional feeder-fee saving.
-With all capacitor/diode proposals, this illustrative scenario totals **$117.50**,
-or **$16.63/order ($3.33/board)** saved. Keep the quote-backed capacitor/diode
+With all capacitor/diode proposals, this illustrative scenario totals **$114.34**,
+or **$19.79/order ($3.96/board)** saved. Keep the quote-backed capacitor/diode
 estimate above separate from this conditional sensor-price estimate. Ordering
 directly from LCSC for hand assembly also has separate shipping/procurement costs.
 
@@ -262,7 +300,8 @@ price above comes from PCBParts, not from a completed quote.
 
 1. Validate capacitor bias/corner behavior and 0603 fit; record final MPNs or fallbacks.
 2. Implement common diodes, common 4.7 kΩ resistors and accepted capacitor changes
-   in schematic and PCB.
+   in schematic and PCB. Omit C13 and remove R1 with a copper bridge, retaining
+   R35/D7 and the PMIC reset connection; verify both reset sources on hardware.
 3. Update intentional selection checks only after review: `test_reservoir_selection.py`
    currently enforces Nordic-listed 0402 parts. Do not bypass it merely to pass a test.
 4. Reconcile the three checkpoint failures; run connectivity, ERC/DRC and repository
