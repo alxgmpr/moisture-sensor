@@ -163,6 +163,59 @@ The quoted resistor inputs are rows 19–20 in the archived source data. The cur
 TI support link returned HTTP 403 during this follow-up; no new manufacturer
 approval of either value is claimed.
 
+## R1 and C13: retain pending module-specific reset/RF review
+
+Alex asked whether R1 could join the 4.7 kΩ group and C13 could join another
+capacitor group. Review found a functional reason not to adopt either as a
+routine BOM substitution. The proposed table retains R1 = 1 kΩ and C13 = 3.9 pF.
+
+The maintained netlist is programmer RESET_EXT → R35 (100 Ω) → SWD_RST →
+R1 (1 kΩ) → module NRESET. PMIC PG/RESET also connects to SWD_RST; C13
+shunts NRESET to GND. R1 is a series resistor, not a pull-up. Ezurio specifies
+a 13 kΩ internal reset pull-up in BL54L15.
+
+With an ideal zero-volt programmer output, ignoring the PMIC pull-up and other
+nonidealities, the nominal module reset level is approximately:
+
+- Existing: VDD × 1.1 kΩ / (13 kΩ + 1.1 kΩ) = 0.078 VDD, or 0.26 V at 3.3 V.
+- Proposed R1 = 4.7 kΩ: VDD × 4.8 kΩ / (13 kΩ + 4.8 kΩ) = 0.270 VDD,
+  or 0.89 V at 3.3 V.
+
+These are screening calculations, not guaranteed reset thresholds or a worst-case
+model. Pull-up tolerance, reset input threshold, programmer/PMIC output-low voltage,
+PMIC pull-up and module internal circuitry must be included before approving
+4.7 kΩ. The substantial reduction in low-level margin makes it a poor automatic
+substitution. It would save only $0.005 per five-board order at the quoted prices
+($0.0195 old R1 purchase minus five × $0.0029), with no Extended fee saving.
+
+Nordic explicitly identifies the 1 kΩ / 3.9 pF QFN reset network as suppression
+of TX second-harmonic emissions coupled onto RESET. The RF fundamental is around
+2.4 GHz; the second harmonic is around 4.8 GHz. At these frequencies capacitor
+ESL, self-resonance, package and layout matter; more nominal capacitance does not
+mean more suppression. Nordic specifically rejects replacing 3.9 pF with 10 nF.
+The ideal RC corner (~41 MHz for 1 kΩ and 3.9 pF) alone does not explain or
+validate the GHz behavior. C13 is neither a crystal load capacitor nor a generic
+reset-delay capacitor.
+
+Our board uses an Ezurio module rather than a bare QFN reference design. The
+Nordic evidence explains the inherited values but does not prove an additional
+host-side C13 is required if the module already provides the relevant internal
+filtering. Confirm that with Ezurio/module circuit evidence before removing the
+host capacitor or replacing it with 1 nF. Current module documentation inspected
+here does not establish the internal filtering implementation. Do not claim this
+host layout is RF-qualified merely because the nominal values match Nordic's.
+
+Replacing C13 with the existing 1 nF part would theoretically save $3.11/order
+($0.07 old purchase plus $3.07 fee minus five × $0.006), and omitting it would
+save $3.14. These are **unapproved scenarios**, excluded from target totals.
+The dev decision to accept weaker ESD protection does not automatically accept
+changed reset reliability or radio-emission behavior. Keep the pair for now;
+revisit host-filter necessity with module-specific evidence.
+
+Sources: [Ezurio reset pull-up and integration documentation](https://www.ezurio.com/documentation/datasheet-bl54l10-and-bl54l15-series),
+[Nordic explanation and rejection of 10 nF substitution](https://devzone.nordicsemi.com/f/nordic-q-a/121811/nrf54lxx---reset-circuitry),
+[Nordic confirmation of the tested 1 kΩ / 3.9 pF network](https://devzone.nordicsemi.com/f/nordic-q-a/127632/nrf54l15-reference-design-onboarding-questions/564599).
+
 ## Additional U4 cost option requested during review
 
 Use genuine **Sensirion SHT40-AD1B-R2, C2909890** as the proposed clean-bench
