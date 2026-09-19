@@ -84,6 +84,58 @@ just means the board went back to sleep first. If it gets stuck, recover with:
 nrfutil device recover --serial-number 1057774579
 ```
 
+## DK OTA proof image
+
+The OTA proof image is separate from the low-power beacon image. It adds
+MCUboot, signed-image management, and MCUmgr/SMP over connectable Bluetooth.
+It intentionally stays awake so the update path can be tested without racing
+the DK's System OFF cycle.
+
+Build it with the NCS 3.2.2 toolchain:
+
+```bash
+docker run --rm --platform linux/amd64 \
+  -v ncs-src:/workdir -v ncs-build:/builds \
+  -v /Users/alex/moisture-sensor-carrier/firmware:/fw \
+  -w /workdir ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.2.2 \
+  'source /opt/toolchain-env.sh; export ZEPHYR_BASE=/workdir/zephyr; \
+   west build --sysbuild -p always \
+   -b nrf54l15dk/nrf54l15/cpuapp -d /builds/bthome-ota \
+   /fw/bthome-sensor -- -DEXTRA_CONF_FILE=ota.conf'
+```
+
+The generated `/builds/bthome-ota/merged.hex` is the SWD programming image;
+`/builds/bthome-ota/dfu_application.zip` is the MCUmgr DFU package. The current
+DK proof uses MCUboot's default debug signing key. Generate and protect a
+project signing key before any production or field image is built.
+
+After programming, the DK console should report:
+
+```text
+OTA ready: connect over BLE using MCUmgr/SMP
+staying awake for OTA maintenance
+```
+
+The BLE update can be driven from the nRF Connect mobile app or from
+`nrfutil mcu-manager`. The latter needs a separate Nordic HCI-UART controller;
+it does not use macOS Bluetooth directly. The first full OTA test should verify
+image list, upload, test/reboot, image confirmation, and rollback after an
+intentionally unconfirmed boot.
+
+To build the temporary rollback-test package after the normal v0.0.1 image is
+running, add `rollback.conf` to the extra configuration files:
+
+```bash
+west build --sysbuild -b nrf54l15dk/nrf54l15/cpuapp \
+  -d build/bthome-ota-rollback bthome-sensor -- \
+  -DEXTRA_CONF_FILE="ota.conf;rollback.conf"
+```
+
+Upload the resulting `dfu_application.zip`, reset once after the update, and
+then reset a second time. The first boot runs v0.0.2 without confirmation;
+MCUboot should reject it on the second boot and return to v0.0.1. Never use
+`rollback.conf` for a production image.
+
 ## Console
 
 The console is **VCOM1**, `/dev/cu.usbmodem0010577745793` at 115200 8N1.

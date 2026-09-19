@@ -16,6 +16,7 @@ struct carrier_sample {
     uint8_t capdac[2];
 };
 int carrier_start(const struct carrier_bus *, struct carrier_sample *);
+int carrier_ota_start(const struct carrier_bus *);
 int carrier_measure(const struct carrier_bus *, struct carrier_sample *);
 /* Only stops PMIC watchdog after the switched rail is confirmed disabled. */
 int carrier_stop(const struct carrier_bus *);

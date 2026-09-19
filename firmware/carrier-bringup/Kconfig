@@ -36,6 +36,15 @@ config SENSOR_DEBUG_HOLD
 	help
 		Keep the CPU awake after the measurement so RTT can be read during bench work.
 
+config SENSOR_OTA
+	bool "Enable carrier OTA maintenance image"
+	default n
+	help
+		Build the MCUboot/MCUmgr maintenance image for the carrier. It keeps
+		the boost rail in forced high-power mode, advertises a connectable SMP
+		service, and stays awake for the update. Keep disabled in the normal
+		battery beacon image.
+
 config SENSOR_MOISTURE_CALIBRATED
 	bool "Enable calibrated BTHome moisture objects"
 	default y

@@ -79,6 +79,18 @@ int carrier_start(const struct carrier_bus *b, struct carrier_sample *s) {
     b->delay_ms(b->ctx, 5);
     return 0;
 }
+int carrier_ota_start(const struct carrier_bus *b) {
+    /* OTA can last minutes: do not arm the 20-second PMIC watchdog or
+     * enable the switched sensor rail. Keep only the radio supply on. */
+    TRY(checked(b, 0x69, 0));
+    TRY(wr(b, 0xb1, 1));
+    TRY(wait_pm(b, 0xb7, 0xff, 0));
+    TRY(checked(b, 0x22, 30));
+    TRY(checked(b, 0x23, 1));
+    TRY(checked(b, 0x24, 1));
+    TRY(wait_pm(b, 0x34, 7, 0));
+    return 0;
+}
 static int fdc_read(const struct carrier_bus *b, uint8_t reg, uint16_t *v) {
     uint8_t r[2];
     TRY(b->transfer(b->ctx, 0x50, &reg, 1, r, 2));

@@ -5,6 +5,22 @@ config SENSOR_CYCLE_SECONDS
 	  Hourly by default, matching the 8760 wakes/yr in HARDWARE.md §7. The
 	  committed default is the product value; dev.conf overrides it.
 
+config SENSOR_OTA
+	bool "Enable DK OTA maintenance image"
+	default n
+	help
+	  Build the development OTA image instead of the battery-oriented BTHome
+	  beacon. This image stays awake and exposes MCUmgr/SMP over connectable
+	  Bluetooth. Do not enable this for the normal product beacon build.
+
+config SENSOR_OTA_SKIP_CONFIRM
+	bool "Do not confirm OTA image (rollback test only)"
+	depends on SENSOR_OTA
+	default n
+	help
+	  Deliberately leave the running image unconfirmed so MCUboot rolls it back
+	  on the next reset. This is only for validating the DK rollback path.
+
 config SENSOR_ADV_WINDOW_MS
 	int "Milliseconds to advertise per wake"
 	default 2000

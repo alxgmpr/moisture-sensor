@@ -19,6 +19,12 @@
 #include <zephyr/sys/poweroff.h>
 #include <zephyr/sys/reboot.h>
 
+#ifdef CONFIG_SENSOR_OTA
+#include <zephyr/bluetooth/conn.h>
+#include <zephyr/dfu/mcuboot.h>
+#include <zephyr/mgmt/mcumgr/transport/smp_bt.h>
+#endif
+
 #include "bthome.h"
 
 /*
@@ -212,6 +218,73 @@ static void advertise(const uint8_t *svc_data)
 
 static const struct gpio_dt_spec escape_btn = GPIO_DT_SPEC_GET(DT_ALIAS(sw0), gpios);
 
+#ifdef CONFIG_SENSOR_OTA
+static const struct bt_data ota_ad[] = {
+	BT_DATA_BYTES(BT_DATA_FLAGS, BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR),
+	BT_DATA_BYTES(BT_DATA_UUID128_ALL, SMP_BT_SVC_UUID_VAL),
+};
+
+static const struct bt_data ota_sd[] = {
+	BT_DATA(BT_DATA_NAME_COMPLETE, CONFIG_BT_DEVICE_NAME,
+		sizeof(CONFIG_BT_DEVICE_NAME) - 1),
+};
+
+static void ota_advertise(void)
+{
+	int err = bt_le_adv_start(BT_LE_ADV_CONN_FAST_1,
+				  ota_ad, ARRAY_SIZE(ota_ad),
+				  ota_sd, ARRAY_SIZE(ota_sd));
+
+	if (err) {
+		printk("OTA advertising failed (%d)\n", err);
+		return;
+	}
+
+	printk("OTA ready: connect over BLE using MCUmgr/SMP\n");
+}
+
+static void ota_disconnected(struct bt_conn *conn, uint8_t reason)
+{
+	ARG_UNUSED(conn);
+	printk("OTA disconnected (reason 0x%02x)\n", reason);
+	ota_advertise();
+}
+
+BT_CONN_CB_DEFINE(ota_conn_callbacks) = {
+	.disconnected = ota_disconnected,
+};
+
+static void ota_run(void)
+{
+	int err;
+
+	if (set_stable_identity() < 0) {
+		printk("continuing with the stack's own identity\n");
+	}
+
+	err = bt_enable(NULL);
+	if (err) {
+		printk("bt_enable failed (%d)\n", err);
+		return;
+	}
+
+	/* CONFIG_MCUMGR_TRANSPORT_BT registers the SMP service at init. */
+#ifdef CONFIG_SENSOR_OTA_SKIP_CONFIRM
+	printk("OTA rollback test: leaving image unconfirmed\n");
+#else
+	err = boot_write_img_confirmed();
+	if (err) {
+		printk("MCUboot image confirmation failed (%d)\n", err);
+		return;
+	}
+#endif
+
+	ota_advertise();
+	printk("staying awake for OTA maintenance\n");
+	k_sleep(K_FOREVER);
+}
+#endif
+
 /*
  * Held at boot, this keeps the device awake and therefore programmable. A
  * device in System OFF does not answer the debugger, so without an escape a
@@ -318,6 +391,11 @@ int main(void)
 	uint8_t svc[BTHOME_ADV_DATA_LEN];
 
 	printk("\n=== bthome-sensor ===\n");
+
+#ifdef CONFIG_SENSOR_OTA
+	ota_run();
+	return 0;
+#endif
 
 	if (escape_held()) {
 		printk("Button 0 held — staying awake so the board can be flashed.\n");

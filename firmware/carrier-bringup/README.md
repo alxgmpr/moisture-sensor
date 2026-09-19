@@ -35,6 +35,26 @@ The original shared-bus build is archived in `docs/reliability-2026-09-07/firmwa
 
 To build the fast bench image, add `-- -DEXTRA_CONF_FILE=dev.conf`. The production defaults are used without that override. The current default dry/wet endpoints are SENSE1=2655/5658 fF and SENSE2=2618/5571 fF.
 
+## Carrier OTA maintenance image
+
+The OTA variant is selected with `ota.conf` and is built as an MCUboot image
+for `bl54l15_dvk/nrf54l15/cpuapp`. It powers only the radio supply, leaves the
+sensor rail off, does not arm the 20-second PMIC power-cycle watchdog, and
+advertises as `Soil-OTA` using MCUmgr/SMP over BLE. The generated
+`dfu_application.zip` is the package to upload with Nordic Device Manager.
+
+```sh
+west build --sysbuild -p always \
+  -b bl54l15_dvk/nrf54l15/cpuapp \
+  -d build-carrier-ota carrier-bringup \
+  -- -DEXTRA_CONF_FILE=ota.conf
+```
+
+The OTA image is version `0.1.0`. Keep the MCUboot signing key stable for
+future updates; the SDK development key is suitable only for bench work.
+The carrier still needs electrical validation of the radio-only power path
+before this image is used on a battery-powered production unit.
+
 ## First hardware session
 
 Use current-limited battery-equivalent power with the coin cell removed, or the coin cell with J4 used strictly as debugger voltage reference. Record startup and low-voltage behavior, FDC rail on/off voltages and leakage, 60-second wakes without a debugger, and two-second RF current bursts. Confirm FDC_SDA/FDC_SCL and the switched rail remain low/unpowered while off, including main-bus traffic and reset transitions. The PMIC ADC cannot replace a scope for supply ripple and transients.

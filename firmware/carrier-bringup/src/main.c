@@ -1,6 +1,11 @@
 /* Real board qualification image. One cold boot per cycle. */
 #include "carrier.h"
 #include <zephyr/bluetooth/bluetooth.h>
+#if CONFIG_SENSOR_OTA
+#include <zephyr/bluetooth/conn.h>
+#include <zephyr/dfu/mcuboot.h>
+#include <zephyr/mgmt/mcumgr/transport/smp_bt.h>
+#endif
 #include <zephyr/drivers/hwinfo.h>
 #include <zephyr/drivers/i2c.h>
 #include <zephyr/drivers/timer/nrf_grtc_timer.h>
@@ -56,6 +61,7 @@ static uint16_t moisture_from_cap(int32_t cap_ff, int32_t dry_ff, int32_t wet_ff
     return (uint16_t)value;
 }
 #endif
+#if !CONFIG_SENSOR_OTA
 static int arm_watchdog(void) {
     const struct device *dev = DEVICE_DT_GET(DT_NODELABEL(wdt31));
     struct wdt_timeout_cfg cfg = {.window = {0, 15000}, .flags = WDT_FLAG_RESET_SOC};
@@ -66,6 +72,7 @@ static int arm_watchdog(void) {
         return rc;
     return wdt_setup(dev, WDT_OPT_PAUSE_HALTED_BY_DBG);
 }
+#endif
 static int radio_window(const struct carrier_sample *sample) {
     uint8_t id[16];
     bt_addr_le_t addr = {.type = BT_ADDR_LE_RANDOM};
@@ -132,6 +139,62 @@ static int radio_window(const struct carrier_sample *sample) {
     k_msleep(CONFIG_SENSOR_ADV_WINDOW_MS);
     return bt_le_adv_stop();
 }
+
+#if CONFIG_SENSOR_OTA
+static const struct bt_data ota_ad[] = {
+    BT_DATA_BYTES(BT_DATA_FLAGS, BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR),
+    BT_DATA_BYTES(BT_DATA_UUID128_ALL, SMP_BT_SVC_UUID_VAL),
+};
+static const struct bt_data ota_sd[] = {
+    BT_DATA(BT_DATA_NAME_COMPLETE, CONFIG_BT_DEVICE_NAME,
+            sizeof(CONFIG_BT_DEVICE_NAME) - 1),
+};
+static void ota_advertise(void) {
+    int rc = bt_le_adv_start(BT_LE_ADV_CONN_FAST_1, ota_ad, ARRAY_SIZE(ota_ad),
+                             ota_sd, ARRAY_SIZE(ota_sd));
+    if (rc)
+        printk("OTA advertising failed (%d)\n", rc);
+    else
+        printk("OTA ready: connect over BLE using MCUmgr/SMP\n");
+}
+static void ota_disconnected(struct bt_conn *conn, uint8_t reason) {
+    ARG_UNUSED(conn);
+    printk("OTA disconnected (reason 0x%02x)\n", reason);
+    ota_advertise();
+}
+BT_CONN_CB_DEFINE(carrier_ota_conn_callbacks) = {
+    .disconnected = ota_disconnected,
+};
+static int ota_identity(void) {
+    uint8_t id[16];
+    bt_addr_le_t addr = {.type = BT_ADDR_LE_RANDOM};
+    ssize_t n = hwinfo_get_device_id(id, sizeof(id));
+    if (n < 6)
+        return -EIO;
+    for (ssize_t i = 0; i < n; i++)
+        addr.a.val[i % 6] ^= id[i];
+    addr.a.val[5] |= 0xc0;
+    return bt_id_create(&addr, NULL) < 0 ? -EIO : 0;
+}
+static int ota_run(const struct carrier_bus *bus) {
+    int rc = carrier_ota_start(bus);
+    if (rc)
+        return rc;
+    rc = ota_identity();
+    if (rc)
+        return rc;
+    rc = bt_enable(NULL);
+    if (rc)
+        return rc;
+    rc = boot_write_img_confirmed();
+    if (rc)
+        return rc;
+    ota_advertise();
+    printk("carrier OTA maintenance active\n");
+    k_sleep(K_FOREVER);
+    return 0;
+}
+#endif
 int main(void) {
     struct carrier_devices devices = {
         .main = DEVICE_DT_GET(DT_NODELABEL(i2c22)),
@@ -139,7 +202,10 @@ int main(void) {
     };
     struct carrier_bus bus = {&devices, transfer, delay};
     struct carrier_sample sample = {0};
-    int rc = arm_watchdog();
+    int rc = 0;
+#if !CONFIG_SENSOR_OTA
+    rc = arm_watchdog();
+#endif
     if (!rc && (!device_is_ready(devices.main) || !device_is_ready(devices.fdc)))
         rc = -ENODEV;
     if (!rc)
@@ -147,6 +213,13 @@ int main(void) {
     if (rc) {
         sys_reboot(SYS_REBOOT_COLD);
     }
+#if CONFIG_SENSOR_OTA
+    k_msleep(250);
+    rc = ota_run(&bus);
+    if (rc)
+        sys_reboot(SYS_REBOOT_COLD);
+    return 0;
+#endif
     /* Allow the nPM2100 state machine and VOUT rail to settle after a cold
      * battery application before the first control transaction. */
     k_msleep(250);
