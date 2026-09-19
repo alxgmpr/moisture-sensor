@@ -1,0 +1,60 @@
+mainmenu "Board sensor firmware"
+
+source "Kconfig.zephyr"
+
+config SENSOR_DEVELOPMENT
+	bool "Development mode"
+	default n
+	help
+		Use a short measurement cadence and a longer advertising window for bench work.
+
+config SENSOR_CYCLE_SECONDS
+	int "Normal measurement interval in seconds"
+	default 60 if SENSOR_DEVELOPMENT
+	default 900
+	range 10 86400
+
+config SENSOR_LOW_BATTERY_MV
+	int "Low-battery threshold in millivolts"
+	default 2500
+	range 1800 3300
+
+config SENSOR_LOW_BATTERY_CYCLE_SECONDS
+	int "Low-battery measurement interval in seconds"
+	default 3600
+	range 60 604800
+
+config SENSOR_ADV_WINDOW_MS
+	int "BLE advertising window in milliseconds"
+	default 2000 if SENSOR_DEVELOPMENT
+	default 1600
+	range 1000 10000
+
+config SENSOR_DEBUG_HOLD
+	bool "Hold after measurement for debugger diagnostics"
+	default n
+	help
+		Keep the CPU awake after the measurement so RTT can be read during bench work.
+
+config SENSOR_MOISTURE_CALIBRATED
+	bool "Enable calibrated BTHome moisture objects"
+	default y
+	help
+		Use the configured dry and wet differential-capacitance endpoints.
+		Leave disabled until the probe has been measured dry and wet.
+
+config SENSOR_SENSE1_DRY_FF
+	int "Dry SENSE1 capacitance in femtofarads"
+	default 2655
+
+config SENSOR_SENSE1_WET_FF
+	int "Wet SENSE1 capacitance in femtofarads"
+	default 5658
+
+config SENSOR_SENSE2_DRY_FF
+	int "Dry SENSE2 capacitance in femtofarads"
+	default 2618
+
+config SENSOR_SENSE2_WET_FF
+	int "Wet SENSE2 capacitance in femtofarads"
+	default 5571

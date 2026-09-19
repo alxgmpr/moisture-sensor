@@ -150,7 +150,9 @@ int carrier_measure(const struct carrier_bus *b, struct carrier_sample *s) {
 int carrier_stop(const struct carrier_bus *b) {
     /* Do not disarm recovery if I2C prevents safe shutdown. */
     TRY(checked(b, 0x69, 0));
-    TRY(wait_pm(b, 0x6e, 3, 0));
+    /* STATUS.B reports the selected mode, not whether LDOSW is enabled.
+     * In load-switch mode, 0x02 is the expected disabled status. */
+    TRY(wait_pm(b, 0x6e, 1, 0));
     TRY(checked(b, 0x24, 0)); /* Auto, LP/ULP allowed while MCU sleeps. */
     TRY(wr(b, 0xb1, 1));
     TRY(wait_pm(b, 0xb7, 0xff, 0));

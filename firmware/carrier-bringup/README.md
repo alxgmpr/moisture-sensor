@@ -1,6 +1,10 @@
 # Carrier qualification firmware
 
-This image exercises the actual BL54L15/nPM2100/FDC1004/SHT40 carrier. It does not send the DK application's simulated soil values. Raw measurements appear through SEGGER RTT; `ProbeQA` advertises for two seconds after a successful measurement. Soil percentage calibration is deliberately not invented.
+This image exercises the actual BL54L15/nPM2100/FDC1004/SHT40 board. Development and production modes broadcast calibrated BTHome moisture values using the configured dry/wet endpoints.
+
+Development mode uses a 60-second cycle and a 2-second BLE window. Production defaults to a 15-minute cycle, a 1.6-second BLE window, and backs off to a 1-hour cycle below 2.5 V. The current development image is selected with `dev.conf`.
+
+The current provisional two-point water calibration is SENSE1 2655 fF dry / 5658 fF wet and SENSE2 2618 fF dry / 5571 fF wet. These wet endpoints are the median of recent raw submerged readings. They are a provisional water reference, not final soil calibration.
 
 ## Implemented sequence
 
@@ -11,7 +15,7 @@ This image exercises the actual BL54L15/nPM2100/FDC1004/SHT40 carrier. It does n
 5. Configure LDOSW as a **load switch**, force HP and enable its lowest 40 mA current limit. This protects that output only; it is not a battery fuse or whole-board current limit.
 6. Identify FDC1004, measure CIN1/CIN2 single-ended at 100 samples/s, automatically increase CAPDAC until the residual is within ±13 pF. Differential mode is never used because the board ties SHLD1/2 together. Return an error when range is exhausted.
 7. Read SHT40 temperature and humidity with CRC validation. No heater command is implemented. Recheck battery voltage under the sensing load.
-8. Advertise the stable chip-derived identity for two seconds while boost remains HP. Raw sensor readings stay on RTT; no fabricated BTHome soil values are transmitted.
+8. Advertise the stable chip-derived identity with standard BTHome temperature, humidity and voltage objects, plus either calibrated moisture objects or raw SENSE1/SENSE2 capacitance.
 9. Verify the dedicated FDC bus has returned to its disconnected sleep state, then confirm LDOSW disabled, return boost to auto, then disarm the PMIC watchdog. If shutdown cannot be confirmed, wait for watchdog recovery. Prepare GRTC and immediately enter System OFF; wake after 60 seconds.
 
 Both buses run at 100 kHz with a 25 ms transaction timeout; conversion/status polling is also bounded. Host tests inject a transient failure at every transaction in a successful cycle and cover CRC, range, timeout, undervoltage and a converter that fails to enter HP.
@@ -27,7 +31,9 @@ sh firmware/carrier-bringup/tests/run.sh
 CFLAGS=-fsanitize=undefined sh firmware/carrier-bringup/tests/run.sh
 ```
 
-The original shared-bus build is archived in `docs/reliability-2026-09-07/firmware/` and is obsolete for this wiring. The dedicated-bus build evidence is in `docs/fdc-bus-update-2026-09-09/`. Compilation verifies SDK integration, not hardware operation. This is a bring-up image with a one-minute test cadence, not the calibrated hourly BTHome product release. The original DK demo remains available separately.
+The original shared-bus build is archived in `docs/reliability-2026-09-07/firmware/` and is obsolete for this wiring. The dedicated-bus build evidence is in `docs/fdc-bus-update-2026-09-09/`. Compilation verifies SDK integration, not hardware operation. The original DK demo remains available separately.
+
+To build the fast bench image, add `-- -DEXTRA_CONF_FILE=dev.conf`. The production defaults are used without that override. The current default dry/wet endpoints are SENSE1=2655/5658 fF and SENSE2=2618/5571 fF.
 
 ## First hardware session
 
