@@ -10,6 +10,10 @@ struct fixture {
     int calls, fail_at, delays;
     bool timeout, bad_crc, unsafe_mode, heater;
     int32_t input_ff[2];
+    struct carrier_fault fault;
+    unsigned now_ms, fdc_ready_ms, adc_busy_ms, off_delay_ms;
+    unsigned watchdog_ms;
+    bool stuck_on, watchdog_expired;
 };
 static int transfer(void *ctx, uint8_t addr, const uint8_t *w, size_t nw, uint8_t *r, size_t nr) {
     struct fixture *f = ctx;
@@ -24,22 +28,38 @@ static int transfer(void *ctx, uint8_t addr, const uint8_t *w, size_t nw, uint8_
         }
         for (size_t i = 1; i < nw; i++)
             f->pm[w[0] + i - 1] = w[i];
-        if (w[0] == 0xb1)
+        if (w[0] == 0xb1) {
             f->pm[0xb7] = 0;
-        if (w[0] == 0xb0)
+            f->watchdog_ms = 0;
+        }
+        if (w[0] == 0xb0) {
             f->pm[0xb7] = 1;
+            unsigned ticks = (f->pm[0xb4] << 16) | (f->pm[0xb5] << 8) | f->pm[0xb6];
+            f->watchdog_ms = ((ticks + 1) * 1000) / 64;
+        }
+        if (w[0] == 0xb2 && f->pm[0xb7])
+            f->watchdog_ms = 20000;
         if (w[0] == 0x06)
             f->pm[1] &= ~w[1];
-        if (w[0] == 0x90 && !f->timeout)
-            f->pm[1] |= f->pm[0x91] == 4 ? 8 : 1;
-        if (w[0] == 0x69)
-            f->pm[0x6e] = w[1] ? 6 : 0;
+        if (w[0] == 0x90) {
+            assert(!(f->pm[0x9d] & 3)); /* A busy ADC ignores a new trigger. */
+            if (!f->timeout)
+                f->pm[1] |= f->pm[0x91] == 4 ? 8 : 1;
+        }
+        if (w[0] == 0x69) {
+            if (w[1])
+                f->pm[0x6e] = 6;
+            else if (!f->off_delay_ms && !f->stuck_on)
+                f->pm[0x6e] &= ~0x0c; /* SW may remain set while disabled. */
+        }
         return 0;
     }
     if (addr == 0x50) {
         assert(f->pm[0x69] == 1 && f->pm[0x24] == 1);
         if (nr) {
             assert(nw == 1 && nr == 2);
+            if (*w == 12 && !f->timeout && f->now_ms >= f->fdc_ready_ms)
+                f->fdc[12] |= 8;
             r[0] = f->fdc[*w] >> 8;
             r[1] = f->fdc[*w];
             return 0;
@@ -60,8 +80,7 @@ static int transfer(void *ctx, uint8_t addr, const uint8_t *w, size_t nw, uint8_
             uint32_t raw = (uint32_t)val & 0xffffff;
             f->fdc[0] = raw >> 8;
             f->fdc[1] = (raw & 255) << 8;
-            if (!f->timeout)
-                f->fdc[12] |= 8;
+            f->fdc_ready_ms = f->now_ms + 10; /* 100 samples/s, not instantaneous. */
         }
         return 0;
     }
@@ -82,7 +101,29 @@ static int transfer(void *ctx, uint8_t addr, const uint8_t *w, size_t nw, uint8_
         r[5] ^= 1;
     return 0;
 }
-static void delay(void *ctx, unsigned ms) { ((struct fixture *)ctx)->delays += ms; }
+static void delay(void *ctx, unsigned ms) {
+    struct fixture *f = ctx;
+    f->delays += ms;
+    f->now_ms += ms;
+    if (f->adc_busy_ms) {
+        if (ms >= f->adc_busy_ms)
+            f->pm[0x9d] &= ~3;
+        f->adc_busy_ms = ms >= f->adc_busy_ms ? 0 : f->adc_busy_ms - ms;
+    }
+    if (!f->pm[0x69] && !f->stuck_on && f->off_delay_ms) {
+        if (ms >= f->off_delay_ms)
+            f->pm[0x6e] &= ~0x0c;
+        f->off_delay_ms = ms >= f->off_delay_ms ? 0 : f->off_delay_ms - ms;
+    }
+    if (f->pm[0xb7]) {
+        if (ms >= f->watchdog_ms) {
+            f->watchdog_expired = true;
+            f->watchdog_ms = 0;
+        } else {
+            f->watchdog_ms -= ms;
+        }
+    }
+}
 static void init(struct fixture *f) {
     memset(f, 0, sizeof(*f));
     f->pm[0x96] = 240;
@@ -95,7 +136,7 @@ static void init(struct fixture *f) {
 int main(void) {
     struct fixture f;
     struct carrier_sample s;
-    struct carrier_bus b = {&f, transfer, delay};
+    struct carrier_bus b = {&f, transfer, delay, &f.fault};
     uint8_t check[] = {0xbe, 0xef};
     assert(carrier_crc(check, 2) == 0x92);
     init(&f);
@@ -132,14 +173,17 @@ int main(void) {
     init(&f);
     f.timeout = true;
     assert(carrier_start(&b, &s) == -ETIMEDOUT);
+    assert(f.fault.address == 0x74 && f.fault.reg == 0x01 && f.fault.mask == 1);
     assert(f.delays < 200);
     assert(carrier_stop(&b) == 0);
     init(&f);
     assert(carrier_start(&b, &s) == 0);
     f.timeout = true;
     assert(carrier_measure(&b, &s) == -ETIMEDOUT);
+    assert(f.fault.address == 0x50 && f.fault.reg == 0x0c && f.fault.observed == 0x480);
     assert(f.delays < 500);
     assert(carrier_stop(&b) == 0);
+    assert(f.fault.address == 0x50); /* Cleanup must retain the failing chip/register. */
     init(&f);
     assert(carrier_start(&b, &s) == 0);
     f.bad_crc = true;
@@ -153,7 +197,50 @@ int main(void) {
     init(&f);
     f.pm[0x34] = 1; /* PMIC reports LP despite accepted force-HP setting. */
     assert(carrier_start(&b, &s) == -ETIMEDOUT);
+    assert(f.fault.reg == 0x34 && f.fault.observed == 1 && f.fault.expected == 0);
     assert(!f.pm[0x69]);
     assert(carrier_stop(&b) == 0);
+    init(&f);
+    f.pm[0x9d] = 2;
+    f.adc_busy_ms = 7; /* Conversion survived an MCU reset. */
+    assert(carrier_start(&b, &s) == 0);
+    assert(carrier_stop(&b) == 0);
+    init(&f);
+    f.pm[0x9d] = 2; /* ADC never becomes available. */
+    assert(carrier_start(&b, &s) == -ETIMEDOUT);
+    assert(f.fault.reg == 0x9d && !f.pm[0x90]);
+    assert(carrier_stop(&b) == 0);
+    init(&f);
+    assert(carrier_start(&b, &s) == 0);
+    f.off_delay_ms = 7;
+    unsigned before = f.now_ms;
+    assert(carrier_sensors_off(&b) == 0);
+    assert(f.now_ms >= before + 7 && f.pm[0x6e] == 2);
+    assert(f.pm[0xb7] && f.pm[0x24]);
+    /* A five-minute BLE window must not trip the independent 20 s watchdog. */
+    for (unsigned i = 0; i < 300; i++) {
+        assert(carrier_watchdog_feed(&b) == 0);
+        delay(&f, 1000);
+        assert(!f.pm[0x69] && !f.watchdog_expired);
+    }
+    assert(carrier_stop(&b) == 0);
+    delay(&f, 60000);
+    assert(!f.watchdog_expired);
+    init(&f);
+    assert(carrier_start(&b, &s) == 0);
+    assert(carrier_sensors_off(&b) == 0);
+    delay(&f, 20000); /* A stalled foreground must still power-cycle. */
+    assert(f.watchdog_expired);
+    init(&f);
+    assert(carrier_start(&b, &s) == 0);
+    f.stuck_on = true;
+    assert(carrier_stop(&b) == -ETIMEDOUT);
+    assert(f.fault.reg == 0x6e && f.pm[0xb7] && f.pm[0x24]);
+    f.stuck_on = false;
+    assert(carrier_stop(&b) == 0);
+    init(&f);
+    f.fail_at = 1;
+    assert(carrier_watchdog_feed(&b) == -EIO);
+    assert(f.fault.address == 0x74 && f.fault.reg == 0xb2 && f.fault.mask == 0);
     puts("carrier: measurements, CRC, range, bounded waits and bus-fault cleanup passed");
 }

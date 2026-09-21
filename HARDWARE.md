@@ -1,6 +1,6 @@
 > 2026-09-09: D8/D9 clamp the protected CIN nets after R30/R31. Both electrodes now occupy all four copper layers, with all-layer SHLD rings closed at the tip. See [probe revision and electrical limits](docs/probe-review-2026-09-09/README.md).
 
-> 2026-09-07: C21/C23 use GRM158R60J226ME01D; D8/D9 have dedicated In1 ground returns. Real carrier qualification firmware is in `firmware/carrier-bringup`. See [implemented reliability changes](docs/reliability-2026-09-07/README.md) for current limits and required measurements.
+> 2026-09-07: C21/C23 use GRM158R60J226ME01D; D8/D9 have dedicated In1 ground returns. Real board qualification firmware is in `firmware/carrier-bringup`. See [implemented reliability changes](docs/reliability-2026-09-07/README.md) for current limits and required measurements.
 
 # nRF Moisture Sensor — Hardware Design
 
@@ -298,7 +298,7 @@ R22/R23 remain on always-on +3V3 so the PMIC can enable LDOSW at cold boot.
 Switching the PMIC's own pull-ups would prevent that command from reaching it.
 
 The dedicated pins must have no internal pull-ups and must be disconnected
-while FDC power is off. The carrier firmware starts TWIM20 suspended, resumes
+while FDC power is off. The sensor firmware starts TWIM20 suspended, resumes
 it for each transfer after power-up, and returns it to its sleep pinctrl state
 after each transfer, including failures. It verifies the bus is suspended
 before disabling LDOSW and entering System OFF. SPI20/UART20 remain disabled.

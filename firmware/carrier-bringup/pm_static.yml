@@ -1,0 +1,49 @@
+# Fixed nRF54L15 MCUboot layout. Keep this file identical for every sensor
+# and maintenance build so an OTA image cannot change slot boundaries.
+mcuboot:
+  address: 0x00000
+  size: 0x0d800
+  region: flash_primary
+EMPTY_0:
+  address: 0x0d800
+  size: 0x00800
+  region: flash_primary
+mcuboot_pad:
+  address: 0x0e000
+  size: 0x00800
+  region: flash_primary
+app:
+  address: 0x0e800
+  size: 0xaa800
+  region: flash_primary
+mcuboot_primary:
+  orig_span: &primary_span
+  - mcuboot_pad
+  - app
+  span: *primary_span
+  address: 0x0e000
+  size: 0xab000
+  region: flash_primary
+mcuboot_primary_app:
+  orig_span: &app_span
+  - app
+  span: *app_span
+  address: 0x0e800
+  size: 0xaa800
+  region: flash_primary
+mcuboot_secondary:
+  address: 0xb9000
+  size: 0xab000
+  region: flash_primary
+EMPTY_1:
+  address: 0x164000
+  size: 0x01000
+  region: flash_primary
+bootconf:
+  address: 0xffd080
+  size: 0x00004
+  region: bootconf
+otp:
+  address: 0xffd500
+  size: 0x0047c
+  region: otp

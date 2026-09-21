@@ -1,5 +1,19 @@
 #include "carrier.h"
 #include <errno.h>
+static int fault(const struct carrier_bus *b, int error, uint8_t address, uint8_t reg,
+                 uint16_t observed, uint16_t mask, uint16_t expected) {
+    if (b->fault && !b->fault->error)
+        *b->fault = (struct carrier_fault){error, address, reg, observed, mask, expected};
+    return error;
+}
+
+static int transfer(const struct carrier_bus *b, uint8_t address, const uint8_t *w,
+                    size_t nw, uint8_t *r, size_t nr) {
+    int rc = b->transfer(b->ctx, address, w, nw, r, nr);
+    if (rc < 0)
+        return fault(b, rc, address, nw ? w[0] : 0, 0, 0, 0);
+    return rc;
+}
 uint8_t carrier_crc(const uint8_t *d, size_t n) {
     uint8_t crc = 0xff;
     for (size_t i = 0; i < n; i++) {
@@ -17,29 +31,31 @@ uint8_t carrier_crc(const uint8_t *d, size_t n) {
     } while (0)
 static int wr(const struct carrier_bus *b, uint8_t reg, uint8_t value) {
     uint8_t w[] = {reg, value};
-    return b->transfer(b->ctx, 0x74, w, 2, 0, 0);
+    return transfer(b, 0x74, w, 2, 0, 0);
 }
 static int rd(const struct carrier_bus *b, uint8_t reg, uint8_t *value) {
-    return b->transfer(b->ctx, 0x74, &reg, 1, value, 1);
+    return transfer(b, 0x74, &reg, 1, value, 1);
 }
 static int checked(const struct carrier_bus *b, uint8_t reg, uint8_t value) {
     uint8_t v;
     TRY(wr(b, reg, value));
     TRY(rd(b, reg, &v));
-    return v == value ? 0 : -EIO;
+    return v == value ? 0 : fault(b, -EIO, 0x74, reg, v, 0xff, value);
 }
 static int wait_pm(const struct carrier_bus *b, uint8_t reg, uint8_t mask, uint8_t value) {
+    uint8_t v = 0;
     for (int i = 0; i < 30; i++) {
-        uint8_t v;
         TRY(rd(b, reg, &v));
         if ((v & mask) == value)
             return 0;
         b->delay_ms(b->ctx, 1);
     }
-    return -ETIMEDOUT;
+    return fault(b, -ETIMEDOUT, 0x74, reg, v, mask, value);
 }
 static int adc(const struct carrier_bus *b, uint8_t mode, uint16_t *mv) {
     uint8_t v, bit = mode == 4 ? 8 : 1;
+    /* nPM2100 DS 7.1: a new conversion may only start when ADC is ready. */
+    TRY(wait_pm(b, 0x9d, 3, 0));
     TRY(wr(b, 0x06, bit)); /* Clear stale ADC ready event before triggering. */
     TRY(checked(b, 0x91, mode));
     TRY(wr(b, 0x90, 1));
@@ -50,7 +66,7 @@ static int adc(const struct carrier_bus *b, uint8_t mode, uint16_t *mv) {
 }
 int carrier_start(const struct carrier_bus *b, struct carrier_sample *s) {
     /* nPM2100 remains powered across MCU System OFF and watchdog resets. */
-    TRY(checked(b, 0x69, 0));
+    TRY(carrier_sensors_off(b));
     TRY(wr(b, 0xb1, 1));
     TRY(wait_pm(b, 0xb7, 0xff, 0));
     TRY(checked(b, 0xd6, 1)); /* Also disable LDOSW on watchdog reset. */
@@ -61,7 +77,7 @@ int carrier_start(const struct carrier_bus *b, struct carrier_sample *s) {
     TRY(checked(b, 0xb3, 2));
     TRY(wr(b, 0xb0, 1));
     TRY(adc(b, 0, &s->battery_mv));
-    if (s->battery_mv < 2200)
+    if (s->battery_mv < CARRIER_MIN_BATTERY_MV)
         return -ERANGE; /* Provisional CR2032 load cutoff. */
     TRY(checked(b, 0x22, 30));
     TRY(checked(b, 0x23, 1)); /* 3.3 V */
@@ -82,7 +98,7 @@ int carrier_start(const struct carrier_bus *b, struct carrier_sample *s) {
 int carrier_ota_start(const struct carrier_bus *b) {
     /* OTA can last minutes: do not arm the 20-second PMIC watchdog or
      * enable the switched sensor rail. Keep only the radio supply on. */
-    TRY(checked(b, 0x69, 0));
+    TRY(carrier_sensors_off(b));
     TRY(wr(b, 0xb1, 1));
     TRY(wait_pm(b, 0xb7, 0xff, 0));
     TRY(checked(b, 0x22, 30));
@@ -93,13 +109,13 @@ int carrier_ota_start(const struct carrier_bus *b) {
 }
 static int fdc_read(const struct carrier_bus *b, uint8_t reg, uint16_t *v) {
     uint8_t r[2];
-    TRY(b->transfer(b->ctx, 0x50, &reg, 1, r, 2));
+    TRY(transfer(b, 0x50, &reg, 1, r, 2));
     *v = ((uint16_t)r[0] << 8) | r[1];
     return 0;
 }
 static int fdc_write(const struct carrier_bus *b, uint8_t reg, uint16_t v) {
     uint8_t w[] = {reg, v >> 8, v};
-    return b->transfer(b->ctx, 0x50, w, 3, 0, 0);
+    return transfer(b, 0x50, w, 3, 0, 0);
 }
 static int capacitance(const struct carrier_bus *b, unsigned ch, int32_t *ff, uint8_t *dac) {
     /* Only single-ended CAPDAC mode: this PCB physically ties SHLD1 to SHLD2. */
@@ -107,15 +123,15 @@ static int capacitance(const struct carrier_bus *b, unsigned ch, int32_t *ff, ui
         TRY(fdc_write(b, 8, (ch << 13) | (4 << 10) | (d << 5)));
         TRY(fdc_write(b, 12, 0x480)); /* One measurement, 100 sps, no repeat. */
         unsigned i;
+        uint16_t status = 0;
         for (i = 0; i < 30; i++) {
-            uint16_t status;
             TRY(fdc_read(b, 12, &status));
             if (status & 8)
                 break;
             b->delay_ms(b->ctx, 1);
         }
         if (i == 30)
-            return -ETIMEDOUT;
+            return fault(b, -ETIMEDOUT, 0x50, 12, status, 8, 8);
         uint16_t hi, lo;
         TRY(fdc_read(b, 0, &hi));
         TRY(fdc_read(b, 1, &lo));
@@ -145,9 +161,9 @@ int carrier_measure(const struct carrier_bus *b, struct carrier_sample *s) {
     TRY(capacitance(b, 1, &s->capacitance_ff[1], &s->capdac[1]));
     const uint8_t cmd = 0xfd;
     uint8_t r[6]; /* No heater command exists here. */
-    TRY(b->transfer(b->ctx, 0x44, &cmd, 1, 0, 0));
+    TRY(transfer(b, 0x44, &cmd, 1, 0, 0));
     b->delay_ms(b->ctx, 10);
-    TRY(b->transfer(b->ctx, 0x44, 0, 0, r, 6));
+    TRY(transfer(b, 0x44, 0, 0, r, 6));
     if (carrier_crc(r, 2) != r[2] || carrier_crc(r + 3, 2) != r[5])
         return -EBADMSG;
     uint32_t t = ((uint16_t)r[0] << 8) | r[1], h = ((uint16_t)r[3] << 8) | r[4];
@@ -155,16 +171,23 @@ int carrier_measure(const struct carrier_bus *b, struct carrier_sample *s) {
     int rh = -600 + (12500 * h) / 65535;
     s->humidity_cpct = rh < 0 ? 0 : rh > 10000 ? 10000 : rh;
     TRY(adc(b, 0, &s->battery_mv));
-    if (s->battery_mv < 2200)
+    if (s->battery_mv < CARRIER_MIN_BATTERY_MV)
         return -ERANGE;
     return 0;
 }
+int carrier_sensors_off(const struct carrier_bus *b) {
+    TRY(checked(b, 0x69, 0));
+    /* STATUS.LDO (bit 0) is already zero while the load switch is ON.
+     * Wait for both operating modes (HP/ULP) to clear. The observed disabled
+     * load-switch status may retain SW (0x02); it must not retain HP/ULP. */
+    return wait_pm(b, 0x6e, 0x0c, 0);
+}
+int carrier_watchdog_feed(const struct carrier_bus *b) {
+    return wr(b, 0xb2, 1); /* TIMER.TASKS_KICK, DS 7.2.6.3. */
+}
 int carrier_stop(const struct carrier_bus *b) {
     /* Do not disarm recovery if I2C prevents safe shutdown. */
-    TRY(checked(b, 0x69, 0));
-    /* STATUS.B reports the selected mode, not whether LDOSW is enabled.
-     * In load-switch mode, 0x02 is the expected disabled status. */
-    TRY(wait_pm(b, 0x6e, 1, 0));
+    TRY(carrier_sensors_off(b));
     TRY(checked(b, 0x24, 0)); /* Auto, LP/ULP allowed while MCU sleeps. */
     TRY(wr(b, 0xb1, 1));
     TRY(wait_pm(b, 0xb7, 0xff, 0));

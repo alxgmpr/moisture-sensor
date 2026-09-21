@@ -1,5 +1,5 @@
 (kicad_pcb
-	(version 20260831)
+	(version 20260901)
 	(generator "pcbnew")
 	(generator_version "10.99")
 	(general
@@ -11144,7 +11144,7 @@
 			(at 0 0 90)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "8c5041fe-3000-463d-ad32-5c83c456869c")
+			(uuid "56f8a4d5-6102-42e0-9fab-2886f84bc91f")
 			(effects
 				(font
 					(size 1 1)
@@ -11189,7 +11189,7 @@
 			)
 		)
 		(fp_text user "3"
-			(at 2.54 -1.27 90)
+			(at 2.54 -1.27 270)
 			(layer "In2.Cu")
 			(uuid "6b40ccc6-8a97-4786-b96f-d68d09a82856")
 			(effects
@@ -11197,6 +11197,7 @@
 					(size 1 1)
 					(thickness 0.2)
 				)
+				(justify mirror)
 			)
 		)
 		(zone
