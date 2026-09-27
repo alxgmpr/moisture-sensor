@@ -15,4 +15,4 @@ if(DEFINED ENV{SENSOR_PRODUCTION_BUILD})
 endif()
 
 project(board_sensor)
-target_sources(app PRIVATE src/main.c src/carrier.c src/bthome.c)
+target_sources(app PRIVATE src/main.c src/carrier.c src/bthome.c src/config.c src/config_service.c)

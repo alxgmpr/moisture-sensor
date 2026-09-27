@@ -1,0 +1,4 @@
+name: sensor_boot_guard
+build:
+  cmake: .
+  kconfig: Kconfig

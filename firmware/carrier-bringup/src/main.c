@@ -1,6 +1,8 @@
 /* Real battery-powered sensor image. One cold boot per cycle. */
 #include "carrier.h"
 #include "bthome.h"
+#include "config_service.h"
+#include <string.h>
 #include <zephyr/bluetooth/bluetooth.h>
 #include <zephyr/bluetooth/conn.h>
 #include <zephyr/mgmt/mcumgr/transport/smp_bt.h>
@@ -29,6 +31,15 @@ struct sensor_boot_trace {
 
 static struct sensor_boot_trace sensor_trace __attribute__((section(".noinit")));
 static struct carrier_fault cycle_fault;
+static const struct carrier_bus *trace_bus;
+static uint32_t reset_cause;
+static uint8_t pmic_reset = 0xff, previous_stage = 0xff;
+
+static void pmic_trace(uint8_t stage)
+{
+    if (trace_bus)
+        (void)carrier_retained_stage(trace_bus, stage);
+}
 
 static void trace_boot(void)
 {
@@ -40,6 +51,7 @@ static void trace_boot(void)
 
 static void trace_stage(uint32_t stage, int error)
 {
+    pmic_trace(stage);
     sensor_trace.stage = stage;
     sensor_trace.error = error;
 }
@@ -65,33 +77,8 @@ static uint16_t diagnostic_error(void)
     return error > UINT16_MAX ? UINT16_MAX : (uint16_t)error;
 }
 
-static atomic_t sensor_ble_connected;
-static K_SEM_DEFINE(sensor_ble_session_done, 0, 1);
-
 #if !CONFIG_SENSOR_OTA
 static const struct device *sensor_wdt;
-
-static void sensor_ble_connected_cb(struct bt_conn *conn, uint8_t err)
-{
-    ARG_UNUSED(conn);
-    if (!err) {
-        atomic_set(&sensor_ble_connected, 1);
-        printk("BLE connection accepted; SMP OTA is available\n");
-    }
-}
-
-static void sensor_ble_disconnected_cb(struct bt_conn *conn, uint8_t reason)
-{
-    ARG_UNUSED(conn);
-    ARG_UNUSED(reason);
-    atomic_set(&sensor_ble_connected, 0);
-    k_sem_give(&sensor_ble_session_done);
-}
-
-BT_CONN_CB_DEFINE(sensor_ble_conn_callbacks) = {
-    .connected = sensor_ble_connected_cb,
-    .disconnected = sensor_ble_disconnected_cb,
-};
 #endif
 
 struct carrier_devices {
@@ -133,20 +120,6 @@ static uint8_t battery_percent(uint16_t millivolts) {
         return 100;
     return (uint8_t)(((uint32_t)(millivolts - 2200) * 100U) / 800U);
 }
-#if CONFIG_SENSOR_MOISTURE_CALIBRATED
-static uint16_t moisture_from_cap(int32_t cap_ff, int32_t dry_ff, int32_t wet_ff) {
-    const int32_t span = wet_ff - dry_ff;
-    int32_t value;
-    if (!span)
-        return 0;
-    value = (int32_t)(((int64_t)(cap_ff - dry_ff) * 10000) / span);
-    if (value < 0)
-        value = 0;
-    if (value > 10000)
-        value = 10000;
-    return (uint16_t)value;
-}
-#endif
 #if !CONFIG_SENSOR_OTA
 static int arm_watchdog(void) {
     const struct device *dev = DEVICE_DT_GET(DT_NODELABEL(wdt31));
@@ -171,7 +144,14 @@ static void feed_watchdog(void)
 static void feed_watchdog(void) { }
 #endif
 static int radio_window(const struct carrier_bus *bus, const struct carrier_sample *sample) {
+    struct sensor_config config;
+    sensor_settings_get(&config);
     trace_stage(70, 0);
+    int rc = carrier_radio_start(bus);
+    if (rc) {
+        trace_failure(70, rc);
+        return rc;
+    }
     uint8_t id[16];
     bt_addr_le_t addr = {.type = BT_ADDR_LE_RANDOM};
     ssize_t n = hwinfo_get_device_id(id, sizeof(id));
@@ -182,7 +162,7 @@ static int radio_window(const struct carrier_bus *bus, const struct carrier_samp
     for (ssize_t i = 0; i < n; i++)
         addr.a.val[i % 6] ^= id[i];
     addr.a.val[5] |= 0xc0;
-    int rc = bt_id_create(&addr, NULL);
+    rc = bt_id_create(&addr, NULL);
     if (rc < 0) {
         trace_failure(72, rc);
         return rc;
@@ -195,38 +175,24 @@ static int radio_window(const struct carrier_bus *bus, const struct carrier_samp
     char name[] = {
         'S', 'o', 'i', 'l', '-',
         hex_digit(addr.a.val[1] >> 4), hex_digit(addr.a.val[1] & 0x0f),
-        hex_digit(addr.a.val[0] >> 4), hex_digit(addr.a.val[0] & 0x0f),
+        hex_digit(addr.a.val[0] >> 4), hex_digit(addr.a.val[0] & 0x0f), 0,
     };
+    const char *device_name = config.name[0] ? config.name : name;
+    rc = bt_set_name(device_name);
+    if (rc) return rc;
     /* BTHome v2 service data uses UUID FCD2, standard object IDs, and the
      * calibrated moisture values configured below. */
     uint8_t bthome[BOARD_BTHOME_PAYLOAD_LEN];
-    int payload_len;
-    if (sample) {
-#if CONFIG_SENSOR_MOISTURE_CALIBRATED
-        uint16_t m1 = moisture_from_cap(sample->capacitance_ff[0], CONFIG_SENSOR_SENSE1_DRY_FF,
-                                       CONFIG_SENSOR_SENSE1_WET_FF);
-        uint16_t m2 = moisture_from_cap(sample->capacitance_ff[1], CONFIG_SENSOR_SENSE2_DRY_FF,
-                                       CONFIG_SENSOR_SENSE2_WET_FF);
-        struct board_bthome_values values = {
-            .temperature_cc = sample->temperature_cc,
-            .humidity_cpct = sample->humidity_cpct,
-            .battery_pct = battery_percent(sample->battery_mv),
-            .battery_mv = sample->battery_mv,
-            .moisture1_cpct = m1,
-            .moisture2_cpct = m2,
-            .diagnostic_stage = sensor_trace.last_failure_stage,
-            .diagnostic_error = diagnostic_error(),
-        };
-        payload_len = board_bthome_encode(&values, bthome, sizeof bthome);
-#else
-        trace_failure(79, -ENOTSUP);
-        return -ENOTSUP;
-#endif
-    } else {
-        payload_len = board_bthome_encode_diagnostic(sensor_trace.last_failure_stage,
-                                                    diagnostic_error(), bthome,
-                                                    sizeof bthome);
-    }
+    struct board_bthome_values values = {
+        .temperature_cc = sample->temperature_cc,
+        .humidity_cpct = sample->humidity_cpct,
+        .battery_pct = battery_percent(sample->battery_mv),
+        .battery_mv = sample->battery_mv,
+        .moisture1_cpct = sensor_moisture(sample->capacitance_ff[0], config.dry[0], config.wet[0]),
+        .moisture2_cpct = sensor_moisture(sample->capacitance_ff[1], config.dry[1], config.wet[1]),
+        .omit_moisture = !config.calibrated,
+    };
+    int payload_len = board_bthome_encode(&values, bthome, sizeof bthome);
     if (payload_len < 0) {
         trace_failure(74, -EINVAL);
         return -EINVAL;
@@ -236,40 +202,71 @@ static int radio_window(const struct carrier_bus *bus, const struct carrier_samp
         BT_DATA(0x16, bthome, payload_len),
     };
     const struct bt_data sd[] = {
-        BT_DATA(BT_DATA_NAME_COMPLETE, name, sizeof name),
+        BT_DATA(BT_DATA_NAME_COMPLETE, device_name, strlen(device_name)),
         /* SMP is in scan response; BTHome remains in the primary packet. */
         BT_DATA_BYTES(BT_DATA_UUID128_ALL, SMP_BT_SVC_UUID_VAL),
     };
     rc = bt_le_adv_start(BT_LE_ADV_PARAM(BT_LE_ADV_OPT_USE_IDENTITY |
                                          BT_LE_ADV_OPT_SCANNABLE |
                                          BT_LE_ADV_OPT_CONN,
-                                         BT_GAP_ADV_FAST_INT_MIN_2, BT_GAP_ADV_FAST_INT_MAX_2,
+                                         config.adv_ms * 8 / 5, config.adv_ms * 8 / 5,
                                          NULL),
                          ad, ARRAY_SIZE(ad), sd, ARRAY_SIZE(sd));
     if (rc) {
         trace_failure(75, rc);
         return rc;
     }
-    trace_stage(76, sample ? sample->battery_mv : 0);
-    int64_t deadline = k_uptime_get() + CONFIG_SENSOR_ADV_WINDOW_MS;
-    int64_t next_feed = 0;
-    while (atomic_get(&sensor_ble_connected) || k_uptime_get() < deadline) {
-        if (k_uptime_get() >= next_feed) {
-            /* The PMIC is independent of the MCU watchdog. A healthy OTA
-             * session can outlast both timeouts, so service both here. Never
-             * feed from an interrupt or during a stalled measurement. */
+    trace_stage(76, sample->battery_mv);
+    int64_t deadline = k_uptime_get() + config.window_ms;
+    bool had_connection = false;
+    while (k_uptime_get() < deadline || sensor_session_connected()) {
+        uint16_t radio_battery_mv;
+        rc = carrier_battery_read(bus, &radio_battery_mv);
+        if (!rc && radio_battery_mv < CARRIER_MIN_BATTERY_MV)
+            rc = -ERANGE;
+        if (!rc)
             rc = carrier_watchdog_feed(bus);
-            if (rc) {
-                trace_failure(78, rc);
-                (void)bt_le_adv_stop();
-                return rc;
-            }
-            feed_watchdog();
-            next_feed = k_uptime_get() + 1000;
+        if (rc) {
+            trace_failure(78, rc);
+            sensor_session_disconnect();
+            (void)bt_le_adv_stop();
+            return rc;
         }
-        if (k_sem_take(&sensor_ble_session_done, K_MSEC(50)) == 0)
+        feed_watchdog();
+        sensor_settings_process();
+        if (sensor_session_expired()) {
+            sensor_session_disconnect();
             break;
+        }
+        if (sensor_session_connected()) had_connection = true;
+        else if (had_connection) break;
+        if (sensor_sample_requested()) {
+            /* Foreground only; callbacks never touch I2C. Sampling remains
+             * bounded by both watchdogs, with the FDC rail off afterwards. */
+            struct carrier_sample fresh = {0};
+            int measured = carrier_start(bus, &fresh);
+            if (!measured) measured = carrier_measure(bus, &fresh);
+            const struct carrier_devices *devices = bus->ctx;
+            int off = fdc_bus_is_asleep(devices->fdc);
+            if (!off && !measured) off = carrier_radio_start(bus);
+            sensor_status_sample(&fresh, measured ? measured : off);
+            if (off) {
+                trace_failure(80, off);
+                return off;
+            }
+            if (measured) {
+                trace_failure(61, measured);
+                sensor_session_disconnect();
+                (void)bt_le_adv_stop();
+                return measured;
+            }
+        }
+        int64_t remaining = deadline - k_uptime_get();
+        sensor_session_wait(sensor_session_connected() ? 1000 :
+                            remaining > 1000 ? 1000 : remaining > 0 ? remaining : 0);
     }
+    /* Finish an accepted save even if the client has just disconnected. */
+    sensor_settings_process();
     feed_watchdog();
     rc = bt_le_adv_stop();
     if (rc != -EALREADY && rc)
@@ -330,10 +327,50 @@ static int ota_run(const struct carrier_bus *bus) {
         return rc;
     ota_advertise();
     printk("OTA maintenance active\n");
-    k_sleep(K_FOREVER);
+    for (;;) {
+        sensor_settings_process();
+        if (sensor_session_expired()) sensor_session_disconnect();
+        sensor_session_wait(1000);
+    }
     return 0;
 }
 #endif
+static void power_backoff(const struct carrier_bus *bus, int error)
+{
+    /* Keep the failing operation in SCRATCHB across Hibernate. Replacing it
+     * with the generic backoff stage would hide sensing and radio failures
+     * when the PMIC removes power from the MCU's retained RAM. */
+    if (sensor_trace.last_failure_stage != sensor_trace.stage ||
+        sensor_trace.last_failure_error != error)
+        trace_failure(84, error);
+    sensor_trace.wake_seconds = CONFIG_SENSOR_UV_RETRY_SECONDS;
+    /* Preserve the watchdog origin across the hibernate power cut so the
+     * first recovery advertisement/status can distinguish these paths. */
+    if (trace_bus && (reset_cause & RESET_WATCHDOG))
+        (void)carrier_retained_stage(bus, 0xe1);
+    else if (trace_bus && ((pmic_reset >> 1) & 15) == 5)
+        (void)carrier_retained_stage(bus, 0xe2);
+    int rc = trace_bus ? carrier_hibernate(bus, CONFIG_SENSOR_UV_RETRY_SECONDS) : -ENODEV;
+    /* Normally VOUT disappears during the task write. If I2C failed or the
+     * rail did not turn off, use the MCU's timed System OFF as a fallback.
+     * Retained BLOCKED prevents sensor/radio attempts on a watchdog reset.
+     * A PMIC that cannot be reached cannot be guaranteed to stop its timer. */
+    k_msleep(20);
+    if (trace_bus)
+        (void)carrier_stop(bus);
+    trace_stage(85, rc);
+    int wake = z_nrf_grtc_wakeup_prepare((uint64_t)CONFIG_SENSOR_UV_RETRY_SECONDS *
+                                       USEC_PER_SEC);
+    if (wake) {
+        sensor_trace.stage = 86;
+        sensor_trace.error = wake;
+    }
+    /* Even if timed wake preparation fails, stay off instead of feeding a
+     * reset loop. Recovery then requires an external wake or power cycle.
+     * No timeout-dependent work is safe after GRTC preparation. */
+    sys_poweroff();
+}
+
 int main(void) {
     trace_boot();
     trace_stage(1, 0);
@@ -344,27 +381,51 @@ int main(void) {
     struct carrier_bus bus = {&devices, transfer, delay, &cycle_fault};
     struct carrier_sample sample = {0};
     int rc = 0;
-#if !CONFIG_SENSOR_OTA
-    /* Watchdog protection is useful, but it must not prevent the radio
-     * recovery path from starting on silicon/boot states where wdt31 is not
-     * ready. The PMIC and MCUboot rollback paths remain authoritative. */
-    (void)arm_watchdog();
-    trace_stage(2, 0);
-#endif
-    if (!rc && (!device_is_ready(devices.main) || !device_is_ready(devices.fdc)))
+    if (!device_is_ready(devices.main) || !device_is_ready(devices.fdc))
         rc = -ENODEV;
-    trace_stage(3, rc);
     if (!rc)
         rc = fdc_bus_is_asleep(devices.fdc);
-    if (rc) {
-        trace_failure(3, rc);
-        sys_reboot(SYS_REBOOT_COLD);
-    }
+    if (device_is_ready(devices.main))
+        trace_bus = &bus;
+    if (rc)
+        power_backoff(&bus, rc);
+
+    uint8_t retained = 0;
+    rc = carrier_retained_read(&bus, &retained, &previous_stage, &pmic_reset);
+    if (!rc)
+        rc = carrier_power_probe(&bus, &sample.battery_mv);
+    (void)hwinfo_get_reset_cause(&reset_cause);
+    (void)hwinfo_clear_reset_cause();
+    sensor_status_diagnostics(reset_cause, pmic_reset, previous_stage,
+                              sensor_trace.last_failure_stage, diagnostic_error());
+    /* An interrupted attempt gets a full quiet interval even after voltage
+     * rebounds. Once BLOCKED, use a higher voltage for recovery. SMP's explicit
+     * software reboot at a healthy supply must still allow an OTA test boot;
+     * normal error paths below never request immediate software reboots. */
+    bool planned_reboot = (reset_cause & RESET_SOFTWARE) &&
+                          sample.battery_mv >= CARRIER_RECOVER_BATTERY_MV;
+    if (rc || (retained == CARRIER_POWER_ATTEMPT && !planned_reboot) ||
+        !carrier_power_allowed(sample.battery_mv, retained))
+        power_backoff(&bus, rc ? rc : -EAGAIN);
+    rc = carrier_retained_state(&bus, CARRIER_POWER_ATTEMPT);
+    if (rc)
+        power_backoff(&bus, rc);
+    uint8_t clear[] = {0xd1, 1};
+    (void)transfer(&devices, 0x74, clear, 2, NULL, 0);
+#if !CONFIG_SENSOR_OTA
+    rc = arm_watchdog();
+    if (rc)
+        power_backoff(&bus, rc);
+#endif
+    int settings_rc = sensor_settings_init();
+    if (settings_rc)
+        printk("configuration load failed (%d); using build defaults\n", settings_rc);
 #if CONFIG_SENSOR_OTA
     rc = ota_run(&bus);
-    if (rc)
-        sys_reboot(SYS_REBOOT_COLD);
+    power_backoff(&bus, rc);
     return 0;
+#else
+    trace_stage(2, 0);
 #endif
     trace_stage(40, 0);
     rc = carrier_start(&bus, &sample);
@@ -379,50 +440,45 @@ int main(void) {
             trace_failure(61, rc);
     }
     sensor_trace.sample = sample;
-    /* The PMIC remains accessible while the dedicated FDC pins are disconnected.
-     * Release the sensor supply before radio/OTA, which may last minutes. */
+    sensor_status_sample(&sample, rc);
     int stop = fdc_bus_is_asleep(devices.fdc);
     if (!stop)
         stop = carrier_sensors_off(&bus);
-    if (stop) {
-        trace_failure(80, stop);
-        sys_reboot(SYS_REBOOT_COLD);
-    }
-    bool low_battery = sample.battery_mv < CARRIER_MIN_BATTERY_MV && rc == -ERANGE;
-    if (power_ready && !low_battery) {
-        int radio = radio_window(&bus, rc ? NULL : &sample);
-        if (!rc)
-            rc = radio;
+    if (stop)
+        power_backoff(&bus, stop);
+    bool low_battery = sample.battery_mv < CARRIER_MIN_BATTERY_MV;
+    if (rc || low_battery)
+        power_backoff(&bus, rc ? rc : -ERANGE);
+    if (power_ready) {
+        rc = radio_window(&bus, &sample);
+        if (rc)
+            power_backoff(&bus, rc);
     }
     stop = carrier_stop(&bus);
-    if (stop) {
-        trace_failure(80, stop);
-        sys_reboot(SYS_REBOOT_COLD);
-    }
-    /* A depleted battery or a failed sample must not cause an immediate
-     * measurement/radio/reboot loop. Preserve the error and retry next wake. */
-    uint32_t cycle_seconds = CONFIG_SENSOR_CYCLE_SECONDS;
-    if (low_battery || (sample.battery_mv && sample.battery_mv < CONFIG_SENSOR_LOW_BATTERY_MV))
-        cycle_seconds = CONFIG_SENSOR_LOW_BATTERY_CYCLE_SECONDS;
+    if (stop)
+        power_backoff(&bus, stop);
+    struct sensor_config config;
+    sensor_settings_get(&config);
+    uint32_t cycle_seconds = sensor_sleep_seconds(&config,
+        sample.battery_mv < config.low_mv, k_uptime_get());
     sensor_trace.wake_seconds = cycle_seconds;
 #if !CONFIG_SENSOR_OTA && defined(CONFIG_BOOTLOADER_MCUBOOT)
-    /* Finish flash/MCUboot work while kernel timeouts still function. GRTC
-     * wake preparation disables the kernel compare channels (SDK timer
-     * driver); only the final poweroff may follow it. Failed samples must
-     * remain unconfirmed for rollback on the next boot. */
-    if (!rc && boot_write_img_confirmed()) {
-        trace_failure(82, -EIO);
-        printk("sensor image confirmation failed\n");
-        sys_reboot(SYS_REBOOT_COLD);
-    }
+    if (!settings_rc && boot_write_img_confirmed())
+        power_backoff(&bus, -EIO);
 #endif
+    rc = carrier_retained_state(&bus, CARRIER_POWER_CLEAN);
+    if (rc)
+        power_backoff(&bus, rc);
+    trace_stage(83, 0);
     k_msleep(20);
+    /* GRTC preparation disables kernel compare channels. Nothing that uses
+     * I2C, delays, logging, or any kernel timeout may follow it. */
     int wake = z_nrf_grtc_wakeup_prepare((uint64_t)cycle_seconds * USEC_PER_SEC);
     if (wake) {
-        trace_failure(81, wake);
-        sys_reboot(SYS_REBOOT_COLD);
+        sensor_trace.stage = 81;
+        sensor_trace.error = wake;
+        /* Fail closed: an external wake may be needed if no timer was armed. */
     }
-    trace_stage(83, rc);
     sys_poweroff();
     return 0;
 }

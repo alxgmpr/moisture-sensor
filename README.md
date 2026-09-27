@@ -1,14 +1,83 @@
 # nRF Moisture Sensor
 
-CR2032-powered BLE soil-moisture and temperature/humidity sensor using Ezurio BL54L15, nPM2100, FDC1004 and SHT40.
+A CR2032-powered Bluetooth soil-moisture sensor with **two capacitive sensing zones**, a dedicated TI FDC1004 capacitance-to-digital converter, and temperature/humidity sensing. Built around the Ezurio BL54L15 (Nordic nRF54L15), it broadcasts BTHome v2 readings for Home Assistant and supports local BLE configuration and firmware updates.
 
-Open [nrf-moisture-sensor.kicad_pro](nrf-moisture-sensor.kicad_pro) in KiCad. The maintained schematic and PCB are authoritative; the retired full-design generators must not overwrite them.
+This repository contains the KiCad hardware, embedded firmware, browser configuration dashboard, and prototype investigation notes.
 
-- [Latest design review and remaining tasks](docs/design-review-2026-09-05/README.md)
-- [Readable schematic PDF](docs/schematic-review-2026-09-05/nrf-moisture-sensor-schematic.pdf)
-- [Power copper and current sweeps](docs/power-review-2026-09-05/README.md)
-- [I²C pin and capacitor review](docs/component-review-2026-09-05/README.md)
-- [Board shrink concept](docs/design-review-2026-09-05/shrink-feasibility.md)
-- [Source-derived BOM](BOM.md), [hardware rationale](HARDWARE.md), [firmware](firmware/README.md)
+## Why build another soil sensor?
 
-The design is not yet qualified for fabrication: effective capacitance, radio ripple, battery transients and remaining library mismatches need resolution.
+The goal is a self-contained, coin-cell-powered sensor that measures two regions of the probe independently and sends readings directly over BLE. A dedicated capacitance converter exposes raw capacitance for diagnosis and calibration, while the radio and sensing circuit can spend most of their time off.
+
+- **Two sensing zones:** SENSE1 and SENSE2 have independent measurements and dry/wet calibration endpoints. Both are soil-sensing areas; SENSE2 is not an air-reference pad.
+- **Dedicated measurement hardware:** the FDC1004 converts capacitance to digital readings over I²C, with raw values available in femtofarads. The probe does not depend on the MCU ADC to measure an analog moisture voltage.
+- **A complete wireless device:** the MCU, BLE radio, battery power management, and probe are on the board. BTHome advertisements carry both moisture values, temperature, humidity, battery voltage, and estimated battery percentage.
+- **Designed around a coin cell:** the nPM2100 supplies the board, the FDC1004 rail is switched off between measurements, and the nRF54L15 uses timed System OFF between wakes. Production defaults are a measurement every 15 minutes and a 5-second advertising window; saved settings can override these.
+- **Local configuration:** a Web Bluetooth dashboard reads raw measurements and saves names, intervals, and per-zone calibration. Application updates use MCUboot and MCUmgr/SMP over BLE.
+- **Separate environmental sensing:** a Sensirion SHT40 measures temperature and relative humidity.
+
+Battery lifetime, soil accuracy, and long-term outdoor reliability are still being characterized. These are architectural choices, not a measured claim of better battery life or accuracy than commercial products.
+
+## How it compares
+
+| Design | Moisture measurement | Sensing zones | Controller / connectivity | Power |
+| --- | --- | --- | --- | --- |
+| **This project** | Dedicated FDC1004 capacitance-to-digital converter | Two independently read zones | BL54L15 / nRF54L15; BLE BTHome, configuration, and OTA | Replaceable CR2032, nPM2100, switched sensing rail |
+| **[Seeed XIAO Soil Moisture Sensor](https://wiki.seeedstudio.com/xiao_soil_moisture_sensor/)** | Capacitive probe with analog output read by the ESP32-C6 ADC | One | Included XIAO ESP32-C6; stock ESPHome firmware uses Wi-Fi | Single AA battery |
+| **[Adafruit STEMMA Soil Sensor](https://www.adafruit.com/product/4026)** | ATSAMD10 built-in capacitive-touch measurement; digital I²C output | One | Onboard ATSAMD10 runs seesaw; requires an external host for application logic/networking; no onboard BLE | External 3–5 V supply |
+| **[Chirp!](https://wemakethings.net/chirp/)** | RC filter / peak detector read by the ATtiny44 ADC; digital I²C readout | One | Standalone audible watering alarm; no BLE | Coin-cell powered |
+
+Seeed's [store listing](https://www.seeedstudio.com/XIAO-Soil-Sensor-p-6452.html) showed **US$10.90** when checked on September 27, 2026; pricing varies. Its AA/ESP32-C6/Wi-Fi approach differs from this board's CR2032/BLE design, but an ESP32 alone does not establish poor battery life. A fair comparison requires measured energy per wake and equivalent reporting intervals.
+
+Adafruit already includes a microcontroller and digital output; what it lacks is a standalone wireless application host. Chirp uses an analog RC/peak-detector front end and the MCU ADC, but exposes readings digitally over I²C. The distinction here is the dedicated FDC1004 measurement front end, two sensing zones, and integrated BLE system.
+
+## Prototype status
+
+Hardware bring-up, BTHome advertising, persistent BLE configuration, and application OTA have been exercised on prototypes. The current normal sensor firmware is **0.2.28**. This is an experimental design, not a qualified production sensor.
+
+**SENSE2 soil response is still under investigation.** Both channels respond to a hand-grip test, but SENSE2 has shown a much weaker response in soil. The [investigation record](docs/sense2-investigation-2026-09-25.md) separates observations from possible causes and remaining tests.
+
+The current dry/wet endpoints are provisional water references. Reported moisture percentages are relative to those endpoints, not validated volumetric water content. Battery lifetime, supply transients, coating/enclosure behavior, and repeatable soil calibration still need physical qualification. Older design reviews describe earlier board states; use the maintained schematic/PCB and current firmware documentation when working on the hardware.
+
+## Getting started
+
+### Hardware
+
+Open [nrf-moisture-sensor.kicad_pro](nrf-moisture-sensor.kicad_pro) in KiCad. The maintained schematic and PCB are authoritative; retired full-design generators must not overwrite them.
+
+- [Bill of materials](BOM.md)
+- [Hardware design rationale](HARDWARE.md)
+- [Historical schematic PDF](docs/schematic-review-2026-09-05/nrf-moisture-sensor-schematic.pdf)
+
+### Firmware
+
+Use **Nordic nRF Connect SDK v3.2.2**. From the repository root, in an SDK-configured environment:
+
+```sh
+west build --sysbuild -p always -b bl54l15_dvk/nrf54l15/cpuapp \
+  -d firmware/carrier-bringup/build firmware/carrier-bringup
+sh firmware/carrier-bringup/tests/run.sh
+```
+
+See the [carrier firmware guide](firmware/carrier-bringup/README.md) for wiring, development cadence, signing, OTA, and SWD recovery. The SDK signing key is for development only; use a protected production key for field releases. The [older DK demo](firmware/bthome-sensor/README.md) is separate from the carrier firmware.
+
+### Browser configuration
+
+With Node.js installed, run:
+
+```sh
+node firmware/carrier-bringup/dashboard/serve.mjs
+```
+
+Open <http://127.0.0.1:8766> in Chrome or Edge on a Bluetooth-capable computer. Connect during the sensor's advertising window, or use **Explore with demo data** to inspect the interface without hardware. No npm install is required.
+
+The [dashboard guide](firmware/carrier-bringup/dashboard/README.md) covers configuration and calibration. Firmware uploads use a separate SMP client.
+
+## Development records
+
+- [Power and configuration audit](docs/power-and-configuration-2026-09-21.md)
+- [Low-voltage behavior](docs/low-voltage-investigation-2026-09-21.md)
+- [BTHome recovery](docs/bthome-recovery-2026-09-22.md)
+- [Dual-pad diagnosis](docs/soil1-dual-pad-diagnosis-2026-09-24.md)
+- [SENSE2 investigation](docs/sense2-investigation-2026-09-25.md)
+
+Some investigation records refer to local raw captures in ignored output directories; those captures are not included in this repository.

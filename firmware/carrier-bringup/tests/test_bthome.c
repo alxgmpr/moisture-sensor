@@ -14,8 +14,6 @@ int main(void)
         .battery_mv = 3012,
         .moisture1_cpct = 2500,
         .moisture2_cpct = 10000,
-        .diagnostic_stage = 61,
-        .diagnostic_error = 116,
     };
     const uint8_t expected[] = {
         0xd2, 0xfc, 0x40,
@@ -25,8 +23,6 @@ int main(void)
         0x0c, 0xc4, 0x0b,
         0x14, 0xc4, 0x09,
         0x14, 0x10, 0x27,
-        0x3d, 0x3d, 0x00,
-        0x3d, 0x74, 0x00,
     };
     uint8_t actual[BOARD_BTHOME_PAYLOAD_LEN];
 
@@ -34,12 +30,9 @@ int main(void)
     assert(memcmp(actual, expected, sizeof expected) == 0);
     assert(board_bthome_encode(NULL, actual, sizeof actual) == -EINVAL);
     assert(board_bthome_encode(&v, actual, sizeof actual - 1) == -EINVAL);
-    const uint8_t diagnostic[] = {0xd2, 0xfc, 0x40, 0x3d, 61, 0, 0x3d, 116, 0};
-    memset(actual, 0xa5, sizeof actual);
-    assert(board_bthome_encode_diagnostic(61, 116, actual, sizeof actual) == sizeof diagnostic);
-    assert(memcmp(actual, diagnostic, sizeof diagnostic) == 0);
-    assert(actual[sizeof diagnostic] == 0xa5);
-    assert(board_bthome_encode_diagnostic(61, 116, actual, sizeof diagnostic - 1) == -EINVAL);
-    assert(board_bthome_encode_diagnostic(61, 116, NULL, sizeof actual) == -EINVAL);
+    struct board_bthome_values uncalibrated = v;
+    uncalibrated.omit_moisture = true;
+    assert(board_bthome_encode(&uncalibrated, actual, sizeof actual) == 14);
+    assert(!memcmp(actual, expected, 14));
     return 0;
 }

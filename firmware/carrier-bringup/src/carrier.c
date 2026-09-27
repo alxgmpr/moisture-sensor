@@ -64,24 +64,29 @@ static int adc(const struct carrier_bus *b, uint8_t mode, uint16_t *mv) {
     *mv = mode == 4 ? 1800 + (1500 * (unsigned)v) / 256 : (3200 * (unsigned)v) / 256;
     return 0;
 }
-int carrier_start(const struct carrier_bus *b, struct carrier_sample *s) {
-    /* nPM2100 remains powered across MCU System OFF and watchdog resets. */
-    TRY(carrier_sensors_off(b));
+int carrier_watchdog_start(const struct carrier_bus *b, uint32_t seconds) {
+    if (!seconds || seconds > 262144)
+        return -EINVAL;
     TRY(wr(b, 0xb1, 1));
     TRY(wait_pm(b, 0xb7, 0xff, 0));
     TRY(checked(b, 0xd6, 1)); /* Also disable LDOSW on watchdog reset. */
-    /* 20 s watchdog with power cycle: 20*64-1=1279, big endian. */
-    TRY(checked(b, 0xb4, 0));
-    TRY(checked(b, 0xb5, 4));
-    TRY(checked(b, 0xb6, 255));
+    uint32_t ticks = seconds * 64 - 1;
+    TRY(checked(b, 0xb4, ticks >> 16));
+    TRY(checked(b, 0xb5, ticks >> 8));
+    TRY(checked(b, 0xb6, ticks));
     TRY(checked(b, 0xb3, 2));
-    TRY(wr(b, 0xb0, 1));
+    return wr(b, 0xb0, 1);
+}
+int carrier_start(const struct carrier_bus *b, struct carrier_sample *s) {
+    /* nPM2100 remains powered across MCU System OFF and watchdog resets. */
+    TRY(carrier_sensors_off(b));
+    TRY(carrier_watchdog_start(b, 20));
     TRY(adc(b, 0, &s->battery_mv));
     if (s->battery_mv < CARRIER_MIN_BATTERY_MV)
-        return -ERANGE; /* Provisional CR2032 load cutoff. */
+        return -ERANGE; /* Board input floor; no cell-capacity claim. */
     TRY(checked(b, 0x22, 30));
     TRY(checked(b, 0x23, 1)); /* 3.3 V */
-    TRY(checked(b, 0x24, 1)); /* Force HP throughout sensing and advertising. */
+    TRY(checked(b, 0x24, 1)); /* Force HP for sensor conversion accuracy. */
     TRY(wait_pm(b, 0x34, 7, 0)); /* Confirm actual converter state is HP. */
     b->delay_ms(b->ctx, 5);
     TRY(adc(b, 4, &s->output_mv));
@@ -185,6 +190,14 @@ int carrier_sensors_off(const struct carrier_bus *b) {
 int carrier_watchdog_feed(const struct carrier_bus *b) {
     return wr(b, 0xb2, 1); /* TIMER.TASKS_KICK, DS 7.2.6.3. */
 }
+int carrier_radio_start(const struct carrier_bus *b) {
+    uint16_t output_mv;
+    TRY(carrier_sensors_off(b));
+    TRY(checked(b, 0x24, 0)); /* Auto: allow HP on demand, LP/ULP between events. */
+    TRY(adc(b, 4, &output_mv));
+    /* This detects gross rail loss, not ripple or short radio transients. */
+    return output_mv < 3150 ? -ERANGE : 0;
+}
 int carrier_stop(const struct carrier_bus *b) {
     /* Do not disarm recovery if I2C prevents safe shutdown. */
     TRY(carrier_sensors_off(b));
@@ -192,4 +205,58 @@ int carrier_stop(const struct carrier_bus *b) {
     TRY(wr(b, 0xb1, 1));
     TRY(wait_pm(b, 0xb7, 0xff, 0));
     return 0;
+}
+
+int carrier_retained_read(const struct carrier_bus *b, uint8_t *state, uint8_t *stage,
+                          uint8_t *reset) {
+    TRY(rd(b, 0xd9, state));
+    TRY(rd(b, 0xda, stage));
+    return rd(b, 0xd5, reset);
+}
+int carrier_retained_state(const struct carrier_bus *b, uint8_t state) {
+    uint8_t observed;
+    TRY(wr(b, 0xd7, state));
+    TRY(wr(b, 0xd8, 1));
+    TRY(rd(b, 0xd9, &observed));
+    return observed == state ? 0 : fault(b, -EIO, 0x74, 0xd9, observed, 255, state);
+}
+int carrier_retained_stage(const struct carrier_bus *b, uint8_t stage) {
+    return checked(b, 0xda, stage);
+}
+int carrier_power_probe(const struct carrier_bus *b, uint16_t *battery_mv) {
+    /* Run before settings, MCU watchdog, forced HP, sensors, or Bluetooth.
+     * Stop an inherited PMIC boot/watchdog timer before attempting recovery. */
+    TRY(wr(b, 0xb1, 1));
+    TRY(wait_pm(b, 0xb7, 0xff, 0));
+    TRY(carrier_sensors_off(b));
+    TRY(checked(b, 0x24, 0));
+    return adc(b, 0, battery_mv);
+}
+int carrier_hibernate(const struct carrier_bus *b, uint32_t seconds) {
+    if (seconds < 1 || seconds > 262144)
+        return -EINVAL;
+    /* SCRATCHA is in the VBAT domain: survives MCU and PMIC power-cycle resets.
+     * No flash writes at low voltage. Hibernate keeps BOOST alive in ULP and
+     * removes VOUT; Hibernate_PT is unsuitable for a depleted input. */
+    TRY(carrier_retained_state(b, CARRIER_POWER_BLOCKED));
+    TRY(carrier_sensors_off(b));
+    TRY(checked(b, 0x24, 0));
+    TRY(wr(b, 0xb1, 1));
+    TRY(wait_pm(b, 0xb7, 0xff, 0));
+    uint32_t ticks = seconds * 64 - 1;
+    TRY(checked(b, 0xb4, ticks >> 16));
+    TRY(checked(b, 0xb5, ticks >> 8));
+    TRY(checked(b, 0xb6, ticks));
+    TRY(checked(b, 0xb3, 3));
+    TRY(wr(b, 0xb0, 1));
+    TRY(wait_pm(b, 0xb7, 0xff, 1));
+    return wr(b, 0xc8, 1);
+}
+bool carrier_power_allowed(uint16_t mv, uint8_t retained) {
+    return mv >= (retained == CARRIER_POWER_BLOCKED ? CARRIER_RECOVER_BATTERY_MV :
+                                                        CARRIER_MIN_BATTERY_MV);
+}
+
+int carrier_battery_read(const struct carrier_bus *b, uint16_t *mv) {
+    return adc(b, 0, mv);
 }

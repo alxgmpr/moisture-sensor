@@ -2,21 +2,27 @@
 
 This image exercises the actual BL54L15/nPM2100/FDC1004/SHT40 board. Development and production modes broadcast calibrated BTHome moisture values using the configured dry/wet endpoints.
 
-Development mode uses a 60-second cycle and a 300-second BLE window so a host can complete a full image upload. Production defaults to a 15-minute cycle, a 10-second BLE window, and backs off to a 1-hour cycle below 2.5 V. The current development image is selected with `dev.conf`.
+The low-voltage policy uses a 1.8 V PMIC-ADC cutoff and 2.0 V recovery threshold. MCUboot checks input before image verification or swapping; the application repeats the check before settings, sensing and radio work. Undervoltage and interrupted attempts enter a 60-second PMIC hibernate retry, with timed MCU System OFF as a fallback. These are conservative bench thresholds, not a qualified CR2032 discharge endpoint. After undervoltage, recovery waits for the next 60-second retry even if the battery voltage rises. A brief input power cycle may preserve PMIC Hibernate state; it is not a guaranteed immediate wake. See [the investigation](../../docs/low-voltage-investigation-2026-09-21.md).
+
+Version 0.2.9 added [local browser configuration](dashboard/README.md) with persistent name, intervals, and two-point calibration over BLE. Run `node firmware/carrier-bringup/dashboard/serve.mjs` from the repository root and open http://127.0.0.1:8766 in Chrome/Edge. Existing 0.2.5 devices need one firmware update before configuration is available.
+
+Production defaults to a 15-minute measurement interval, a 5-second BLE window with 500 ms advertising spacing, and a 1-hour interval below 2.5 V. Development mode (`dev.conf`) uses a 60-second interval and 30-second window. These intervals include application awake time. An established connection may last up to 300 seconds by default; configure up to 900 seconds before reconnecting for longer SMP uploads. Stored settings override build defaults. See the [power audit](../../docs/power-and-configuration-2026-09-21.md) for calculations, limits, and measurement priorities.
 
 The current provisional two-point water calibration is SENSE1 2655 fF dry / 5658 fF wet and SENSE2 2618 fF dry / 5571 fF wet. These wet endpoints are the median of recent raw submerged readings. They are a provisional water reference, not final soil calibration.
 
 ## Implemented sequence
 
-1. Arm the MCU watchdog (15 seconds). Verify the dedicated FDC bus is suspended with no internal pull-ups, then disable any sensor rail left enabled across an MCU reset.
-2. Configure the nPM2100's independent 20-second **power-cycle** watchdog, including LDOSW-off on watchdog reset. Sampling is bounded without watchdog feeding. The foreground BLE/OTA loop feeds both watchdogs once per second; a stalled loop still expires the independent watchdog.
-3. Read battery voltage. Below the provisional 2.2 V cutoff, skip sensing/radio and shut down normally. This threshold is a starting point for CR2032 load testing, not a battery state-of-charge curve.
+1. MCUboot disables the DK UART pins that overlap the FDC bus, reads the PMIC input and retained retry marker, and gates image processing. A retained BOOTING marker and independent 60-second PMIC watchdog cover image verification and swapping.
+2. The application verifies the FDC bus is suspended, disables the sensor rail, and repeats the voltage/retained-state check before loading settings. It arms the 15-second MCU watchdog, then the 20-second PMIC power-cycle watchdog before sensing. The BLE foreground loop feeds both once per second.
+3. Below 1.8 V, or after an interrupted attempt, skip sensor/radio work. Save BLOCKED in the PMIC VBAT-domain scratch register, switch off the sensor rail, select Auto and enter timed Hibernate. Recovery requires at least 2.0 V. No flash writes or immediate application-error reboots occur on this path.
 4. Set boost to 3.3 V, force HP, confirm the actual HP status, and check output ADC ≥3.15 V. The ADC saturates near 3.3 V; it cannot prove absence of overvoltage or measure 10 mV ripple.
 5. Configure LDOSW as a **load switch**, force HP and enable its lowest 40 mA current limit. This protects that output only; it is not a battery fuse or whole-board current limit.
 6. Identify FDC1004, measure CIN1/CIN2 single-ended at 100 samples/s, automatically increase CAPDAC until the residual is within ±13 pF. Differential mode is never used because the board ties SHLD1/2 together. Return an error when range is exhausted.
 7. Read SHT40 temperature and humidity with CRC validation. No heater command is implemented. Recheck battery voltage under the sensing load, verify the FDC bus is suspended, and disable the sensor rail before starting BLE/OTA.
-8. Advertise the stable chip-derived `Soil-XXXX` identity with BTHome v2 battery percentage, temperature, humidity, battery voltage, two calibrated moisture objects, and two diagnostic count objects. The first diagnostic count is the last failure stage and the second is the absolute errno value. These are kept in `.noinit` while SRAM survives a reset; battery removal and PMIC power cycles clear that history. Failed samples advertise diagnostics only, never zero-valued measurements. The percentage is a provisional voltage-to-SoC estimate for the CR2032 prototype; the voltage remains available for calibration. The same wake is connectable and exposes MCUmgr/SMP in the scan response; a client connection keeps the device awake for OTA.
-9. Confirm LDOSW disabled using its HP/ULP status bits, return boost to auto, and disarm the PMIC watchdog. If shutdown cannot be confirmed, reboot with watchdog recovery still armed. A low-battery cutoff skips BLE and enters System OFF with the low-battery interval, rather than immediately rebooting. Only a fully successful cycle confirms a staged MCUboot image.
+8. Confirm the sensor supply is off, select automatic BOOST, and require output ADC ≥3.15 V before starting the radio. A connected Measure-now operation forces HP for sensing and restores Auto afterwards. Advertise the stable chip-derived `Soil-XXXX` identity with BTHome v2 battery percentage, temperature, humidity, battery voltage, and two calibrated moisture objects. Last failure stage and errno remain available through the status characteristic and `.noinit` trace while SRAM survives a reset; battery removal and PMIC power cycles clear that history. Failed samples enter backoff without starting the radio. The percentage is a provisional voltage-to-SoC estimate for the CR2032 prototype; the voltage remains available for calibration. The same wake is connectable and exposes MCUmgr/SMP in the scan response; a client connection keeps the device awake for configuration/OTA until its configured deadline.
+9. Confirm LDOSW disabled using its HP/ULP status bits, return boost to auto, and disarm the PMIC watchdog. If shutdown cannot be confirmed, enter the same bounded backoff path. SCRATCHA survives MCU resets and PMIC watchdog power cycles while VBAT remains above the PMIC retention limit. If GRTC preparation fails, stay off and require an external wake rather than repeatedly rebooting. Only a fully successful cycle confirms a staged MCUboot image.
+
+Normal wake uses GRTC System OFF with the configured 15-minute/hourly schedule. Nothing using I2C, logging or kernel timeouts executes after GRTC wake preparation. Both bootloader and application fault retry defaults are 60 seconds, independently of the production 900/3600-second measurement schedule. A bootloader update requires SWD; application OTA alone cannot install its early gate.
 
 Both buses run at 100 kHz with a 25 ms transaction timeout; conversion/status polling is also bounded. Startup performs one sequence, without blanket retries or an arbitrary cold-start delay. ADC conversions wait for the PMIC ADC to become idle before clearing the ready event and triggering a new measurement. Host tests inject a transient failure at every transaction in a successful cycle and cover CRC, range, timeout, undervoltage and a converter that fails to enter HP.
 
@@ -52,11 +58,11 @@ west build --sysbuild -p always \
   -- -DEXTRA_CONF_FILE=ota.conf
 ```
 
-The sensor image is version `0.2.5` and remains OTA-capable: connect
-during any 10-second advertising window, discover the SMP service, run image
+The sensor image is version `0.2.28` and remains OTA-capable: connect
+during any configured advertising window, discover the SMP service, run image
 list, upload, test, reset, and confirm. A connected session prevents System OFF
 until the client disconnects or the image reboots. The maintenance image is
-version `0.2.6`, advertises as `Soil-OTA`, and is a radio-only SWD/recovery
+version `0.2.29`, advertises as `Soil-OTA`, and is a radio-only SWD/recovery
 image; it is not the normal sensor image.
 
 MCUboot uses the generated primary and secondary slots. A staged image boots
@@ -81,7 +87,7 @@ west build --sysbuild -p always -b bl54l15_dvk/nrf54l15/cpuapp \
   -d build-sensor firmware/carrier-bringup -- \
   -DSB_CONFIG_BOOT_SIGNATURE_KEY_FILE=/secure/keys/sensor-rsa-2048.pem
 
-# Development cadence: 60 s measurement, 300 s advertising
+# Development cadence: 60 s measurement, 30 s advertising
 west build --sysbuild -p always -b bl54l15_dvk/nrf54l15/cpuapp \
   -d build-sensor-dev firmware/carrier-bringup -- \
   -DEXTRA_CONF_FILE=dev.conf
@@ -115,6 +121,15 @@ is `SWDIO_EXT`, J4-3/5/9 are GND, J4-4 is `SWDCLK_EXT`, J4-6 is SWO, J4-7/8
 are no-connects, and J4-10 is `RESET_EXT`. The Raspberry Pi probe's GP1 is
 UART RX and is not reset.
 
+## Local configuration and storage
+
+See [dashboard usage and protocol](dashboard/README.md). The configuration occupies
+the former 4 KB `EMPTY_1` gap as `zms_storage`; neither image slot moves.
+Calibration can be disabled without suppressing temperature, humidity or battery.
+The dashboard's moisture cards preview its editable endpoints, while BTHome uses
+the saved endpoints on the next wake. The normal image powers down after its
+connection limit; the explicit maintenance image remains continuously awake.
+
 ## First hardware session
 
 Use current-limited battery-equivalent power with the coin cell removed, or the coin cell with J4 used strictly as debugger voltage reference. Record startup and low-voltage behavior, FDC rail on/off voltages and leakage, 60-second wakes without a debugger, and 10-second RF current bursts. Confirm FDC_SDA/FDC_SCL and the switched rail remain low/unpowered while off, including main-bus traffic and reset transitions. The PMIC ADC cannot replace a scope for supply ripple and transients.
@@ -142,8 +157,8 @@ voltage and planned sleep. Stage 83 means shutdown and GRTC preparation complete
 Use the ELF from the exact flashed build to locate these symbols. A historical
 BLE diagnostic is the last recorded failure, not a count of new errors.
 
-The long development advertising window remains 300 seconds, but the sensor
-supply is now off for that entire window. The PMIC watchdog is serviced alongside
+In 0.2.5 the long development advertising window remained 300 seconds, with the sensor
+supply off for that entire window. Version 0.2.9 reduces this to 30 seconds by default. The PMIC watchdog is serviced alongside
 the MCU watchdog. Undervoltage does not start a recovery radio window.
 
 The deployed bootloader uses RSA-2048 signatures over SHA-256 image hashes.

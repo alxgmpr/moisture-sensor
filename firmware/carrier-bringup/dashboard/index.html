@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light"><meta name="description" content="Local Bluetooth configuration for the moisture sensor.">
+  <title>Soil · Sensor studio</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><a class="brand" href="./"><span class="brand-icon">∿</span> soil<span class="brand-sub">SENSOR STUDIO</span></a><span class="local">● &nbsp; Local Bluetooth · no cloud</span></header>
+<main>
+<section class="intro"><div><p class="eyebrow">A LITTLE LESS RADIO. A LITTLE MORE LIFE.</p><h1>Know your soil.<br><em>Mind your battery.</em></h1><p class="lede">Tune your sensor’s rhythm, give it a name, and calibrate each probe. Settings travel with the device.</p></div>
+<div class="connect-card"><div class="connection-title"><span class="dot" id="connection-dot"></span><strong id="connection">No sensor connected</strong></div><p id="connect-help">Open this page in Chrome or Edge. Wake the sensor by reinserting its battery, then connect during its advertising window.</p><button id="connect" class="primary">Connect a sensor <span>↗</span></button><button id="disconnect" hidden>Disconnect &amp; let it sleep</button><button class="text-button" id="demo">Explore with demo data</button><p class="tiny">Requires configuration firmware 0.2.9+. Older firmware needs a one-time update through the existing SMP OTA path.</p></div></section>
+<div id="message" role="status" aria-live="polite">Ready when your sensor is.</div>
+<section class="telemetry" aria-label="Last measurement">
+  <div><span class="label">PROBE 01</span><strong id="moisture1">—</strong><small id="raw1">No sample yet</small></div>
+  <div><span class="label">PROBE 02</span><strong id="moisture2">—</strong><small id="raw2">No sample yet</small></div>
+  <div><span class="label">TEMPERATURE / RH</span><strong id="temperature">—</strong><small id="humidity">No sample yet</small></div>
+  <div><span class="label">BATTERY</span><strong id="battery">—</strong><small id="sample-age">Voltage under sensing load</small></div>
+</section>
+<div class="sample-toolbar"><span id="device-meta">Readings appear after connecting.</span><button id="measure" disabled>↻ Measure now</button></div>
+<form id="settings">
+<div class="workspace">
+<div class="settings-column">
+<section class="panel"><div class="section-heading"><span class="step">01</span><div><h2>Device &amp; rhythm</h2><p>Let the soil set the pace.</p></div></div>
+<label>Device name<input name="name" maxlength="11" placeholder="Automatic · Soil-XXXX" autocomplete="off"><small>Up to 11 ASCII characters. Leave blank for the stable chip name.</small></label>
+<div class="presets" aria-label="Interval presets"><button type="button" data-preset="balanced">Everyday · 15 min</button><button type="button" data-preset="quiet">Slow growing · 1 hour</button><button type="button" data-preset="bench">Bench · 1 min</button></div>
+<div class="fields"><label>Measure every <span>seconds</span><input name="cycle" type="number" min="60" max="86400" step="1" required></label><label>Advertise for <span>seconds per wake</span><input name="windowSeconds" type="number" min="5" max="300" step="1" required></label><label>Space radio events <span>milliseconds</span><input name="advertising" type="number" min="100" max="5000" step="5" required></label><label>Connection limit <span>seconds</span><input name="session" type="number" min="30" max="900" step="1" required></label></div>
+<p class="hint">The measurement interval includes awake time. Each window must fit within half the interval and contain at least five radio events. A long connection postpones the next sample.</p>
+<details><summary>Low-battery behavior</summary><div class="fields"><label>Back off below <span>millivolts</span><input name="lowMv" type="number" min="800" max="3300" required></label><label>Then measure every <span>seconds</span><input name="lowCycle" type="number" min="60" max="604800" required></label></div><p class="hint">Firmware 0.2.11 tests a 0.8 V input cutoff; older firmware stops at 2.2 V. Low-voltage operation requires a healthy regulated rail. Voltage is not a precise battery percentage.</p></details>
+</section>
+<section class="panel"><div class="section-heading"><span class="step">02</span><div><h2>Calibrate your probes</h2><p>Two endpoints, stored on the sensor.</p></div></div>
+<label class="switch-label"><input name="calibrated" type="checkbox"> Publish calibrated moisture in BTHome</label>
+<p class="hint">Place the probe in your dry reference, choose Measure now, then capture dry. Repeat with your wet reference. Use the final coating and soil; water endpoints are only a provisional reference.</p>
+<div class="calibration-grid">
+<fieldset><legend>PROBE 01</legend><label>Dry reference <span>fF · 0%</span><input name="dry1" type="number" min="-15000" max="115000" required></label><button type="button" data-capture="dry1" disabled>Use sample as dry</button><label>Wet reference <span>fF · 100%</span><input name="wet1" type="number" min="-15000" max="115000" required></label><button type="button" data-capture="wet1" disabled>Use sample as wet</button></fieldset>
+<fieldset><legend>PROBE 02</legend><label>Dry reference <span>fF · 0%</span><input name="dry2" type="number" min="-15000" max="115000" required></label><button type="button" data-capture="dry2" disabled>Use sample as dry</button><label>Wet reference <span>fF · 100%</span><input name="wet2" type="number" min="-15000" max="115000" required></label><button type="button" data-capture="wet2" disabled>Use sample as wet</button></fieldset>
+</div><p class="hint">Moisture cards preview the endpoints in this form. Capture uses the last sample, at most 30 seconds old. Dry and wet can run in either direction, but cannot be equal.</p>
+</section>
+</div>
+<aside>
+<section class="power-panel"><p class="eyebrow">YOUR RADIO FOOTPRINT</p><h2>More rest.<br>Same useful readings.</h2><div class="activity-number"><strong id="events-day">—</strong><span>estimated advertising events / day</span></div><div class="rhythm-bar"><span id="awake-bar"></span></div><div class="bar-labels"><span>Advertising window</span><span>Sleep opportunity</span></div><dl><div><dt>Measurements / day</dt><dd id="measurements-day">—</dd></div><div><dt>Events / wake</dt><dd id="events-wake">—</dd></div><div><dt>Advertising window duty</dt><dd id="awake-duty">—</dd></div></dl><p id="comparison"></p><p class="tiny">Schedule estimate for unconnected operation. An event can transmit on three channels. Boot, sensing, connections, packet loss, and scan responses add energy. This is not a battery-life prediction.</p></section>
+<section class="panel notes"><h3>A sensor that sleeps</h3><p>The browser can connect only while the sensor is advertising. A sleeping sensor cannot be woken by Bluetooth.</p><p>Saving takes effect for the next wake; it does not extend this connection’s timer. Disconnect when you’re done.</p><p id="session-status">Connection time remaining will appear here.</p></section>
+</aside>
+</div>
+<div class="save-bar"><div><strong id="save-state">Build defaults</strong><span id="save-detail">Connect to read your device’s saved configuration.</span></div><div class="save-actions"><button type="button" id="reload" disabled>Reload device</button><button type="submit" id="save" class="primary" disabled>Save to sensor ↗</button></div></div>
+</form>
+<footer><span>SOIL / LOCAL DEVICE TOOLS</span><span>Prototype access: nearby BLE clients can read and change configuration.</span></footer>
+</main>
+<script type="module" src="app.mjs"></script>
+</body>
+</html>

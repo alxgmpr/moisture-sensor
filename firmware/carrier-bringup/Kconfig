@@ -12,23 +12,32 @@ config SENSOR_CYCLE_SECONDS
 	int "Normal measurement interval in seconds"
 	default 60 if SENSOR_DEVELOPMENT
 	default 900
-	range 10 86400
+	range 60 86400
 
 config SENSOR_LOW_BATTERY_MV
 	int "Low-battery threshold in millivolts"
 	default 2500
-	range 1800 3300
+	range 800 3300
 
 config SENSOR_LOW_BATTERY_CYCLE_SECONDS
 	int "Low-battery measurement interval in seconds"
 	default 3600
 	range 60 604800
 
+config SENSOR_UV_RETRY_SECONDS
+	int "Undervoltage/fault hibernate retry interval in seconds"
+	default 60
+	range 60 86400
+	help
+		Check recovery separately from the hourly low-battery measurement
+		cadence. MCUboot checks voltage before image verification, sensing,
+		or radio work; a restored supply must not remain silent for an hour.
+
 config SENSOR_ADV_WINDOW_MS
 	int "BLE advertising window in milliseconds"
 	default 10000 if SENSOR_DEVELOPMENT
-	default 10000
-	range 1000 600000
+	default 5000
+	range 5000 300000
 
 config SENSOR_DEBUG_HOLD
 	bool "Hold after measurement for debugger diagnostics"
@@ -49,7 +58,7 @@ config SENSOR_MOISTURE_CALIBRATED
 	bool "Enable calibrated BTHome moisture objects"
 	default y
 	help
-		Use the configured dry and wet differential-capacitance endpoints.
+		Use the configured dry and wet single-ended capacitance endpoints.
 		Leave disabled until the probe has been measured dry and wet.
 
 config SENSOR_SENSE1_DRY_FF
@@ -67,3 +76,13 @@ config SENSOR_SENSE2_DRY_FF
 config SENSOR_SENSE2_WET_FF
 	int "Wet SENSE2 capacitance in femtofarads"
 	default 5571
+
+config SENSOR_ADV_INTERVAL_MS
+	int "Advertising event interval in milliseconds (multiple of 5)"
+	default 500
+	range 100 5000
+
+config SENSOR_SESSION_SECONDS
+	int "Maximum connected session duration in seconds"
+	default 300
+	range 30 900

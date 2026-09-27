@@ -60,3 +60,6 @@ __pycache__/
 /tmp/
 /.easyeda_cache/
 /output/
+
+# Local firmware diagnostic build snapshot
+/firmware/.build-sensor-latest.elf

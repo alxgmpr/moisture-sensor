@@ -35,7 +35,7 @@ mcuboot_secondary:
   address: 0xb9000
   size: 0xab000
   region: flash_primary
-EMPTY_1:
+zms_storage:
   address: 0x164000
   size: 0x01000
   region: flash_primary

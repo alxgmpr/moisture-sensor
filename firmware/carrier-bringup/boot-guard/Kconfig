@@ -1,0 +1,12 @@
+config SENSOR_BOOT_GUARD
+	bool "Gate MCUboot image processing on board input voltage"
+	default y
+
+config SENSOR_BOOT_RETRY_SECONDS
+	int "Undervoltage retry interval before MCUboot image verification"
+	default 60
+	range 60 86400
+	help
+		Keep recovery responsive even when a brief input interruption does
+		not discharge the PMIC's retained state. Below the recovery threshold,
+		return to Hibernate without verifying the image or starting the radio.
