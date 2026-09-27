@@ -26,14 +26,16 @@ Battery lifetime, soil accuracy, and long-term outdoor reliability are still bei
 | Capacitive soil sensing | Y | Y | Y | Y | Y |
 | Two independently read soil-sensing zones | Y | N | N | N | N |
 | Dedicated capacitance-to-digital converter IC | Y | N | N | N | N |
-| Onboard microcontroller | Y | Y | Y | Y | Y |
-| Standalone operation without an external MCU/host | Y | Y | N | Y | Y |
+| Onboard microcontroller (including sensor-interface MCUs) | Y | Y | Y¹ | Y | Y |
+| Reports readings or alerts without a wired external host | Y | Y | N | Y | Y |
 | BLE moisture broadcasting in supplied firmware | Y | N | N | N | Y |
 | Wi-Fi reporting in supplied firmware | N | Y | N | N | N |
 | Onboard coin-cell power support | Y | N | N | Y | Y |
 | Onboard AA battery power support | N | Y | N | N | N |
 | Relative humidity measurement | Y | N | N | N | Y |
 | Audible watering alarm | N | N | N | Y | N |
+
+¹ Adafruit's [published schematic](https://github.com/adafruit/Adafruit-STEMMA-Soil-Sensor-PCB/blob/master/Adafruit%20STEMMA%20Soil%20Sensor.sch) identifies **IC1 as ATSAMD10D14A**. This is an onboard microcontroller running the sensor interface, not a separate application controller supplied with the product. The STEMMA board needs an external I²C host to retrieve readings.
 
 The main hardware differences behind those marks:
 
