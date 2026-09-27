@@ -26,8 +26,7 @@ Battery lifetime, soil accuracy, and long-term outdoor reliability are still bei
 | Capacitive soil sensing | Y | Y | Y | Y | Y |
 | Two independently read soil-sensing zones | Y | N | N | N | N |
 | Dedicated capacitance-to-digital converter IC | Y | N | N | N | N |
-| Onboard microcontroller (including sensor-interface MCUs) | Y | Y | Y¹ | Y | Y |
-| Reports readings or alerts without a wired external host | Y | Y | N | Y | Y |
+| Operates without an additional controller | Y | Y | N | Y | Y |
 | BLE moisture broadcasting in supplied firmware | Y | N | N | N | Y |
 | Wi-Fi reporting in supplied firmware | N | Y | N | N | N |
 | Onboard coin-cell power support | Y | N | N | Y | Y |
@@ -35,19 +34,17 @@ Battery lifetime, soil accuracy, and long-term outdoor reliability are still bei
 | Relative humidity measurement | Y | N | N | N | Y |
 | Audible watering alarm | N | N | N | Y | N |
 
-¹ Adafruit's [published schematic](https://github.com/adafruit/Adafruit-STEMMA-Soil-Sensor-PCB/blob/master/Adafruit%20STEMMA%20Soil%20Sensor.sch) identifies **IC1 as ATSAMD10D14A**. This is an onboard microcontroller running the sensor interface, not a separate application controller supplied with the product. The STEMMA board needs an external I²C host to retrieve readings.
-
 The main hardware differences behind those marks:
 
 - **This project:** FDC1004 measurement front end, BL54L15 / nRF54L15 MCU and BLE radio, nPM2100 power management, CR2032 battery, and SHT40 temperature/humidity sensor.
 - **Seeed XIAO:** one capacitive probe with analog output read by the ESP32-C6 ADC; stock ESPHome firmware reports over Wi-Fi; powered by one AA battery. The ESP32-C6 has BLE-capable hardware, so the BLE **N** above describes stock moisture reporting, not a missing radio.
-- **Adafruit STEMMA:** one sensing area measured using the ATSAMD10's built-in capacitive-touch peripheral, with digital I²C output. The onboard MCU runs seesaw; an external host supplies application logic/networking and 3–5 V power.
+- **Adafruit STEMMA:** one sensing area measured using the ATSAMD10's built-in capacitive-touch peripheral, with digital I²C output. The ATSAMD10 runs the seesaw sensor interface ([schematic: IC1](https://github.com/adafruit/Adafruit-STEMMA-Soil-Sensor-PCB/blob/master/Adafruit%20STEMMA%20Soil%20Sensor.sch)); an additional controller is required to retrieve and use readings, along with external 3–5 V power.
 - **Chirp:** one sensing area, an analog RC filter / peak detector read by the ATtiny44 ADC, and digital I²C readout. It operates independently as an audible watering alarm on a CR2032, without BLE.
 - **b-parasite:** a CR2032-powered nRF52840/nRF52833 design with one soil-sensing zone, SHTC3 temperature/humidity sensing, and ambient light sensing. Its BLE sample supports BTHome and Home Assistant. The [soil measurement code](https://github.com/rbaron/b-parasite/blob/main/code/prstlib/src/adc.c) drives the sensing circuit with PWM and reads its analog output through the MCU ADC; it does not use a dedicated capacitance-to-digital converter.
 
 Seeed's [store listing](https://www.seeedstudio.com/XIAO-Soil-Sensor-p-6452.html) showed **US$10.90** when checked on September 27, 2026; pricing varies. Its AA/ESP32-C6/Wi-Fi approach differs from this board's CR2032/BLE design, but an ESP32 alone does not establish poor battery life. A fair comparison requires measured energy per wake and equivalent reporting intervals.
 
-Adafruit already includes a microcontroller and digital output; what it lacks is a standalone wireless application host. Chirp uses an analog RC/peak-detector front end and the MCU ADC, but exposes readings digitally over I²C. b-parasite already shares the coin-cell, BLE/BTHome, and temperature/humidity features. The main distinctions from b-parasite are this board's dedicated FDC1004 measurement front end and two independently read sensing zones.
+Adafruit provides digital I²C readings but requires an additional controller to use them. Chirp uses an analog RC/peak-detector front end and the MCU ADC, but exposes readings digitally over I²C. b-parasite already shares the coin-cell, BLE/BTHome, and temperature/humidity features. The main distinctions from b-parasite are this board's dedicated FDC1004 measurement front end and two independently read sensing zones.
 
 ## Prototype status
 
