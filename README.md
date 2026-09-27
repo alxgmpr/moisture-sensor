@@ -19,21 +19,21 @@ Battery lifetime, soil accuracy, and long-term outdoor reliability are still bei
 
 ## How it compares
 
-**Y** = included in the device; **N** = not included. Connectivity refers to this project's current firmware and the competitors' stock functionality. An external host or replacement firmware can add capabilities.
+**Y** = included in the device; **N** = not included. Connectivity refers to this project's current firmware and the competitors' stock functionality (the BLE sample for b-parasite). An external host or replacement firmware can add capabilities.
 
-| Feature | This project | [Seeed XIAO](https://wiki.seeedstudio.com/xiao_soil_moisture_sensor/) | [Adafruit STEMMA](https://www.adafruit.com/product/4026) | [Chirp!](https://wemakethings.net/chirp/) |
-| --- | :---: | :---: | :---: | :---: |
-| Capacitive soil sensing | Y | Y | Y | Y |
-| Two independently read soil-sensing zones | Y | N | N | N |
-| Dedicated capacitance-to-digital converter IC | Y | N | N | N |
-| Onboard microcontroller | Y | Y | Y | Y |
-| Standalone operation without an external MCU/host | Y | Y | N | Y |
-| BLE moisture broadcasting in supplied firmware | Y | N | N | N |
-| Wi-Fi reporting in supplied firmware | N | Y | N | N |
-| Onboard coin-cell power support | Y | N | N | Y |
-| Onboard AA battery power support | N | Y | N | N |
-| Relative humidity measurement | Y | N | N | N |
-| Audible watering alarm | N | N | N | Y |
+| Feature | This project | [Seeed XIAO](https://wiki.seeedstudio.com/xiao_soil_moisture_sensor/) | [Adafruit STEMMA](https://www.adafruit.com/product/4026) | [Chirp!](https://wemakethings.net/chirp/) | [b-parasite](https://github.com/rbaron/b-parasite) |
+| --- | :---: | :---: | :---: | :---: | :---: |
+| Capacitive soil sensing | Y | Y | Y | Y | Y |
+| Two independently read soil-sensing zones | Y | N | N | N | N |
+| Dedicated capacitance-to-digital converter IC | Y | N | N | N | N |
+| Onboard microcontroller | Y | Y | Y | Y | Y |
+| Standalone operation without an external MCU/host | Y | Y | N | Y | Y |
+| BLE moisture broadcasting in supplied firmware | Y | N | N | N | Y |
+| Wi-Fi reporting in supplied firmware | N | Y | N | N | N |
+| Onboard coin-cell power support | Y | N | N | Y | Y |
+| Onboard AA battery power support | N | Y | N | N | N |
+| Relative humidity measurement | Y | N | N | N | Y |
+| Audible watering alarm | N | N | N | Y | N |
 
 The main hardware differences behind those marks:
 
@@ -41,10 +41,11 @@ The main hardware differences behind those marks:
 - **Seeed XIAO:** one capacitive probe with analog output read by the ESP32-C6 ADC; stock ESPHome firmware reports over Wi-Fi; powered by one AA battery. The ESP32-C6 has BLE-capable hardware, so the BLE **N** above describes stock moisture reporting, not a missing radio.
 - **Adafruit STEMMA:** one sensing area measured using the ATSAMD10's built-in capacitive-touch peripheral, with digital I²C output. The onboard MCU runs seesaw; an external host supplies application logic/networking and 3–5 V power.
 - **Chirp:** one sensing area, an analog RC filter / peak detector read by the ATtiny44 ADC, and digital I²C readout. It operates independently as an audible watering alarm on a CR2032, without BLE.
+- **b-parasite:** a CR2032-powered nRF52840/nRF52833 design with one soil-sensing zone, SHTC3 temperature/humidity sensing, and ambient light sensing. Its BLE sample supports BTHome and Home Assistant. The [soil measurement code](https://github.com/rbaron/b-parasite/blob/main/code/prstlib/src/adc.c) drives the sensing circuit with PWM and reads its analog output through the MCU ADC; it does not use a dedicated capacitance-to-digital converter.
 
 Seeed's [store listing](https://www.seeedstudio.com/XIAO-Soil-Sensor-p-6452.html) showed **US$10.90** when checked on September 27, 2026; pricing varies. Its AA/ESP32-C6/Wi-Fi approach differs from this board's CR2032/BLE design, but an ESP32 alone does not establish poor battery life. A fair comparison requires measured energy per wake and equivalent reporting intervals.
 
-Adafruit already includes a microcontroller and digital output; what it lacks is a standalone wireless application host. Chirp uses an analog RC/peak-detector front end and the MCU ADC, but exposes readings digitally over I²C. The distinction here is the dedicated FDC1004 measurement front end, two sensing zones, and integrated BLE system.
+Adafruit already includes a microcontroller and digital output; what it lacks is a standalone wireless application host. Chirp uses an analog RC/peak-detector front end and the MCU ADC, but exposes readings digitally over I²C. b-parasite already shares the coin-cell, BLE/BTHome, and temperature/humidity features. The main distinctions from b-parasite are this board's dedicated FDC1004 measurement front end and two independently read sensing zones.
 
 ## Prototype status
 
