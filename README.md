@@ -19,12 +19,28 @@ Battery lifetime, soil accuracy, and long-term outdoor reliability are still bei
 
 ## How it compares
 
-| Design | Moisture measurement | Sensing zones | Controller / connectivity | Power |
-| --- | --- | --- | --- | --- |
-| **This project** | Dedicated FDC1004 capacitance-to-digital converter | Two independently read zones | BL54L15 / nRF54L15; BLE BTHome, configuration, and OTA | Replaceable CR2032, nPM2100, switched sensing rail |
-| **[Seeed XIAO Soil Moisture Sensor](https://wiki.seeedstudio.com/xiao_soil_moisture_sensor/)** | Capacitive probe with analog output read by the ESP32-C6 ADC | One | Included XIAO ESP32-C6; stock ESPHome firmware uses Wi-Fi | Single AA battery |
-| **[Adafruit STEMMA Soil Sensor](https://www.adafruit.com/product/4026)** | ATSAMD10 built-in capacitive-touch measurement; digital I²C output | One | Onboard ATSAMD10 runs seesaw; requires an external host for application logic/networking; no onboard BLE | External 3–5 V supply |
-| **[Chirp!](https://wemakethings.net/chirp/)** | RC filter / peak detector read by the ATtiny44 ADC; digital I²C readout | One | Standalone audible watering alarm; no BLE | Coin-cell powered |
+**Y** = included in the device; **N** = not included. Connectivity refers to this project's current firmware and the competitors' stock functionality. An external host or replacement firmware can add capabilities.
+
+| Feature | This project | [Seeed XIAO](https://wiki.seeedstudio.com/xiao_soil_moisture_sensor/) | [Adafruit STEMMA](https://www.adafruit.com/product/4026) | [Chirp!](https://wemakethings.net/chirp/) |
+| --- | :---: | :---: | :---: | :---: |
+| Capacitive soil sensing | Y | Y | Y | Y |
+| Two independently read soil-sensing zones | Y | N | N | N |
+| Dedicated capacitance-to-digital converter IC | Y | N | N | N |
+| Onboard microcontroller | Y | Y | Y | Y |
+| Standalone operation without an external MCU/host | Y | Y | N | Y |
+| BLE moisture broadcasting in supplied firmware | Y | N | N | N |
+| Wi-Fi reporting in supplied firmware | N | Y | N | N |
+| Onboard coin-cell power support | Y | N | N | Y |
+| Onboard AA battery power support | N | Y | N | N |
+| Relative humidity measurement | Y | N | N | N |
+| Audible watering alarm | N | N | N | Y |
+
+The main hardware differences behind those marks:
+
+- **This project:** FDC1004 measurement front end, BL54L15 / nRF54L15 MCU and BLE radio, nPM2100 power management, CR2032 battery, and SHT40 temperature/humidity sensor.
+- **Seeed XIAO:** one capacitive probe with analog output read by the ESP32-C6 ADC; stock ESPHome firmware reports over Wi-Fi; powered by one AA battery. The ESP32-C6 has BLE-capable hardware, so the BLE **N** above describes stock moisture reporting, not a missing radio.
+- **Adafruit STEMMA:** one sensing area measured using the ATSAMD10's built-in capacitive-touch peripheral, with digital I²C output. The onboard MCU runs seesaw; an external host supplies application logic/networking and 3–5 V power.
+- **Chirp:** one sensing area, an analog RC filter / peak detector read by the ATtiny44 ADC, and digital I²C readout. It operates independently as an audible watering alarm on a CR2032, without BLE.
 
 Seeed's [store listing](https://www.seeedstudio.com/XIAO-Soil-Sensor-p-6452.html) showed **US$10.90** when checked on September 27, 2026; pricing varies. Its AA/ESP32-C6/Wi-Fi approach differs from this board's CR2032/BLE design, but an ESP32 alone does not establish poor battery life. A fair comparison requires measured energy per wake and equivalent reporting intervals.
 
