@@ -30,7 +30,7 @@
     ],
     "kicad_version": "10.99.0",
     "schematic_parity": [],
-    "source": "moisture-sensor-carrier.kicad_pcb",
+    "source": "moisture-sensor.kicad_pcb",
     "unconnected_items": [
         {
             "description": "Missing connection between items",

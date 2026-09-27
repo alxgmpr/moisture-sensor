@@ -23,7 +23,7 @@ Six ratsnest connections remain: two connections per signal (MCU, FDC and pull-u
 
 ## Firmware
 
-The carrier qualification image uses TWIM20 for address 0x50 and TWIM22 for PMIC/SHT. SPI20 and UART20 are disabled. TWIM20 has runtime device PM enabled and starts in its sleep state; both default and sleep pinctrl explicitly disable internal bias, and sleep disconnects the pins. The SDK driver resumes for each transfer and synchronously suspends after it, including error returns. FDC transfers begin only after the existing supply-enable/settling sequence. Startup and shutdown both verify runtime PM is enabled and the bus is suspended; failure retains watchdog recovery instead of switching off beneath active pins.
+The sensor qualification image uses TWIM20 for address 0x50 and TWIM22 for PMIC/SHT. SPI20 and UART20 are disabled. TWIM20 has runtime device PM enabled and starts in its sleep state; both default and sleep pinctrl explicitly disable internal bias, and sleep disconnects the pins. The SDK driver resumes for each transfer and synchronously suspends after it, including error returns. FDC transfers begin only after the existing supply-enable/settling sequence. Startup and shutdown both verify runtime PM is enabled and the bus is suspended; failure retains watchdog recovery instead of switching off beneath active pins.
 
 Nordic SDK v3.2.2 build passed: [build log](firmware-build.log), [devicetree](firmware/zephyr.dts), [configuration](firmware/.config), [merged image](firmware/merged.hex). This image targets the updated wiring after routing; the earlier shared-bus binary is obsolete. Electrical leakage and sleep/reset transitions still require bench measurement.
 
@@ -33,7 +33,7 @@ Nordic SDK v3.2.2 build passed: [build log](firmware-build.log), [devicetree](fi
 - Native schematic/PCB parity: **0 mismatches**.
 - Refilled native PCB DRC: **0 physical-rule errors**, **6 intentional unrouted errors**, 91 warnings. [Report](drc.json).
 - Native ERC: **0 errors, 11 warnings**. Ten concern existing C_Small library copies. One reports a no-connect/GND connection involving unchanged #PWRTP8 and an unchanged no-connect marker; it is outside the changed nets and remains for broader schematic review. [Report](erc.json).
-- Carrier host tests passed for measurement, CRC, range, bounded waits and bus-fault cleanup.
+- Sensor host tests passed for measurement, CRC, range, bounded waits and bus-fault cleanup.
 - Hardware regression selection: 15 of 16 tests passed. The remaining pre-existing assertion expects SENSE clearance 0.20 mm, but the project already used 0.60 mm before this change (also captured in the previous feasibility study). That clearance was preserved. [Test log](tests.log).
 - Visually checked the FDC schematic, module pin labels, and refilled copper/courtyard placement.
 

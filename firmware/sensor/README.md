@@ -4,7 +4,7 @@ This image exercises the actual BL54L15/nPM2100/FDC1004/SHT40 board. Development
 
 The low-voltage policy uses a 1.8 V PMIC-ADC cutoff and 2.0 V recovery threshold. MCUboot checks input before image verification or swapping; the application repeats the check before settings, sensing and radio work. Undervoltage and interrupted attempts enter a 60-second PMIC hibernate retry, with timed MCU System OFF as a fallback. These are conservative bench thresholds, not a qualified CR2032 discharge endpoint. After undervoltage, recovery waits for the next 60-second retry even if the battery voltage rises. A brief input power cycle may preserve PMIC Hibernate state; it is not a guaranteed immediate wake. See [the investigation](../../docs/low-voltage-investigation-2026-09-21.md).
 
-Version 0.2.9 added [local browser configuration](dashboard/README.md) with persistent name, intervals, and two-point calibration over BLE. Run `node firmware/carrier-bringup/dashboard/serve.mjs` from the repository root and open http://127.0.0.1:8766 in Chrome/Edge. Existing 0.2.5 devices need one firmware update before configuration is available.
+Version 0.2.9 added [local browser configuration](dashboard/README.md) with persistent name, intervals, and two-point calibration over BLE. Run `node firmware/sensor/dashboard/serve.mjs` from the repository root and open http://127.0.0.1:8766 in Chrome/Edge. Existing 0.2.5 devices need one firmware update before configuration is available.
 
 Production defaults to a 15-minute measurement interval, a 5-second BLE window with 500 ms advertising spacing, and a 1-hour interval below 2.5 V. Development mode (`dev.conf`) uses a 60-second interval and 30-second window. These intervals include application awake time. An established connection may last up to 300 seconds by default; configure up to 900 seconds before reconnecting for longer SMP uploads. Stored settings override build defaults. See the [power audit](../../docs/power-and-configuration-2026-09-21.md) for calculations, limits, and measurement priorities.
 
@@ -31,12 +31,12 @@ Both buses run at 100 kHz with a 25 ms transaction timeout; conversion/status po
 Nordic nRF Connect SDK **v3.2.2**, board `bl54l15_dvk/nrf54l15/cpuapp`, with this application's `app.overlay`. The overlay removes the DVK LEDs/buttons/external flash/UART, assigns TWIM22 to main-bus SDA=P1.10 and SCL=P1.11 and TWIM20 to FDC SDA=P1.05 and SCL=P1.04, enables WDT31, and sets the provisional X1 internal load to 12 pF per leg. HFXO retains the Ezurio DVK's 15 pF setting. Verify crystal frequency and cold startup on the board.
 
 ```sh
-west build --sysbuild -p always -b bl54l15_dvk/nrf54l15/cpuapp firmware/carrier-bringup
-sh firmware/carrier-bringup/tests/run.sh
+west build --sysbuild -p always -b bl54l15_dvk/nrf54l15/cpuapp firmware/sensor
+sh firmware/sensor/tests/run.sh
 # Validate the package being deployed, rather than a stale cached archive:
-DFU_PACKAGE=/path/to/dfu_application.zip sh firmware/carrier-bringup/tests/run.sh
+DFU_PACKAGE=/path/to/dfu_application.zip sh firmware/sensor/tests/run.sh
 # Optional host undefined-behavior checks:
-CFLAGS=-fsanitize=undefined sh firmware/carrier-bringup/tests/run.sh
+CFLAGS=-fsanitize=undefined sh firmware/sensor/tests/run.sh
 ```
 
 The original shared-bus build is archived in `docs/reliability-2026-09-07/firmware/` and is obsolete for this wiring. The dedicated-bus build evidence is in `docs/fdc-bus-update-2026-09-09/`. Compilation verifies SDK integration, not hardware operation. The original DK demo remains available separately.
@@ -54,7 +54,7 @@ advertises as `Soil-OTA` using MCUmgr/SMP over BLE. The generated
 ```sh
 west build --sysbuild -p always \
   -b bl54l15_dvk/nrf54l15/cpuapp \
-  -d build-sensor-ota carrier-bringup \
+  -d build-sensor-ota sensor \
   -- -DEXTRA_CONF_FILE=ota.conf
 ```
 
@@ -84,17 +84,17 @@ selected for a production profile.
 ```sh
 # Production sensor image; no EXTRA_CONF_FILE
 west build --sysbuild -p always -b bl54l15_dvk/nrf54l15/cpuapp \
-  -d build-sensor firmware/carrier-bringup -- \
+  -d build-sensor firmware/sensor -- \
   -DSB_CONFIG_BOOT_SIGNATURE_KEY_FILE=/secure/keys/sensor-rsa-2048.pem
 
 # Development cadence: 60 s measurement, 30 s advertising
 west build --sysbuild -p always -b bl54l15_dvk/nrf54l15/cpuapp \
-  -d build-sensor-dev firmware/carrier-bringup -- \
+  -d build-sensor-dev firmware/sensor -- \
   -DEXTRA_CONF_FILE=dev.conf
 
 # SWD/recovery maintenance image
 west build --sysbuild -p always -b bl54l15_dvk/nrf54l15/cpuapp \
-  -d build-sensor-ota firmware/carrier-bringup -- \
+  -d build-sensor-ota firmware/sensor -- \
   -DEXTRA_CONF_FILE=ota.conf \
   -DSB_CONFIG_BOOT_SIGNATURE_KEY_FILE=/secure/keys/sensor-rsa-2048.pem
 ```
@@ -150,7 +150,7 @@ states on hardware; a successful build cannot measure leakage.
 ## Timeout investigation (2026-09-21)
 
 See [the investigation and validation record](../../docs/timeout-investigation-2026-09-21.md).
-`-ETIMEDOUT` from the carrier code records the chip address, register, last
+`-ETIMEDOUT` from the sensor code records the chip address, register, last
 observed value, mask, and expected value in `sensor_trace.fault`; an I2C error
 has a zero mask. `sensor_trace.sample` and `wake_seconds` record the last cycle's
 voltage and planned sleep. Stage 83 means shutdown and GRTC preparation completed.

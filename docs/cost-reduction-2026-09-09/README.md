@@ -95,7 +95,7 @@ types fall from 13 to 12, with fees $39.91 → $36.84 at $3.07/type.
   and zero schematic-parity issues. The existing export gate accepts only
   those exact two vias; no exceptions were added.
 - Four existing BOM/export unit tests passed.
-- Carrier host tests passed: measurements, CRC, range, bounded waits and
+- Sensor host tests passed: measurements, CRC, range, bounded waits and
   bus-fault cleanup. This is not hardware validation or a new SDK build.
 - Rendered schematic checked for legible changed values and unchanged wiring.
 

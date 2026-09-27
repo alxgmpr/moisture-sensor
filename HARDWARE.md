@@ -1,6 +1,6 @@
 > 2026-09-09: D8/D9 clamp the protected CIN nets after R30/R31. Both electrodes now occupy all four copper layers, with all-layer SHLD rings closed at the tip. See [probe revision and electrical limits](docs/probe-review-2026-09-09/README.md).
 
-> 2026-09-07: C21/C23 use GRM158R60J226ME01D; D8/D9 have dedicated In1 ground returns. Real board qualification firmware is in `firmware/carrier-bringup`. See [implemented reliability changes](docs/reliability-2026-09-07/README.md) for current limits and required measurements.
+> 2026-09-07: C21/C23 use GRM158R60J226ME01D; D8/D9 have dedicated In1 ground returns. Real board qualification firmware is in `firmware/sensor`. See [implemented reliability changes](docs/reliability-2026-09-07/README.md) for current limits and required measurements.
 
 # nRF Moisture Sensor — Hardware Design
 

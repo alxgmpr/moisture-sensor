@@ -9,7 +9,7 @@ against the downloaded executable rather than assumed from that ELF.
 
 Two power-lifecycle defects are confirmed in the firmware:
 
-1. `carrier_start()` arms a 20-second nPM2100 power-cycle watchdog, but the
+1. `sensor_start()` arms a 20-second nPM2100 power-cycle watchdog, but the
    foreground BLE loop only fed the MCU watchdog. Development advertising lasts
    300 seconds, and a connected OTA session has no fixed duration. A healthy
    radio session therefore outlives the PMIC watchdog. This resets both the
@@ -21,12 +21,12 @@ Two power-lifecycle defects are confirmed in the firmware:
    advertising and error recovery.
 
 The current battery initially reported approximately 2.2–2.3 V. A hardware
-breakpoint immediately after `carrier_start()` subsequently captured `-ERANGE`
+breakpoint immediately after `sensor_start()` subsequently captured `-ERANGE`
 (-34) with battery readings of 1925, 1887, 1862, and 1825 mV. These are below the
 existing 2200 mV cutoff. The user elected to continue with this battery and
 defer a fresh-cell measurement run until the firmware work is complete.
 
-**The reported -116 itself was not reproduced in this session.** Carrier status
+**The reported -116 itself was not reproduced in this session.** Sensor status
 polls return `-ETIMEDOUT`; the documented NCS v3.2.2 TWIM driver returns `-EIO`
 on transfer timeout. A generic stage or errno therefore does not identify a
 PMIC or FDC hardware defect. No claim is made that a specific FDC silicon,

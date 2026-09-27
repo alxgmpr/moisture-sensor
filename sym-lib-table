@@ -8,5 +8,5 @@
 
 (lib (name "ezurio") (type "KiCad") (uri "${KIPRJMOD}/lib/ezurio.kicad_sym") (options "") (descr "Ezurio verified module assets"))
 
-(lib (name "protection") (type "KiCad") (uri "${KIPRJMOD}/lib/protection.kicad_sym") (options "") (descr "Carrier protection components"))
+(lib (name "protection") (type "KiCad") (uri "${KIPRJMOD}/lib/protection.kicad_sym") (options "") (descr "Sensor protection components"))
 )

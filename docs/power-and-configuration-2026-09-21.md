@@ -52,7 +52,7 @@ The new development profile still spends half its time in the radio window and
 samples much more often than before. It is useful for configuration/bench work,
 not a battery-life profile. Persisted settings override either build profile.
 
-The [local dashboard](../firmware/carrier-bringup/dashboard/README.md) edits
+The [local dashboard](../firmware/sensor/dashboard/README.md) edits
 measurement and low-battery intervals, window length, event spacing, connection
 limit, name, and both dry/wet calibration pairs. It can request a sample, show
 raw fF and CAPDAC, and capture an endpoint. Browser writes are chunked, checked,
@@ -113,7 +113,7 @@ bootloader and slot layout remain compatible with the deployed image.
 
 ## Sources
 
-- Repository `src/main.c`, `src/carrier.c`, `Kconfig`, `dev.conf`, and pinned NCS
+- Repository `src/main.c`, `src/sensor.c`, `Kconfig`, `dev.conf`, and pinned NCS
   v3.2.2 Bluetooth/GRTC/RRAM/ZMS sources.
 - [Previous hardware observation](timeout-investigation-2026-09-21.md).
 - [Zephyr ZMS design](https://docs.zephyrproject.org/latest/services/storage/zms/zms.html).
@@ -126,14 +126,14 @@ bootloader and slot layout remain compatible with the deployed image.
 
 - Production 0.2.9, development 0.2.9 and maintenance 0.2.10 build with the pinned
   NCS v3.2.2 toolchain, `--sysbuild`, and the deployed DK base target plus the
-  carrier overlay. All three generated partition maps preserve the deployed
+  sensor overlay. All three generated partition maps preserve the deployed
   bootloader, application budget and primary/secondary slots. The partition
   validator catches an SDK-generated extra ZMS reservation; the final build
   explicitly names the tail reservation `zms_storage` to prevent it.
 - All three DFU packages pass the header, slot, version, image-digest and
   RSA-2048/SHA-256 format checks. The deployed production binary also passes
   cryptographic signature verification with the existing prototype key.
-- Carrier fault-injection tests, BTHome payload tests, new configuration tests,
+- Sensor fault-injection tests, BTHome payload tests, new configuration tests,
   and six browser protocol tests pass, including an undefined-behavior sanitizer
   run. The browser encoder is compared byte-for-byte with the actual compiled
   C encoder. An AddressSanitizer run stalled before test output and was stopped;

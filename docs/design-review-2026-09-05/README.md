@@ -15,7 +15,7 @@ The existing 0.4/0.5 mm 3V3 traces have ample modeled current capacity for this 
 | BOM synchronization | [BOM.md](../../BOM.md) regenerated from [KiCad-exported source fields](product-bom.csv) |
 | Final verification | Zero DRC errors, zero unconnected items, zero schematic parity issues; zero ERC errors; 43 tests and 261 subtests pass |
 
-The repository directory remains `/Users/alex/moisture-sensor-carrier` so the active workspace and existing local integrations continue to resolve. Open `nrf-moisture-sensor.kicad_pro` for future editing. Old root fabrication outputs were moved to `tmp/pre-rename-fabrication`; historical reports/backups retain their original names. No fabrication package was released.
+The repository directory remains `/Users/alex/moisture-sensor` so the active workspace and existing local integrations continue to resolve. Open `nrf-moisture-sensor.kicad_pro` for future editing. Old root fabrication outputs were moved to `tmp/pre-rename-fabrication`; historical reports/backups retain their original names. No fabrication package was released.
 
 ## Findings that affect the design
 

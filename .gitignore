@@ -44,8 +44,8 @@ __pycache__/
 .venv/
 
 # Firmware build outputs --------------------------------------------------
-/firmware/carrier-bringup/build/
-/firmware/carrier-bringup/build-*/
+/firmware/sensor/build/
+/firmware/sensor/build-*/
 
 # VS Code Local History extension (it is its own git repo)
 .history/

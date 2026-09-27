@@ -795,7 +795,7 @@ Copyright © 2016, Texas Instruments Incorporated                               
 
 PACKAGING INFORMATION
 
-       Orderable part number          Status     Material type      Package | Pins      Package qty | Carrier       RoHS             Lead finish/               MSL rating/          Op temp (°C)               Part marking
+       Orderable part number          Status     Material type      Package | Pins      Package qty | Sensor       RoHS             Lead finish/               MSL rating/          Op temp (°C)               Part marking
                                         (1)            (2)                                                            (3)            Ball material              Peak reflow                                           (6)
                                                                                                                                           (4)                       (5)
 
@@ -886,7 +886,7 @@ TAPE AND REEL INFORMATION
                                                                A0   Dimension designed to accommodate the component width
                                                                B0   Dimension designed to accommodate the component length
                                                                K0   Dimension designed to accommodate the component thickness
-                                                               W    Overall width of the carrier tape
+                                                               W    Overall width of the sensor tape
                                                                P1   Pitch between successive cavity centers
 
 

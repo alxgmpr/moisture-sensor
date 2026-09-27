@@ -2,7 +2,7 @@
 	(version 20240108)
 	(generator "tools_gen_pcb.py")
 	(layer "F.Cu")
-	(descr "2.4 GHz PCB inverted-F antenna for the moisture-sensor-carrier stake. NOT copied from a Nordic reference - the QFAA reference layout 0.8 contains no PCB antenna, so this is designed for this board's ground plane and is a starting point only. Origin is the FEED point on the ground-plane boundary. Pad 1 feed stub, pad 2 shorting stub, pad 3 radiating arm. The three are a declared net tie because an IFA is a shorted stub and the feed is DC-grounded by design. Trim the arm to tune; tune with the enclosure fitted and a realistic soil load - LAYOUT.md section 3.")
+	(descr "2.4 GHz PCB inverted-F antenna for the moisture-sensor stake. NOT copied from a Nordic reference - the QFAA reference layout 0.8 contains no PCB antenna, so this is designed for this board's ground plane and is a starting point only. Origin is the FEED point on the ground-plane boundary. Pad 1 feed stub, pad 2 shorting stub, pad 3 radiating arm. The three are a declared net tie because an IFA is a shorted stub and the feed is DC-grounded by design. Trim the arm to tune; tune with the enclosure fitted and a realistic soil load - LAYOUT.md section 3.")
 	(tags "antenna IFA 2.4GHz BLE net-tie")
 	(attr smd exclude_from_pos_files exclude_from_bom)
 

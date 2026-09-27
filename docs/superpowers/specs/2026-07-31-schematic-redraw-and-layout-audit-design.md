@@ -227,7 +227,7 @@ pad junctions, arc fillets at corners.
 | Check | Pass condition |
 |---|---|
 | ERC | Clean, with unjustified `PWR_FLAG`s removed rather than retained |
-| DRC | Clean against `moisture-sensor-carrier.kicad_dru` |
+| DRC | Clean against `moisture-sensor.kicad_dru` |
 | Connectivity | 0 unconnected |
 | Angles | `tools_lint_angles.py` reports 0 segments off a 45° multiple |
 | Net equivalence | Schematic-vs-PCB net comparison shows drawing-only changes, except where Phase 1 found a genuine error — each such change called out individually |

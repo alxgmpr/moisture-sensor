@@ -50,7 +50,7 @@ The common /SHLD net connects U3 pins 1 and 6, TP3, D10 (to ground), and the gua
 
 ## Firmware and transport audit
 
-`carrier_start()` shuts down the sensor rail, establishes the regulator's HP mode and 3.3 V output, enables the FDC switched rail, and waits 5 ms. Both channels are then acquired consecutively before sensor power is removed. Measure-now uses the same startup and acquisition path.
+`sensor_start()` shuts down the sensor rail, establishes the regulator's HP mode and 3.3 V output, enables the FDC switched rail, and waits 5 ms. Both channels are then acquired consecutively before sensor power is removed. Measure-now uses the same startup and acquisition path.
 
 The FDC uses address 0x50 on its dedicated I²C bus; manufacturer/device IDs are checked. `capacitance()` writes `0x08 = (channel << 13) | 0x1000 | (CAPDAC << 5)`. CHA=0 selects CIN1, CHA=1 selects CIN2; CHB=4 selects CAPDAC. It writes `0x0c = 0x0480`: 100 samples/s, MEAS1 enabled, repeat disabled. It waits for DONE1 (bit 3), bounded at 30 one-ms waits. It reads registers 0x00 **then** 0x01. Reusing MEAS1 for both input pins is valid: input channel and result-slot number are different concepts. Reading 0x02/0x03 for SENSE2 without configuring/enabling MEAS2 would be incorrect.
 
@@ -60,7 +60,7 @@ SHLD1 follows the selected input in single-ended CAPDAC mode and SHLD2 is floati
 
 The application preserves `[0]`/`[1]` through raw status and calibration. `sensor_moisture()` computes `(raw_fF - dry_fF) * 10000 / (wet_fF - dry_fF)` in 64-bit arithmetic, clamps to 0–10000, and returns hundredths of a percent. SENSE2=2095 is 523 fF below dry; 2226 is 392 fF below dry. The clamp explains the displayed zero but not the poor physical response.
 
-The encoder emits UUID FCD2, unencrypted v2 info 0x40, then two little-endian uint16 0x14 moisture objects, in SENSE1/SENSE2 order. This matches [BTHome's format and repeated-object rules](https://bthome.io/format/). No raw-capacitance-to-moisture reinterpretation occurs at the receiver. 0.2.28 removes 0x3d diagnostic count objects only. The archived 0.2.27 `carrier.c` is byte-for-byte identical to the current file; ELF disassembly for both releases is retained in the evidence folder.
+The encoder emits UUID FCD2, unencrypted v2 info 0x40, then two little-endian uint16 0x14 moisture objects, in SENSE1/SENSE2 order. This matches [BTHome's format and repeated-object rules](https://bthome.io/format/). No raw-capacitance-to-moisture reinterpretation occurs at the receiver. 0.2.28 removes 0x3d diagnostic count objects only. The archived 0.2.27 `sensor.c` is byte-for-byte identical to the current file; ELF disassembly for both releases is retained in the evidence folder.
 
 Existing C driver/calibration/encoding tests, browser protocol tests, version checks, partition checks and the saved 0.2.28 DFU package validation passed. These establish software consistency, not analog behavior on either device.
 

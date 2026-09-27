@@ -9,8 +9,8 @@ From the repository root, using KiCad 10.99 (file format 20260828):
 
 ```sh
 export KICAD_CLI=/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli
-"$KICAD_CLI" sch erc --format json -o docs/bl54l15/erc.json moisture-sensor-carrier.kicad_sch
-"$KICAD_CLI" pcb drc --refill-zones --save-board --schematic-parity --format json -o docs/bl54l15/drc.json moisture-sensor-carrier.kicad_pcb
+"$KICAD_CLI" sch erc --format json -o docs/bl54l15/erc.json moisture-sensor.kicad_sch
+"$KICAD_CLI" pcb drc --refill-zones --save-board --schematic-parity --format json -o docs/bl54l15/drc.json moisture-sensor.kicad_pcb
 python3 -m unittest discover -s tests -v
 python3 tools_export_bl54l15.py
 ```

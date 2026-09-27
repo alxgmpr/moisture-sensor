@@ -1,6 +1,6 @@
-# BL54L15 carrier firmware port
+# BL54L15 sensor firmware port
 
-A real carrier qualification image is now available in [carrier-bringup](carrier-bringup/README.md), built against nRF Connect SDK 3.2.2 with the carrier overlay. Existing DK applications retain their bench targets. The remaining requirements below still need physical qualification; no carrier has been built or measured.
+A real sensor qualification image is now available in [sensor](sensor/README.md), built against nRF Connect SDK 3.2.2 with the sensor overlay. Existing DK applications retain their bench targets. The remaining requirements below still need physical qualification; no sensor has been built or measured.
 
 ## GPIO and programming
 
@@ -38,12 +38,12 @@ then measure frequency, cold/low-voltage startup, drive margin and temperature
 behavior using a buffered clock output or appropriate low-loading technique.
 Do not probe crystal pins with an ordinary oscilloscope probe.
 
-Example carrier starting point (not applied to DK applications):
+Example sensor starting point (not applied to DK applications):
 
 ```dts
 &lfxo {
     load-capacitors = "internal";
-    load-capacitance-femtofarad = <12000>; /* Initial estimate; trim on carrier. */
+    load-capacitance-femtofarad = <12000>; /* Initial estimate; trim on sensor. */
     status = "okay";
 };
 
@@ -64,7 +64,7 @@ inductor and rail support are in the module, so no host DCC wiring is needed.
 Select LFXO as LFCLK and retain the System OFF/GRTC timed-wake design. Wait for
 clock startup, configure/retain the required low-frequency/GRTC domain, arm the
 wake deadline, and test repeated timed System OFF cycles at voltage and
-temperature limits. A DK wake test alone does not verify the new carrier layout.
+temperature limits. A DK wake test alone does not verify the new sensor layout.
 
 ## nPM2100 and radio
 
@@ -84,9 +84,9 @@ relying on SoC System OFF/GRTC wake.
 - [Ezurio module datasheet](https://www.ezurio.com/documentation/datasheet-bl54l10-and-bl54l15-series), Clocks, Circuit Checklist, Pin-Out and operating conditions.
 - [Nordic LFXO internal capacitor model](https://docs.nordicsemi.com/r/bundle/ngl_001/page/gl/ngl_001/lfxo_internal_capacitor.html) and [LFXO devicetree](https://docs.nordicsemi.com/r/bundle/ngl_001/page/gl/ngl_001/lfxo_devicetree.html).
 - [Zephyr nRF54L LFXO binding](https://docs.zephyrproject.org/latest/build/dts/api/bindings/clock/nordic,nrf54l-lfxo.html) and [factory-trim implementation](https://github.com/zephyrproject-rtos/zephyr/blob/main/soc/nordic/nrf54l/soc.c).
-- [Ezurio BL54L15 DVK clock/regulator configuration](https://github.com/zephyrproject-rtos/zephyr/blob/main/boards/ezurio/bl54l15_dvk/nrf54l_10_15_cpuapp_common.dtsi). This is a module reference, not a carrier pin assignment.
+- [Ezurio BL54L15 DVK clock/regulator configuration](https://github.com/zephyrproject-rtos/zephyr/blob/main/boards/ezurio/bl54l15_dvk/nrf54l_10_15_cpuapp_common.dtsi). This is a module reference, not a sensor pin assignment.
 - Local Nordic nPM2100 Datasheet v1.0, boost operating modes and external component limits.
 
 ## Timing-marker pads
 
-The carrier now exposes **MARK1 / TP16 on P1.07 (U1 pad 20)** and **MARK2 / TP17 on P1.06 (U1 pad 21)**. For Zephyr these are `gpio1` pins 7 and 6. Reserve both for optional instrumentation; hardware routing alone does not enable output toggling. P0.01/P0.02 remain unused. [Board map](../docs/testpoints-2026-09-07/README.md).
+The sensor now exposes **MARK1 / TP16 on P1.07 (U1 pad 20)** and **MARK2 / TP17 on P1.06 (U1 pad 21)**. For Zephyr these are `gpio1` pins 7 and 6. Reserve both for optional instrumentation; hardware routing alone does not enable output toggling. P0.01/P0.02 remain unused. [Board map](../docs/testpoints-2026-09-07/README.md).

@@ -18,7 +18,7 @@ static K_SEM_DEFINE(wake, 0, 1);
 static struct zms_fs storage;
 static struct sensor_config current, pending;
 static struct config_transaction transaction;
-static struct carrier_sample last_sample;
+static struct sensor_sample last_sample;
 static int storage_error, save_error, sample_error;
 static uint32_t saves;
 static uint8_t diagnostics[8];
@@ -109,7 +109,7 @@ void sensor_settings_process(void)
     }
     k_mutex_unlock(&lock);
 }
-void sensor_status_sample(const struct carrier_sample *s, int error)
+void sensor_status_sample(const struct sensor_sample *s, int error)
 {
     k_mutex_lock(&lock, K_FOREVER);
     if (s) last_sample = *s;

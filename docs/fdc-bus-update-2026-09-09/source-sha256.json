@@ -2,7 +2,7 @@
   "nrf-moisture-sensor.kicad_sch": "736167e56ce52c0bb6d17f1c94e0f67f9584b8ee9e2950d5982b079f83f6b685",
   "nrf-moisture-sensor.kicad_pcb": "3d5dac079de9c50a3a5e2e903d45236f120d7495f1d5751c7a65d729d82e050e",
   "nrf-moisture-sensor.kicad_pro": "d174171707a8e031ec669aaabbbbbbd42ac130376e0dff29a1da85809651f15a",
-  "firmware/carrier-bringup/app.overlay": "beee7cc64cd66dbc15e5e712f26c148f945f877bccbbedd07018d0efb0544d73",
-  "firmware/carrier-bringup/src/main.c": "10fca109b280bff0492cb9802f7a65883aa5ae99e2695ac62af2e272ccf3d439",
-  "firmware/carrier-bringup/prj.conf": "50280251699a0ac1832d178fad99e2a062d2a62ec404f4f820d0fe9080eb3307"
+  "firmware/sensor/app.overlay": "beee7cc64cd66dbc15e5e712f26c148f945f877bccbbedd07018d0efb0544d73",
+  "firmware/sensor/src/main.c": "10fca109b280bff0492cb9802f7a65883aa5ae99e2695ac62af2e272ccf3d439",
+  "firmware/sensor/prj.conf": "50280251699a0ac1832d178fad99e2a062d2a62ec404f4f820d0fe9080eb3307"
 }

@@ -25,13 +25,13 @@ Design: [docs/superpowers/specs/2026-08-04-bthome-firmware-design.md](../specs/2
 **Build command** (used by several tasks):
 
 ```bash
-docker run --rm --platform linux/amd64 -v ncs-src:/workdir -v ncs-build:/builds -v /Users/alex/moisture-sensor-carrier/firmware:/fw -w /workdir ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.2.2 'source /opt/toolchain-env.sh; export ZEPHYR_BASE=/workdir/zephyr; west build -p always -b nrf54l15dk/nrf54l15/cpuapp -d /builds/bthome /fw/bthome-sensor && cp /builds/bthome/merged.hex /fw/.build-bthome.hex'
+docker run --rm --platform linux/amd64 -v ncs-src:/workdir -v ncs-build:/builds -v /Users/alex/moisture-sensor/firmware:/fw -w /workdir ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.2.2 'source /opt/toolchain-env.sh; export ZEPHYR_BASE=/workdir/zephyr; west build -p always -b nrf54l15dk/nrf54l15/cpuapp -d /builds/bthome /fw/bthome-sensor && cp /builds/bthome/merged.hex /fw/.build-bthome.hex'
 ```
 
 **Flash command** (used by several tasks):
 
 ```bash
-cd /Users/alex/moisture-sensor-carrier/firmware && nrfutil device program --firmware .build-bthome.hex --options chip_erase_mode=ERASE_ALL --serial-number 1057774579 && nrfutil device reset --serial-number 1057774579
+cd /Users/alex/moisture-sensor/firmware && nrfutil device program --firmware .build-bthome.hex --options chip_erase_mode=ERASE_ALL --serial-number 1057774579 && nrfutil device reset --serial-number 1057774579
 ```
 
 ---
@@ -504,7 +504,7 @@ int main(void)
 - [ ] **Step 3: Build**
 
 ```bash
-docker run --rm --platform linux/amd64 -v ncs-src:/workdir -v ncs-build:/builds -v /Users/alex/moisture-sensor-carrier/firmware:/fw -w /workdir ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.2.2 'source /opt/toolchain-env.sh; export ZEPHYR_BASE=/workdir/zephyr; west build -p always -b nrf54l15dk/nrf54l15/cpuapp -d /builds/bthome /fw/bthome-sensor && cp /builds/bthome/merged.hex /fw/.build-bthome.hex'
+docker run --rm --platform linux/amd64 -v ncs-src:/workdir -v ncs-build:/builds -v /Users/alex/moisture-sensor/firmware:/fw -w /workdir ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.2.2 'source /opt/toolchain-env.sh; export ZEPHYR_BASE=/workdir/zephyr; west build -p always -b nrf54l15dk/nrf54l15/cpuapp -d /builds/bthome /fw/bthome-sensor && cp /builds/bthome/merged.hex /fw/.build-bthome.hex'
 ```
 
 Expected: exit 0 and `.build-bthome.hex` written.
@@ -512,7 +512,7 @@ Expected: exit 0 and `.build-bthome.hex` written.
 - [ ] **Step 4: Flash and read the console**
 
 ```bash
-cd /Users/alex/moisture-sensor-carrier/firmware && nrfutil device program --firmware .build-bthome.hex --options chip_erase_mode=ERASE_ALL --serial-number 1057774579 && nrfutil device reset --serial-number 1057774579
+cd /Users/alex/moisture-sensor/firmware && nrfutil device program --firmware .build-bthome.hex --options chip_erase_mode=ERASE_ALL --serial-number 1057774579 && nrfutil device reset --serial-number 1057774579
 ```
 
 Read `/dev/cu.usbmodem0010577745793` at 115200. Expected output:
@@ -631,11 +631,11 @@ In `advertise()`, insert this immediately before the `bt_enable(NULL)` call:
 - [ ] **Step 3: Build and flash**
 
 ```bash
-docker run --rm --platform linux/amd64 -v ncs-src:/workdir -v ncs-build:/builds -v /Users/alex/moisture-sensor-carrier/firmware:/fw -w /workdir ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.2.2 'source /opt/toolchain-env.sh; export ZEPHYR_BASE=/workdir/zephyr; west build -p always -b nrf54l15dk/nrf54l15/cpuapp -d /builds/bthome /fw/bthome-sensor && cp /builds/bthome/merged.hex /fw/.build-bthome.hex'
+docker run --rm --platform linux/amd64 -v ncs-src:/workdir -v ncs-build:/builds -v /Users/alex/moisture-sensor/firmware:/fw -w /workdir ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.2.2 'source /opt/toolchain-env.sh; export ZEPHYR_BASE=/workdir/zephyr; west build -p always -b nrf54l15dk/nrf54l15/cpuapp -d /builds/bthome /fw/bthome-sensor && cp /builds/bthome/merged.hex /fw/.build-bthome.hex'
 ```
 
 ```bash
-cd /Users/alex/moisture-sensor-carrier/firmware && nrfutil device program --firmware .build-bthome.hex --options chip_erase_mode=ERASE_ALL --serial-number 1057774579 && nrfutil device reset --serial-number 1057774579
+cd /Users/alex/moisture-sensor/firmware && nrfutil device program --firmware .build-bthome.hex --options chip_erase_mode=ERASE_ALL --serial-number 1057774579 && nrfutil device reset --serial-number 1057774579
 ```
 
 - [ ] **Step 4: Verify the address is stable across resets**
@@ -774,11 +774,11 @@ Also add a readable dump after the payload print:
 - [ ] **Step 3: Build and flash**
 
 ```bash
-docker run --rm --platform linux/amd64 -v ncs-src:/workdir -v ncs-build:/builds -v /Users/alex/moisture-sensor-carrier/firmware:/fw -w /workdir ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.2.2 'source /opt/toolchain-env.sh; export ZEPHYR_BASE=/workdir/zephyr; west build -p always -b nrf54l15dk/nrf54l15/cpuapp -d /builds/bthome /fw/bthome-sensor && cp /builds/bthome/merged.hex /fw/.build-bthome.hex'
+docker run --rm --platform linux/amd64 -v ncs-src:/workdir -v ncs-build:/builds -v /Users/alex/moisture-sensor/firmware:/fw -w /workdir ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.2.2 'source /opt/toolchain-env.sh; export ZEPHYR_BASE=/workdir/zephyr; west build -p always -b nrf54l15dk/nrf54l15/cpuapp -d /builds/bthome /fw/bthome-sensor && cp /builds/bthome/merged.hex /fw/.build-bthome.hex'
 ```
 
 ```bash
-cd /Users/alex/moisture-sensor-carrier/firmware && nrfutil device program --firmware .build-bthome.hex --options chip_erase_mode=ERASE_ALL --serial-number 1057774579 && nrfutil device reset --serial-number 1057774579
+cd /Users/alex/moisture-sensor/firmware && nrfutil device program --firmware .build-bthome.hex --options chip_erase_mode=ERASE_ALL --serial-number 1057774579 && nrfutil device reset --serial-number 1057774579
 ```
 
 - [ ] **Step 4: Verify the values against known-good numbers**
@@ -956,11 +956,11 @@ int main(void)
 The 30-second cycle makes this observable. Note the added `-DEXTRA_CONF_FILE=dev.conf`:
 
 ```bash
-docker run --rm --platform linux/amd64 -v ncs-src:/workdir -v ncs-build:/builds -v /Users/alex/moisture-sensor-carrier/firmware:/fw -w /workdir ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.2.2 'source /opt/toolchain-env.sh; export ZEPHYR_BASE=/workdir/zephyr; west build -p always -b nrf54l15dk/nrf54l15/cpuapp -d /builds/bthome /fw/bthome-sensor -- -DEXTRA_CONF_FILE=dev.conf && cp /builds/bthome/merged.hex /fw/.build-bthome.hex'
+docker run --rm --platform linux/amd64 -v ncs-src:/workdir -v ncs-build:/builds -v /Users/alex/moisture-sensor/firmware:/fw -w /workdir ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.2.2 'source /opt/toolchain-env.sh; export ZEPHYR_BASE=/workdir/zephyr; west build -p always -b nrf54l15dk/nrf54l15/cpuapp -d /builds/bthome /fw/bthome-sensor -- -DEXTRA_CONF_FILE=dev.conf && cp /builds/bthome/merged.hex /fw/.build-bthome.hex'
 ```
 
 ```bash
-cd /Users/alex/moisture-sensor-carrier/firmware && nrfutil device program --firmware .build-bthome.hex --options chip_erase_mode=ERASE_ALL --serial-number 1057774579 && nrfutil device reset --serial-number 1057774579
+cd /Users/alex/moisture-sensor/firmware && nrfutil device program --firmware .build-bthome.hex --options chip_erase_mode=ERASE_ALL --serial-number 1057774579 && nrfutil device reset --serial-number 1057774579
 ```
 
 - [ ] **Step 5: Verify the cycle repeats on its own**
@@ -1103,11 +1103,11 @@ It goes after the escape check deliberately: the awake-forever state must not be
 - [ ] **Step 4: Build, flash, and verify normal operation is unaffected**
 
 ```bash
-docker run --rm --platform linux/amd64 -v ncs-src:/workdir -v ncs-build:/builds -v /Users/alex/moisture-sensor-carrier/firmware:/fw -w /workdir ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.2.2 'source /opt/toolchain-env.sh; export ZEPHYR_BASE=/workdir/zephyr; west build -p always -b nrf54l15dk/nrf54l15/cpuapp -d /builds/bthome /fw/bthome-sensor -- -DEXTRA_CONF_FILE=dev.conf && cp /builds/bthome/merged.hex /fw/.build-bthome.hex'
+docker run --rm --platform linux/amd64 -v ncs-src:/workdir -v ncs-build:/builds -v /Users/alex/moisture-sensor/firmware:/fw -w /workdir ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.2.2 'source /opt/toolchain-env.sh; export ZEPHYR_BASE=/workdir/zephyr; west build -p always -b nrf54l15dk/nrf54l15/cpuapp -d /builds/bthome /fw/bthome-sensor -- -DEXTRA_CONF_FILE=dev.conf && cp /builds/bthome/merged.hex /fw/.build-bthome.hex'
 ```
 
 ```bash
-cd /Users/alex/moisture-sensor-carrier/firmware && nrfutil device program --firmware .build-bthome.hex --options chip_erase_mode=ERASE_ALL --serial-number 1057774579 && nrfutil device reset --serial-number 1057774579
+cd /Users/alex/moisture-sensor/firmware && nrfutil device program --firmware .build-bthome.hex --options chip_erase_mode=ERASE_ALL --serial-number 1057774579 && nrfutil device reset --serial-number 1057774579
 ```
 
 Expected: cycles continue every 30 seconds exactly as in Task 5, with no unexpected resets. A reset loop here means the timeout is shorter than a real cycle takes.
@@ -1140,7 +1140,7 @@ means something is stuck."
 Note there is **no** `dev.conf` here — this is the hourly build, to confirm the committed default works:
 
 ```bash
-docker run --rm --platform linux/amd64 -v ncs-src:/workdir -v ncs-build:/builds -v /Users/alex/moisture-sensor-carrier/firmware:/fw -w /workdir ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.2.2 'source /opt/toolchain-env.sh; export ZEPHYR_BASE=/workdir/zephyr; west build -p always -b nrf54l15dk/nrf54l15/cpuapp -d /builds/bthome /fw/bthome-sensor && cp /builds/bthome/merged.hex /fw/.build-bthome.hex'
+docker run --rm --platform linux/amd64 -v ncs-src:/workdir -v ncs-build:/builds -v /Users/alex/moisture-sensor/firmware:/fw -w /workdir ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.2.2 'source /opt/toolchain-env.sh; export ZEPHYR_BASE=/workdir/zephyr; west build -p always -b nrf54l15dk/nrf54l15/cpuapp -d /builds/bthome /fw/bthome-sensor && cp /builds/bthome/merged.hex /fw/.build-bthome.hex'
 ```
 
 Confirm the console says `sleeping 3600 s`.

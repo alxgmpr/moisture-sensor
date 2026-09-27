@@ -1,4 +1,4 @@
-./Users/alex/moisture-sensor-carrier/tools_netcmp.py:58: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/zw/cgylqvm121j60373883z5k200000gn/T/tmpxjss033x.net' mode='r' encoding='UTF-8'>
+./Users/alex/moisture-sensor/tools_netcmp.py:58: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/zw/cgylqvm121j60373883z5k200000gn/T/tmpxjss033x.net' mode='r' encoding='UTF-8'>
   root = parse(open(tmp).read())
 ResourceWarning: Enable tracemalloc to get the object allocation traceback
 .....F........F.
@@ -6,7 +6,7 @@ ResourceWarning: Enable tracemalloc to get the object allocation traceback
 FAIL: test_probe_clamps_have_nearby_ground_vias_in_ground_plane (tests.test_esd_return_planes.EsdReturnPlanes.test_probe_clamps_have_nearby_ground_vias_in_ground_plane)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/Users/alex/moisture-sensor-carrier/tests/test_esd_return_planes.py", line 32, in test_probe_clamps_have_nearby_ground_vias_in_ground_plane
+  File "/Users/alex/moisture-sensor/tests/test_esd_return_planes.py", line 32, in test_probe_clamps_have_nearby_ground_vias_in_ground_plane
     self.assertTrue(local, f'{ref}: no GND-plane via within 0.7 mm of clamp ground')
     ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 AssertionError: [] is not true : D8: no GND-plane via within 0.7 mm of clamp ground
@@ -15,7 +15,7 @@ AssertionError: [] is not true : D8: no GND-plane via within 0.7 mm of clamp gro
 FAIL: test_routing_classes_use_production_safe_dimensions (tests.test_pcb_routing_rules.PcbRoutingRulesTest.test_routing_classes_use_production_safe_dimensions) (netclass='SENSE')
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "/Users/alex/moisture-sensor-carrier/tests/test_pcb_routing_rules.py", line 46, in test_routing_classes_use_production_safe_dimensions
+  File "/Users/alex/moisture-sensor/tests/test_pcb_routing_rules.py", line 46, in test_routing_classes_use_production_safe_dimensions
     self.assertEqual(actual, dimensions)
     ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
 AssertionError: Tuples differ: (0.25, 0.6, 0.5, 0.2) != (0.25, 0.2, 0.5, 0.2)

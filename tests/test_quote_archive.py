@@ -16,7 +16,7 @@ class QuoteArchive(unittest.TestCase):
    p=Path(d)
    for layer,ext in [('F_Cu','.gtl'),('B_Cu','.gbl'),('GND','.g1'),('GND-SHLD','.g2'),('F_Mask','.gts'),('B_Mask','.gbs'),('F_Silkscreen','.gto'),('B_Silkscreen','.gbo'),('F_Paste','.gtp'),('B_Paste','.gbp'),('Edge_Cuts','.gm1'),('PTH','.drl'),('NPTH','.drl')]:
     (p/f'nrf-moisture-sensor-{layer}{ext}').touch()
-    (p/f'moisture-sensor-carrier-{layer}{ext}').touch()
+    (p/f'moisture-sensor-{layer}{ext}').touch()
    files=fabrication_files(p)
    self.assertEqual(len(files),13)
    self.assertTrue(all(f.name.startswith('nrf-moisture-sensor-') for f in files))

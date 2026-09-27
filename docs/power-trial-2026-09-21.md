@@ -5,7 +5,7 @@ This is the user-requested bench experiment for automatic nPM2100 BOOST operatio
 ## Behavior
 
 - Sensor conversion retains forced BOOST HP and its status check. VOUT stays at 3.3 V.
-- Before normal BLE initialization/advertising, `carrier_radio_start()` confirms the sensor load switch is off, writes and reads back `BOOST.OPER=Auto`, and requires the output ADC to report at least 3.15 V. Auto permits the converter to enter HP on demand; it does not forbid HP.
+- Before normal BLE initialization/advertising, `sensor_radio_start()` confirms the sensor load switch is off, writes and reads back `BOOST.OPER=Auto`, and requires the output ADC to report at least 3.15 V. Auto permits the converter to enter HP on demand; it does not forbid HP.
 - Connected configuration and SMP traffic use Auto too. A connected Measure-now request temporarily returns to HP for sensing and restores Auto afterwards. The MCU watchdog and independent PMIC watchdog remain in use.
 - Normal defaults are 900 s measurement cadence, 5000 ms advertising window, and 500 ms event spacing (approximately ten events). Persistent settings override defaults; deployment explicitly writes and verifies the intended values without changing identity or calibration.
 - Low-battery backoff remains 2500 mV and 3600 s. The configurable backoff threshold accepts 800–3300 mV in both firmware and dashboard. Older firmware only accepts thresholds at or above 2200 mV.
@@ -24,9 +24,9 @@ Nordic also warns that PPK2 may miss narrow boost-refresh pulses under light loa
 
 ## Validation completed before OTA
 
-- Host carrier tests pass, including failures injected throughout sensing, transition to Auto, and shutdown; 800/1000/1500/2000 mV simulated acceptance with a healthy rail; rejection below 800 mV; input collapse during measurement; low output after entering Auto; sensor rail refusing to turn off; repeated connected measurements returning to Auto; and watchdog operation during the radio window.
+- Host sensor tests pass, including failures injected throughout sensing, transition to Auto, and shutdown; 800/1000/1500/2000 mV simulated acceptance with a healthy rail; rejection below 800 mV; input collapse during measurement; low output after entering Auto; sensor rail refusing to turn off; repeated connected measurements returning to Auto; and watchdog operation during the radio window.
 - Configuration/transaction tests and six browser protocol tests pass, including compatible decoding of old 10 s / 1000 ms settings and new threshold boundaries.
-- NCS v3.2.2 sysbuild succeeds using the deployed `nrf54l15dk/nrf54l15/cpuapp` base plus the carrier overlay.
+- NCS v3.2.2 sysbuild succeeds using the deployed `nrf54l15dk/nrf54l15/cpuapp` base plus the sensor overlay.
 - RSA signature verification succeeds; image version is 0.2.11+0. MCUboot image digest: `da25bec728742c5f82673b6b0e18077ec89fb3fb3aab719c5c3564d67971fc5b`.
 - DFU manifest/header/version/hash checks and generated partition checks pass. An incremental build initially retained an old archive manifest version; explicit sysbuild reconfiguration regenerated the correct 0.2.11 manifest before deployment.
 

@@ -4,16 +4,16 @@ Loading Zephyr module(s) (Zephyr base (cached)): sysbuild_default
 -- Found west (found suitable version "1.4.0", minimum required is "0.14.0")
 -- Board: bl54l15_dvk, qualifiers: nrf54l15/cpuapp
 Parsing /workdir/zephyr/share/sysbuild/Kconfig
-Loaded configuration '/builds/carrier-reliability/zephyr/.config'
-No change to configuration in '/builds/carrier-reliability/zephyr/.config'
-No change to Kconfig header in '/builds/carrier-reliability/_sysbuild/autoconf.h'
+Loaded configuration '/builds/sensor-reliability/zephyr/.config'
+No change to configuration in '/builds/sensor-reliability/zephyr/.config'
+No change to Kconfig header in '/builds/sensor-reliability/_sysbuild/autoconf.h'
 -- 
    *************************************
-   * Running CMake for carrier-bringup *
+   * Running CMake for sensor *
    *************************************
 
 Loading Zephyr default modules (Zephyr base (cached)).
--- Application: /fw/firmware/carrier-bringup
+-- Application: /fw/firmware/sensor
 -- CMake version: 3.21.0
 -- Cache files will be written to: /workdir/zephyr/.cache
 -- Zephyr version: 4.2.99 (/workdir/zephyr)
@@ -22,24 +22,24 @@ Loading Zephyr default modules (Zephyr base (cached)).
 -- Found host-tools: zephyr 0.17.0 (/opt/ncs/toolchains/927563c840/opt/zephyr-sdk)
 -- Found toolchain: zephyr 0.17.0 (/opt/ncs/toolchains/927563c840/opt/zephyr-sdk)
 -- Found BOARD.dts: /workdir/zephyr/boards/ezurio/bl54l15_dvk/bl54l15_dvk_nrf54l15_cpuapp.dts
--- Found devicetree overlay: /fw/firmware/carrier-bringup/app.overlay
--- Generated zephyr.dts: /builds/carrier-reliability/carrier-bringup/zephyr/zephyr.dts
--- Generated pickled edt: /builds/carrier-reliability/carrier-bringup/zephyr/edt.pickle
--- Generated devicetree_generated.h: /builds/carrier-reliability/carrier-bringup/zephyr/include/generated/zephyr/devicetree_generated.h
+-- Found devicetree overlay: /fw/firmware/sensor/app.overlay
+-- Generated zephyr.dts: /builds/sensor-reliability/sensor/zephyr/zephyr.dts
+-- Generated pickled edt: /builds/sensor-reliability/sensor/zephyr/edt.pickle
+-- Generated devicetree_generated.h: /builds/sensor-reliability/sensor/zephyr/include/generated/zephyr/devicetree_generated.h
 Parsing /workdir/zephyr/Kconfig
-Loaded configuration '/builds/carrier-reliability/carrier-bringup/zephyr/.config'
-Merged configuration '/builds/carrier-reliability/carrier-bringup/zephyr/.config.sysbuild'
-No change to configuration in '/builds/carrier-reliability/carrier-bringup/zephyr/.config'
-No change to Kconfig header in '/builds/carrier-reliability/carrier-bringup/zephyr/include/generated/zephyr/autoconf.h'
+Loaded configuration '/builds/sensor-reliability/sensor/zephyr/.config'
+Merged configuration '/builds/sensor-reliability/sensor/zephyr/.config.sysbuild'
+No change to configuration in '/builds/sensor-reliability/sensor/zephyr/.config'
+No change to Kconfig header in '/builds/sensor-reliability/sensor/zephyr/include/generated/zephyr/autoconf.h'
 -- Using ccache: /opt/ncs/toolchains/927563c840/usr/bin/ccache
 -- Found gen_kobject_list: /workdir/zephyr/scripts/build/gen_kobject_list.py
 -- Configuring done
 -- Generating done
--- Build files have been written to: /builds/carrier-reliability/carrier-bringup
+-- Build files have been written to: /builds/sensor-reliability/sensor
 -- Configuring done
 -- Generating done
--- Build files have been written to: /builds/carrier-reliability
-[0/5] Performing build step for 'carrier-bringup'
+-- Build files have been written to: /builds/sensor-reliability
+[0/5] Performing build step for 'sensor'
 [1/255] Generating misc/generated/syscalls.json, misc/generated/struct_tags.json
 [2/69] Generating linker_zephyr_pre0.cmd
 [3/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/workdir/modules/crypto/mbedtls/library/pkcs12.c.obj
@@ -57,7 +57,7 @@ No change to Kconfig header in '/builds/carrier-reliability/carrier-bringup/zeph
 [15/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/workdir/modules/crypto/mbedtls/library/pk_wrap.c.obj
 [16/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/workdir/modules/crypto/mbedtls/library/cipher_wrap.c.obj
 [17/69] Linking C static library zephyr/drivers/entropy/libdrivers__entropy.a
-[18/69] Building C object CMakeFiles/app.dir/src/carrier.c.obj
+[18/69] Building C object CMakeFiles/app.dir/src/sensor.c.obj
 [19/69] Building C object zephyr/lib/libc/common/CMakeFiles/lib__libc__common.dir/source/stdlib/malloc.c.obj
 [20/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/workdir/modules/crypto/oberon-psa-crypto/programs/ssl/library/pk.c.obj
 [21/69] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto.dir/workdir/modules/crypto/mbedtls/library/pk_ecc.c.obj
@@ -113,8 +113,8 @@ Memory region         Used Size  Region Size  %age Used
            FLASH:       84608 B      1428 KB      5.79%
              RAM:       21624 B       188 KB     11.23%
         IDT_LIST:          0 GB        32 KB      0.00%
-Generating files from /builds/carrier-reliability/carrier-bringup/zephyr/zephyr.elf for board: bl54l15_dvk
-[2/5] No install step for 'carrier-bringup'
-[3/5] Completed 'carrier-bringup'
-[4/5] cd /builds/carrier-reliability/_sysbuild && /opt/ncs/toolchains/927563c840/usr/local/bin/cmake -E true
+Generating files from /builds/sensor-reliability/sensor/zephyr/zephyr.elf for board: bl54l15_dvk
+[2/5] No install step for 'sensor'
+[3/5] Completed 'sensor'
+[4/5] cd /builds/sensor-reliability/_sysbuild && /opt/ncs/toolchains/927563c840/usr/local/bin/cmake -E true
 [5/5] Generating ../merged.hex

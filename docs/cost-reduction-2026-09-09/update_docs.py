@@ -3,7 +3,7 @@ from pathlib import Path
 import csv
 
 ROOT = Path(__file__).resolve().parents[2]
-for name in ['README.md', 'firmware/carrier-bringup/README.md']:
+for name in ['README.md', 'firmware/sensor/README.md']:
     p = ROOT / name
     p.write_text(p.read_text().replace('SHT45', 'SHT40'))
 

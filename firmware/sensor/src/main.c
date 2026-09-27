@@ -1,5 +1,5 @@
 /* Real battery-powered sensor image. One cold boot per cycle. */
-#include "carrier.h"
+#include "sensor.h"
 #include "bthome.h"
 #include "config_service.h"
 #include <string.h>
@@ -24,21 +24,21 @@ struct sensor_boot_trace {
     int32_t error;
     uint32_t last_failure_stage;
     int32_t last_failure_error;
-    struct carrier_fault fault;
-    struct carrier_sample sample;
+    struct sensor_fault fault;
+    struct sensor_sample sample;
     uint32_t wake_seconds;
 };
 
 static struct sensor_boot_trace sensor_trace __attribute__((section(".noinit")));
-static struct carrier_fault cycle_fault;
-static const struct carrier_bus *trace_bus;
+static struct sensor_fault cycle_fault;
+static const struct sensor_bus *trace_bus;
 static uint32_t reset_cause;
 static uint8_t pmic_reset = 0xff, previous_stage = 0xff;
 
 static void pmic_trace(uint8_t stage)
 {
     if (trace_bus)
-        (void)carrier_retained_stage(trace_bus, stage);
+        (void)sensor_retained_stage(trace_bus, stage);
 }
 
 static void trace_boot(void)
@@ -81,7 +81,7 @@ static uint16_t diagnostic_error(void)
 static const struct device *sensor_wdt;
 #endif
 
-struct carrier_devices {
+struct sensor_devices {
     const struct device *main;
     const struct device *fdc;
 };
@@ -97,7 +97,7 @@ static int fdc_bus_is_asleep(const struct device *dev) {
 
 static int transfer(void *ctx, uint8_t address, const uint8_t *w, size_t nw, uint8_t *r,
                     size_t nr) {
-    const struct carrier_devices *devices = ctx;
+    const struct sensor_devices *devices = ctx;
     const struct device *dev = address == 0x50 ? devices->fdc : devices->main;
     if (nw && nr)
         return i2c_write_read(dev, address, w, nw, r, nr);
@@ -143,11 +143,11 @@ static void feed_watchdog(void)
 #else
 static void feed_watchdog(void) { }
 #endif
-static int radio_window(const struct carrier_bus *bus, const struct carrier_sample *sample) {
+static int radio_window(const struct sensor_bus *bus, const struct sensor_sample *sample) {
     struct sensor_config config;
     sensor_settings_get(&config);
     trace_stage(70, 0);
-    int rc = carrier_radio_start(bus);
+    int rc = sensor_radio_start(bus);
     if (rc) {
         trace_failure(70, rc);
         return rc;
@@ -221,11 +221,11 @@ static int radio_window(const struct carrier_bus *bus, const struct carrier_samp
     bool had_connection = false;
     while (k_uptime_get() < deadline || sensor_session_connected()) {
         uint16_t radio_battery_mv;
-        rc = carrier_battery_read(bus, &radio_battery_mv);
-        if (!rc && radio_battery_mv < CARRIER_MIN_BATTERY_MV)
+        rc = sensor_battery_read(bus, &radio_battery_mv);
+        if (!rc && radio_battery_mv < SENSOR_MIN_BATTERY_MV)
             rc = -ERANGE;
         if (!rc)
-            rc = carrier_watchdog_feed(bus);
+            rc = sensor_watchdog_feed(bus);
         if (rc) {
             trace_failure(78, rc);
             sensor_session_disconnect();
@@ -243,12 +243,12 @@ static int radio_window(const struct carrier_bus *bus, const struct carrier_samp
         if (sensor_sample_requested()) {
             /* Foreground only; callbacks never touch I2C. Sampling remains
              * bounded by both watchdogs, with the FDC rail off afterwards. */
-            struct carrier_sample fresh = {0};
-            int measured = carrier_start(bus, &fresh);
-            if (!measured) measured = carrier_measure(bus, &fresh);
-            const struct carrier_devices *devices = bus->ctx;
+            struct sensor_sample fresh = {0};
+            int measured = sensor_start(bus, &fresh);
+            if (!measured) measured = sensor_measure(bus, &fresh);
+            const struct sensor_devices *devices = bus->ctx;
             int off = fdc_bus_is_asleep(devices->fdc);
-            if (!off && !measured) off = carrier_radio_start(bus);
+            if (!off && !measured) off = sensor_radio_start(bus);
             sensor_status_sample(&fresh, measured ? measured : off);
             if (off) {
                 trace_failure(80, off);
@@ -312,8 +312,8 @@ static int ota_identity(void) {
     addr.a.val[5] |= 0xc0;
     return bt_id_create(&addr, NULL) < 0 ? -EIO : 0;
 }
-static int ota_run(const struct carrier_bus *bus) {
-    int rc = carrier_ota_start(bus);
+static int ota_run(const struct sensor_bus *bus) {
+    int rc = sensor_ota_start(bus);
     if (rc)
         return rc;
     rc = ota_identity();
@@ -335,7 +335,7 @@ static int ota_run(const struct carrier_bus *bus) {
     return 0;
 }
 #endif
-static void power_backoff(const struct carrier_bus *bus, int error)
+static void power_backoff(const struct sensor_bus *bus, int error)
 {
     /* Keep the failing operation in SCRATCHB across Hibernate. Replacing it
      * with the generic backoff stage would hide sensing and radio failures
@@ -347,17 +347,17 @@ static void power_backoff(const struct carrier_bus *bus, int error)
     /* Preserve the watchdog origin across the hibernate power cut so the
      * first recovery advertisement/status can distinguish these paths. */
     if (trace_bus && (reset_cause & RESET_WATCHDOG))
-        (void)carrier_retained_stage(bus, 0xe1);
+        (void)sensor_retained_stage(bus, 0xe1);
     else if (trace_bus && ((pmic_reset >> 1) & 15) == 5)
-        (void)carrier_retained_stage(bus, 0xe2);
-    int rc = trace_bus ? carrier_hibernate(bus, CONFIG_SENSOR_UV_RETRY_SECONDS) : -ENODEV;
+        (void)sensor_retained_stage(bus, 0xe2);
+    int rc = trace_bus ? sensor_hibernate(bus, CONFIG_SENSOR_UV_RETRY_SECONDS) : -ENODEV;
     /* Normally VOUT disappears during the task write. If I2C failed or the
      * rail did not turn off, use the MCU's timed System OFF as a fallback.
      * Retained BLOCKED prevents sensor/radio attempts on a watchdog reset.
      * A PMIC that cannot be reached cannot be guaranteed to stop its timer. */
     k_msleep(20);
     if (trace_bus)
-        (void)carrier_stop(bus);
+        (void)sensor_stop(bus);
     trace_stage(85, rc);
     int wake = z_nrf_grtc_wakeup_prepare((uint64_t)CONFIG_SENSOR_UV_RETRY_SECONDS *
                                        USEC_PER_SEC);
@@ -374,12 +374,12 @@ static void power_backoff(const struct carrier_bus *bus, int error)
 int main(void) {
     trace_boot();
     trace_stage(1, 0);
-    struct carrier_devices devices = {
+    struct sensor_devices devices = {
         .main = DEVICE_DT_GET(DT_NODELABEL(i2c22)),
         .fdc = DEVICE_DT_GET(DT_NODELABEL(i2c20)),
     };
-    struct carrier_bus bus = {&devices, transfer, delay, &cycle_fault};
-    struct carrier_sample sample = {0};
+    struct sensor_bus bus = {&devices, transfer, delay, &cycle_fault};
+    struct sensor_sample sample = {0};
     int rc = 0;
     if (!device_is_ready(devices.main) || !device_is_ready(devices.fdc))
         rc = -ENODEV;
@@ -391,9 +391,9 @@ int main(void) {
         power_backoff(&bus, rc);
 
     uint8_t retained = 0;
-    rc = carrier_retained_read(&bus, &retained, &previous_stage, &pmic_reset);
+    rc = sensor_retained_read(&bus, &retained, &previous_stage, &pmic_reset);
     if (!rc)
-        rc = carrier_power_probe(&bus, &sample.battery_mv);
+        rc = sensor_power_probe(&bus, &sample.battery_mv);
     (void)hwinfo_get_reset_cause(&reset_cause);
     (void)hwinfo_clear_reset_cause();
     sensor_status_diagnostics(reset_cause, pmic_reset, previous_stage,
@@ -403,11 +403,11 @@ int main(void) {
      * software reboot at a healthy supply must still allow an OTA test boot;
      * normal error paths below never request immediate software reboots. */
     bool planned_reboot = (reset_cause & RESET_SOFTWARE) &&
-                          sample.battery_mv >= CARRIER_RECOVER_BATTERY_MV;
-    if (rc || (retained == CARRIER_POWER_ATTEMPT && !planned_reboot) ||
-        !carrier_power_allowed(sample.battery_mv, retained))
+                          sample.battery_mv >= SENSOR_RECOVER_BATTERY_MV;
+    if (rc || (retained == SENSOR_POWER_ATTEMPT && !planned_reboot) ||
+        !sensor_power_allowed(sample.battery_mv, retained))
         power_backoff(&bus, rc ? rc : -EAGAIN);
-    rc = carrier_retained_state(&bus, CARRIER_POWER_ATTEMPT);
+    rc = sensor_retained_state(&bus, SENSOR_POWER_ATTEMPT);
     if (rc)
         power_backoff(&bus, rc);
     uint8_t clear[] = {0xd1, 1};
@@ -428,14 +428,14 @@ int main(void) {
     trace_stage(2, 0);
 #endif
     trace_stage(40, 0);
-    rc = carrier_start(&bus, &sample);
+    rc = sensor_start(&bus, &sample);
     bool power_ready = rc == 0;
     trace_stage(50, rc);
     if (rc)
         trace_failure(50, rc);
     if (!rc) {
         trace_stage(60, 0);
-        rc = carrier_measure(&bus, &sample);
+        rc = sensor_measure(&bus, &sample);
         if (rc)
             trace_failure(61, rc);
     }
@@ -443,10 +443,10 @@ int main(void) {
     sensor_status_sample(&sample, rc);
     int stop = fdc_bus_is_asleep(devices.fdc);
     if (!stop)
-        stop = carrier_sensors_off(&bus);
+        stop = sensor_sensors_off(&bus);
     if (stop)
         power_backoff(&bus, stop);
-    bool low_battery = sample.battery_mv < CARRIER_MIN_BATTERY_MV;
+    bool low_battery = sample.battery_mv < SENSOR_MIN_BATTERY_MV;
     if (rc || low_battery)
         power_backoff(&bus, rc ? rc : -ERANGE);
     if (power_ready) {
@@ -454,7 +454,7 @@ int main(void) {
         if (rc)
             power_backoff(&bus, rc);
     }
-    stop = carrier_stop(&bus);
+    stop = sensor_stop(&bus);
     if (stop)
         power_backoff(&bus, stop);
     struct sensor_config config;
@@ -466,7 +466,7 @@ int main(void) {
     if (!settings_rc && boot_write_img_confirmed())
         power_backoff(&bus, -EIO);
 #endif
-    rc = carrier_retained_state(&bus, CARRIER_POWER_CLEAN);
+    rc = sensor_retained_state(&bus, SENSOR_POWER_CLEAN);
     if (rc)
         power_backoff(&bus, rc);
     trace_stage(83, 0);

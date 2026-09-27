@@ -56,7 +56,7 @@ SDA/SCL stay pulled up to the always-on rail while the FDC supply is discharged.
 
 ### Radio supply and battery margins require real measurements
 
-The BL54L15 receives VOUT directly. Ezurio specifies 10 mV maximum ripple/noise; Nordic lists 70 mVpp typical LP/ULP ripple. The real carrier application requests and verifies HP before sensing and radio, which is appropriate, but measure the rail at U1.26 during TX and supply transitions. [Ezurio supply requirements](https://www.ezurio.com/documentation/datasheet-bl54l10-and-bl54l15-series), [local Nordic datasheet, Table 10](../../doc/datasheets/nPM2100_Datasheet_v1.0.pdf).
+The BL54L15 receives VOUT directly. Ezurio specifies 10 mV maximum ripple/noise; Nordic lists 70 mVpp typical LP/ULP ripple. The real sensor application requests and verifies HP before sensing and radio, which is appropriate, but measure the rail at U1.26 during TX and supply transitions. [Ezurio supply requirements](https://www.ezurio.com/documentation/datasheet-bl54l10-and-bl54l15-series), [local Nordic datasheet, Table 10](../../doc/datasheets/nPM2100_Datasheet_v1.0.pdf).
 
 C3+C25+C27 total 12.3 µF nominal directly on VOUT, plus the module's input capacitance. Verify 0.7–15 µF effective over bias/tolerance/temperature. C21/C23 now use the exact Nordic-reference GRM158R60J226ME01D part, but effective capacitance still matters. C26/C28 are on the separate VINT-fed LDOSW branch, not directly on VOUT; test their turn-on transient separately.
 
@@ -75,14 +75,14 @@ Use a depleted/cold-cell equivalent with realistic source resistance to test sta
 | Programming/reset | J4 pins 2/4/6 reach SWDIO/SWDCLK/SWO through 100 Ω; pin 10 reaches reset through R35 then R1. PMIC PG/RESET joins between those resistors; U1 reset is pin 7. J4 grounds are pins 3/5/9. |
 | Crystal and markers | XL1 U1.25 → X1.1; XL2 U1.24 → X1.2. TP16 → U1.20 P1.07; TP17 → U1.21 P1.06. Marker nets are routed in this snapshot. |
 
-ERC reports zero errors and ten symbol-library warnings. Native refilled DRC reports zero unconnected items and zero schematic-parity issues; its existing ignored categories are preserved in the report. The carrier host tests pass, and source inspection confirms real sensor reads, 3.3 V configuration, HP scheduling, shutdown and watchdog handling. This review did not rebuild the SDK image or exercise physical hardware.
+ERC reports zero errors and ten symbol-library warnings. Native refilled DRC reports zero unconnected items and zero schematic-parity issues; its existing ignored categories are preserved in the report. The sensor host tests pass, and source inspection confirms real sensor reads, 3.3 V configuration, HP scheduling, shutdown and watchdog handling. This review did not rebuild the SDK image or exercise physical hardware.
 
 ## First-article checks after the layout corrections
 
 1. Inspect final Gerber copper/mask/drill/paste layers and assembly rotations. Confirm U1 hand-fitting instructions, U2 exposed-pad paste/via treatment, BT1 polarity and all labeled test points.
 2. Check unpowered rail resistance and battery polarity, then start with a current-limited battery-equivalent supply. Scope main and FDC rails through startup, shutdown and repeated wake cycles.
 3. Measure sleep current, FDC-off leakage, I²C levels/rise time, radio ripple, and cold/depleted-cell behavior. Inject a stuck bus and verify the PMIC actually power-cycles the peripherals.
-4. Measure crystal startup/frequency with the selected internal load setting. Test SWD attach/reset and use the correct carrier image; the older BTHome demo advertises simulated values.
+4. Measure crystal startup/frequency with the selected internal load setting. Test SWD attach/reset and use the correct sensor image; the older BTHome demo advertises simulated values.
 5. Qualify coated-probe range, shield waveform, temperature drift, salinity, abrasion and water absorption; test ESD on the finished assembly. Keep coating off the SHT45 sensing membrane.
 6. Verify the actual holder, installed cell, enclosure, screw and programming-cable clearances. The rendered holder is a visualization substitute and this render does not include the final enclosure. Test BLE performance with the closed enclosure and wet probe; footprint keepout compliance alone does not qualify the antenna.
 

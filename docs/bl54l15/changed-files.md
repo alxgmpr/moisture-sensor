@@ -6,16 +6,16 @@ of the overall git diff was produced here. Earlier design/audit edits remain.
 
 | Files | Migration change |
 |---|---|
-| `moisture-sensor-carrier.kicad_sch` | U1 module, verified pads, retained X1/C3/reset, deleted bare-SoC/RF support, JLC DNP/source fields and annotations |
-| `moisture-sensor-carrier.kicad_pcb` | Module placement, LGA lands, local support/ground routes, all-layer keepouts, obsolete RF removal, hand-routing anchors |
-| `moisture-sensor-carrier.kicad_pro`, `.kicad_dru` | Retire obsolete RF net class and bare-SoC RF/escape rules; retain power/sensing constraints |
+| `moisture-sensor.kicad_sch` | U1 module, verified pads, retained X1/C3/reset, deleted bare-SoC/RF support, JLC DNP/source fields and annotations |
+| `moisture-sensor.kicad_pcb` | Module placement, LGA lands, local support/ground routes, all-layer keepouts, obsolete RF removal, hand-routing anchors |
+| `moisture-sensor.kicad_pro`, `.kicad_dru` | Retire obsolete RF net class and bare-SoC RF/escape rules; retain power/sensing constraints |
 | `netlist-fingerprint.json`, `sym-lib-table` | Current connectivity and local Ezurio symbol registration |
 | `lib/ezurio.kicad_sym` | New verified 39-pin symbol |
 | `lib/footprints.pretty/Ezurio_BL54L15_453-00001.kicad_mod` | New manufacturer-derived land pattern, courtyard and pin-1 marker |
 | `lib/BL54L15_453-00001_envelope.step`, `tools_3d_models.py` | Nominal module envelope model and current model mapping |
 | `BOM.md`, `HARDWARE.md`, `LAYOUT.md` | Current BOM, module support, pin/clock/power/RF/assembly constraints |
 | `NEXT-STEPS.md`, `BOARD-FINISH-TODO.md` | Current handoff/checklist; old engineering journal preserved and labeled historical |
-| `firmware/README.md`, `firmware/BL54L15-port.md` | DK scope preserved; carrier GPIO, clock trim and HP-radio requirements |
+| `firmware/README.md`, `firmware/BL54L15-port.md` | DK scope preserved; sensor GPIO, clock trim and HP-radio requirements |
 | `doc/datasheets/README.md` | Current Ezurio and Nordic configuration source pointers |
 | `docs/bl54l15/` | Integration record, source/procurement metadata, before/after reports, preservation report, visuals, assembly/export instructions and pre-migration BOM/checklist |
 | `tools_export_bl54l15.py` | Reproducible review exports, separate JLC/module paste and BOM/CPL stages |

@@ -4,7 +4,7 @@ here=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 out=$(mktemp -d)
 trap 'rm -rf "$out"' EXIT
 ${CC:-cc} -std=c11 -Wall -Wextra -Werror ${CFLAGS:-} -o "$out/test" \
-    "$here/test_carrier.c" "$here/../src/carrier.c"
+    "$here/test_sensor.c" "$here/../src/sensor.c"
 "$out/test"
 ${CC:-cc} -std=c11 -Wall -Wextra -Werror ${CFLAGS:-} -I"$here/../src" \
     -o "$out/test_bthome" "$here/test_bthome.c" "$here/../src/bthome.c"

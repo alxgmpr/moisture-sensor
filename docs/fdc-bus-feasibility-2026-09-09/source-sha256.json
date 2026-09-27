@@ -3,5 +3,5 @@
   "nrf-moisture-sensor.kicad_sch": "5914f5687e52e807bb29ca758074834e066b6e2ec2f0955b0f86ab3df93929d2",
   "nrf-moisture-sensor.kicad_pro": "c592b65d2e6c96bfbda76144efabaa03515894830e6a372751475b80d1e78325",
   "nrf-moisture-sensor.kicad_dru": "2d1a0ff8fbe55b4f0ab42a939ef424ba104ca8ff5abb5d5752a15f712ed48510",
-  "firmware/carrier-bringup/app.overlay": "1cac00fae77d288d818c1173e715cd5aa06ede953c4adca76800ffa0f28e5559"
+  "firmware/sensor/app.overlay": "1cac00fae77d288d818c1173e715cd5aa06ede953c4adca76800ffa0f28e5559"
 }

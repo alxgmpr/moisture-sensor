@@ -39,23 +39,23 @@
  load-capacitance-femtofarad = <12000>;
 };
 &pinctrl {
- carrier_fdc_default: carrier_fdc_default {
+ sensor_fdc_default: sensor_fdc_default {
   group1 {
    psels = <NRF_PSEL(TWIM_SDA, 1, 5)>, <NRF_PSEL(TWIM_SCL, 1, 4)>;
    bias-disable;
   };
  };
- carrier_fdc_sleep: carrier_fdc_sleep {
+ sensor_fdc_sleep: sensor_fdc_sleep {
   group1 {
    psels = <NRF_PSEL(TWIM_SDA, 1, 5)>, <NRF_PSEL(TWIM_SCL, 1, 4)>;
    bias-disable;
    low-power-enable;
   };
  };
- carrier_i2c_default: carrier_i2c_default {
+ sensor_i2c_default: sensor_i2c_default {
   group1 { psels = <NRF_PSEL(TWIM_SDA, 1, 10)>, <NRF_PSEL(TWIM_SCL, 1, 11)>; };
  };
- carrier_i2c_sleep: carrier_i2c_sleep {
+ sensor_i2c_sleep: sensor_i2c_sleep {
   group1 {
    psels = <NRF_PSEL(TWIM_SDA, 1, 10)>, <NRF_PSEL(TWIM_SCL, 1, 11)>;
    low-power-enable;
@@ -65,8 +65,8 @@
 &i2c22 {
  status = "okay";
  clock-frequency = <100000>;
- pinctrl-0 = <&carrier_i2c_default>;
- pinctrl-1 = <&carrier_i2c_sleep>;
+ pinctrl-0 = <&sensor_i2c_default>;
+ pinctrl-1 = <&sensor_i2c_sleep>;
  pinctrl-names = "default", "sleep";
 };
 
@@ -75,8 +75,8 @@
 &i2c20 {
  status = "okay";
  clock-frequency = <100000>;
- pinctrl-0 = <&carrier_fdc_default>;
- pinctrl-1 = <&carrier_fdc_sleep>;
+ pinctrl-0 = <&sensor_fdc_default>;
+ pinctrl-1 = <&sensor_fdc_sleep>;
  pinctrl-names = "default", "sleep";
  zephyr,pm-device-runtime-auto;
 };

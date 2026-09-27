@@ -121,26 +121,26 @@
 			};
 		};
 
-		/* node '/pin-controller/carrier_i2c_default' defined in ../fw/firmware/carrier-bringup/app.overlay:39 */
-		carrier_i2c_default: carrier_i2c_default {
-			phandle = < 0x9 >; /* in ../fw/firmware/carrier-bringup/app.overlay:52 */
+		/* node '/pin-controller/sensor_i2c_default' defined in ../fw/firmware/sensor/app.overlay:39 */
+		sensor_i2c_default: sensor_i2c_default {
+			phandle = < 0x9 >; /* in ../fw/firmware/sensor/app.overlay:52 */
 
-			/* node '/pin-controller/carrier_i2c_default/group1' defined in ../fw/firmware/carrier-bringup/app.overlay:40 */
+			/* node '/pin-controller/sensor_i2c_default/group1' defined in ../fw/firmware/sensor/app.overlay:40 */
 			group1 {
 				psels = < 0xc00002a >,
-				        < 0xb00002b >; /* in ../fw/firmware/carrier-bringup/app.overlay:40 */
+				        < 0xb00002b >; /* in ../fw/firmware/sensor/app.overlay:40 */
 			};
 		};
 
-		/* node '/pin-controller/carrier_i2c_sleep' defined in ../fw/firmware/carrier-bringup/app.overlay:42 */
-		carrier_i2c_sleep: carrier_i2c_sleep {
-			phandle = < 0xa >; /* in ../fw/firmware/carrier-bringup/app.overlay:53 */
+		/* node '/pin-controller/sensor_i2c_sleep' defined in ../fw/firmware/sensor/app.overlay:42 */
+		sensor_i2c_sleep: sensor_i2c_sleep {
+			phandle = < 0xa >; /* in ../fw/firmware/sensor/app.overlay:53 */
 
-			/* node '/pin-controller/carrier_i2c_sleep/group1' defined in ../fw/firmware/carrier-bringup/app.overlay:43 */
+			/* node '/pin-controller/sensor_i2c_sleep/group1' defined in ../fw/firmware/sensor/app.overlay:43 */
 			group1 {
 				psels = < 0xc00002a >,
-				        < 0xb00002b >; /* in ../fw/firmware/carrier-bringup/app.overlay:44 */
-				low-power-enable;      /* in ../fw/firmware/carrier-bringup/app.overlay:45 */
+				        < 0xb00002b >; /* in ../fw/firmware/sensor/app.overlay:44 */
+				low-power-enable;      /* in ../fw/firmware/sensor/app.overlay:45 */
 			};
 		};
 	};
@@ -190,8 +190,8 @@
 			compatible = "nordic,nrf54l-lfxo";        /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:59 */
 			#clock-cells = < 0x0 >;                   /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:60 */
 			clock-frequency = < 0x8000 >;             /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:61 */
-			load-capacitors = "internal";             /* in ../fw/firmware/carrier-bringup/app.overlay:34 */
-			load-capacitance-femtofarad = < 0x2ee0 >; /* in ../fw/firmware/carrier-bringup/app.overlay:36 */
+			load-capacitors = "internal";             /* in ../fw/firmware/sensor/app.overlay:34 */
+			load-capacitance-femtofarad = < 0x2ee0 >; /* in ../fw/firmware/sensor/app.overlay:36 */
 			phandle = < 0xe >;                        /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:574 */
 		};
 
@@ -290,7 +290,7 @@
 				pinctrl-1 = < &spi00_sleep >;   /* in zephyr/boards/ezurio/bl54l15_dvk/nrf54l_10_15_cpuapp_common.dtsi:99 */
 				pinctrl-names = "default",
 				                "sleep";        /* in zephyr/boards/ezurio/bl54l15_dvk/nrf54l_10_15_cpuapp_common.dtsi:100 */
-				status = "disabled";            /* in ../fw/firmware/carrier-bringup/app.overlay:27 */
+				status = "disabled";            /* in ../fw/firmware/sensor/app.overlay:27 */
 
 				/* node '/soc/peripheral@50000000/spi@4a000/mx25r6435f@0' defined in zephyr/boards/ezurio/bl54l15_dvk/nrf54l_10_15_cpuapp_common.dtsi:102 */
 				mx25r64: mx25r6435f@0 {
@@ -305,7 +305,7 @@
 					has-dpd;                                                                                      /* in zephyr/boards/ezurio/bl54l15_dvk/nrf54l_10_15_cpuapp_common.dtsi:115 */
 					t-enter-dpd = < 0x2710 >;                                                                     /* in zephyr/boards/ezurio/bl54l15_dvk/nrf54l_10_15_cpuapp_common.dtsi:116 */
 					t-exit-dpd = < 0x88b8 >;                                                                      /* in zephyr/boards/ezurio/bl54l15_dvk/nrf54l_10_15_cpuapp_common.dtsi:117 */
-					status = "disabled";                                                                          /* in ../fw/firmware/carrier-bringup/app.overlay:28 */
+					status = "disabled";                                                                          /* in ../fw/firmware/sensor/app.overlay:28 */
 				};
 			};
 
@@ -432,7 +432,7 @@
 				/* node '/soc/peripheral@50000000/radio@8a000/ieee802154' defined in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:251 */
 				ieee802154: ieee802154 {
 					compatible = "nordic,nrf-ieee802154"; /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:252 */
-					status = "disabled";                  /* in ../fw/firmware/carrier-bringup/app.overlay:32 */
+					status = "disabled";                  /* in ../fw/firmware/sensor/app.overlay:32 */
 				};
 
 				/* node '/soc/peripheral@50000000/radio@8a000/bt_hci_sdc' defined in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:256 */
@@ -514,7 +514,7 @@
 				pinctrl-1 = < &uart20_sleep >;   /* in zephyr/boards/ezurio/bl54l15_dvk/bl54l15_dvk_common.dtsi:94 */
 				pinctrl-names = "default",
 				                "sleep";         /* in zephyr/boards/ezurio/bl54l15_dvk/bl54l15_dvk_common.dtsi:95 */
-				status = "disabled";             /* in ../fw/firmware/carrier-bringup/app.overlay:25 */
+				status = "disabled";             /* in ../fw/firmware/sensor/app.overlay:25 */
 			};
 
 			/* node '/soc/peripheral@50000000/i2c@c7000' defined in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:330 */
@@ -562,12 +562,12 @@
 				interrupts = < 0xc8 0x1 >;            /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:374 */
 				easydma-maxcnt-bits = < 0x10 >;       /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:375 */
 				zephyr,pm-device-runtime-auto;        /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:377 */
-				status = "okay";                      /* in ../fw/firmware/carrier-bringup/app.overlay:50 */
-				clock-frequency = < 0x186a0 >;        /* in ../fw/firmware/carrier-bringup/app.overlay:51 */
-				pinctrl-0 = < &carrier_i2c_default >; /* in ../fw/firmware/carrier-bringup/app.overlay:52 */
-				pinctrl-1 = < &carrier_i2c_sleep >;   /* in ../fw/firmware/carrier-bringup/app.overlay:53 */
+				status = "okay";                      /* in ../fw/firmware/sensor/app.overlay:50 */
+				clock-frequency = < 0x186a0 >;        /* in ../fw/firmware/sensor/app.overlay:51 */
+				pinctrl-0 = < &sensor_i2c_default >; /* in ../fw/firmware/sensor/app.overlay:52 */
+				pinctrl-1 = < &sensor_i2c_sleep >;   /* in ../fw/firmware/sensor/app.overlay:53 */
 				pinctrl-names = "default",
-				                "sleep";              /* in ../fw/firmware/carrier-bringup/app.overlay:54 */
+				                "sleep";              /* in ../fw/firmware/sensor/app.overlay:54 */
 			};
 
 			/* node '/soc/peripheral@50000000/spi@c8000' defined in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:380 */
@@ -684,7 +684,7 @@
 				pinctrl-1 = < &pwm20_sleep >;   /* in zephyr/boards/ezurio/bl54l15_dvk/bl54l15_dvk_common.dtsi:108 */
 				pinctrl-names = "default",
 				                "sleep";        /* in zephyr/boards/ezurio/bl54l15_dvk/bl54l15_dvk_common.dtsi:109 */
-				status = "disabled";            /* in ../fw/firmware/carrier-bringup/app.overlay:29 */
+				status = "disabled";            /* in ../fw/firmware/sensor/app.overlay:29 */
 			};
 
 			/* node '/soc/peripheral@50000000/pwm@d3000' defined in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:488 */
@@ -714,7 +714,7 @@
 				interrupts = < 0xd5 0x1 >;       /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:509 */
 				#io-channel-cells = < 0x1 >;     /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:511 */
 				zephyr,pm-device-runtime-auto;   /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:512 */
-				status = "disabled";             /* in ../fw/firmware/carrier-bringup/app.overlay:30 */
+				status = "disabled";             /* in ../fw/firmware/sensor/app.overlay:30 */
 			};
 
 			/* node '/soc/peripheral@50000000/nfct@d6000' defined in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:515 */
@@ -849,7 +849,7 @@
 				pinctrl-1 = < &uart30_sleep >;   /* in zephyr/boards/ezurio/bl54l15_dvk/bl54l15_dvk_common.dtsi:101 */
 				pinctrl-names = "default",
 				                "sleep";         /* in zephyr/boards/ezurio/bl54l15_dvk/bl54l15_dvk_common.dtsi:102 */
-				status = "disabled";             /* in ../fw/firmware/carrier-bringup/app.overlay:26 */
+				status = "disabled";             /* in ../fw/firmware/sensor/app.overlay:26 */
 			};
 
 			/* node '/soc/peripheral@50000000/clock@10e000' defined in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:630 */
@@ -910,7 +910,7 @@
 				compatible = "nordic,nrf-wdt"; /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:686 */
 				reg = < 0x109000 0x620 >;      /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:687 */
 				interrupts = < 0x109 0x1 >;    /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:688 */
-				status = "okay";               /* in ../fw/firmware/carrier-bringup/app.overlay:31 */
+				status = "okay";               /* in ../fw/firmware/sensor/app.overlay:31 */
 			};
 
 			/* node '/soc/peripheral@50000000/gpio@10a000' defined in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:692 */

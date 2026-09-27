@@ -1,4 +1,4 @@
-#include "../src/carrier.h"
+#include "../src/sensor.h"
 #include <assert.h>
 #include <errno.h>
 #include <stdbool.h>
@@ -10,7 +10,7 @@ struct fixture {
     int calls, fail_at, delays;
     bool timeout, bad_crc, unsafe_mode, heater;
     int32_t input_ff[2];
-    struct carrier_fault fault;
+    struct sensor_fault fault;
     unsigned now_ms, fdc_ready_ms, adc_busy_ms, off_delay_ms;
     unsigned watchdog_ms;
     bool stuck_on, watchdog_expired;
@@ -94,10 +94,10 @@ static int transfer(void *ctx, uint8_t addr, const uint8_t *w, size_t nw, uint8_
     assert(nr == 6);
     r[0] = 0x66;
     r[1] = 0x66;
-    r[2] = carrier_crc(r, 2);
+    r[2] = sensor_crc(r, 2);
     r[3] = 0x80;
     r[4] = 0;
-    r[5] = carrier_crc(r + 3, 2);
+    r[5] = sensor_crc(r + 3, 2);
     if (f->bad_crc)
         r[5] ^= 1;
     return 0;
@@ -136,200 +136,200 @@ static void init(struct fixture *f) {
 }
 int main(void) {
     struct fixture f;
-    struct carrier_sample s;
-    struct carrier_bus b = {&f, transfer, delay, &f.fault};
+    struct sensor_sample s;
+    struct sensor_bus b = {&f, transfer, delay, &f.fault};
     uint8_t check[] = {0xbe, 0xef};
-    assert(carrier_crc(check, 2) == 0x92);
+    assert(sensor_crc(check, 2) == 0x92);
     init(&f);
-    assert(carrier_start(&b, &s) == 0);
+    assert(sensor_start(&b, &s) == 0);
     assert(s.battery_mv == 3000 && s.output_mv >= 3290);
     assert(f.pm[0x22] == 30 && f.pm[0x23] == 1 && f.pm[0x24] == 1);
     assert(f.pm[0x6f] == 0x14 && f.pm[0x6c] == 1 && f.pm[0xb3] == 2);
-    assert(carrier_measure(&b, &s) == 0);
+    assert(sensor_measure(&b, &s) == 0);
     assert(s.temperature_cc == 2500 && s.humidity_cpct == 5650);
     assert(s.capacitance_ff[0] >= 51998 && s.capacitance_ff[0] <= 52001);
     assert(s.capacitance_ff[1] >= 8998 && s.capacitance_ff[1] <= 9001);
     assert(!f.unsafe_mode && !f.heater);
-    assert(carrier_radio_start(&b) == 0);
+    assert(sensor_radio_start(&b) == 0);
     assert(!f.pm[0x69] && !f.pm[0x24] && f.pm[0xb7]);
-    assert(carrier_stop(&b) == 0 && !f.pm[0x69] && !f.pm[0xb7] && !f.pm[0x24]);
+    assert(sensor_stop(&b) == 0 && !f.pm[0x69] && !f.pm[0xb7] && !f.pm[0x24]);
     int total = f.calls;
     /* A single transient bus failure at every transaction must remain recoverable. */
     for (int i = 1; i <= total; i++) {
         init(&f);
         f.fail_at = i;
-        int rc = carrier_start(&b, &s);
+        int rc = sensor_start(&b, &s);
         if (!rc)
-            rc = carrier_measure(&b, &s);
+            rc = sensor_measure(&b, &s);
         if (!rc)
-            rc = carrier_radio_start(&b);
-        int stop = carrier_stop(&b);
+            rc = sensor_radio_start(&b);
+        int stop = sensor_stop(&b);
         if (stop) {
             f.fail_at = 0;
-            assert(carrier_stop(&b) == 0);
+            assert(sensor_stop(&b) == 0);
         }
         assert(!f.pm[0x69] && !f.unsafe_mode && !f.heater);
     }
     init(&f);
     f.pm[0x96] = 63; /* 787 mV: below the board input floor. */
-    assert(carrier_start(&b, &s) == -ERANGE);
+    assert(sensor_start(&b, &s) == -ERANGE);
     assert(!f.pm[0x69]);
-    assert(carrier_stop(&b) == 0);
+    assert(sensor_stop(&b) == 0);
     /* Sensing is allowed only at/above the board floor. */
     const uint8_t allowed_battery[] = {144, 152, 160, 240};
     for (unsigned i = 0; i < sizeof(allowed_battery); i++) {
         init(&f);
         f.pm[0x96] = allowed_battery[i];
-        assert(carrier_start(&b, &s) == 0);
-        assert(carrier_measure(&b, &s) == 0);
-        assert(carrier_radio_start(&b) == 0);
-        assert(carrier_stop(&b) == 0);
+        assert(sensor_start(&b, &s) == 0);
+        assert(sensor_measure(&b, &s) == 0);
+        assert(sensor_radio_start(&b) == 0);
+        assert(sensor_stop(&b) == 0);
     }
     init(&f);
-    assert(carrier_start(&b, &s) == 0);
+    assert(sensor_start(&b, &s) == 0);
     f.pm[0x96] = 63; /* Input collapse during sensing suppresses the reading. */
-    assert(carrier_measure(&b, &s) == -ERANGE);
-    assert(carrier_stop(&b) == 0);
+    assert(sensor_measure(&b, &s) == -ERANGE);
+    assert(sensor_stop(&b) == 0);
     init(&f);
-    assert(carrier_start(&b, &s) == 0);
+    assert(sensor_start(&b, &s) == 0);
     f.pm[0x99] = 200; /* Auto-mode rail below 3.15 V must reject radio start. */
-    assert(carrier_radio_start(&b) == -ERANGE);
+    assert(sensor_radio_start(&b) == -ERANGE);
     assert(!f.pm[0x69] && !f.pm[0x24] && f.pm[0xb7]);
-    assert(carrier_stop(&b) == 0);
+    assert(sensor_stop(&b) == 0);
     init(&f);
-    assert(carrier_start(&b, &s) == 0);
-    assert(carrier_radio_start(&b) == 0);
+    assert(sensor_start(&b, &s) == 0);
+    assert(sensor_radio_start(&b) == 0);
     /* A connected Measure-now request returns to HP only for sensing. */
-    assert(carrier_start(&b, &s) == 0 && f.pm[0x24] == 1);
-    assert(carrier_measure(&b, &s) == 0);
-    assert(carrier_radio_start(&b) == 0 && !f.pm[0x24]);
-    assert(carrier_stop(&b) == 0);
+    assert(sensor_start(&b, &s) == 0 && f.pm[0x24] == 1);
+    assert(sensor_measure(&b, &s) == 0);
+    assert(sensor_radio_start(&b) == 0 && !f.pm[0x24]);
+    assert(sensor_stop(&b) == 0);
     init(&f);
     f.timeout = true;
-    assert(carrier_start(&b, &s) == -ETIMEDOUT);
+    assert(sensor_start(&b, &s) == -ETIMEDOUT);
     assert(f.fault.address == 0x74 && f.fault.reg == 0x01 && f.fault.mask == 1);
     assert(f.delays < 200);
-    assert(carrier_stop(&b) == 0);
+    assert(sensor_stop(&b) == 0);
     init(&f);
-    assert(carrier_start(&b, &s) == 0);
+    assert(sensor_start(&b, &s) == 0);
     f.timeout = true;
-    assert(carrier_measure(&b, &s) == -ETIMEDOUT);
+    assert(sensor_measure(&b, &s) == -ETIMEDOUT);
     assert(f.fault.address == 0x50 && f.fault.reg == 0x0c && f.fault.observed == 0x480);
     assert(f.delays < 500);
-    assert(carrier_stop(&b) == 0);
+    assert(sensor_stop(&b) == 0);
     assert(f.fault.address == 0x50); /* Cleanup must retain the failing chip/register. */
     init(&f);
-    assert(carrier_start(&b, &s) == 0);
+    assert(sensor_start(&b, &s) == 0);
     f.bad_crc = true;
-    assert(carrier_measure(&b, &s) == -EBADMSG);
-    assert(carrier_stop(&b) == 0);
+    assert(sensor_measure(&b, &s) == -EBADMSG);
+    assert(sensor_stop(&b) == 0);
     init(&f);
-    assert(carrier_start(&b, &s) == 0);
+    assert(sensor_start(&b, &s) == 0);
     f.input_ff[0] = 130000;
-    assert(carrier_measure(&b, &s) == -ERANGE);
-    assert(carrier_stop(&b) == 0);
+    assert(sensor_measure(&b, &s) == -ERANGE);
+    assert(sensor_stop(&b) == 0);
     init(&f);
     f.pm[0x34] = 1; /* PMIC reports LP despite accepted force-HP setting. */
-    assert(carrier_start(&b, &s) == -ETIMEDOUT);
+    assert(sensor_start(&b, &s) == -ETIMEDOUT);
     assert(f.fault.reg == 0x34 && f.fault.observed == 1 && f.fault.expected == 0);
     assert(!f.pm[0x69]);
-    assert(carrier_stop(&b) == 0);
+    assert(sensor_stop(&b) == 0);
     init(&f);
     f.pm[0x9d] = 2;
     f.adc_busy_ms = 7; /* Conversion survived an MCU reset. */
-    assert(carrier_start(&b, &s) == 0);
-    assert(carrier_stop(&b) == 0);
+    assert(sensor_start(&b, &s) == 0);
+    assert(sensor_stop(&b) == 0);
     init(&f);
     f.pm[0x9d] = 2; /* ADC never becomes available. */
-    assert(carrier_start(&b, &s) == -ETIMEDOUT);
+    assert(sensor_start(&b, &s) == -ETIMEDOUT);
     assert(f.fault.reg == 0x9d && !f.pm[0x90]);
-    assert(carrier_stop(&b) == 0);
+    assert(sensor_stop(&b) == 0);
     init(&f);
-    assert(carrier_start(&b, &s) == 0);
+    assert(sensor_start(&b, &s) == 0);
     f.off_delay_ms = 7;
     unsigned before = f.now_ms;
-    assert(carrier_sensors_off(&b) == 0);
+    assert(sensor_sensors_off(&b) == 0);
     assert(f.now_ms >= before + 7 && f.pm[0x6e] == 2);
     assert(f.pm[0xb7] && f.pm[0x24]);
-    assert(carrier_radio_start(&b) == 0);
+    assert(sensor_radio_start(&b) == 0);
     /* A five-minute BLE window must not trip the independent 20 s watchdog. */
     for (unsigned i = 0; i < 300; i++) {
-        assert(carrier_watchdog_feed(&b) == 0);
+        assert(sensor_watchdog_feed(&b) == 0);
         delay(&f, 1000);
         assert(!f.pm[0x69] && !f.pm[0x24] && !f.watchdog_expired);
     }
-    assert(carrier_stop(&b) == 0);
+    assert(sensor_stop(&b) == 0);
     delay(&f, 60000);
     assert(!f.watchdog_expired);
     init(&f);
-    assert(carrier_start(&b, &s) == 0);
-    assert(carrier_sensors_off(&b) == 0);
+    assert(sensor_start(&b, &s) == 0);
+    assert(sensor_sensors_off(&b) == 0);
     delay(&f, 20000); /* A stalled foreground must still power-cycle. */
     assert(f.watchdog_expired);
     init(&f);
-    assert(carrier_start(&b, &s) == 0);
+    assert(sensor_start(&b, &s) == 0);
     f.stuck_on = true;
-    assert(carrier_radio_start(&b) == -ETIMEDOUT);
+    assert(sensor_radio_start(&b) == -ETIMEDOUT);
     assert(f.pm[0x24] && f.pm[0xb7]);
-    assert(carrier_stop(&b) == -ETIMEDOUT);
+    assert(sensor_stop(&b) == -ETIMEDOUT);
     assert(f.fault.reg == 0x6e && f.pm[0xb7] && f.pm[0x24]);
     f.stuck_on = false;
-    assert(carrier_stop(&b) == 0);
+    assert(sensor_stop(&b) == 0);
     init(&f);
     f.fail_at = 1;
-    assert(carrier_watchdog_feed(&b) == -EIO);
+    assert(sensor_watchdog_feed(&b) == -EIO);
     assert(f.fault.address == 0x74 && f.fault.reg == 0xb2 && f.fault.mask == 0);
     init(&f);
-    assert(!carrier_watchdog_start(&b, 60));
+    assert(!sensor_watchdog_start(&b, 60));
     assert(f.pm[0xb3] == 2 && f.pm[0xb7] == 1);
     assert(f.pm[0xb4] == 0 && f.pm[0xb5] == 14 && f.pm[0xb6] == 255);
     int watchdog_calls = f.calls;
-    assert(carrier_watchdog_start(&b, 0) == -EINVAL);
-    assert(carrier_watchdog_start(&b, 262145) == -EINVAL);
+    assert(sensor_watchdog_start(&b, 0) == -EINVAL);
+    assert(sensor_watchdog_start(&b, 262145) == -EINVAL);
     assert(f.calls == watchdog_calls);
     for (int fail = 1; fail <= watchdog_calls; fail++) {
         init(&f); f.fail_at = fail;
-        assert(carrier_watchdog_start(&b, 60) < 0);
+        assert(sensor_watchdog_start(&b, 60) < 0);
     }
-    assert(!carrier_power_allowed(1799, CARRIER_POWER_CLEAN));
-    assert(carrier_power_allowed(1800, CARRIER_POWER_CLEAN));
-    assert(!carrier_power_allowed(1999, CARRIER_POWER_BLOCKED));
-    assert(carrier_power_allowed(2000, CARRIER_POWER_BLOCKED));
+    assert(!sensor_power_allowed(1799, SENSOR_POWER_CLEAN));
+    assert(sensor_power_allowed(1800, SENSOR_POWER_CLEAN));
+    assert(!sensor_power_allowed(1999, SENSOR_POWER_BLOCKED));
+    assert(sensor_power_allowed(2000, SENSOR_POWER_BLOCKED));
     init(&f);
     uint16_t mv;
     f.pm[0x96] = 64;
-    assert(!carrier_power_probe(&b, &mv) && mv == 800);
+    assert(!sensor_power_probe(&b, &mv) && mv == 800);
     assert(!f.pm[0x69] && !f.pm[0x24] && !f.pm[0xb7]);
-    assert(!carrier_retained_state(&b, CARRIER_POWER_ATTEMPT));
+    assert(!sensor_retained_state(&b, SENSOR_POWER_ATTEMPT));
     uint8_t saved = f.pm[0xd9];
     init(&f); /* PMIC power-cycle reset preserves the VBAT-domain scratch. */
     f.pm[0xd9] = saved;
     uint8_t state, stage, reset;
-    assert(!carrier_retained_read(&b, &state, &stage, &reset));
-    assert(state == CARRIER_POWER_ATTEMPT);
-    assert(!carrier_hibernate(&b, 3600));
-    assert(f.pm[0xd9] == CARRIER_POWER_BLOCKED && f.pm[0xb3] == 3);
+    assert(!sensor_retained_read(&b, &state, &stage, &reset));
+    assert(state == SENSOR_POWER_ATTEMPT);
+    assert(!sensor_hibernate(&b, 3600));
+    assert(f.pm[0xd9] == SENSOR_POWER_BLOCKED && f.pm[0xb3] == 3);
     assert(f.pm[0xb4] == 3 && f.pm[0xb5] == 0x83 && f.pm[0xb6] == 0xff);
     assert(f.pm[0xc8] == 1 && !f.pm[0x69] && !f.pm[0x24]);
     int hibernate_calls = f.calls;
-    assert(carrier_hibernate(&b, 0) == -EINVAL);
-    assert(carrier_hibernate(&b, 262145) == -EINVAL);
+    assert(sensor_hibernate(&b, 0) == -EINVAL);
+    assert(sensor_hibernate(&b, 262145) == -EINVAL);
     assert(f.calls == hibernate_calls);
     init(&f);
-    assert(!carrier_hibernate(&b, 60));
+    assert(!sensor_hibernate(&b, 60));
     hibernate_calls = f.calls;
     for (int fail = 1; fail <= hibernate_calls; fail++) {
         init(&f); f.fail_at = fail;
-        assert(carrier_hibernate(&b, 60) < 0);
+        assert(sensor_hibernate(&b, 60) < 0);
         assert(!f.pm[0xc8]); /* Never enter hibernate with an unverified timer. */
     }
     init(&f);
-    assert(!carrier_power_probe(&b, &mv));
+    assert(!sensor_power_probe(&b, &mv));
     int probe_calls = f.calls;
     for (int fail = 1; fail <= probe_calls; fail++) {
         init(&f); f.fail_at = fail;
-        assert(carrier_power_probe(&b, &mv) < 0);
+        assert(sensor_power_probe(&b, &mv) < 0);
         assert(!f.pm[0x69] && !f.pm[0x24]);
     }
-    puts("carrier: measurements, CRC, range, bounded waits and bus-fault cleanup passed");
+    puts("sensor: measurements, CRC, range, bounded waits and bus-fault cleanup passed");
 }

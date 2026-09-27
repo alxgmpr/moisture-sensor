@@ -46,7 +46,7 @@ This removes the existing always-powered shared-bus pull-ups as a source of FDC 
 1. At boot and while FDC power is off, leave both dedicated pins disconnected/high impedance, with internal pull-ups disabled.
 2. Use the main bus to enable the FDC supply; wait for its required startup time, then enable the dedicated bus and configure/read the FDC.
 3. Complete transfers and suspend/disconnect TWIM20 pins before turning the FDC supply off. Verify pinctrl sleep and System OFF behaviour, including error paths.
-4. Update the carrier transport, currently sharing one bus context, to select TWIM20 for FDC address 0x50 and TWIM22 for PMIC/SHT, or explicitly split those contexts.
+4. Update the sensor transport, currently sharing one bus context, to select TWIM20 for FDC address 0x50 and TWIM22 for PMIC/SHT, or explicitly split those contexts.
 5. Measure FDC rail voltage and battery current while off, including main-bus traffic, MCU reset and wake/sleep transitions. A dedicated bus addresses the external pull-up path; residual pin/rail leakage still needs measurement.
 
 The maintained schematic, PCB, rules and firmware were not edited for this feasibility evaluation. D8/D9 remain accepted as previously directed. The fabrication-rule review is recorded separately in ../jlc-vias-i2c-2026-09-09/README.md.

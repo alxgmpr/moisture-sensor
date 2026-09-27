@@ -56,13 +56,13 @@ Built in the `ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.2.2` container against
 **Product default (hourly cycle, what ships):**
 
 ```bash
-docker run --rm --platform linux/amd64 -v ncs-src:/workdir -v ncs-build:/builds -v /Users/alex/moisture-sensor-carrier/firmware:/fw -w /workdir ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.2.2 'source /opt/toolchain-env.sh; export ZEPHYR_BASE=/workdir/zephyr; west build -p always -b nrf54l15dk/nrf54l15/cpuapp -d /builds/bthome /fw/bthome-sensor && cp /builds/bthome/merged.hex /fw/.build-bthome.hex'
+docker run --rm --platform linux/amd64 -v ncs-src:/workdir -v ncs-build:/builds -v /Users/alex/moisture-sensor/firmware:/fw -w /workdir ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.2.2 'source /opt/toolchain-env.sh; export ZEPHYR_BASE=/workdir/zephyr; west build -p always -b nrf54l15dk/nrf54l15/cpuapp -d /builds/bthome /fw/bthome-sensor && cp /builds/bthome/merged.hex /fw/.build-bthome.hex'
 ```
 
 **Dev build (30 s cycle, for watching it work without waiting an hour):**
 
 ```bash
-docker run --rm --platform linux/amd64 -v ncs-src:/workdir -v ncs-build:/builds -v /Users/alex/moisture-sensor-carrier/firmware:/fw -w /workdir ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.2.2 'source /opt/toolchain-env.sh; export ZEPHYR_BASE=/workdir/zephyr; west build -p always -b nrf54l15dk/nrf54l15/cpuapp -d /builds/bthome /fw/bthome-sensor -- -DEXTRA_CONF_FILE=dev.conf && cp /builds/bthome/merged.hex /fw/.build-bthome.hex'
+docker run --rm --platform linux/amd64 -v ncs-src:/workdir -v ncs-build:/builds -v /Users/alex/moisture-sensor/firmware:/fw -w /workdir ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.2.2 'source /opt/toolchain-env.sh; export ZEPHYR_BASE=/workdir/zephyr; west build -p always -b nrf54l15dk/nrf54l15/cpuapp -d /builds/bthome /fw/bthome-sensor -- -DEXTRA_CONF_FILE=dev.conf && cp /builds/bthome/merged.hex /fw/.build-bthome.hex'
 ```
 
 Either way, confirm the console reports the cycle length you expect
@@ -72,7 +72,7 @@ and not notice for an hour.
 ## Flashing
 
 ```bash
-cd /Users/alex/moisture-sensor-carrier/firmware && nrfutil device program --firmware .build-bthome.hex --options chip_erase_mode=ERASE_ALL --serial-number 1057774579 && nrfutil device reset --serial-number 1057774579
+cd /Users/alex/moisture-sensor/firmware && nrfutil device program --firmware .build-bthome.hex --options chip_erase_mode=ERASE_ALL --serial-number 1057774579 && nrfutil device reset --serial-number 1057774579
 ```
 
 **The device is in System OFF most of the time and does not answer the
@@ -96,7 +96,7 @@ Build it with the NCS 3.2.2 toolchain:
 ```bash
 docker run --rm --platform linux/amd64 \
   -v ncs-src:/workdir -v ncs-build:/builds \
-  -v /Users/alex/moisture-sensor-carrier/firmware:/fw \
+  -v /Users/alex/moisture-sensor/firmware:/fw \
   -w /workdir ghcr.io/nrfconnect/sdk-nrf-toolchain:v3.2.2 \
   'source /opt/toolchain-env.sh; export ZEPHYR_BASE=/workdir/zephyr; \
    west build --sysbuild -p always \

@@ -64,7 +64,7 @@ assumed fix. C23's separate VINT bias qualification remains open from before.
 All used GPIO assignments are preserved. NC means intentionally unconnected
 in both schematic and PCB; it does not mean a power pin was omitted.
 
-| Pad | Module function | Carrier net / destination |
+| Pad | Module function | Sensor net / destination |
 |---|---|---|
 | 1 | GND | GND |
 | 2 | P2.09 | NC |
@@ -139,7 +139,7 @@ avoiding a contradictory pad-in-keepout check. It is not permission to put other
 copper in the antenna area. All other copper stays outside the defined areas.
 No vias may expose solder mask under the module except the required LGA lands.
 
-The fixed 34 mm carrier is smaller than Ezurio's antenna characterization board.
+The fixed 34 mm sensor is smaller than Ezurio's antenna characterization board.
 The outline, 1.6 mm thickness, mounting reliefs and Hammond enclosure were
 preserved. Keep antenna-end screws nylon and keep wires, metal coatings and
 hardware out of the antenna zone. Manufacturer guidance recommends metal
@@ -189,7 +189,7 @@ qualified; a reflow oven is not assumed.
 The module is MSL4. Track exposure after opening (72 hours maximum under the
 specified dry-pack conditions), keep unused cut tape dry, and follow the
 supplier humidity indicator and baking instructions if exceeded. Any module
-bake is before assembly and must not be applied indiscriminately to the carrier,
+bake is before assembly and must not be applied indiscriminately to the sensor,
 cell, holder or humidity sensor. See the vendor's current material-handling
 section for its 125°C/48 h bake condition and packaging restrictions.
 

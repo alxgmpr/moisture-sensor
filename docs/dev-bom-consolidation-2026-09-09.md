@@ -240,15 +240,15 @@ it does not establish whether the exact Nordic 1 kΩ / 3.9 pF pair exists inside
 
 **Revised development recommendation: omit C13 and remove/bypass R1 using copper.**
 This follows the module integration guidance instead of imposing the bare-SoC
-reference RC on the carrier. Do not replace R1 with 4.7 kΩ or C13 with a much
+reference RC on the sensor. Do not replace R1 with 4.7 kΩ or C13 with a much
 larger capacitor. R1 is in series: simply marking it DNP without bridging it
 would disconnect reset and is incorrect. Retain R35 (100 Ω), D7, and the existing
-PMIC PG/RESET connection. The remaining 100 Ω debug resistor is our carrier
+PMIC PG/RESET connection. The remaining 100 Ω debug resistor is our sensor
 protection choice, not an Ezurio requirement.
 
 This is a module-specific engineering inference from its documented integration
 requirements, not proof of the internal filter implementation or RF/ESD testing
-of this carrier. Verify programming, connect-under-reset, PMIC-triggered reset,
+of this sensor. Verify programming, connect-under-reset, PMIC-triggered reset,
 power-up and normal radio operation on the development boards. The earlier
 voltage-divider objection still applies to adding 4.7 kΩ in series; removing
 R1 avoids that objection instead of trying to tolerate the larger voltage drop.

@@ -5,17 +5,17 @@ Loading Zephyr module(s) (Zephyr base): sysbuild_default
 -- Found west (found suitable version "1.4.0", minimum required is "0.14.0")
 -- Board: bl54l15_dvk, qualifiers: nrf54l15/cpuapp
 Parsing /workdir/zephyr/share/sysbuild/Kconfig
-Loaded configuration '/builds/carrier-fdc-bus/_sysbuild/empty.conf'
-Merged configuration '/builds/carrier-fdc-bus/_sysbuild/empty.conf'
-Configuration saved to '/builds/carrier-fdc-bus/zephyr/.config'
-Kconfig header saved to '/builds/carrier-fdc-bus/_sysbuild/autoconf.h'
+Loaded configuration '/builds/sensor-fdc-bus/_sysbuild/empty.conf'
+Merged configuration '/builds/sensor-fdc-bus/_sysbuild/empty.conf'
+Configuration saved to '/builds/sensor-fdc-bus/zephyr/.config'
+Kconfig header saved to '/builds/sensor-fdc-bus/_sysbuild/autoconf.h'
 -- 
    *************************************
-   * Running CMake for carrier-bringup *
+   * Running CMake for sensor *
    *************************************
 
 Loading Zephyr default modules (Zephyr base).
--- Application: /carrier/firmware/carrier-bringup
+-- Application: /sensor/firmware/sensor
 -- CMake version: 3.21.0
 -- Found Python3: /opt/ncs/toolchains/927563c840/usr/local/bin/python (found suitable version "3.12.4", minimum required is "3.10") found components: Interpreter 
 -- Cache files will be written to: /workdir/zephyr/.cache
@@ -26,16 +26,16 @@ Loading Zephyr default modules (Zephyr base).
 -- Found toolchain: zephyr 0.17.0 (/opt/ncs/toolchains/927563c840/opt/zephyr-sdk)
 -- Found Dtc: /opt/ncs/toolchains/927563c840/usr/bin/dtc (found suitable version "1.5.0", minimum required is "1.4.6") 
 -- Found BOARD.dts: /workdir/zephyr/boards/ezurio/bl54l15_dvk/bl54l15_dvk_nrf54l15_cpuapp.dts
--- Found devicetree overlay: /carrier/firmware/carrier-bringup/app.overlay
--- Generated zephyr.dts: /builds/carrier-fdc-bus/carrier-bringup/zephyr/zephyr.dts
--- Generated pickled edt: /builds/carrier-fdc-bus/carrier-bringup/zephyr/edt.pickle
--- Generated devicetree_generated.h: /builds/carrier-fdc-bus/carrier-bringup/zephyr/include/generated/zephyr/devicetree_generated.h
+-- Found devicetree overlay: /sensor/firmware/sensor/app.overlay
+-- Generated zephyr.dts: /builds/sensor-fdc-bus/sensor/zephyr/zephyr.dts
+-- Generated pickled edt: /builds/sensor-fdc-bus/sensor/zephyr/edt.pickle
+-- Generated devicetree_generated.h: /builds/sensor-fdc-bus/sensor/zephyr/include/generated/zephyr/devicetree_generated.h
 Parsing /workdir/zephyr/Kconfig
 Loaded configuration '/workdir/zephyr/boards/ezurio/bl54l15_dvk/bl54l15_dvk_nrf54l15_cpuapp_defconfig'
-Merged configuration '/carrier/firmware/carrier-bringup/prj.conf'
-Merged configuration '/builds/carrier-fdc-bus/carrier-bringup/zephyr/.config.sysbuild'
-Configuration saved to '/builds/carrier-fdc-bus/carrier-bringup/zephyr/.config'
-Kconfig header saved to '/builds/carrier-fdc-bus/carrier-bringup/zephyr/include/generated/zephyr/autoconf.h'
+Merged configuration '/sensor/firmware/sensor/prj.conf'
+Merged configuration '/builds/sensor-fdc-bus/sensor/zephyr/.config.sysbuild'
+Configuration saved to '/builds/sensor-fdc-bus/sensor/zephyr/.config'
+Kconfig header saved to '/builds/sensor-fdc-bus/sensor/zephyr/include/generated/zephyr/autoconf.h'
 -- Found GnuLd: /opt/ncs/toolchains/927563c840/opt/zephyr-sdk/arm-zephyr-eabi/arm-zephyr-eabi/bin/ld.bfd (found version "2.38") 
 -- The C compiler identification is GNU 12.2.0
 -- The CXX compiler identification is GNU 12.2.0
@@ -45,17 +45,17 @@ Kconfig header saved to '/builds/carrier-fdc-bus/carrier-bringup/zephyr/include/
 -- Found gen_kobject_list: /workdir/zephyr/scripts/build/gen_kobject_list.py
 -- Configuring done
 -- Generating done
--- Build files have been written to: /builds/carrier-fdc-bus/carrier-bringup
+-- Build files have been written to: /builds/sensor-fdc-bus/sensor
 -- Configuring done
 -- Generating done
--- Build files have been written to: /builds/carrier-fdc-bus
+-- Build files have been written to: /builds/sensor-fdc-bus
 -- west build: building application
-[1/10] Creating directories for 'carrier-bringup'
-[2/10] No download step for 'carrier-bringup'
-[3/10] No update step for 'carrier-bringup'
-[4/10] No patch step for 'carrier-bringup'
-[5/10] No configure step for 'carrier-bringup'
-[5/10] Performing build step for 'carrier-bringup'
+[1/10] Creating directories for 'sensor'
+[2/10] No download step for 'sensor'
+[3/10] No update step for 'sensor'
+[4/10] No patch step for 'sensor'
+[5/10] No configure step for 'sensor'
+[5/10] Performing build step for 'sensor'
 [1/299] Preparing syscall dependency handling
 
 [2/299] Generating ../../zephyr/include/generated/zephyr_commit.h
@@ -88,7 +88,7 @@ Kconfig header saved to '/builds/carrier-fdc-bus/carrier-bringup/zephyr/include/
 [28/299] Building C object modules/nrf/subsys/nrf_security/src/CMakeFiles/mbedcrypto_base.dir/threading/threading_alt.c.obj
 [29/299] Building C object zephyr/CMakeFiles/zephyr.dir/lib/libc/validate_libc.c.obj
 [30/299] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/poweroff.c.obj
-[31/299] Building C object CMakeFiles/app.dir/src/carrier.c.obj
+[31/299] Building C object CMakeFiles/app.dir/src/sensor.c.obj
 [32/299] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/thread_entry.c.obj
 [33/299] Building C object CMakeFiles/app.dir/src/main.c.obj
 [34/299] Building C object zephyr/CMakeFiles/zephyr.dir/lib/os/sem.c.obj
@@ -361,8 +361,8 @@ Memory region         Used Size  Region Size  %age Used
            FLASH:       86704 B      1428 KB      5.93%
              RAM:       22160 B       188 KB     11.51%
         IDT_LIST:          0 GB        32 KB      0.00%
-Generating files from /builds/carrier-fdc-bus/carrier-bringup/zephyr/zephyr.elf for board: bl54l15_dvk
-[7/10] No install step for 'carrier-bringup'
-[8/10] Completed 'carrier-bringup'
-[9/10] cd /builds/carrier-fdc-bus/_sysbuild && /opt/ncs/toolchains/927563c840/usr/local/bin/cmake -E true
+Generating files from /builds/sensor-fdc-bus/sensor/zephyr/zephyr.elf for board: bl54l15_dvk
+[7/10] No install step for 'sensor'
+[8/10] Completed 'sensor'
+[9/10] cd /builds/sensor-fdc-bus/_sysbuild && /opt/ncs/toolchains/927563c840/usr/local/bin/cmake -E true
 [10/10] Generating ../merged.hex

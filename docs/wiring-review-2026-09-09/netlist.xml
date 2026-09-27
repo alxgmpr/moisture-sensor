@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <export version="E">
   <design>
-    <source>/Users/alex/moisture-sensor-carrier/nrf-moisture-sensor.kicad_sch</source>
+    <source>/Users/alex/moisture-sensor/nrf-moisture-sensor.kicad_sch</source>
     <date>2026-09-09T12:47:26</date>
     <tool>Eeschema 10.99.0-3619-g0ef48b972f</tool>
     <sheet number="1" name="/" tstamps="/">

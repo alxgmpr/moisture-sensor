@@ -1,5 +1,7 @@
 # nRF Moisture Sensor
 
+![Three-quarter PCB render with the MCU module in the foreground](docs/images/pcb-three-quarter.png)
+
 A CR2032-powered Bluetooth soil-moisture sensor with **two capacitive sensing zones**, a dedicated TI FDC1004 capacitance-to-digital converter, and temperature/humidity sensing. Built around the Ezurio BL54L15 (Nordic nRF54L15), it broadcasts BTHome v2 readings for Home Assistant and supports local BLE configuration and firmware updates.
 
 This repository contains the KiCad hardware, embedded firmware, browser configuration dashboard, and prototype investigation notes.
@@ -70,23 +72,23 @@ Use **Nordic nRF Connect SDK v3.2.2**. From the repository root, in an SDK-confi
 
 ```sh
 west build --sysbuild -p always -b bl54l15_dvk/nrf54l15/cpuapp \
-  -d firmware/carrier-bringup/build firmware/carrier-bringup
-sh firmware/carrier-bringup/tests/run.sh
+  -d firmware/sensor/build firmware/sensor
+sh firmware/sensor/tests/run.sh
 ```
 
-See the [carrier firmware guide](firmware/carrier-bringup/README.md) for wiring, development cadence, signing, OTA, and SWD recovery. The SDK signing key is for development only; use a protected production key for field releases. The [older DK demo](firmware/bthome-sensor/README.md) is separate from the carrier firmware.
+See the [sensor firmware guide](firmware/sensor/README.md) for wiring, development cadence, signing, OTA, and SWD recovery. The SDK signing key is for development only; use a protected production key for field releases. The [older DK demo](firmware/bthome-sensor/README.md) is separate from the sensor firmware.
 
 ### Browser configuration
 
 With Node.js installed, run:
 
 ```sh
-node firmware/carrier-bringup/dashboard/serve.mjs
+node firmware/sensor/dashboard/serve.mjs
 ```
 
 Open <http://127.0.0.1:8766> in Chrome or Edge on a Bluetooth-capable computer. Connect during the sensor's advertising window, or use **Explore with demo data** to inspect the interface without hardware. No npm install is required.
 
-The [dashboard guide](firmware/carrier-bringup/dashboard/README.md) covers configuration and calibration. Firmware uploads use a separate SMP client.
+The [dashboard guide](firmware/sensor/dashboard/README.md) covers configuration and calibration. Firmware uploads use a separate SMP client.
 
 ## Development records
 

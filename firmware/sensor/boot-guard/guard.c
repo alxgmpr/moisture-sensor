@@ -1,6 +1,6 @@
 /* Board power gate, before MCUboot performs image hashing, RSA, or swapping.
  * This does not bypass image verification or change the trusted signing key. */
-#include "carrier.h"
+#include "sensor.h"
 #include <zephyr/drivers/hwinfo.h>
 #include <zephyr/drivers/i2c.h>
 #include <zephyr/drivers/timer/nrf_grtc_timer.h>
@@ -28,25 +28,25 @@ static void delay(void *ctx, unsigned ms)
 static int guard(void)
 {
     const struct device *dev = DEVICE_DT_GET(DT_NODELABEL(i2c22));
-    struct carrier_fault fault = {0};
-    struct carrier_bus bus = {(void *)dev, transfer, delay, &fault};
+    struct sensor_fault fault = {0};
+    struct sensor_bus bus = {(void *)dev, transfer, delay, &fault};
     uint16_t mv = 0;
     uint8_t retained = 0, stage = 0, pmic = 0;
     uint32_t cause = 0;
     (void)hwinfo_get_reset_cause(&cause); /* Application still needs these flags. */
     int rc = device_is_ready(dev) ?
-        carrier_retained_read(&bus, &retained, &stage, &pmic) : -ENODEV;
+        sensor_retained_read(&bus, &retained, &stage, &pmic) : -ENODEV;
     if (!rc)
-        rc = carrier_power_probe(&bus, &mv);
-    bool planned = (cause & RESET_SOFTWARE) && mv >= CARRIER_RECOVER_BATTERY_MV;
+        rc = sensor_power_probe(&bus, &mv);
+    bool planned = (cause & RESET_SOFTWARE) && mv >= SENSOR_RECOVER_BATTERY_MV;
     /* An explicit software reset at a healthy supply is also used by SWD
      * bootloader updates. Watchdog/power-cycle resets must still back off. */
-    bool interrupted = !planned && (retained == CARRIER_POWER_BOOTING ||
-                                    retained == CARRIER_POWER_ATTEMPT);
-    if (!rc && !interrupted && carrier_power_allowed(mv, retained)) {
-        rc = carrier_retained_state(&bus, CARRIER_POWER_BOOTING);
+    bool interrupted = !planned && (retained == SENSOR_POWER_BOOTING ||
+                                    retained == SENSOR_POWER_ATTEMPT);
+    if (!rc && !interrupted && sensor_power_allowed(mv, retained)) {
+        rc = sensor_retained_state(&bus, SENSOR_POWER_BOOTING);
         if (!rc)
-            rc = carrier_watchdog_start(&bus, 60);
+            rc = sensor_watchdog_start(&bus, 60);
         if (!rc)
             return 0;
     }
@@ -54,10 +54,10 @@ static int guard(void)
         uint8_t reason = cause & RESET_WATCHDOG ? 0xe1 :
                          ((pmic >> 1) & 15) == 5 ? 0xe2 :
                          interrupted ? 0xe3 : 0xd0;
-        (void)carrier_retained_stage(&bus, reason);
-        (void)carrier_hibernate(&bus, CONFIG_SENSOR_BOOT_RETRY_SECONDS);
+        (void)sensor_retained_stage(&bus, reason);
+        (void)sensor_hibernate(&bus, CONFIG_SENSOR_BOOT_RETRY_SECONDS);
         k_msleep(20);
-        (void)carrier_stop(&bus);
+        (void)sensor_stop(&bus);
     }
     /* If PMIC communication is unavailable, remove the MCU load anyway.
      * After GRTC preparation, use no I2C, logging, or kernel timeouts. */

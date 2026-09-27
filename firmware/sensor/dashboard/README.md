@@ -3,7 +3,7 @@
 Run from the repository root with Node.js (no npm install):
 
 ```sh
-node firmware/carrier-bringup/dashboard/serve.mjs
+node firmware/sensor/dashboard/serve.mjs
 ```
 
 Open <http://127.0.0.1:8766> in Chrome or Edge on a Bluetooth-capable computer.
@@ -125,13 +125,13 @@ unchanged-record comparison and leaves that option off.
 ## Validation
 
 ```sh
-sh firmware/carrier-bringup/tests/run.sh
-CFLAGS='-fsanitize=undefined' sh firmware/carrier-bringup/tests/run.sh
+sh firmware/sensor/tests/run.sh
+CFLAGS='-fsanitize=undefined' sh firmware/sensor/tests/run.sh
 ```
 
 Host tests cover configuration bounds, malformed/partial/replayed transactions,
 CRC failure, reversed calibration, overflow edges, start-to-start timing, and
-C/browser binary compatibility, plus existing carrier fault injection and
+C/browser binary compatibility, plus existing sensor fault injection and
 BTHome packets. Browser demo checks exercise presets, saves and rendering.
 Direct BLE saves, fresh samples, cold-boot persistence, and retention across a signed OTA update were checked on Soil-402A. See the [validation record](../../../docs/power-and-configuration-2026-09-21.md). Browser-to-device interaction through Chrome’s chooser, power removal, interrupted flash writes, and actual current measurements remain separate checks; a build or demo is not evidence of those behaviors.
 
