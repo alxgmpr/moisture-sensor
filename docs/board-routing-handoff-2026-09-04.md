@@ -84,5 +84,5 @@ backup, and avoid loading an older disk copy over the current GUI session.
 After routing, refill zones and require zero missing connections, zero DRC
 errors and zero parity issues. Resolve the silkscreen warnings, then continue
 the RF, manufacturing, BOM and prototype work in
-[`BOARD-FINISH-TODO.md`](../BOARD-FINISH-TODO.md). The current board is not ready
+[`TODO.md`](../TODO.md). The current board is not ready
 for fabrication.

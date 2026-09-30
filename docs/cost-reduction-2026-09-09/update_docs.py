@@ -52,7 +52,7 @@ See [part evidence and checks](docs/cost-reduction-2026-09-09/README.md).
 '''
 p.write_text(s)
 
-for name in ['LAYOUT.md', 'NEXT-STEPS.md', 'BOARD-FINISH-TODO.md']:
+for name in ['LAYOUT.md', 'NEXT-STEPS.md', 'TODO.md']:
     p = ROOT / name
     s = p.read_text()
     note = '> 2026-09-09 cost revision: U4 is now Sensirion SHT40-AD1F-R2. The existing SHT4x footprint, membrane handling, geometry, and legacy SHT45-named model/rule areas are retained. See [cost revision](docs/cost-reduction-2026-09-09/README.md).\n\n'

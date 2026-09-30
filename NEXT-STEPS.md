@@ -9,7 +9,7 @@
 **Current state — 2026-09-04 BL54L15 migration:** U1 is 453-00001R; X2,
 the discrete nRF DC/DC/RF support and the host antenna are removed. X1 and all
 product GPIO assignments are retained. Routing is deliberately left for Alex.
-Use [the current checklist](BOARD-FINISH-TODO.md) and
+Use [the current checklist](TODO.md) and
 [the integration / verification record](docs/bl54l15/README.md).
 Manufacturing outputs are review-only. Supply ripple, module input capacitance,
 clock trim and the enclosure's incomplete preferred metal separation remain
